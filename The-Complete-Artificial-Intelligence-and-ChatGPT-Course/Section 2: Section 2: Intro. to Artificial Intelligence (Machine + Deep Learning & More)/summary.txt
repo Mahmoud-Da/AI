@@ -1,0 +1,175 @@
+*** Introduction to AI (What, Why and How of Section 2)  ***
+Artificial Narrow Intelligence
+
+
+
+Artificial General:
+Artificial Super Intelligence:
+
+
+PS: machine learning and deep learning, which are subsets of AI,
+
+
+There are three types of AI, meaning three artificial intelligence categories 
+first category: (ANI)
+is called artificial narrow intelligence, meaning ANI, which is also called weak AI 
+is designed for relatively simple tasks
+- basic voice cloning based on based technology
+- self-driving cars like Tesla,
+- movie recommendation engines.
+
+this AI category is often easy to develop and implement,
+but it has two limitations.
+
+Number one, it can't learn beyond this specific task, And two, it can't adapt to new tasks.
+
+
+second category: (AGI)
+artificial general intelligence, meaning AGI, which is also called strong AI. The goal of AGI right here is to mimic human intelligence.
+to new situations on its own. And there really isn't an example of AGI, that exists yet today,
+but there's plenty of examples from movies,
+science fiction movies. An example of AGI, which is strong AI,
+from a movie perspective is the movie "I ROBOT" for computer think a bout it self
+as well as one of my favorite video games, which is called "Detroit: Become Human".
+AGI is a scientific equivalent of the splitting of the atom. And it's important to think about science fiction movies
+
+
+
+Many people are so excited about ChatGPT
+because many think that ChatGPT, is the closest thing that we have to AGI today since we can ask basically whatever we want.
+but it's getting closer and closer every day we use it. and too many people think that this is the most astonishing technology
+breakthrough since the internet was invented.
+
+
+
+The advantages of AGI:
+1- it can learn and adapt to wide ranges of tasks.
+While ChatGPT can adapt basically to any question we ask,
+so it's not really AGI yet.
+
+2-  it can improve its performance autonomously.
+
+but, there is challenges in developing AGI.
+1- it requires significant advancements in AI technology.
+2- more importantit raises ethical concerns.
+
+so, AGI becomes a reality, more likly all companies and governments will have their own AI ethical positions
+like the Department of AI and Ethics or Chief AI Ethics Officers.
+
+and right now we're not far from this prediction at all. And currently, we have a number
+of highly skilled research centers working on developing AGI.
+such as OpenAI, DeepMind, and big companies like IBM, Microsoft, and Google.
+
+And today, these companies must have external ethical researchers with them constantly.
+And they have to do this in order to make sure that these companies are developing AI in the right way.
+
+And these ethical organizations are coming from two organizations.
+One of them is called MIRI, M-I-R-I, and the other one is The Future of Humanity Institute
+
+
+Third category: (ASI)
+is called artificial super intelligence. 
+
+ASI features:
+much smarter than any humans that we know of today. it's widely discussed among AI researchers
+
+In terms of what the potential applications of ASI are, it would lead to unprecedented
+technology advancements and innovations.
+
+if AI were to surpass human control from an ethics, safety, and regulatory perspective.
+Movies like the "Terminator" with Skynet ASI, for example, is a very extreme example of the ethical issues
+that we have with ASI.
+And even Warren Buffett said,
+"That once we open AI's Pandora's Box,
+we need to be careful because we can't go back."
+And we have to make sure that future AI products don't get too much autonomy.
+
+
+
+*** A.I. vs Machine Learning vs. Deep Learning:  ***
+let's talk about the differences between AI, machine learning, and deep learning,
+and see how they all fit together.
+Now, since AGI, and ASI don't really exist yet, our talk will be a bout developing ANA 
+
+ANI(artificial narrow intelligence)
+refers to computer systems that perform tasks that would usually require human intelligence.
+Now, machine learning is a subset of AI, that involves developing algorithms
+to learn patterns from the data.
+And machines learn from experience just like humans do. (when develop we use data form the excel file)
+later to perform machine learning using linear regression, and other methodologies to find patterns in the data.
+
+machine learning in more detail using an example.
+if I give task to developer called Chris to write a program
+to recognize this "Star War" character, Chewbacca,
+how would you approach it?
+
+how would you approach it?
+
+- recognizing the main features of Chewbacca.
+my brain says that,
+"Hey, this is Chewbacca.
+He has lovely hair."
+
+"And he has a nose and eyes,
+Mm-hmm. -: and a mouth as well. "
+
+so normaly i would sit with my self And try to describe as many features as possible,
+and write a code with that.
+
+If those features exist in the image, I would say that's a Chewbacca.
+
+so in this case any image of being that has eyes and noise and hair is a the machine learning model will say it is Chewbacca.
+
+so here as a developer I need to supervise Chris,
+meaning supervise our model, or a program by giving him
+many more examples of Chewbacca, to, so he can recognize it in more details when we start writing a model.
+
+so i have to say "Hey Chris Chewbacca has hair all over him,
+as you can see this image one and this image two"
+
+And that's where machine learning kicks in. Instead of writing all those features
+as a separate program, and spending hundreds of hours, we can simply give a lot of examples to Chris,
+or our machine learning model, and say, "Hey, when simple, or similar to this,
+example comes your way, your job will be to say "Chewbacca."
+
+And basically that is how we, humans and machines, learn together, through experience. (and this called supervised training)
+
+
+Deep learning:
+Deep learning is using artificial neural networks
+to model and solve complex problems. It's inspired by humans brain structure. And deep learning is more complex.
+And because of that, it requires a lot of more power.
+to have this power we using the GPU next to CPU, and tell the model like use this GPU wisely to make future prediction
+
+deep learning model, more intelligent one, meaning more  close to humans.
+
+(doll examples for beginners)
+real examples:
+1- Movie Recommender systems. An AI-based model might use pre-defined rules
+to suggest movies based on genre or director's preferences. Machine learning system would analyze user behavior
+such as ratings and watch history to make personalized recommendations for you.
+In deep learning model, system can use even better features,
+and analyze movies plots for example, to provide even better and more
+accurate suggestions for you.
+
+2- text analysis:
+AI text techniques might involve keyword searches and text matching. So machine learning algorithms,
+remember machine learning is a subset of AI. Machine learning algorithms can analyze text data
+to discover patterns or relationships, like sentiment analysis or topic modeling. And within machine learning here, we have deep learning.
+deep learning can process complex language patterns to understand context, and generate advanced intelligent responses.
+
+
+3- Image recognizeer:
+We talked about Chewbacca example previously. And these algorithms uses features from text
+such as hair, nose, eyes, and stuff like that to recognize what's actually present in that feature.
+Machine learning is there to use and recognize these patterns, required to classify objects in an image
+like a dog or a cat.
+And deep learning systems use neural networks to analyze images at a more granular level, making them highly accurate,
+in tasks like face recognition.
+
+In summary, AI is the broadest concept, encompassing machine learning and deep learning.
+Machine learning is a way of achieving AI by training models with data. And deep learning uses neural networks to solve more complex problems.
+And understanding the relationship between AI, machine learning and deep learning, and their real world applications
+is crucial for business leaders when evaluating AI solutions.
+
+
