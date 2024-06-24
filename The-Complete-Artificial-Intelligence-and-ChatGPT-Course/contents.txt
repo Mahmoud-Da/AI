@@ -1,0 +1,33 @@
+
+Section 2: Section 2: Intro. to Artificial Intelligence (Machine + Deep Learning & More)
+
+2. [A/B] Introduction to AI (What, Why and How of Section 2)
+
+3. [A/B/C] 3 Categories of AI: Narrow (ANI), General (AGI) & Super (ASI)
+
+4. [A/B] A.I. vs Machine Learning vs. Deep Learning
+
+5. [A/B] Exercise on Machine Learning & Netflix
+
+6. [A] Supervised & Unsupervised Machine Learning + Reinforcement Learning
+
+7. [A] Exercise on Machine Learning Clustering
+
+8. [A/B] Computer Vision (Using Tesla as an Example)
+
+9. [A/B] Exercise on Computer Vision
+
+10. [A] Natural Language Processing (NLP) and NLP Applications
+
+11. [A/B] AI Hardware and Infrastructure: Enabling Scalable and Affordable AI
+
+12. [A] AutoML and Transfer Learning
+
+13. [A/B] AI's Role in Different Industries, Government and Society
+
+14. [A/B] Challenges and Limitations of AI
+
+15. [A/B] Job Positions in the Data World
+
+Start
+Quiz 1: [A] Quiz on Introduction to Artificial Intelligence
