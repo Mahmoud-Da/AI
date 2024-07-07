@@ -291,6 +291,21 @@ PS: formula accuraicy can show the power of the model for certain data
 now we got 
 y = 1.0607x + 0.6585
 
+Neural Mathematics
+y = wx + b
+
+y = target
+x = input
+w = weights
+b = bias
+
+
+y = (class) classification counts or output and can be integer or float 
+
+we have y and x (matrix with too much pixel when model training data it try to  change w and b to give the best value to Y )
+
+
+when images x = is pixel 
 　2
  R = 1
 
