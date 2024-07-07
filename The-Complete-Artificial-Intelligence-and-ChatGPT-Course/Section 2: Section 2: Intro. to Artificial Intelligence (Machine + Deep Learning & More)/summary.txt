@@ -229,3 +229,131 @@ You have some in the reds, which are actually anomalies
 and that are considered outliers, something that we didn't anticipate, for example,
 for the future.
 
+
+*** 6. [A] Supervised & Unsupervised Machine Learning + Reinforcement Learning ***
+When we work in a company and we are analyzing data,
+our boss supervises us and tells us to use certain columns of data
+that have labels, like the date in one column and sales in another column of data. And when we're babies,
+we don't have structure because we crawl around and we analyze everything without supervision.
+And as babies, we aren't taught what columns of data are with labels.
+
+we're gonna focus on three main categories:
+1- supervised learning, (example: toy story character)
+is recognize "Andy" from the examples.
+
+we provide computer with inputs, or the data, and the computer uses machine learning
+to tell us the output.
+
+in between with the input x, which is our data, for example, and in order to solve for y,
+which is the target. or something that we are trying to predict.
+
+
+
+
+Let's assume that we are going to use supervised machine learning in Excel
+to come up with an equation that can connect our data to predict the price of these nesting dolls.
+
+So to sum up, we have some information, about these nesting dolls,
+and based on that information, we are going to try to predict the price of them
+in the future.
+like you did in the previous lecture we have to tell the developer what to do with the data in our pdf file.
+
+- first as ML enginers we check the features of the data so we can categorize the data with labels
+in the column three, which is the prices, including column one, which is the name of the nesting doll.
+Now, in the column two, we have its height, and in the column three, we have price,
+which we are trying to predict.
+
+so first after our program read the csv file. So what it`s gonna do is gonna analyze this data in our excel file.
+And it will create an equation to see what the price per nesting doll should be
+based on the height. 
+
+in more detail fisrt:
+it gonna do a linear regression analysis. 
+Meaning, it gonna look at all the data,
+and find patterns, And the patterns can be represented with a line
+that goes through our data and shows how our data may change.
+
+Then Excel will create a formula for us.
+
+in excel we go to Data in select "Data Analysis" and select "Regression" 
+then we set Y to the prices we have and X for height in inches
+
+and this is gonna create a formula for us to tell us what should it be 
+then we click on lebals check box cause we have labels 
+
+and set output range we and select the "Line Fit Plate" check box 
+
+after we press ok we will have we go to "Chart Design" => and press "Add Chart Element" => "Trendline"  =>  "Linear"
+then to show the formula we go to "Quick Layout" and show the formula
+
+PS: formula accuraicy can show the power of the model for certain data 
+
+now we got 
+y = 1.0607x + 0.6585
+
+　2
+ R = 1
+
+
+x which is height.
+
+now we use our formula to callculate what the price when the toy height is 4
+
+to test it we take 1.0607x + 0.6585 in excel and in some empty column we write it "=1.0607*4 + 0.6585"
+and this how it works in simple way 
+
+in our case it was price based in the height and it So it makes sense because if less material, well, it cost less 
+
+in summary
+
+1-  supervised learning is a type in ML where we have the data and we already know what we want to achieve
+with machine learning.
+
+2- a classification part when we used a multi images of "Audi" and feed to our model to let us know when it see a new picture 
+if it "Audi" or not
+
+
+
+classification is when we have specific class or a group that we want to say
+is it in this group or not.
+And on the other hand, we have the regression where we would like to estimate
+or to continue some trend, in this case, for example, price
+other regression examples,
+such as demand forecasting, price optimization, stock market prediction,product recommendation
+and anything else that we would like to predict or, for example, the seller in a company as well. And many, many others,
+
+
+Supervised learning takes everything from what we can do based on the data and tries
+to map to some output that you already know and you would like to continue predicting that outcome
+in the future based on the data that you already have.
+
+Companies wanting to apply machine learning and AI in this process, they always start with a question.
+"Can we structure the problem as a supervised problem?"
+Because of this, most machine learning projects in the world at this time can be classified
+as a supervised learning task. It's the easiest one and most predictable one to do so.
+
+2- Category two out of three for types of machine learning
+is called unsupervised learning.
+
+Unsupervised learning algorithms work with unlabeled data,
+
+aiming to discover underlying patterns or groups, meaning clusters, within the data.
+And this type of learning can be useful for businesses in tasks like customer segmentation.
+Meaning, are these types of customers more likely to buy a certain type of product or not?
+Another example is "anomaly detection" in financial transactions, like fraud.
+Or the Securities and Exchange Commission analyzing data
+
+
+3- The category three out of three is called reinforcement learning.
+learns to make decisions by interacting with the environment.
+And here, we are giving the reward or penalties based on the goals that we define.
+So the goal of the agent is to maximize the cumulative reward over time.
+
+
+Finally, keep in mind that machine learning models
+might require regular updates and maintenance as new data becomes available
+or the business context changes.
+For example, YouTube and Google and Meta
+often change their algorithms, and any machine learning process based on algorithms
+that change might also need to be updated.
+
