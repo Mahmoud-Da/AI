@@ -372,3 +372,69 @@ For example, YouTube and Google and Meta
 often change their algorithms, and any machine learning process based on algorithms
 that change might also need to be updated.
 
+
+*** 7. [A] Exercise on Machine Learning Clustering ***
+another small example of using ML 
+
+we'll take customer data from one shopping mall
+and we'd like to cluster the data, meaning categorize it,
+so that our marketing campaigns can work better.
+
+
+using Mall_Customers.csv which we took the dataset form a site called  kaggle.com 
+
+PS: kaggle.com  is open source site for Data sets to practice (when create ML model)
+
+(ps: use this site to access this model online and select Customer segmentation example)
+https://ai-course-for-executives.streamlit.app/
+
+- the model location
+https://github.com/lucko515/ai-course-for-executives
+
+- and when upload the file we can see how ML has clustered our dataset so we can take to manegment team and let use it to have better performance
+for ex: sales
+
+
+*** 8. [A/B] Computer Vision (Using Tesla as an Example) ***
+Computer vision is a field of artificial intelligence that enables computers and machines to interpret
+and understand visual information from the real world.
+like images, videos, or real-time camera feeds. It's like teaching a computer to see and make sense of the visual world just as humans do.
+
+The primary goal of computer vision is finding various techniques for manipulating and extracting information from images
+to make actionable insights for our businesses.
+
+And with this we can achieve things such as classifying objects on an image, detecting faces or face recognition,
+detecting moving objects like, for example, moving cars, pedestrians, and other items.
+
+An amazing example of a company that utilizes computer vision is Tesla.
+Tesla has one of the best AI teams in the world, and specifically for computer vision.
+
+they're utilizing computer vision to recognize what is the surrounding of the car
+so they can actually make decisions whether to continue driving or just to stay in the lane, for example,
+or switch lanes sometimes.
+
+One of the examples was couple of years ago in Netherlands, one of the drivers suddenly felt the Tesla is slowing down.
+And what happened in the next 10 seconds, two cars in front of it actually caused crash.
+So Tesla is able, based on the computer vision, to predict what other drivers around you are going to do.
+And because of that, it's really safe for driver and the passengers.
+
+Now, one of the most common applications is image classification. We are basically creating a system that, given an image,
+predicts what's on it. And common applications are on blogs to predict if someone has uploaded a non-safe for work image
+or to create a system that detects American Sign Language.
+
+Another application is object detection and object segmentation. Instead of just saying, this is an image of a pedestrian,
+we would like to know exactly where in the image that pedestrian is located.
+
+Imagine creating a self-driving car, and if we use image classification,
+whenever a pedestrian would appear in the frame, our car would stop moving. But if we know that the pedestrian is there
+and that they're on the sidewalk, we can proceed safely forward. Now, one more example of image segmentation
+is an autonomous drone identifying and avoiding obstacles in its path while delivering packages, or a robot at an Amazon warehouse packing boxes.
+
+Now let's explore a few industries and how they are revolutionized by using computer vision. In social media, for example, platforms such as TikTok,
+Instagram, and Facebook, are analyzing every single image that we upload so it becomes searchable.
+
+Now, human resources is another great example where companies can use computer vision algorithms to analyze videos, interviews, facial expression, 
+and body language to help them get more information about
+
+
+example: let's create our own American Sign Language detector using computer vision.
