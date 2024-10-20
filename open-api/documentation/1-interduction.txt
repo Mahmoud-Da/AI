@@ -1,0 +1,19 @@
+- Introduction:
+can interact with the API through HTTP requests from any language
+https://platform.openai.com/docs/libraries/node-js-library
+
+
+rails (gem)
+-------------------code----------------------
+gem install ruby-openai
+-------------------code----------------------
+
+python (pip)
+-------------------code----------------------
+pip install openai
+-------------------code----------------------
+
+Node (npm)
+-------------------code----------------------
+npm install openai
+-------------------code----------------------
