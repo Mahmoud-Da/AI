@@ -1,0 +1,39 @@
+- Streaming:
+streaming in OpenAI refers to how responses from models (like me) are sent back to you bit by bit, instead of all at once. Instead of waiting for the entire response to be generated,
+you see it as it is being created. This makes the interaction feel more immediate and conversational, similar to how messages appear in a chat or live video stream.
+-------------------code----------------------
+import OpenAI from "openai";
+
+const openai = new OpenAI();
+
+async function main() {
+    const stream = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [{ role: "user", content: "Say this is a test" }],
+        stream: true,
+    });
+    for await (const chunk of stream) {
+        process.stdout.write(chunk.choices[0]?.delta?.content || "");
+    }
+}
+
+main();
+-------------------code----------------------
+
+
+What is chunk:
+a chunk refers to a small piece of data that is part of the full response from OpenAI's streaming API. Since the API streams its responses,
+the complete answer doesn't arrive all at once. Instead, it's broken into smaller segments (chunks), which are sent one by one over time. These chunks are then processed as they arrive.
+
+Example:
+Let's say you ask OpenAI's model to write "This is a test." Instead of receiving the entire response at once, you might receive it in smaller parts:
+
+First chunk: "This "
+Second chunk: "is "
+Third chunk: "a test"
+Each of these parts is a chunk of the full response.
+
+Why use chunks?
+Streaming Efficiency: Rather than waiting for the entire response to be ready, you can begin processing (or displaying) it as soon as the first part arrives. This improves the responsiveness of applications.
+Real-time Interaction: It makes the interaction feel more live and dynamic, especially for long-form responses.
+In your code, each chunk corresponds to a portion of the response sent by OpenAI in real-time, and the loop processes each one as it arrives.
