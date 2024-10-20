@@ -1,0 +1,10 @@
+
+- Authentication:
+The OpenAI API uses API keys for authentication. 
+You can create API keys at a user or service account level.
+Service accounts are tied to a "bot" individual and should be used to provision access for production systems.
+Each API key can be scoped to one of the following,
+
+Project keys - Provides access to a single project (preferred option); access Project API keys by selecting the specific project you wish to generate keys against.
+User keys - Our legacy keys. Provides access to all organizations and all projects that user has been added to; access API Keys to view your available keys.
+We highly advise transitioning to project keys for best security practices, although access via this method is currently still supported.
