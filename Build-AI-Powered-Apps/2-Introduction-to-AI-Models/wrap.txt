@@ -208,3 +208,94 @@ The upcoming lessons will cover important foundational concepts such as:
 * How to choose the right model for a task
 
 ---
+
+*** 4- What Can You Do With Language Models ***
+---
+
+# Lecture Notes: How Developers Integrate LLMs into Applications
+
+## 1. Position of LLMs in Application Architecture
+
+Modern applications typically include:
+
+* A frontend (often built with React or similar).
+* A backend server.
+* A database for storing application data.
+* A language model (LLM) used to generate or process content.
+
+The LLM is not the core of the application. It acts as a supporting system.
+
+* We send the model input (a prompt).
+* We receive a response.
+* The application uses that response to improve or automate user experiences.
+
+## 2. Common Use Cases for LLM Integration
+
+### 1. Summarization
+
+* Used to create concise summaries of long text.
+* Example: Amazon summarizes product reviews on product pages.
+* Now a standard feature in many modern applications.
+
+### 2. Content Generation
+
+* Generating emails, product descriptions, advertisements, and social media posts.
+* Saves time and removes the need to create content from scratch.
+
+### 3. Text Classification
+
+* Categorizing user input automatically.
+* Example questions models can answer:
+
+  * Is this message spam or not?
+  * Is this review positive or negative?
+  * What category does this support ticket belong to (billing, login, cancellation)?
+
+LLMs can output structured data such as JSON, allowing the backend to:
+
+* Parse the result
+* Store it
+* Make automated decisions
+
+### 4. Translation
+
+* Converting text from one language to another.
+* Used in platforms like X/Twitter.
+* Built into modern systems such as iOS for real-time translation.
+
+### 5. Information Extraction
+
+* Pulling structured data from unstructured sources.
+* Example: Extracting invoice details (invoice number, amount, names, addresses) from messy text or PDFs.
+
+### 6. Chatbots
+
+* Creating conversational assistants.
+* Can answer questions using:
+
+  * User-specific data
+  * Business documents
+  * Knowledge bases
+* Often integrated directly into websites or applications.
+
+## 3. A Common Pattern: Text In → Text Out
+
+All of these use cases follow a consistent workflow:
+
+1. The application sends a prompt or text input.
+2. The LLM returns text or structured output.
+
+The output can be:
+
+* Plain text
+* Arrays
+* JSON objects
+* Numbers
+* Images
+* Or any form of content that the application can use
+
+## 4. Next Steps
+
+Now that the use cases are clear, the next lesson will explore what is actually inside a large language model and how it works internally.
+
+---
