@@ -807,3 +807,128 @@ Language models can output in different formats:
   * Maintaining response quality and relevance.
 
 ---
+
+*** 9- Calling Models ***
+---
+
+## **Calling OpenAI Models in Code**
+
+### **1. API Key Setup**
+
+1. Go to OpenAI **Settings → API Keys**.
+2. Create a **new secret key**:
+
+   * Name it (e.g., `my playground app`).
+   * Assign it to a project (default or custom).
+3. Copy the key to use in code.
+4. **Security tip:** Never store API keys in source code for real projects.
+
+   * Use **environment variables** to protect keys.
+
+---
+
+### **2. Installing the OpenAI Library**
+
+-------------------code----------------------
+npm install openai
+-------------------code----------------------
+
+* This library is a wrapper around the OpenAI API.
+* Supports multiple languages: JavaScript, Python, .NET, Java, Go.
+* Community libraries exist for other languages.
+
+---
+
+### **3. Basic Usage**
+
+1. Import the library:
+
+-------------------code----------------------
+import OpenAI from "openai";
+-------------------code----------------------
+
+2. Create a client instance:
+
+-------------------code----------------------
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
+-------------------code----------------------
+
+3. Send a request:
+
+-------------------code----------------------
+const response = await client.responses.create({
+  model: "gpt-4.1",
+  input: "Write a story about a robot",
+  temperature: 0.7,
+  max_output_tokens: 50
+});
+console.log(response.output_text);
+-------------------code----------------------
+
+* **Settings used:**
+
+  * `temperature`: controls creativity (0.2–1 recommended)
+  * `max_output_tokens`: limits response length
+
+4. Response object properties:
+
+   * `output_text`: generated text
+   * `usage`: token counts (input/output)
+   * `temperature`, `top_p`, `store`, etc.
+   * `id`: unique response identifier (useful for chat history)
+
+---
+
+### **4. Streaming Responses**
+
+* Streaming allows seeing tokens as they are generated in real-time.
+
+1. Enable streaming:
+
+-------------------code----------------------
+const stream = await client.responses.create({
+  model: "gpt-4.1",
+  input: "Write a story about a robot",
+  temperature: 0.7,
+  max_output_tokens: 250,
+  stream: true
+});
+-------------------code----------------------
+
+2. Iterate over the stream (async iterable):
+
+-------------------code----------------------
+for await (const event of stream) {
+  if (event.delta) {
+    process.stdout.write(event.delta);
+  }
+}
+-------------------code----------------------
+
+* `event.delta` contains the text being generated.
+* Not all events contain `delta` (some mark start/end).
+* `process.stdout.write()` prints tokens continuously without new lines.
+
+---
+
+### **5. Notes on Async Iterable**
+
+* Streaming returns an **async iterable**:
+
+  * Tokens are generated **one by one**.
+  * Use `for await` to handle them asynchronously.
+* Mimics the **ChatGPT experience** in real-time.
+
+---
+
+### **6. Key Best Practices**
+
+* Store API keys **securely** (environment variables).
+* Control randomness with `temperature` and optionally `top_p`.
+* Limit output with `max_output_tokens` to save cost.
+* Use streaming for large responses or real-time applications.
+* Handle events carefully to avoid printing undefined messages.
+
+---
