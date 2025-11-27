@@ -7,3 +7,92 @@ what we will learn:
 - how to use them effectively
 - practical concepts: tokens, cost, model, selection, etc
 
+*** 2- Rise of AI Engineering ***
+---
+
+# Lecture Notes: The Rise of the AI Engineer
+
+## 1. Introduction
+
+Since the release of ChatGPT, the software industry has been evolving rapidly. New models, tools, APIs, expectations, and job roles are emerging at a fast pace. One of the most notable new roles is the **AI Engineer**.
+
+## 2. AI Engineer vs. Machine Learning Engineer
+
+### Machine Learning Engineer
+
+* Focuses on building and training models.
+* Works with data cleaning, model architectures, and tuning.
+* Involves heavy math, research, and optimization of training pipelines.
+
+### AI Engineer
+
+* Focuses on using **pre-trained models**, especially large language models (LLMs).
+* Does not need deep mathematical or theoretical understanding of model internals.
+* Needs strong skills in integrating models into real-world applications.
+* Similar to how software engineers use databases without knowing internal implementation details.
+* Main goal: apply existing AI capabilities to solve practical problems.
+
+## 3. What AI Engineers Build
+
+Companies today are increasingly hiring engineers who can integrate AI-powered features into their products. Examples include:
+
+* Summarization
+* Translation
+* Intelligent search
+* Automation tools
+* Personalized user experiences
+
+## 4. Real-World Examples
+
+### 1. Amazon Product Review Summaries
+
+* AI-generated summaries help customers understand reviews quickly.
+* Speeds up decision-making and increases conversions.
+
+### 2. ActiveCampaign
+
+* Allows marketers to generate full email campaigns from prompts.
+* Eliminates the need to start from a blank page.
+
+### 3. Translation on Social Platforms (e.g., X/Twitter)
+
+* LLMs detect language, identify the user’s locale, and generate translations instantly.
+* Now a standard feature across social and news platforms.
+
+### 4. Content Moderation on YouTube and Twitch
+
+* AI automatically flags spam, hate speech, and inappropriate content.
+* Reduces the need for large teams of human moderators.
+
+### 5. Freshdesk Ticket Routing
+
+* AI categorizes, prioritizes, and routes user support tickets.
+* Helps agents spend more time solving issues instead of sorting them.
+
+### 6. Redfin Real Estate Assistant
+
+* Built-in chat assistant answers property-specific questions instantly.
+* Reduces friction and removes the need to wait for human agents.
+
+## 5. Why AI Engineering Matters
+
+* AI features are becoming standard, not optional.
+* They save time, cut costs, and improve user experience.
+* The demand for developers who can work with LLMs is increasing quickly.
+* In the future, AI tooling knowledge will be as essential as database skills are today.
+
+## 6. Core Skills for AI Engineers
+
+* Understanding of large language models (LLMs)
+* Prompt engineering
+* Retrieval augmented generation (RAG)
+* Vector databases
+* Building AI agents
+* Integrating AI with real-world applications
+
+## 7. Course Direction
+
+This course introduces the foundations needed to work effectively with modern AI systems.
+The next lesson will explain what a large language model is in simple, practical terms.
+
+---
