@@ -381,3 +381,208 @@ Tokens impact two major factors:
 The next lesson will show how to **count tokens programmatically**, which helps estimate cost and ensure requests stay within the model’s token limits.
 
 ---
+
+*** 6 - Counting Tokens ***
+---
+
+# Lecture Notes: Counting Tokens Programmatically
+
+## 1. Project Setup
+
+### Create a Playground Directory
+
+1. Open a terminal.
+2. Navigate to your desktop or any preferred location.
+3. Create a new project directory:
+
+   * `mkdir playground`
+4. Move into the directory:
+
+   * `cd playground`
+
+### Initialize a Node Project
+
+* Run:
+  `npm init -y`
+* This generates a default `package.json` without asking configuration questions.
+
+## 2. Installing the Tokenizer Library
+
+### Install tiktoken
+
+* Run:
+  `npm install tiktoken`
+* Note:
+  Different AI platforms use different tokenizer libraries.
+  `tiktoken` is used for OpenAI models.
+
+## 3. Open the Project in VS Code
+
+* Run:
+  `code .`
+* If the command does not work, drag the folder into VS Code manually.
+
+## 4. Writing the Token Counting Script
+
+### Create File
+
+* Add a new file: `index.js`
+
+### Import the Tokenizer
+
+-------------------code----------------------
+import { get_encoding } from "tiktoken";
+-------------------code----------------------
+
+### Choose an Encoding
+
+* Call `get_encoding` with an encoding type.
+* Example:
+
+  * `cl100k_base`
+  * This stands for “chat language” with a dictionary of about 100,000 tokens.
+
+### Encode Text
+
+-------------------code----------------------
+const encoding = get_encoding("cl100k_base");
+
+const tokens = encoding.encode(
+  "hello world, this is the first test of tiktoken library."
+);
+
+console.log(tokens);
+-------------------code----------------------
+
+## 5. Running the Script
+
+### First Error Encountered
+
+* Running `node index.js` produces this error:
+
+  * `SyntaxError: Cannot use import statement outside a module`
+* Reason:
+  Node interprets JavaScript files as **CommonJS modules** by default, but the script uses **ES module syntax**.
+
+### Fixing the Error
+
+* Open `package.json`.
+* Add the following property:
+
+  -------------------code----------------------
+  "type": "module"
+  -------------------code----------------------
+* This tells Node to treat the project as an ES module environment.
+
+### Run Again
+
+* Run: `node index.js`
+* Output:
+
+  * An array of numbers, e.g., 13 items
+  * Each number represents a **token ID** that maps to an actual token in the model’s vocabulary.
+
+## 6. Why This Matters
+
+* When handling large text inputs, counting tokens beforehand helps:
+
+  * Estimate cost
+  * Avoid exceeding the model’s context window
+  * Control prompt size programmatically
+* `tiktoken` provides a simple way to calculate token usage before sending requests to an LLM.
+
+---
+
+- node index6.js
+
+The output:
+-------------------code----------------------
+Uint32Array(13) [
+  15339, 1917,   11,
+    420,  374,  279,
+   1176, 1296,  315,
+  87272, 5963, 6875,
+     13
+]
+-------------------code----------------------
+
+means **the text was tokenized into 13 tokens**.
+
+* Each number in the array is a **token ID**.
+* These IDs correspond to specific pieces of text in the model’s vocabulary (words, parts of words, punctuation, etc.).
+* So even though your text had more than 13 characters or words, the tokenizer split it into **13 meaningful tokens** for the LLM.
+
+In short: **your text = 13 tokens**.
+
+
+Now You can map the token IDs back to readable text using the same `tiktoken` library. Here’s how you can do it:
+
+---
+
+### **Step 1: Get the token strings**
+
+`tiktoken` provides a `.decode()` method that converts token IDs back into text.
+
+### **Example `index6.js`**
+
+-------------------code----------------------
+import { get_encoding } from "tiktoken";
+
+// Initialize the tokenizer
+const encoding = get_encoding("cl100k_base");
+
+// Your text
+const text = "hello world, this is the first test of tiktoken library.";
+
+// Encode the text into token IDs
+const tokenIds = encoding.encode(text);
+
+// To track positions in original text
+let currentIndex = 0;
+
+console.log("Token breakdown:");
+
+// Decode each token individually into string
+tokenIds.forEach((id, idx) => {
+  const tokenBytes = encoding.decode([id]); // returns Uint8Array
+  const tokenText = new TextDecoder().decode(tokenBytes); // convert to string
+
+  // Find start and end in original text
+  const start = text.indexOf(tokenText, currentIndex);
+  const end = start + tokenText.length;
+  currentIndex = end;
+
+  console.log(
+    `Token ${
+      idx + 1
+    }: ID=${id}, Text="${tokenText}", Start=${start}, End=${end}`
+  );
+});
+
+// Decode full text back to string
+const fullTextBytes = encoding.decode(tokenIds);
+const decodedText = new TextDecoder().decode(fullTextBytes);
+
+console.log("\nDecoded full text:", decodedText);
+-------------------code----------------------
+
+---
+
+### **Step 2: Run the script**
+
+-------------------code----------------------
+node index6.js
+-------------------code----------------------
+
+---
+
+### **What you’ll get**
+
+1. **Token IDs** – array of numbers representing each token.
+2. **Tokens** – array of strings showing what each token represents individually.
+3. **Decoded full text** – reconstructs the original text from tokens.
+
+---
+
+This way you can **see exactly how the model is splitting your input** and understand why it counted 13 tokens.
+
