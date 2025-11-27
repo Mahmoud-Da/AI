@@ -121,3 +121,153 @@ Ideal student: a frontend developer who wants to add AI features to real apps. B
 3. Bring a small project idea you’d like to add an AI feature to—this will help apply course projects to something real.
 
 ---
+
+*** 3- What You'll Learn ***
+
+# Lecture Notes: Course Structure and What to Expect
+
+## 1. What This Course Is Not
+
+This is not a quick one-hour “build an AI startup instantly” type of course.
+You will not simply paste prompts into a tool and hope for magic.
+The goal is to build practical, meaningful AI features that improve real applications.
+Everything will be done properly, with a clear understanding of what happens under the hood.
+
+## 2. Course Philosophy
+
+* No shortcut-driven “vibe coding.”
+* Focus on building smart, useful, and maintainable AI-powered features.
+* Emphasis on clarity, architecture, and deep understanding.
+* Hands-on approach: you are expected to code along.
+
+---
+
+# 3. Course Structure
+
+## Section 1: Foundations
+
+You will learn the essential concepts behind modern AI systems:
+
+* What language models are and what they can do
+* Tokens and context windows
+* Model parameters such as temperature
+* How to call and interact with models
+  This section prepares you with the core knowledge needed for later projects.
+
+---
+
+## Section 2: Full-Stack Project Setup
+
+You will build a modern full-stack environment from scratch.
+
+### Why not Next.js?
+
+The instructor chose not to use Next.js because:
+
+* Not everyone uses or likes it
+* Some developers prefer a fully separated frontend and backend
+  Keeping them separate makes it easier to understand how they communicate
+
+### Tools used in this section:
+
+* Bun
+* Express
+* React
+* Tailwind
+* Shadcn
+
+Even if you have never used these tools, everything is taught from the ground up.
+
+### If you prefer Next.js
+
+All concepts in this course apply equally well to Next.js.
+Only the folder structure is different; the principles stay the same.
+
+---
+
+## Section 3: Project 1 — Theme Park Chatbot
+
+A full-stack chatbot that answers questions about an imaginary theme park.
+
+### Backend
+
+* Built step by step
+* Refactored using clean architecture principles
+* Focus on clarity, structure, and maintainability
+
+### Frontend
+
+* Built progressively
+* UI improvements and feature additions
+* You will code along in every step
+
+### Learning approach
+
+Watch each lesson once, take notes, then code along.
+Lessons are short and focused to help you absorb information easily.
+
+---
+
+## Section 4: Prompt Engineering
+
+You will learn how to write prompts effectively by:
+
+* Giving proper context
+* Controlling output format
+* Using examples
+* Handling errors
+* Reducing hallucinations
+  This section improves your ability to work with models at a high level.
+
+---
+
+## Section 5: Project 2 — Product Review Summarizer
+
+A more advanced full-stack project.
+
+### Features and learning focus
+
+* Summarize product reviews like many modern e-commerce sites
+* Build the entire system from scratch
+* Use a database with Prisma and migrations
+* Explore more complex patterns and best practices
+* Techniques learned here can be reused for many other AI features
+  This project is larger and more realistic than the chatbot, allowing deeper learning.
+
+---
+
+## Section 6: Open-Source Models
+
+You will learn:
+
+* Why open-source models matter
+* How to discover suitable models
+* How to run them locally
+* How to integrate them into the applications you build
+  This gives you independence from commercial APIs and expands your AI toolbox.
+
+---
+
+## 7. How to Get the Most Out of the Course
+
+* Watch lessons in order
+* Code along with every project
+* Pay attention to tips, tricks, and shortcuts
+* Stay active and engaged from the beginning
+  This is a hands-on course, not a passive watch-and-forget series.
+
+---
+
+## 8. About the Free Content
+
+The YouTube version you are watching includes the first two hours of the full seven-hour course.
+This is provided so you can evaluate the teaching style before committing to the full course.
+
+---
+
+## 9. Next Steps
+
+The next lecture focuses on setting up your development environment.
+
+---
+
