@@ -64,3 +64,60 @@ The lecture concludes with an invitation to begin the course.
 
 ---
 
+*** 2- Prerequisites ***
+# Lecture Notes: Course Prerequisites & What You’ll Need
+
+## 1. Who this course is for
+
+Ideal student: a frontend developer who wants to add AI features to real apps. Basic frontend knowledge is expected; deep expertise is not required.
+
+## 2. Required knowledge (must-have)
+
+* **Modern JavaScript / TypeScript**: familiarity with ES6+ syntax (arrow functions, destructuring).
+* **Asynchronous JS**: promises, `async` / `await`, basic error handling.
+* **React basics**: creating components, JSX, `useState`, `useEffect`. You don’t need to be an expert—just comfortable building simple React apps.
+
+## 3. Helpful but optional knowledge (nice-to-have)
+
+* **Backend fundamentals**: REST APIs, routing, authentication.
+* **Databases**: basic CRUD operations and schema thinking.
+* **TypeScript types**: interfaces/types for props and API responses.
+* **Basic ML/AI concepts**: high-level understanding of models, prompts, and inference (not required; covered in course).
+
+## 4. Development environment & tools (recommended)
+
+* **Node.js / Bun** for local development and build tools.
+* **Package manager** (npm, pnpm, or Bun).
+* **React toolchain**: Vite, Create React App, or Bun + a compatible bundler.
+* **Database / ORM (optional)**: SQLite/Postgres and Prisma for examples that persist data.
+* **Tailwind CSS** for rapid UI styling (optional but used in examples).
+* **Code editor**: VS Code or similar with TypeScript support.
+* **API keys**: accounts and keys for any cloud AI services you plan to follow along with (if using cloud examples).
+
+## 5. Practical expectations & outcomes
+
+* You will learn incrementally: foundations first, then build three hands-on projects (chatbot, feedback analyzer, open-source integrations).
+* The instructor will cover any AI-specific basics you need—no prior AI experience required.
+* By course end you’ll be able to design and ship AI features integrated into frontend apps.
+
+## 6. Quick starter checklist
+
+* [ ] Install Node.js (or Bun) and a package manager.
+* [ ] Set up a React project (Vite recommended).
+* [ ] Ensure TypeScript is enabled or ready to add.
+* [ ] Familiarize yourself with `async/await` through a small API call exercise.
+* [ ] Optional: create free accounts for any AI provider you might want to try.
+
+## 7. Suggested preparatory exercises (30–90 minutes total)
+
+1. Build a small React component that fetches data from a public API using `async/await`.
+2. Create a TypeScript interface for the API response and use it in the component.
+3. Add a simple Tailwind layout to practice tailwind utility classes.
+
+## 8. Next steps before the first lecture
+
+1. Confirm your dev environment is working (project builds, dev server runs).
+2. If you want to follow cloud-based examples, sign up for any AI provider and obtain an API key.
+3. Bring a small project idea you’d like to add an AI feature to—this will help apply course projects to something real.
+
+---
