@@ -299,3 +299,85 @@ The output can be:
 Now that the use cases are clear, the next lesson will explore what is actually inside a large language model and how it works internally.
 
 ---
+
+
+*** 5- Understanding Tokens and Context Window ***
+---
+
+# Lecture Notes: Understanding Tokens in Language Models
+
+## 1. What Are Tokens
+
+* When we send text to a language model, it does not process the text as plain sentences.
+* Instead, it breaks the input into **tokens**, which are smaller units.
+* A token can be:
+
+  * A whole word
+  * Part of a word
+  * Punctuation
+  * Spaces
+  * Emojis
+* Tokens are not equal to characters or words; they fall somewhere in between.
+
+## 2. Visualizing Tokens
+
+* The OpenAI tokenizer tool shows how text is split into tokens.
+* Example:
+
+  * A sample text with 252 characters may become 53 tokens.
+* The tool color-codes each token so you can see how the model splits the text.
+
+## 3. Why Tokens Matter
+
+Tokens impact two major factors:
+
+### 1. **Cost**
+
+* Billing is based on the number of tokens processed.
+* Example pricing (at the time of the lecture):
+
+  * GPT-4.0 mini: 1 million output tokens cost 60 cents.
+  * GPT-4.1: 1 million output tokens cost 8 dollars.
+* The difference can be significant, especially for tasks involving:
+
+  * Long documents
+  * Large summaries
+  * High-volume content generation
+* Choosing a model should be based on application needs, not just using the newest or most powerful one.
+
+### 2. **Context Window Limit**
+
+* Each model has a maximum number of tokens it can handle at once.
+* This includes:
+
+  * The prompt (input)
+  * The output
+  * The conversation history (if chat-based)
+* Examples of context window sizes:
+
+  * GPT-4.0 mini: about 128,000 tokens
+  * GPT-4.1: about 1,000,000 tokens
+  * Mistral (open source): about 32,000 tokens
+
+### What Happens When You Exceed It
+
+* If your input + output exceed the context window,
+  the model stops generating, sometimes mid-sentence.
+* Knowing the context limit helps you avoid incomplete outputs.
+
+## 4. Choosing the Right Model
+
+* You do not always need the largest or most expensive model.
+* For tasks like:
+
+  * Summarizing a blog post
+  * Categorizing a support ticket
+  * Basic text generation
+    smaller or mid-range models (like Mistral or GPT-4.0 mini) are often enough.
+* The choice should always reflect the actual needs of your application.
+
+## 5. Next Lesson
+
+The next lesson will show how to **count tokens programmatically**, which helps estimate cost and ensure requests stay within the model’s token limits.
+
+---
