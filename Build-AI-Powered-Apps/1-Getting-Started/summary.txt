@@ -1,0 +1,9 @@
+Build AI-Powered Apps
+The complete source code for this course is available on GitHub:
+https://github.com/mosh-hamedani/ai-powered-apps-course
+Each lesson in this course has its own commit, named after the lesson title.
+This means you can:
+• Quickly find the exact code written in any lesson
+• Compare your code with mine if you get stuck
+• Follow along at your own pace without losing track
+Code with Mosh codewithmosh.com

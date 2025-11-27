@@ -1,0 +1,66 @@
+*** 1- Welcome ***
+---
+
+# Lecture Notes: Building AI-Powered Applications
+
+## 1. Introduction
+
+AI is increasingly integrated into modern applications, yet many developers have not actually built AI-powered features.
+This course teaches how to create real, practical AI features similar to those used by major companies such as Google and Amazon.
+
+## 2. Foundations of AI Development
+
+Before building projects, the course covers the core concepts every developer must understand:
+
+* How language models work
+* Tokens and context windows
+* Selecting the appropriate model for a task
+* Model settings and configuration
+* Fundamentals of prompt engineering
+
+## 3. Hands-On Projects
+
+### Project 1: Theme Park Chatbot
+
+You will build a chatbot for an imaginary theme park.
+It will answer visitor questions and help them find information quickly.
+
+### Project 2: Customer Feedback Analyzer
+
+You will create a tool that processes customer feedback and produces:
+
+* Clear insights
+* Actionable recommendations
+  This enables users to make faster and more informed decisions.
+
+### Project 3: Open-Source Integrations
+
+You will explore open-source AI tools that can run in any environment.
+This includes integrating them into real applications.
+
+## 4. Development Practices and Tools
+
+Throughout the course, you will learn:
+
+* Clean architecture principles
+* Industry best practices
+* Modern development tools, including:
+
+  * Bun
+  * Tailwind
+  * Shadcn
+  * Prisma
+  * Ollama
+
+## 5. Instructor Background
+
+The course is taught by Mosh Hamedani, a software engineer with over 20 years of experience.
+He has taught millions of students through YouTube and his platform CodeWithMosh.com.
+
+## 6. Getting Started
+
+Learners are encouraged to subscribe to the channel for ongoing content.
+The lecture concludes with an invitation to begin the course.
+
+---
+
