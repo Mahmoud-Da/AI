@@ -58,3 +58,73 @@ By the end of this part of the course, you will have:
 With the tools and structure planned, the next step is to begin the actual setup and configuration of the project.
 
 ---
+
+*** 2- Setting Up Bun ***
+---
+
+# Introduction to Bun
+
+### A Modern JavaScript Runtime for This Course
+
+## 1. What Is Bun
+
+* Bun is a modern JavaScript runtime similar to Node.js.
+* It is designed to be faster and more integrated than the traditional Node.js toolchain.
+
+## 2. Why Use Bun
+
+With Node.js, developers typically rely on several separate tools:
+
+* **npm** for package installation
+* **ts-node** for running TypeScript
+* **nodemon** for automatically restarting the server
+
+Bun replaces all of these by providing:
+
+* A JavaScript and TypeScript runtime
+* A package manager
+* A task runner
+* A built-in TypeScript transpiler
+
+This means Bun can run TypeScript files directly without requiring additional tools.
+
+## 3. Compatibility with Node.js
+
+* If someone prefers using Node.js, everything taught in the course can still be done with Node.
+* However, Bun generally offers a cleaner and more enjoyable development experience.
+
+## 4. Installing Bun
+
+### Steps
+
+1. Go to **bun.sh**.
+2. On the homepage, locate the installation command for your operating system.
+3. Copy the command and run it in your terminal.
+-------------------code----------------------
+curl -fsSL https://bun.com/install | bash
+-------------------code----------------------
+4. Follow the terminal instructions.
+
+   * On macOS, for example, you may need to run:
+
+     -------------------code----------------------
+     exec /bin/zsh
+     -------------------code----------------------
+
+## 5. Verify Installation
+
+After installation, run:
+
+-------------------code----------------------
+bun --version
+-------------------code----------------------
+
+Example:
+
+* The instructor is using Bun version **1.2.17**.
+
+## 6. Next Lesson
+
+The next part of the course will cover the project structure.
+
+---
