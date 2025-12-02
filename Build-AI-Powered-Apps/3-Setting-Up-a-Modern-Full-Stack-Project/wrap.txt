@@ -870,3 +870,128 @@ Use a clear commit message, such as:
 **"Connect the front end and back end."**
 
 ---
+
+*** 8- Running Both Apps Together ***
+---
+
+# Running Server and Client with a Single Command
+
+### Lecture Notes
+
+## 1. Problem: Two Terminals Needed
+
+In the current setup, starting the application requires:
+
+* One terminal to run the server: `bun run dev`
+* Another terminal to run the client: `bun run dev`
+
+This becomes repetitive and inefficient.
+
+---
+
+## 2. Goal
+
+Start **both** the server and client applications simultaneously using **one command**.
+
+---
+
+## 3. Install Concurrently
+
+1. Stop both the client and server.
+2. Open a new terminal at the **root** of the project.
+3. Install the dependency:
+
+   -------------------code----------------------
+   bun add -d concurrently
+   -------------------code----------------------
+
+`concurrently` lets you run multiple commands in parallel.
+
+---
+
+## 4. Create a Root-Level `index.ts`
+
+Inside the **root directory**, open or create `index.ts`.
+
+### Remove old console logs
+
+Delete any existing console log statements.
+
+### Import and use concurrently
+
+-------------------code----------------------
+import concurrently from "concurrently";
+
+concurrently([
+  {
+    name: "server",
+    command: "bun run dev",
+    cwd: "packages/server",
+    prefixColor: "cyan"
+  },
+  {
+    name: "client",
+    command: "bun run dev",
+    cwd: "packages/client",
+    prefixColor: "green"
+  }
+]);
+-------------------code----------------------
+
+### Explanation of properties
+
+* **name**: identifies the process in the terminal.
+* **command**: the command used to start the app.
+* **cwd**: directory from which the command should run.
+* **prefixColor** (optional): assigns a color so messages are easier to read in a single terminal window.
+
+---
+
+## 5. Add a Custom Script in Root `package.json`
+
+Open the **package.json** in the root directory and create a new script:
+
+-------------------code----------------------
+{
+  "scripts": {
+    "dev": "bun run index.ts"
+  }
+}
+-------------------code----------------------
+
+This allows running both apps with a single command.
+
+---
+
+## 6. Run Both Applications
+
+In the **root directory**, run:
+
+-------------------code----------------------
+bun run dev
+-------------------code----------------------
+
+Both apps will start at once:
+
+* Server logs appear in cyan
+* Client logs appear in green
+
+---
+
+## 7. Test the Setup
+
+1. Open the browser.
+2. Refresh the client application.
+3. Confirm that everything loads correctly.
+
+---
+
+## 8. Wrap Up
+
+Since both applications now start through one root command:
+
+* Individual server/client terminals are no longer needed.
+* You can make a commit with a message like:
+  **run both apps together**
+
+---
