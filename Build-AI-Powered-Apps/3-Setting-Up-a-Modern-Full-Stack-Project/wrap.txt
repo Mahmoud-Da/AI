@@ -750,3 +750,123 @@ This marks the completion of setting up the client-side project.
 
 ---
 
+*** 7- Connecting the Frontend and Backend ***
+---
+
+# Connecting the Client and Server Applications
+
+### Lecture Notes
+
+## 1. Creating a New Endpoint in the Server Application
+
+1. Open the server application and navigate to `index.ts` in the server directory.
+2. Duplicate an existing route handler using the shortcut:
+
+   * macOS: **Option + Shift + Down Arrow**
+   * Windows: **Shift + Alt + Down Arrow**
+3. Modify the duplicated route:
+
+   * Change the path to `/api/hello`.
+   * Return a JSON object instead of plain text:
+
+-------------------code----------------------
+app.get("/api/hello", (req: Request, res: Response) => {
+  res.json({ message: "Hello World!" });
+});
+-------------------code----------------------
+
+4. Test the new endpoint in the browser by visiting `/api/hello`.
+5. If the JSON is not formatted, install the "JSON Formatter" browser extension.
+
+---
+
+## 2. Preparing the Client Application (React)
+
+### Cleaning Up `app.tsx`
+
+1. Open `app.tsx`.
+2. Remove all import statements and all existing code inside the component.
+3. Use the selection expansion shortcut:
+
+   * macOS: **Control + Shift + Command + Right Arrow**
+   * Right Arrow expands selection, Left Arrow shrinks it.
+4. Select the needed block and delete it.
+
+---
+
+## 3. Adding State and Effect Hooks
+
+### Declare State
+
+-------------------code----------------------
+const [message, setMessage] = useState("");
+-------------------code----------------------
+
+### Make an API Call with `useEffect`
+
+1. Use the `fetch` API to call `/api/hello`.
+2. Convert the response to JSON.
+3. Set `message` to `data.message`.
+4. Provide an empty dependency array so the effect runs once.
+
+### Render Output
+
+Return a simple paragraph that displays the message:
+
+-------------------code----------------------
+<p>{message}</p>
+-------------------code----------------------
+
+---
+
+## 4. Why the Request Fails Initially
+
+If you call `/api/hello` from the client, it fails because that endpoint only exists on the server.
+The client development server needs to forward API requests to the backend.
+
+---
+
+## 5. Setting Up a Proxy in Vite
+
+1. Open `vite.config.ts`.
+2. Add a `server` property with a `proxy` configuration:
+
+   -------------------code----------------------
+   server: {
+     proxy: {
+       "/api": "http://localhost:3000"
+     }
+   }
+   -------------------code----------------------
+
+
+3. This ensures:
+
+   * Requests to `/api/...` from the client automatically forward to
+     `http://localhost:3000/api/...`.
+
+4. restart the server and client
+---
+
+## 6. Testing the Integrated Application
+
+1. Refresh the client application in the browser.
+2. The "hello world" message should appear.
+3. It may be centered due to default styles.
+
+---
+
+## 7. Fixing Client Styling
+
+1. Open `index.css` in the client.
+2. Remove all default styles.
+3. Refresh the browser and confirm the layout looks correct.
+
+---
+
+## 8. Final Step: Commit the Changes
+
+Use a clear commit message, such as:
+**"Connect the front end and back end."**
+
+---
