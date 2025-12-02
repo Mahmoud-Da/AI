@@ -995,3 +995,134 @@ Since both applications now start through one root command:
   **run both apps together**
 
 ---
+
+*** 9- Setting Up TailwindCSS ***
+---
+
+# Styling the Application with Tailwind CSS
+
+### Lecture Notes
+
+## 1. Introduction to Tailwind CSS
+
+* Tailwind CSS is a **utility-first CSS framework**.
+* It provides small, descriptive CSS classes such as:
+
+  * `flex`
+  * `pt-4` (padding-top: 1rem)
+  * `text-center`
+  * `font-bold`
+* These utilities allow styling directly in the markup without switching between `.css` and `.tsx` files.
+* Tailwind is widely used and frequently appears in job descriptions.
+
+---
+
+## 2. Install Tailwind CSS
+
+### Step 1: Go to the official documentation
+
+Visit `tailwindcss.com` → Documentation → Vite installation.
+
+### Step 2: Install required libraries
+
+Instead of npm, use bun.
+
+In a new terminal:
+
+-------------------code----------------------
+cd packages/client
+bun add tailwindcss @tailwindcss/vite
+-------------------code----------------------
+
+(These are the two libraries required for Tailwind.)
+
+---
+
+## 3. Configure Tailwind with Vite
+
+### Step 1: Open `vite.config.ts`
+
+Import the Tailwind plugin:
+
+-------------------code----------------------
+import tailwindcss from "tailwindcss";
+-------------------code----------------------
+
+Add it to the plugins list:
+
+-------------------code----------------------
+plugins: [
+  react(),
+  tailwindcss()
+]
+-------------------code----------------------
+
+---
+
+## 4. Import Tailwind into the Root CSS File
+
+Open `index.css` in the client:
+
+Add:
+
+-------------------code----------------------
+@import "tailwindcss";
+-------------------code----------------------
+
+That completes the Tailwind configuration.
+
+---
+
+## 5. Start the Application
+
+Return to the root terminal and run:
+
+-------------------code----------------------
+bun run dev
+-------------------code----------------------
+
+Tailwind is now active.
+
+---
+
+## 6. Apply Basic Styling in React
+
+Open `app.tsx`.
+
+Add a `className` to style the displayed message:
+
+-------------------code----------------------x
+<p className="font-bold p-4 text-3xl">
+  {message}
+</p>
+-------------------code----------------------
+
+### Explanation of utilities:
+
+* `font-bold` → bold text
+* `p-4` → padding of 1rem
+* `text-3xl` → large text size
+
+---
+
+## 7. VS Code Extension Recommendation
+
+Install the **Tailwind CSS IntelliSense** extension for:
+
+* Syntax highlighting
+* Class name auto-completion
+* Improved workflow
+
+Search for **Tailwind CSS IntelliSense** in the Extensions panel.
+
+---
+
+## 8. Wrap Up
+
+After verifying everything works:
+
+* Make a commit with the message:
+  **setup tailwind css**
+
+---
+
