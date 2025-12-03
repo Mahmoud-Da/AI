@@ -1403,3 +1403,245 @@ This formats all project files except ignored paths.
 You installed Prettier, created a configuration file, set up VS Code integration, and added a command-line workflow with `.prettierrc`, `.prettierignore`, and a `format` script. This completes the setup of Prettier for the project.
 
 ---
+
+
+*** 12- Automating Pre-Commit Checks with Husky ***
+
+---
+
+# Automating Code Formatting with Husky and lint-staged — Organized Lecture Notes
+
+## 1. The Problem
+
+Running Prettier manually before every commit is good practice, but it is easy to forget.
+If formatting is skipped, unformatted code may be committed.
+Husky solves this by automating tasks such as formatting or testing before commits or pushes.
+
+---
+
+# 2. Installing and Initializing Husky
+
+## Step 1: Install Husky
+
+Run the install command from the Husky documentation in the project root:
+
+-------------------code----------------------
+bun add -d husky
+-------------------code----------------------
+
+## Step 2: Initialize Husky
+
+This creates a `.husky` directory and a default `pre-commit` script.
+
+-------------------code----------------------
+bunx husky init
+-------------------code----------------------
+
+After initialization, a `.husky/pre-commit` file appears.
+By default, it contains a command to run tests (`bun test`).
+
+Since the project currently has no tests, this command will be replaced.
+
+---
+
+# 3. The Issue with Formatting the Entire Codebase
+
+Running:
+
+-------------------code----------------------
+bun run format
+-------------------code----------------------
+
+inside the pre-commit script will format the **entire** project.
+
+This causes two problems:
+
+1. **Performance**
+   Formatting the whole project becomes slow as the codebase grows.
+
+2. **Misleading commits**
+   If only two files were modified, formatting unrelated files brings extra changes into the commit history.
+   This affects clarity when reviewing commit logs.
+
+To avoid this, formatting should be applied only to **staged** files.
+
+---
+
+# 4. Using lint-staged to Format Only Staged Files
+
+## Step 1: Install lint-staged
+
+-------------------code----------------------
+bun add -d lint-staged
+-------------------code----------------------
+
+## Step 2: Update the Husky pre-commit Script
+
+Replace the default command with:
+
+-------------------code----------------------
+bunx lint-staged
+-------------------code----------------------
+
+(If VS Code fails to run this command, replace `bunx` with `npx`.)
+
+---
+
+# 5. Creating the lint-staged Configuration
+
+In the project root, create a file named:
+
+-------------------code----------------------
+.lint-stagedrc
+-------------------code----------------------
+
+Inside it, define which tasks apply to which staged files.
+
+### Example configuration:
+
+-------------------code----------------------json
+{
+   "*.{js,jsx,ts,tsx,css}": "prettier --write"
+}
+-------------------code----------------------
+
+Notes:
+
+* File patterns are specified in the key.
+* Prettier is run **only** on staged files.
+* No period (`.`) is used with Prettier here, because that would format the entire codebase.
+
+---
+
+# 6. Demonstrating the Workflow
+
+1. Modify a file (for example `app.tsx`) and intentionally break formatting.
+2. Do **not** save the file if autosave is enabled, to avoid Prettier formatting on write.
+3. Make a commit.
+
+If VS Code encounters the error:
+
+-------------------code----------------------
+bunx: command not found
+-------------------code----------------------
+
+this is due to a known issue.
+Workarounds:
+
+### Option A: Commit using the terminal
+
+The Husky script runs successfully.
+
+### Option B: Replace `bunx` with `npx`
+
+Update `.husky/pre-commit`:
+
+-------------------code----------------------
+npx lint-staged
+-------------------code----------------------
+
+This allows using the VS Code Source Control panel normally.
+
+When the commit is made, lint-staged formats the staged files, and `app.tsx` becomes properly formatted.
+
+---
+
+# 7. Removing an Accidental Commit
+
+If a test commit needs to be removed:
+
+1. View history:
+
+-------------------code----------------------
+git log --oneline
+-------------------code----------------------
+
+2. Move HEAD back one commit:
+
+-------------------code----------------------
+git reset --hard HEAD~1
+-------------------code----------------------
+
+3. Verify:
+
+-------------------code----------------------
+git log --oneline
+-------------------code----------------------
+
+The history will now point to the previous commit.
+
+---
+
+# 8. Summary
+
+* Husky automates tasks before commits or pushes.
+* lint-staged ensures only staged files are formatted.
+* The workflow avoids slow operations and unnecessary formatting commits.
+* VS Code's temporary issue with `bunx` can be bypassed by using `npx`.
+
+In the next section, development of the first project will begin.
+
+---
+
+Error:
+PS:
+This error means **Husky cannot initialize because your project does not have a Git repository yet**.
+Husky requires a `.git` folder in your project root.
+
+Here is how to fix it.
+
+---
+
+# How to Solve: `.git can't be found`
+
+## 1. Check if the project is a Git repo
+
+In the root of your project, run:
+
+-------------------code----------------------
+ls -a
+-------------------code----------------------
+
+If you do **not** see a `.git` directory, then Git is not initialized.
+
+---
+
+## 2. Initialize Git
+
+In the root of your project, run:
+
+-------------------code----------------------
+git init
+-------------------code----------------------
+
+This will create:
+
+-------------------code----------------------
+.git/
+-------------------code----------------------
+
+Now Husky can be installed.
+
+---
+
+## 3. Run Husky initialization again
+
+After initializing Git, run:
+
+-------------------code----------------------
+bunx husky init
+-------------------code----------------------
+
+It should succeed and create:
+
+-------------------code----------------------
+.husky/
+   pre-commit
+-------------------code----------------------
+
+---
+
+# Summary
+
+You must **initialize the project as a Git repository first**.
+Once `.git` exists, Husky can be set up without issues.
