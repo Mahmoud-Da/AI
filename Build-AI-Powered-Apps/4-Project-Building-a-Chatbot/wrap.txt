@@ -1,0 +1,31 @@
+*** 1- Introduction ***
+---
+
+## Lecture Notes: Introduction to Building a Chatbot UI
+
+### 1. Overview
+
+Chatbots have become a common and essential component of modern applications. This section introduces how to build a chatbot interface from scratch.
+
+### 2. Initial Impression vs. Reality
+
+* At first glance, a chatbot interface seems simple.
+
+  * A text input box
+  * A send button
+  * A list of messages
+* However, the underlying implementation is more complex than it appears.
+
+### 3. Hidden Complexity
+
+Building a chatbot requires careful handling of:
+
+* Subtle user experience details
+* State management
+* Various edge cases that are easy to miss without prior experience
+
+### 4. Purpose of the Section
+
+This part of the course will guide you step-by-step through building a functional chatbot UI while understanding the architecture and challenges involved.
+
+---
