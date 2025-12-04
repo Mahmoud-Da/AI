@@ -250,3 +250,95 @@ This middleware:
 The next part of the lesson will cover how to test this endpoint.
 
 ---
+
+*** 2.2- Testing the API ***
+---
+
+## Lecture Notes: Testing the Chatbot API Endpoint
+
+### 1. Installing the Postman Extension
+
+* Open the extensions panel in your editor.
+* Search for **Postman**.
+* Install the Postman extension.
+* Note: Postman is also available as a standalone application, but the extension is often more convenient.
+
+### 2. Opening Postman in VS Code
+
+* Open the command palette:
+
+  * macOS: Shift + Command + P
+  * Windows: Shift + Control + P
+* Search for **Show Postman** and open it.
+* The first time you open it, you must create an account and sign in.
+
+  * This allows you to save requests and sync them across devices.
+  * You can also share requests with team members.
+
+### 3. Creating a New HTTP Request
+
+* Create a new request inside Postman.
+* Select **POST** as the method.
+* Set the URL to:
+
+  -------------------code----------------------
+  http://localhost:3000/api/chat
+  -------------------code----------------------
+
+### 4. Setting Up the Request Body
+
+* Open the **Body** tab.
+* Choose **raw**.
+* Select **JSON** from the dropdown.
+* Add the JSON object you want to send:
+
+-------------------code----------------------
+{
+  "prompt": "What is the capital of France?"
+}
+-------------------code----------------------
+
+### 5. Sending the Request
+
+* Click **Send**.
+* You should receive a response with:
+
+  * Status code: **200**
+  * JSON output containing a message.
+
+Example response:
+
+-------------------code----------------------
+{
+  "message": "The capital of France is Paris."
+}
+-------------------code----------------------
+
+### 6. Viewing the Request and Response
+
+* You can toggle Postman’s view mode to place the request and response side by side.
+* This makes it easier to observe both the input and the server output simultaneously.
+
+### 7. Conclusion
+
+Your API endpoint is working correctly. You have confirmed that:
+
+* The server receives the user prompt.
+* The backend sends it to the AI model.
+* The model returns a valid response.
+* The API sends the response back as expected.
+
+Next lesson will continue building on this foundation.
+
+
+### 8.1 the gpt module is not exist that why we use GPT5 
+-------------------code----------------------
+const response = await client.responses.create({
+    model: "gpt-5-mini",
+    input: prompt,
+    // NOTE: this is not support with GPT 5
+    // temperature: 0.2,
+    max_output_tokens: 100,
+  });
+-------------------code----------------------
+---
