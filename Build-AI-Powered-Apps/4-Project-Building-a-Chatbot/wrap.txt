@@ -68,3 +68,185 @@ After the basic version works, the next steps are:
 * Make the project easy to maintain and scale.
 
 ---
+
+*** 2.1- Building the Chat API ***
+---
+
+## Lecture Notes: Building a Basic Chatbot API Endpoint
+
+### 1. Objective of the Lesson
+
+The goal of this lesson is to build a simple API endpoint that:
+
+* Receives a message from the user.
+* Sends it to an AI model.
+* Returns the generated response.
+
+---
+
+## 2. Initial Setup
+
+### a. Navigate to the Server Package
+
+* Open a new terminal window.
+* Go to `packages/server`.
+
+### b. Install OpenAI
+
+-------------------code----------------------
+bun add openai
+-------------------code----------------------
+
+### c. Import and Configure OpenAI in `index.ts`
+
+1. Import OpenAI:
+
+   -------------------code----------------------
+   import OpenAI from "openai";
+   -------------------code----------------------
+2. Run environment configuration:
+
+   -------------------code----------------------
+   dotenv.config();
+   -------------------code----------------------
+3. Create an OpenAI client:
+
+   -------------------code----------------------
+   const client = new OpenAI({
+     apiKey: process.env.OPENAI_API_KEY,
+   });
+   -------------------code----------------------
+
+---
+
+## 3. Creating the Chat Endpoint
+
+### a. Define the POST Route
+
+Use `app.post` because the client sends data (the prompt) to the server.
+
+-------------------code----------------------
+app.post("/api/chat", async (req: Request, res: Response) => {
+  ...
+});
+-------------------code----------------------
+
+### b. Extract the Prompt from the Request Body
+
+* The request body contains a `prompt` property.
+* Use destructuring for cleaner code:
+
+-------------------code----------------------
+const { prompt } = req.body;
+-------------------code----------------------
+
+---
+
+## 4. Sending the Prompt to OpenAI
+
+### a. Choosing the Model
+
+The lesson compares two cost-optimized models:
+
+* **o4-mini**
+* **gpt-40-mini**
+
+Key points:
+
+* o4-mini is extremely fast and multimodal.
+* It is significantly cheaper (about 10× cheaper per million tokens).
+* Context window: 128K tokens, which is sufficient for typical chatbot interactions.
+* For customer support or simple chat tasks, a cost-optimized model is appropriate.
+
+### b. Model Selection
+
+Use:
+
+-------------------code----------------------
+gpt-40-mini
+-------------------code----------------------
+
+### c. Creating the Response Request
+
+-------------------code----------------------
+const response = await client.responses.create({
+  model: "gpt-40-mini",
+  input: prompt,
+  temperature: 0.2,
+  max_output_tokens: 100,
+});
+-------------------code----------------------
+
+Notes:
+
+* Low temperature ensures consistency and accuracy.
+* `max_output_tokens` keeps responses concise.
+
+---
+
+## 5. Returning the Response to the Client
+
+After receiving the response from OpenAI:
+
+-------------------code----------------------
+return res.json({
+  message: response.output_text,
+});
+-------------------code----------------------
+
+- the full code:
+-------------------code----------------------
+app.post("/api/chat", async (req: Request, res: Response) => {
+  const { prompt } = req.body;
+
+  const response = await client.responses.create({
+    model: "gpt-40-mini",
+    input: prompt,
+    temperature: 0.2,
+    max_output_tokens: 100,
+  });
+
+  res.json({
+    message: response.output_text,
+  });
+});
+-------------------code----------------------
+
+---
+
+## 6. Enabling JSON Parsing in Express
+
+### Why It Is Necessary
+
+`req.body` will be undefined unless Express is told to parse JSON.
+
+### Add the JSON Middleware at the Top
+
+-------------------code----------------------
+app.use(express.json());
+-------------------code----------------------
+
+This middleware:
+
+* Runs before the route handler.
+* Parses incoming JSON payloads.
+* Stores them in `req.body`.
+
+---
+
+## 7. Summary of the Endpoint Flow
+
+1. User sends POST request with `{ prompt: "..." }`.
+2. JSON middleware parses the body.
+3. The `/api/chat` route extracts the prompt.
+4. The server forwards the prompt to OpenAI.
+5. OpenAI returns a response.
+6. The server sends the result back as JSON.
+
+---
+
+## 8. Next Step
+
+The next part of the lesson will cover how to test this endpoint.
+
+---
