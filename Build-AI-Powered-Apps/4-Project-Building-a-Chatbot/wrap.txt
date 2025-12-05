@@ -594,3 +594,118 @@ curl -X POST http://localhost:3000/api/chat \
 ---
 
 
+*** 2.4- Input Validation ***
+---
+
+# Data Validation with Zod
+
+### Lecture Notes (Organized)
+
+## 1. Why Validation Is Necessary
+
+In real-world applications, we cannot assume all incoming data is valid.
+We must ensure that:
+
+* `prompt` is a string between 1 and 1000 characters
+* `conversationId` is a valid UUID/GUID
+
+These rules prevent invalid or malicious requests, and also protect the system from unnecessary token usage.
+
+---
+
+## 2. Installing Zod
+
+In the server directory, run the following command to install Zod:
+
+-------------------code----------------------
+bun add zod
+-------------------code----------------------
+
+---
+
+## 3. Defining a Validation Schema
+
+### Import Zod
+
+In `index.ts`:
+
+-------------------code----------------------
+import { z } from "zod";
+-------------------code----------------------
+
+### Create the Schema
+
+Outside the route handler:
+
+-------------------code----------------------
+const chatSchema = z.object({
+  prompt: z
+    .string()
+    .trim()
+    .min(1, "prompt is required")
+    .max(1000, "prompt is too long, maximum 1000 characters"),
+  conversationId: z.uuid("invalid UUID"),
+});
+-------------------code----------------------
+
+Notes:
+
+* `.trim()` removes whitespace at the beginning and end.
+* `.uuid()` ensures the string is a valid UUID.
+* Using multiple lines improves readability.
+
+---
+
+## 4. Validating Incoming Data in the Route Handler
+
+Inside the route handler:
+
+-------------------code----------------------
+const parsedResult = chatSchema.safeParse(req.body);
+
+if (!parsedResult.success) {
+  return res.status(400).json(parsedResult.error.format());
+}
+-------------------code----------------------
+
+Explanation:
+
+* `safeParse` returns an object indicating success or failure.
+* On failure:
+
+  * Status code `400` means "Bad Request"
+  * `error.format()` provides structured error messages
+
+If validation succeeds, the rest of the route handler executes normally.
+
+---
+
+## 5. Testing Validation in Postman
+
+### 1. Passing an empty prompt
+
+Sending `{ prompt: "", conversationId: "conv1" }` produces errors:
+
+* prompt: "prompt is required"
+* conversationId: "invalid UUID"
+
+### 2. Passing whitespace only
+
+Originally whitespace passed the min-length check.
+Using `.trim()` fixes this issue by removing the whitespace before validation.
+
+### 3. Passing a valid prompt
+
+Example: `"What is the capital of France?"`
+
+### 4. Generating a valid UUID
+
+To test the request properly:
+
+* Install a UUID generator extension in your editor
+* Use the command palette to generate a UUID
+* Replace `"conv1"` with the generated UUID
+
+Send the request again. It should pass and the server will return a response from OpenAI.
+
+---
