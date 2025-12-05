@@ -23,8 +23,16 @@ app.get("/api/hello", (req: Request, res: Response) => {
   res.json({ message: "Hello World!" });
 });
 
+// method 1
+// only last massage
+// let lastResponseId: string | null = null;
+
+// method 2
+// all conversation
+const conversations = new Map<string, string>();
+
 app.post("/api/chat", async (req: Request, res: Response) => {
-  const { prompt } = req.body;
+  const { prompt, conversationId } = req.body;
 
   const response = await client.responses.create({
     model: "gpt-5-mini",
@@ -32,8 +40,15 @@ app.post("/api/chat", async (req: Request, res: Response) => {
     // NOTE: this is not support with GPT 5
     // temperature: 0.2,
     max_output_tokens: 100,
+    previous_response_id: conversations.get(conversationId),
   });
 
+  // update in Memory
+  // method 1
+  // PS: gpt5
+  // lastResponseId = response.id;
+
+  conversations.set(conversationId, response.id);
   res.json({
     message: response.output_text,
   });
