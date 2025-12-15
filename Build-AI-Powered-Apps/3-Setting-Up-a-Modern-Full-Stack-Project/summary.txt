@@ -1,0 +1,20 @@
+Section Recap: Setting Up a Full-Stack Project
+• We created a modern full-stack development environment using Bun as our
+runtime and workspace manager.
+• Our project structure followed a monorepo setup with two packages: client for
+the frontend and server for the backend.
+• We installed and configured Bun, and learned how it simplifies package
+management, scripting, and TypeScript support compared to Node.js.
+• We set up workspaces so both the client and server share dependencies and can
+be run together with a single command.
+• We used Vite to scaffold the React frontend.
+• We configured a proxy in Vite so the frontend could communicate with the backend
+during development.
+• We integrated Tailwind CSS for utility-first styling and added shadcn/ui for
+prebuilt, accessible UI components.
+• We added Prettier to automatically format our code and defined consistent
+formatting rules with a .prettierrc file.
+• We set up Husky and lint-staged to run formatting checks before each commit,
+ensuring a clean codebase.
+• We managed environment variables securely using .env files and the dotenv
+package, and discussed best practices for environment-specific settings.

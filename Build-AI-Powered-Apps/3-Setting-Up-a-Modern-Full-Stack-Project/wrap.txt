@@ -1,0 +1,60 @@
+*** 1- Introduction ***
+---
+
+# Full Stack Project Setup
+
+### Course Foundation Overview
+
+## 1. Introduction
+
+Before building the application, we need to set up a clean, modern full stack project. This project will serve as the foundation for everything covered throughout the course.
+
+## 2. Why Not Use Existing Templates
+
+There are many templates and GitHub starter projects for full stack applications, but this course does not rely on them because:
+
+* We want full control over the setup.
+* We avoid depending on someone else’s configuration.
+* We do not want to introduce tools that have not yet been explained.
+
+## 3. Why Not Use Next.js
+
+Although Next.js is a powerful full stack framework built on React:
+
+* It has its own learning curve.
+* Not everyone likes using it.
+* The course should not require Next.js knowledge beforehand.
+
+Instead, the entire setup will be built manually for clarity and flexibility.
+
+## 4. Tools Used in the Setup
+
+The project will be built from scratch using the following technologies:
+
+### Core Tools
+
+* **Bun**: For package management and running the development environment.
+* **Vite**: For creating and bundling the frontend.
+* **Express**: For building the backend API.
+
+### Additional Tools
+
+* **Tailwind CSS**: For styling the frontend.
+* **ShadCN UI**: For reusable UI components.
+* **Prettier**: For formatting the codebase.
+* **Husky**: For automating workflows, such as pre-commit checks.
+
+## 5. Outcome of This Section
+
+By the end of this part of the course, you will have:
+
+* A fully configured full stack foundation.
+* A lightweight and scalable structure.
+* A setup that is clean, transparent, and easy to understand.
+* A development environment fully customized and owned by you.
+
+## 6. Next Steps
+
+With the tools and structure planned, the next step is to begin the actual setup and configuration of the project.
+
+---
