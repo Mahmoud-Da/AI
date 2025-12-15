@@ -29,3 +29,42 @@ Building a chatbot requires careful handling of:
 This part of the course will guide you step-by-step through building a functional chatbot UI while understanding the architecture and challenges involved.
 
 ---
+
+*** 2- Building the Backend ***
+---
+
+## Lecture Notes: Chatbot Backend Development (Segment 1)
+
+### 1. Section Structure
+
+This part of the course is longer than usual, so it has been divided into two segments. The current segment focuses entirely on building the backend for the chatbot.
+
+### 2. Goal of This Segment
+
+By the end of this segment, you will have a fully functional, production-ready backend that can be connected to the frontend.
+
+### 3. Step-by-Step Process
+
+#### a. Building the Basic API
+
+* Start by creating a simple API endpoint.
+* The API will:
+
+  * Receive a message sent by the user.
+  * Send the message to an AI model.
+  * Return the generated response.
+
+#### b. Improving the Backend
+
+After the basic version works, the next steps are:
+
+* Add input validation.
+* Add proper error handling.
+* Ensure the system is robust, predictable, and clean.
+
+#### c. Code Organization
+
+* Reorganize the backend structure to keep the code modular.
+* Make the project easy to maintain and scale.
+
+---
