@@ -128,3 +128,135 @@ Example:
 The next part of the course will cover the project structure.
 
 ---
+
+
+*** 3- Creating the Project Structure ***
+
+---
+
+# Creating the Project Structure
+
+### Setting Up a Full Stack Workspace with Bun
+
+## 1. Create the Main Project Directory
+
+1. Open a terminal window.
+2. Navigate to the desired location (for example, the desktop).
+3. Create a new directory for the project:
+
+   -------------------code----------------------
+   mkdir app
+   -------------------code----------------------
+4. Move into the directory:
+
+   -------------------code----------------------
+   cd app
+   -------------------code----------------------
+
+## 2. Initialize the Project with Bun
+
+Run:
+
+-------------------code----------------------
+bun init
+-------------------code----------------------
+
+### What This Does
+
+* Similar to `npm init`.
+* Generates a `package.json` file.
+* Creates additional project files.
+* Installs TypeScript automatically.
+
+### Template Selection
+
+When prompted to choose a template:
+
+* Options: `blank`, `react`, `library`.
+* Choose **blank**.
+
+### Files Created
+
+* `.gitignore`
+* A directory for Cursor editor rules (safe to delete if not using Cursor)
+* `index.ts` (initial file with a simple console log)
+* `tsconfig.json`
+* `README.md`
+* `node_modules`
+* `bun.lockb`
+
+Open the project folder in VS Code.
+
+## 3. Preparing for a Full Stack Architecture
+
+To manage a frontend (client) and backend (server) within a single project, we will use **Bun workspaces**.
+
+### What Are Workspaces
+
+* A built-in feature in Bun (also available in Node with other tools).
+* Allows managing multiple sub-projects under one root project.
+* Useful for monorepos containing separate client and server apps.
+
+## 4. Creating the Workspace Structure
+
+1. Inside the root project, create a new directory:
+
+   -------------------code----------------------
+   packages
+   -------------------code----------------------
+2. Inside `packages`, create two subdirectories:
+
+   * `client`
+   * `server`
+
+Final folder structure:
+
+-------------------code----------------------
+app
+ ├── packages
+ │    ├── client
+ │    └── server
+ ├── package.json
+ ├── tsconfig.json
+ ├── index.ts
+ ├── node_modules
+ └── other config files
+-------------------code----------------------
+
+## 5. Declaring Workspaces in package.json
+
+Open `package.json` and add a new property:
+
+-------------------code----------------------json
+{
+  "workspaces": ["packages/*"]
+}
+-------------------code----------------------
+
+### Explanation
+
+* `packages/*` is shorthand for including all subfolders inside `packages` as workspaces.
+* No need to list each folder individually.
+
+## 6. Initialize Git
+
+To version-control the project:
+
+1. Run:
+
+   -------------------code----------------------
+   git init
+   -------------------code----------------------
+2. Create the first commit:
+
+   -------------------code----------------------
+   git add .
+   git commit -m "Initial commit"
+   -------------------code----------------------
+
+## 7. Next Steps
+
+In upcoming lessons, the client and server subprojects will be created independently inside the workspace structure.
+
+---
+
