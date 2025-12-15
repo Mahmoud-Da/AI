@@ -1091,7 +1091,7 @@ Open `app.tsx`.
 
 Add a `className` to style the displayed message:
 
--------------------code----------------------x
+-------------------code----------------------
 <p className="font-bold p-4 text-3xl">
   {message}
 </p>
@@ -1126,3 +1126,148 @@ After verifying everything works:
 
 ---
 
+*** 10- Setting Up Shadcn ***
+---
+
+# Setting Up ShadCN UI Component Library
+
+### Lecture Notes
+
+## 1. Introduction to ShadCN
+
+* ShadCN is a **modern, accessible, and customizable UI component library**.
+* Website: [ui.shadcn.com](https://ui.shadcn.com)
+* Features:
+
+  * Pre-built, visually appealing components
+  * Fully compatible with Tailwind CSS
+  * Easy integration with Vite and React
+
+---
+
+## 2. Prerequisites
+
+* Tailwind CSS installed and configured (from previous lesson)
+* Vite project created
+
+---
+
+## 3. Update TypeScript Configuration
+
+### Step 1: Modify `tsconfig.json`
+
+* Locate **base TypeScript config** in `client/tsconfig.json`
+* Add required `compilerOptions` as suggested in the ShadCN docs
+
+### Step 2: Modify `tsconfig.app.json`
+
+* Locate the file used by React app
+* Add or update `baseUrl` and `paths` under `compilerOptions`
+
+### Step 3: Update Node Types
+
+* Install Node types in the client directory:
+
+  -------------------code----------------------
+  bun add -d @types/node
+  -------------------code----------------------
+
+---
+
+## 4. Update Vite Configuration
+
+### Step 1: Import dependencies
+
+-------------------code----------------------
+import path from "path";
+import tailwindcss from "tailwindcss";
+-------------------code----------------------
+
+### Step 2: Add plugins and resolve property
+
+-------------------code----------------------
+plugins: [
+  react(),
+  tailwindcss()
+],
+resolve: {
+  alias: { /* your aliases */ }
+}
+-------------------code----------------------
+
+---
+
+## 5. Run ShadCN CLI
+
+### Step 1: Use `bunx` (similar to npx) in the client directory:
+
+-------------------code----------------------
+bunx --bun shadcn@latest init
+-------------------code----------------------
+
+### Step 2: Choose base color
+
+* Options: `neutral`, `gray`, `zinc`, `stone`, etc.
+* Reference the website’s colors page for visual examples
+* Example choice: `neutral`
+
+### Step 3: Generated files
+
+* `components.json` → keeps track of installed components (internal use)
+* `index.css` → updated with theme variables (colors, padding, etc.)
+
+---
+
+## 6. Install Components
+
+### Step 1: Choose a component
+
+* Example: **Button**
+
+### Step 2: Use ShadCN CLI to install
+
+-------------------code----------------------
+bunx --bun shadcn@latest add button
+-------------------code----------------------
+
+### Step 3: Verify installation
+
+* Source code appears in the `components` folder
+* Tailwind CSS classes used for styling
+* Fully customizable
+
+---
+
+## 7. Use Components in React
+
+### Step 1: Update `app.tsx`
+
+* Wrap multiple elements in a root element (e.g., `<div>`)
+* Import the component:
+
+-------------------code----------------------
+import { Button } from "./components/ui/button";
+-------------------code----------------------
+
+* Example usage:
+
+-------------------code----------------------x
+<div className="p-4">
+  <p>{message}</p>
+  <Button>Click me</Button>
+</div>
+-------------------code----------------------
+
+### Step 2: Adjust spacing
+
+* Use padding classes like `p-4` on container to avoid elements touching screen edges
+
+---
+
+## 8. Wrap Up
+
+* Confirm component renders correctly in the browser
+* Make a commit with message:
+  **set up shadcn ui**
+
+---
