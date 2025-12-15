@@ -1,0 +1,29 @@
+Build AI-Powered Apps
+Section Recap: Building a Chatbot
+• We built a fully functional AI-powered chatbot, step by step, using a clean and
+modern full-stack architecture.
+• The backend was built with Express and TypeScript, and we used the OpenAI API
+to generate responses from the model.
+• We started by implementing a basic /api/chat endpoint that received prompts
+and returned responses from the model.
+• We gradually improved this API by adding input validation, error handling, and a
+conversation ID to maintain context across turns.
+• We separated concerns in our backend by extracting route handlers, a controller, a
+service, and a repository into individual modules.
+• On the frontend, we built a chat interface using React, Tailwind CSS, and shadcn/ui
+for a polished look and feel.
+• We used react-hook-form to manage form state and handle prompt
+submission.
+• We implemented message rendering, styled messages based on the sender, and
+supported markdown formatting for richer output.
+• We added a typing indicator to simulate a real-time bot experience and handled
+auto-scrolling to keep new messages in view.
+• We introduced subtle UX improvements like preventing empty or whitespace-only
+messages and maintaining a clean layout.
+• Once the chatbot was functional, we refactored our code to make it modular,
+separating components like ChatInput, ChatMessages, TypingIndicator,
+and Chatbot.
+• We followed the principle of abstraction by exposing a clear public interface for
+each component while keeping implementation details private.
+• We also discussed how this approach leads to better maintainability, flexibility, and
+separation of concerns — key habits of strong software engineers.
