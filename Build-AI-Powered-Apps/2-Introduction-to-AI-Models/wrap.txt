@@ -1,0 +1,9 @@
+*** 1- Introduction ***
+
+what we will learn:
+
+- what large language models (LLM) are
+- what can we do with them
+- how to use them effectively
+- practical concepts: tokens, cost, model, selection, etc
+
