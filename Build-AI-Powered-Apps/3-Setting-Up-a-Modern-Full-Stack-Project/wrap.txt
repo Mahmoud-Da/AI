@@ -1251,7 +1251,7 @@ import { Button } from "./components/ui/button";
 
 * Example usage:
 
--------------------code----------------------x
+-------------------code----------------------
 <div className="p-4">
   <p>{message}</p>
   <Button>Click me</Button>
@@ -1269,5 +1269,137 @@ import { Button } from "./components/ui/button";
 * Confirm component renders correctly in the browser
 * Make a commit with message:
   **set up shadcn ui**
+
+---
+
+*** 11- Formatting Code with Prettier ***
+---
+
+# Prettier Setup — Organized Lecture Notes
+
+## 1. Overview
+
+Prettier is a code-formatting tool that automatically handles spacing, indentation, semicolons, and other stylistic rules.
+Benefits include consistent formatting, reduced distractions, and cleaner collaboration.
+
+---
+
+## 2. Installing the Prettier Extension
+
+1. Open the **Extensions** panel in VS Code.
+2. Search for **Prettier**.
+3. Install the extension if it is not already installed.
+
+---
+
+## 3. Creating the Prettier Configuration File
+
+Prettier can be customized by creating a configuration file.
+
+### Steps
+
+1. In the root of the project, create a file named **.prettierrc**.
+2. Add a JSON object containing the desired formatting rules.
+
+### Recommended Settings Used in This Lesson
+
+* `"singleQuote": true`
+
+  * Use single quotes in JavaScript/TypeScript files.
+  * Note: JSON itself must always use double quotes.
+* `"semi": true`
+
+  * Forces semicolons at the end of statements.
+* `"trailingComma": "es5"`
+
+  * Adds trailing commas where valid in ES5 (objects, arrays, function arguments).
+* `"printWidth": 80`
+
+  * Maximum line length (default).
+* `"tabWidth": 3`
+
+  * Indentation width changed from the default of 2 to 3.
+-------------------code----------------------
+{
+   "singleQuote": true,
+   "semi": true,
+   "trailingComma": "es5",
+   "printWidth": 80,
+   "tabWidth": 3
+}
+-------------------code----------------------
+
+---
+
+## 4. Applying Prettier in VS Code
+
+### Format Manually
+
+1. Open a file such as **app.tsx**.
+2. Make some unformatted changes (e.g., switch to double quotes, remove semicolons).
+3. Open the Command Palette:
+
+   * View → Command Palette
+   * Shortcut: **Shift + Command + P** on macOS
+4. Search for **Format Document**.
+5. When prompted, choose **Prettier** as the default formatter.
+6. Prettier will format the file according to the defined rules.
+
+### Format on Save
+
+1. Open **Settings** (Command + Comma on macOS).
+2. Search for **Format On Save**.
+3. Enable it.
+4. Prettier will now automatically format whenever you save a file.
+
+---
+
+## 5. Using Prettier from the Command Line
+
+This is useful before committing code to Git to ensure global consistency.
+
+### Step 1: Install Prettier as a Dev Dependency
+
+In the terminal at the **root of the project**, run:
+`bun add -d prettier`
+
+(This ensures Prettier belongs to the overall project, not just server or client.)
+
+### Step 2: Add a Format Script
+
+Open **package.json** and add a script:
+
+-------------------code----------------------
+"scripts": {
+   "format": "prettier --write ."
+}
+-------------------code----------------------
+
+The period indicates “run starting from the current directory”.
+
+### Step 3: Create a .prettierignore File
+
+Create a file named **.prettierignore** in the project root.
+List files/folders that should not be formatted:
+
+-------------------code----------------------
+node_modules
+bun.lock
+-------------------code----------------------
+
+This prevents formatting of third-party dependencies and lock files.
+
+### Step 4: Run the Formatter
+
+In the terminal:
+`bun run format`
+
+This formats all project files except ignored paths.
+
+---
+
+## 6. Summary
+
+You installed Prettier, created a configuration file, set up VS Code integration, and added a command-line workflow with `.prettierrc`, `.prettierignore`, and a `format` script. This completes the setup of Prettier for the project.
 
 ---
