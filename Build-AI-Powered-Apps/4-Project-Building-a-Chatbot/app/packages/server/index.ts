@@ -27,9 +27,10 @@ app.post("/api/chat", async (req: Request, res: Response) => {
   const { prompt } = req.body;
 
   const response = await client.responses.create({
-    model: "gpt-40-mini",
+    model: "gpt-5-mini",
     input: prompt,
-    temperature: 0.2,
+    // NOTE: this is not support with GPT 5
+    // temperature: 0.2,
     max_output_tokens: 100,
   });
 
