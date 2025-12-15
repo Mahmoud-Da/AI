@@ -271,3 +271,53 @@ The next lecture focuses on setting up your development environment.
 
 ---
 
+*** 4- Setting Up Your Development Environment ***
+# Lecture Notes: Development Environment Setup
+
+## 1. Verify Node.js Installation
+
+Before starting any coding, confirm that you have the latest version of Node.js installed.
+
+### Steps:
+
+1. Open a terminal window.
+2. Run the command:
+
+   -------------------code----------------------
+   node -v
+   -------------------code----------------------
+3. Ensure that your version is **22.17 or higher**.
+
+   * If your version is older, visit the official website:
+     nodejs.org
+   * Download and install the latest version.
+
+---
+
+## 2. Code Editor Recommendation
+
+You may use any text editor you prefer, but the course strongly recommends **Visual Studio Code (VS Code)**.
+
+### Reasons to use VS Code:
+
+* The instructor demonstrates many shortcuts that speed up workflow.
+* Helpful plugins and extensions enhance productivity.
+* Provides features that improve coding experience and enjoyment.
+* Ensures you can follow along more easily with the course material.
+
+---
+
+## 3. Tools Needed at This Stage
+
+At this point, you only need:
+
+* **Node.js (latest version)**
+* **VS Code**
+
+Additional tools will be installed later as part of the course.
+
+---
+
+## 4. Next Step
+
+With your environment ready, you can proceed to start coding and follow the upcoming lessons.
