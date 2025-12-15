@@ -260,3 +260,161 @@ In upcoming lessons, the client and server subprojects will be created independe
 
 ---
 
+
+*** 4- Creating the Backend ***
+---
+
+# Creating the Server Application
+
+### Setting Up the Backend with Bun and Express
+
+## 1. Initialize the Server Subproject
+
+1. In the terminal, navigate to the server directory:
+
+   -------------------code----------------------
+   cd packages/server
+   -------------------code----------------------
+2. Run:
+
+   -------------------code----------------------
+   bun init
+   -------------------code----------------------
+3. Choose the **blank** template.
+
+This creates the same starter files as before.
+Remove the unused Cursor directory to keep the project clean.
+
+---
+
+# 2. Install Dependencies
+
+## Install Express
+
+Bun uses `bun add` instead of `npm install`:
+
+-------------------code----------------------
+bun add express
+-------------------code----------------------
+
+## Install Type Definitions for TypeScript
+
+-------------------code----------------------
+bun add -d @types/express
+-------------------code----------------------
+
+After installation, the `package.json` inside `packages/server` will contain:
+
+* `express` as a dependency
+* `@types/express` as a development dependency
+
+Note:
+The workspace uses a single top-level `node_modules` directory.
+Client and server do not have separate `node_modules` folders.
+
+---
+
+# 3. Creating the Web Server
+
+Open `packages/server/index.ts`.
+
+## Import Express
+
+-------------------code----------------------
+import express from "express";
+-------------------code----------------------
+
+## Create the Express Application
+
+-------------------code----------------------
+const app = express();
+-------------------code----------------------
+
+## Configure the Port
+
+Use an environment variable if available; otherwise default to 3000:
+
+-------------------code----------------------
+const port = process.env.PORT || 3000;
+-------------------code----------------------
+
+## Define a Route
+
+-------------------code----------------------
+app.get("/", (req, res) => {
+  res.send("Hello World");
+});
+-------------------code----------------------
+
+## (Optional) Add Type Annotations
+
+-------------------code----------------------
+import type  { Request, Response } from "express";
+
+app.get("/", (req: Request, res: Response) => {
+  res.send("Hello World");
+});
+-------------------code----------------------
+
+## Start the Server
+
+-------------------code----------------------
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
+-------------------code----------------------
+
+---
+
+# 4. Running the Server
+
+In the server directory:
+
+-------------------code----------------------
+bun run index.ts
+-------------------code----------------------
+
+Click the printed URL (on macOS using Command + click) to open it in the browser.
+
+---
+
+# 5. Adding Custom Scripts
+
+Open **packages/server/package.json**
+Add a `scripts` section:
+
+-------------------code----------------------
+{
+  "scripts": {
+    "start": "bun run index.ts",
+    "dev": "bun --watch run index.ts"
+  }
+}
+-------------------code----------------------
+
+### Explanation
+
+* `start`: Runs the application normally.
+* `dev`: Runs the server in watch mode so it restarts automatically on file changes.
+
+---
+
+# 6. Running Scripts
+
+## Start the Server
+
+-------------------code----------------------
+bun start
+-------------------code----------------------
+
+## Run in Watch Mode
+
+Because `dev` is a custom script:
+
+-------------------code----------------------
+bun run dev
+-------------------code----------------------
+
+Changing the server code (for example removing an exclamation mark in the response) will automatically restart the server, and refreshing the browser will show the updated output.
+
+---
