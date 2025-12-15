@@ -709,3 +709,77 @@ To test the request properly:
 Send the request again. It should pass and the server will return a response from OpenAI.
 
 ---
+
+*** 2.5- Error Handling ***
+---
+
+# Handling Unexpected Runtime Errors in the API
+
+### Clean Notes (No Emojis)
+
+## 1. Introduction
+
+After adding basic input validation, the next step is to handle unexpected runtime errors in a proper and controlled way. The goal is to protect the API from exposing internal details and ensure the client receives a clear error message.
+
+## 2. Why Error Handling Is Needed
+
+The line where we call the OpenAI API can fail for several reasons:
+
+* Network issues
+* OpenAI servers being unavailable
+* Exceeding token limits
+* Incorrect model names or other invalid parameters
+
+Currently, these errors are not handled, so they produce an HTML error response that exposes the full stack trace. This is not suitable for production.
+
+## 3. Demonstrating the Problem
+
+To simulate a runtime error, change the model name to something invalid by adding an exclamation mark.
+When sending a request:
+
+* The server returns an HTML error page
+* The response includes the message “the requested model does not exist”
+* The entire stack trace is visible
+
+This is undesirable because API consumers expect structured JSON, not HTML, and internal details should not be leaked.
+
+## 4. Adding Proper Error Handling
+
+To fix this, wrap the logic inside a `try...catch` block.
+
+### a. Try Block
+
+Place all the code related to:
+
+* Extracting the prompt and conversation ID
+* Calling the OpenAI API
+* Updating the conversations map
+* Returning a successful response
+
+Move all of it inside the `try` block for clarity and correctness.
+
+### b. Catch Block
+
+In case of any error:
+
+* Set the response status to `500` (Internal Server Error)
+* Return a JSON object such as:
+
+  -------------------code----------------------
+  { "error": "Failed to generate a response" }
+  -------------------code----------------------
+
+This ensures the client always receives a clean and consistent error structure.
+
+## 5. Testing the Updated Error Handling
+
+Send another request with the invalid model.
+Now, instead of an HTML page with a stack trace, the API returns:
+
+-------------------code----------------------
+{ "error": "Failed to generate a response" }
+-------------------code----------------------
+
+This is the correct and safe behavior for a production-grade API.
+
+---
