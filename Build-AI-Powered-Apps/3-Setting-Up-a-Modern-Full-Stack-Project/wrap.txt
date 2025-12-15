@@ -418,3 +418,186 @@ bun run dev
 Changing the server code (for example removing an exclamation mark in the response) will automatically restart the server, and refreshing the browser will show the updated output.
 
 ---
+
+
+*** 5- Managing OpenAI API Key ***
+---
+
+# Managing API Keys and Environment Variables
+
+## 1. Why API Keys Should Not Be Stored in Source Code
+
+* Never hardcode sensitive values such as API keys in files like `index.ts`.
+* Anyone with access to the source code could use the key and cause unwanted usage charges.
+* The correct approach is to use environment variables.
+
+---
+
+# Setting Environment Variables Manually
+
+## 2. Setting a Temporary Environment Variable in the Terminal
+
+* Stop the running server.
+* On macOS/Linux:
+
+  -------------------code----------------------
+  export OPENAI_API_KEY=1234
+  -------------------code----------------------
+* On Windows:
+
+  -------------------code----------------------
+  set OPENAI_API_KEY=1234
+  -------------------code----------------------
+* Environment variables are conventionally written in uppercase.
+
+## 3. Reading Environment Variables in Code
+
+In `index.ts`, use:
+
+-------------------code----------------------
+process.env.OPENAI_API_KEY
+-------------------code----------------------
+
+* Temporarily return this value in a route handler to verify it is received correctly.
+
+## 4. Restart and Test
+
+* Start the server again.
+* Refresh the browser.
+* The value is read successfully.
+
+---
+
+# The Problem with Manual Environment Variables
+
+* Each time you start the application, you would have to manually set the variables.
+* This is repetitive and error-prone.
+
+---
+
+# Using the `dotenv` Library
+
+## 5. Install dotenv
+
+In the server project directory:
+
+-------------------code----------------------
+bun add dotenv
+-------------------code----------------------
+
+## 6. Create a `.env` File
+
+Inside `packages/server`:
+
+-------------------code----------------------
+.env
+-------------------code----------------------
+
+* `.env` files are ignored by Git automatically (verified in `.gitignore`).
+* Declare variables inside:
+
+-------------------code----------------------
+OPENAI_API_KEY=ABCD
+-------------------code----------------------
+
+## 7. Load `.env` Variables in Code
+
+At the top of `index.ts`:
+
+-------------------code----------------------
+import dotenv from "dotenv";
+dotenv.config();
+-------------------code----------------------
+
+* This must be the first line in the file.
+* It loads all key-value pairs from `.env` into `process.env`.
+
+## 8. Restart the Application
+
+* Restart the server.
+* You will see a message:
+  `dotenv is injecting environment variables`
+* However, if you previously set the variable in the terminal, the terminal version overrides `.env`.
+
+---
+
+# Removing Old Environment Variables
+
+## 9. Remove the Terminal Variable
+
+On macOS/Linux:
+
+-------------------code----------------------
+unset OPENAI_API_KEY
+-------------------code----------------------
+
+On Windows:
+
+-------------------code----------------------
+set OPENAI_API_KEY=
+-------------------code----------------------
+
+* Restart the server again.
+* Now the value from `.env` appears correctly.
+
+---
+
+# Using a Real API Key
+
+## 10. Replace the Placeholder Value
+
+In `.env`:
+
+-------------------code----------------------
+OPENAI_API_KEY=your_real_api_key_here
+-------------------code----------------------
+
+---
+
+# Providing a Template for Others
+
+## 11. Create `.env.example`
+
+Duplicate `.env` and name it:
+
+-------------------code----------------------
+.env.example
+-------------------code----------------------
+
+* This file is included in the repository.
+* It lists variable names without actual values:
+
+-------------------code----------------------
+OPENAI_API_KEY=
+-------------------code----------------------
+
+* This helps other developers understand what they must configure.
+
+---
+
+# Final Cleanup
+
+## 12. Restore Main Route Output
+
+Replace temporary code with the original response:
+
+-------------------code----------------------
+res.send("Hello World");
+-------------------code----------------------
+
+## 13. Commit the Changes
+
+Commit message example:
+
+-------------------code----------------------
+manage openai api key
+-------------------code----------------------
+
+---
+
+# Important Note
+
+* If you change anything inside the `.env` file, Bun will not reload it automatically.
+* You must manually restart the application each time you update `.env`.
+
+---
