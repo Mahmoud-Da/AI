@@ -601,3 +601,152 @@ manage openai api key
 * You must manually restart the application each time you update `.env`.
 
 ---
+
+
+*** 6- Creating the Frontend ***
+---
+
+# Setting Up the Front-End Application with Vite
+
+## 1. Introduction to Vite
+
+* Vite is a fast, modern build tool for front-end applications.
+* Commonly used for React, Vue, and other frameworks.
+* Documentation: vite.dev
+
+---
+
+# Creating the Front-End Project
+
+## 2. Navigate to the Vite Documentation
+
+* On vite.dev, go to "Get Started".
+* The official command for creating a project with npm is:
+
+  -------------------code----------------------
+  npm create vite@latest
+  -------------------code----------------------
+* Vite also supports Bun.
+
+---
+
+## 3. Prepare the Workspace in VS Code
+
+* Open a new terminal window.
+* For better organization, use two terminals:
+
+  * One for the **server**
+  * One for the **client**
+* Rename terminal tabs accordingly:
+
+  * Server terminal → rename to `server`
+  * Client terminal → rename to `client`
+* Optional: color-code them for clarity (example: server green, client yellow).
+
+---
+
+# Creating the Client Project
+
+## 4. Navigate to the Correct Directory
+
+-------------------code----------------------
+cd packages/client
+-------------------code----------------------
+
+## 5. Run the Vite Creation Command
+
+* Paste the Vite command:
+
+  -------------------code----------------------
+  bun create vite
+  -------------------code----------------------
+* Do **not** run it immediately.
+* If executed directly, Vite will create a **subdirectory**, which is not desired.
+* Instead, append a period (`.`) to create the project **in the current directory**:
+
+  -------------------code----------------------
+  bun create vite .
+  -------------------code----------------------
+
+## 6. Choose the Project Options
+
+* **Framework:** React
+* **Variant:** TypeScript
+
+---
+
+# Project Structure
+
+## 7. Resulting Directory
+
+Inside `packages/client`, Vite generates a standard React project structure.
+You will now have:
+
+* A `package.json` for the client
+* A `package.json` for the server
+* A root `package.json`
+
+Total: **three** `package.json` files.
+
+---
+
+# Installing Dependencies
+
+## 8. Install Dependencies with Bun
+
+In the root of the project (workspace root):
+
+-------------------code----------------------
+bun install
+-------------------code----------------------
+
+* This installs all dependencies into **one shared top-level `node_modules`** directory.
+* You will **not** have separate `node_modules` folders for client and server.
+
+---
+
+# Running the Client Application
+
+## 9. Start the Development Server
+
+Inside the client terminal:
+
+-------------------code----------------------
+bun run dev
+-------------------code----------------------
+
+* The `dev` script comes from `packages/client/package.json`.
+
+Example scripts section:
+
+-------------------code----------------------json
+{
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint ."
+  }
+}
+-------------------code----------------------
+
+## 10. Verify the Application
+
+* Open the displayed local development URL in the browser.
+* You should see the default React + Vite project running successfully.
+
+---
+
+# Final Step
+
+## 11. Make a Git Commit
+
+Commit message example:
+
+-------------------code----------------------
+create frontend
+-------------------code----------------------
+
+This marks the completion of setting up the client-side project.
+
+---
+
