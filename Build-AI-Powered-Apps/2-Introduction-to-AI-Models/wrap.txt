@@ -96,3 +96,115 @@ This course introduces the foundations needed to work effectively with modern AI
 The next lesson will explain what a large language model is in simple, practical terms.
 
 ---
+
+*** 3- What are Large Language Models ***
+---
+
+# Lecture Notes: What Is a Large Language Model (LLM)
+
+## 1. Introduction
+
+Now that the importance of AI is clear, this lesson explains a core concept: the **large language model**.
+
+## 2. What Is a Language Model
+
+* A language model is a system trained to understand and generate human language.
+* It can process text, detect patterns, and generate coherent output.
+
+## 3. Examples of Language Models
+
+### Commercial Models
+
+* GPT by OpenAI
+* Gemini by Google
+* Claude by Anthropic
+* Grok by xAI
+
+### Open Source Models
+
+* Llama by Meta
+* Mistral by Mistral AI
+* Many others available publicly.
+
+## 4. Why They Are Called “Large”
+
+* Trained on massive datasets: books, articles, forums, code, documentation, and more.
+* Contain billions of parameters.
+* These parameters encode patterns in grammar, structure, tone, and factual associations.
+
+## 5. How LLMs Work Conceptually
+
+* When you prompt an LLM with a sentence like “The capital of France is”, it does not search for the answer.
+* It predicts the most likely next words based on patterns learned during training.
+* This is similar to autocomplete, but far more powerful.
+
+## 6. Nature of an LLM
+
+* A large language model is essentially a huge mathematical structure.
+* The model does not understand language the way humans do.
+* It does not possess beliefs or intelligence.
+* It generates outputs based on probability, not truth.
+
+### Why Answers Vary
+
+* Asking the same question multiple times produces different responses.
+* This happens because the model generates new text each time rather than retrieving stored answers.
+
+## 7. The Importance of Training Data
+
+* Training data determines the model’s behavior.
+* If the data is biased, low quality, or inaccurate, the model’s output will reflect that.
+* This explains:
+
+  * Political bias in some models
+  * Confident but incorrect answers
+  * Inconsistent reasoning
+
+## 8. Models Generating Code
+
+* LLMs are trained on billions of lines of code from public repositories.
+* Much of this code is outdated, poorly designed, or incorrect.
+* The model cannot distinguish good code from bad code.
+* As a result:
+
+  * Generated code may look correct
+  * It may compile
+  * But it can still be insecure, buggy, or full of anti-patterns
+* Blind trust in model-generated code is risky.
+
+## 9. Garbage In, Garbage Out
+
+* A model’s quality mirrors the quality of its training data.
+* Clean, accurate data produces reliable models.
+* Messy or biased data produces unreliable results.
+
+## 10. Training Costs and Constraints
+
+* Training large models requires:
+
+  * Massive datasets
+  * Thousands of GPUs
+  * Weeks or months of computation
+  * Extremely expensive infrastructure
+* Only a small number of companies can afford to train such models from scratch.
+
+## 11. Role of Developers vs. ML Engineers
+
+* Developers typically do not train models.
+* Instead, developers:
+
+  * Use pre-trained models
+  * Write effective prompts
+  * Understand model limitations
+  * Integrate models into applications
+* This is similar to using a database without building one yourself.
+
+## 12. Course Direction
+
+The upcoming lessons will cover important foundational concepts such as:
+
+* Tokens
+* Cost
+* How to choose the right model for a task
+
+---
