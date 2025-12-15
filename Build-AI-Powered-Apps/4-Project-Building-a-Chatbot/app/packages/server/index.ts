@@ -41,32 +41,38 @@ const chatSchema = z.object({
 });
 
 app.post("/api/chat", async (req: Request, res: Response) => {
-  const { prompt, conversationId } = req.body;
+  try {
+    const { prompt, conversationId } = req.body;
 
-  const parsedResult = chatSchema.safeParse(req.body);
+    const parsedResult = chatSchema.safeParse(req.body);
 
-  if (!parsedResult.success) {
-    return res.status(400).json(parsedResult.error.format());
+    if (!parsedResult.success) {
+      return res.status(400).json(parsedResult.error.format());
+    }
+
+    const response = await client.responses.create({
+      model: "gpt-5-mini",
+      input: prompt,
+      // NOTE: this is not support with GPT 5
+      // temperature: 0.2,
+      max_output_tokens: 100,
+      previous_response_id: conversations.get(conversationId),
+    });
+
+    // update in Memory
+    // method 1
+    // PS: gpt5
+    // lastResponseId = response.id;
+
+    conversations.set(conversationId, response.id);
+    res.json({
+      message: response.output_text,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: "Failed to generate a response",
+    });
   }
-
-  const response = await client.responses.create({
-    model: "gpt-5-mini",
-    input: prompt,
-    // NOTE: this is not support with GPT 5
-    // temperature: 0.2,
-    max_output_tokens: 100,
-    previous_response_id: conversations.get(conversationId),
-  });
-
-  // update in Memory
-  // method 1
-  // PS: gpt5
-  // lastResponseId = response.id;
-
-  conversations.set(conversationId, response.id);
-  res.json({
-    message: response.output_text,
-  });
 });
 
 app.listen(port, () => {
