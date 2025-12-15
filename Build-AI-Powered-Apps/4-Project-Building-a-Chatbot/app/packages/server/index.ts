@@ -2,6 +2,7 @@ import express from "express";
 import type { Request, Response } from "express";
 import OpenAI from "openai";
 import dotenv from "dotenv";
+import { z } from "zod";
 
 dotenv.config();
 
@@ -30,9 +31,23 @@ app.get("/api/hello", (req: Request, res: Response) => {
 // method 2
 // all conversation
 const conversations = new Map<string, string>();
+const chatSchema = z.object({
+  prompt: z
+    .string()
+    .trim()
+    .min(1, "prompt is required")
+    .max(1000, "prompt is too long, maximum 1000 characters"),
+  conversationId: z.uuid("invalid UUID"),
+});
 
 app.post("/api/chat", async (req: Request, res: Response) => {
   const { prompt, conversationId } = req.body;
+
+  const parsedResult = chatSchema.safeParse(req.body);
+
+  if (!parsedResult.success) {
+    return res.status(400).json(parsedResult.error.format());
+  }
 
   const response = await client.responses.create({
     model: "gpt-5-mini",
