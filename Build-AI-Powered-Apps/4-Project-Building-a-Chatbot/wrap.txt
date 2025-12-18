@@ -783,3 +783,148 @@ Now, instead of an HTML page with a stack trace, the API returns:
 This is the correct and safe behavior for a production-grade API.
 
 ---
+
+*** 3- Refactoring the Chat API ***
+---
+
+## Lecture Notes: Refactoring and Layered Architecture
+
+### 1. Problem Statement
+
+* The current Chat API code is overloaded with responsibilities.
+* A single file contains:
+
+  * Conversation state management
+  * Schema definitions
+  * Data validation
+  * Calls to OpenAI
+* There is no separation of concerns.
+* The result is code that is:
+
+  * Hard to read
+  * Hard to maintain
+  * Hard to modify safely
+
+**Analogy:**
+The codebase is like a chaotic closet where everything is mixed together, making it difficult to find what you need.
+
+---
+
+### 2. What Is Refactoring?
+
+* Refactoring means changing the **structure** of the code without changing its **behavior**.
+* No new features are added.
+* No functionality is removed.
+* The goal is better organization and clarity.
+
+**Analogy:**
+Reorganizing a messy closet:
+
+* You do not add or remove clothes.
+* You simply move each item to where it belongs.
+
+---
+
+### 3. Goal of Refactoring
+
+* Introduce clear structure into the codebase.
+* Ensure that each part of the code has:
+
+  * One purpose
+  * One responsibility
+* Improve maintainability, readability, and scalability.
+
+---
+
+### 4. Layered Architecture Overview
+
+The application will be divided into multiple layers.
+Each layer has a single, well-defined responsibility.
+
+---
+
+### 5. Controllers Layer
+
+**Responsibility:**
+
+* Handle HTTP requests.
+* Return HTTP responses.
+
+**Key Points:**
+
+* Acts as the entry point to the application.
+* Does not contain business logic.
+* Delegates work to services.
+
+**Analogy:**
+A receptionist in a building who:
+
+* Receives visitors (requests)
+* Directs them to the right place
+* Responds appropriately
+
+---
+
+### 6. Services Layer
+
+**Responsibility:**
+
+* Contain the core application and business logic.
+
+**Key Points:**
+
+* This is where actual processing happens.
+* In the Chat API:
+
+  * Calling OpenAI to generate responses belongs here.
+* Controllers should call services, not implement logic themselves.
+
+---
+
+### 7. Repositories Layer
+
+**Responsibility:**
+
+* Handle data access and persistence.
+
+**Key Points:**
+
+* Used whenever data needs to be stored or retrieved.
+* The source of data is abstracted:
+
+  * Memory
+  * Database
+  * Any other storage system
+* Other layers should not care where the data comes from.
+
+---
+
+### 8. Benefits of This Architecture
+
+* **Maintainability**
+
+  * Easy to locate and fix issues.
+* **Readability**
+
+  * Each layer has a clear and obvious purpose.
+* **Scalability**
+
+  * New features can reuse existing components.
+* **Testability**
+
+  * Each layer can be tested independently.
+* **Reusability**
+
+  * Logic can be plugged into new features without duplication.
+
+---
+
+### 9. Next Steps
+
+* Over the next lessons:
+
+  * The code will be refactored incrementally.
+  * Each layer will be extracted one by one.
+* The final result will be a clean, well-structured, and scalable codebase.
+
+---
