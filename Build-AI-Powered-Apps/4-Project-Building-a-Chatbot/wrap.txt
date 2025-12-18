@@ -928,3 +928,243 @@ A receptionist in a building who:
 * The final result will be a clean, well-structured, and scalable codebase.
 
 ---
+
+*** 3.1- Extracting Conversation Repository ***
+## Lecture Notes: Repository Layer and Dependency Direction
+
+### 1. Review: Layered Architecture Dependency Direction
+
+* In layered architecture, **dependencies always flow from top to bottom**.
+* Allowed dependencies:
+
+  * Controllers → Services
+  * Services → Repositories
+* Disallowed dependencies:
+
+  * Repositories should never depend on services or controllers.
+* This ensures a clean, predictable structure.
+
+
+---
+
+### 2. The Repository Layer
+
+* The **repository layer is the most fundamental layer** in the application.
+* Its sole responsibility is **data access**.
+* Anytime the application needs to:
+
+  * Retrieve data
+  * Store data
+    it should do so through a repository.
+
+---
+
+### 3. Identifying Repository Responsibilities in Existing Code
+
+* In the current codebase:
+
+  * A map is used to track conversations.
+  * There are statements for:
+
+    * Getting the last response ID
+    * Storing the last response ID
+* These operations are clearly about **data storage and retrieval**.
+* Therefore, they belong in the repository layer.
+
+---
+
+### 4. Creating the Repository Module
+
+* Inside the `server` directory:
+
+  * Create a new folder: `repositories`
+  * Add a new file: `conversation.repository.ts`
+* This file will encapsulate all conversation-related data access logic.
+
+-------------------code----------------------
+server/
+├── index.ts
+└── repositories/
+    └── conversation.repository.ts
+-------------------code----------------------
+
+
+---
+
+### 5. Moving Data Storage into the Repository
+
+* The conversations map (in-memory storage) is:
+
+  * Cut from `index.ts`
+  * Moved into `conversation.repository.ts`
+* At this point, data is stored in memory, which is an **implementation detail**.
+
+---
+
+### 6. Implementation Detail vs Public Interface
+
+* Implementation detail:
+
+  * How data is stored (e.g., memory, database).
+* Public interface:
+
+  * What functionality the module exposes to the outside world.
+
+**Metaphor: Remote Control**
+
+* Buttons on the outside: public interface.
+* Internal electronics: implementation detail.
+* Users interact only with the buttons, not the internal circuitry.
+
+---
+
+### 7. Designing the Repository Public Interface
+
+* The repository should not export internal data structures.
+* Instead, it should export **well-defined operations**.
+* In this application, only two operations are needed:
+
+  1. Get the last response ID
+  2. Set the last response ID
+
+---
+
+### 8. Exporting Repository Functions
+
+* Create and export:
+
+  * `getLastResponseId(conversationId: string): string | undefined`
+  * `setLastResponseId(conversationId: string, responseId: string): void`
+* Move the corresponding logic from `index.ts` into these functions.
+* Update `index.ts` to call these functions instead of directly accessing data.
+
+-------------------code----------------------
+// server/repositories/conversation.repository.ts
+
+// Implementation detail (private)
+// In-memory storage for conversations
+const conversations = new Map<string, string>();
+
+export const conversationRepository = {
+  getLastResponseId(conversationId: string): string | undefined {
+    return conversations.get(conversationId);
+  },
+
+  setLastResponseId(conversationId: string, responseId: string): void {
+    conversations.set(conversationId, responseId);
+  },
+};
+-------------------code----------------------
+
+---
+
+### 9. Benefits of Encapsulation
+
+* `index.ts` no longer knows:
+
+  * Where the data is stored
+  * How it is stored
+* If the repository later switches from in-memory storage to a database:
+
+  * No changes are required in `index.ts`
+* The rest of the application depends only on the repository’s public interface.
+
+---
+
+### 10. Improving Clarity: From Functions to Repository Object
+
+* Problem:
+
+  * Standalone functions resemble generic utilities.
+  * Their architectural role is not immediately clear.
+* Solution:
+
+  * Export a repository object instead of individual functions.
+-------------------code----------------------
+// server/index.ts
+
+const conversations = new Map<string, string>();
+
+const lastResponseId = conversations.get(conversationId);
+
+conversations.set(conversationId, response.id);
+-------------------code----------------------
+
+
+---
+
+### 11. Exporting a Repository Object
+
+* Export a constant:
+
+  -------------------code----------------------
+  conversationRepository
+  -------------------code----------------------
+* This object contains:
+
+  * `getLastResponseId`
+  * `setLastResponseId`
+* Remove the standalone exported functions.
+* This makes ownership and responsibility explicit.
+
+---
+
+### 12. Updating index.ts
+
+* Import `conversationRepository`.
+* Replace function calls with:
+
+  * `conversationRepository.getLastResponseId(...)`
+  * `conversationRepository.setLastResponseId(...)`
+* This makes it clear that:
+
+  * The code is interacting with the **conversation repository**
+  * Not a generic helper or utility
+
+-------------------code----------------------
+// before refactoring
+export function getLastResponseId(conversationId: string): string | undefined {
+  return conversations.get(conversationId);
+}
+
+export function setLastResponseId(
+  conversationId: string,
+  responseId: string
+): void {
+  conversations.set(conversationId, responseId);
+}
+
+// after refactor encapsulate in object
+export const conversationRepository = {
+  getLastResponseId(conversationId: string): string | undefined {
+    return conversations.get(conversationId);
+  },
+
+  setLastResponseId(conversationId: string, responseId: string): void {
+    conversations.set(conversationId, responseId);
+  },
+};
+-------------------code----------------------
+
+---
+
+### 13. Result of This Refactor
+
+* Implementation details remain private.
+* The repository layer is clearly defined.
+* Dependencies follow the layered architecture rules.
+* The code is more readable, maintainable, and flexible.
+
+---
+
+### 14. Next Step
+
+* In the next lesson:
+
+  * Introduce the **Chat Service**
+  * The service will use the conversation repository
+  * This continues building the layered architecture from the bottom up
+
+---
+
+
