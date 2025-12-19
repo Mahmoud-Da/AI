@@ -1439,3 +1439,244 @@ export const chatService = {
 ## Next Lesson
 
 * Introducing the Controller layer in detail
+
+
+*** 3.3- Extracting Chat Controller ***
+# Introducing the Controller Layer
+
+## Role of a Controller
+
+* A controller is a **gateway** to the application.
+* It is responsible for:
+
+  * Receiving an HTTP request
+  * Validating request data
+  * Returning an error if the request is invalid
+  * Calling one or more services to perform application logic
+  * Returning an HTTP response to the client
+
+Controllers deal with **HTTP concerns only**. They should not contain business logic.
+
+---
+
+## Goal of This Refactoring
+
+* Move all logic from the route handler into a dedicated controller
+* Keep the `index` module minimal and focused on routing
+* Encapsulate request validation and request handling inside the controller
+
+---
+
+## Creating the Controller Module
+
+### Folder Structure
+
+In the `server` directory:
+
+-------------------code----------------------
+server/controllers
+-------------------code----------------------
+
+Inside this folder, create:
+
+-------------------code----------------------
+chat.controller.ts
+-------------------code----------------------
+
+---
+
+## Chat Controller Public Interface
+
+In `chat.controller.ts`, export an object called `chatController` with a single method:
+
+-------------------code----------------------
+sendMessage(req: Request, res: Response)
+-------------------code----------------------
+
+This method:
+
+* Accepts an Express `Request`
+* Accepts an Express `Response`
+* Acts as the public interface of the controller
+
+---
+
+## Importing Express Types Explicitly
+
+Instead of relying on inferred types, explicitly import them:
+
+-------------------code----------------------
+import type { Request, Response } from 'express';
+-------------------code----------------------
+
+This improves clarity and type safety.
+
+---
+
+## Moving Logic from the Route Handler
+
+### Selecting the Code
+
+* Use the editor shortcut for extending selection:
+
+  * macOS: `Control + Shift + Command + Right`
+* Extend the selection until:
+
+  * The entire `try/catch` block is selected
+  * The full body of the route handler is included
+
+### Refactoring Step
+
+* Cut the selected code from the route handler
+* Paste it inside `chatController.sendMessage`
+* Save the file
+
+---
+
+## Fixing Errors After Moving Code
+
+After moving the code, several dependencies are missing.
+
+### Importing the Chat Service
+
+* The controller uses the chat service
+* Import it at the top of the controller file
+
+### Marking the Method as Async
+
+* The method uses `await`
+* Update the method signature:
+
+-------------------code----------------------
+async sendMessage(req: Request, res: Response)
+-------------------code----------------------
+
+---
+
+## Moving the Validation Schema
+
+### Locating the Schema
+
+* Use the symbol search shortcut:
+
+  * macOS: `Cmd + P`
+  * Windows: `Ctrl + P`
+* Type `@` and search for `chatSchema`
+
+### Refactoring Step
+
+* Extend the selection
+* Cut the schema definition
+* Move it into `chat.controller.ts`
+
+### Importing Zod
+
+-------------------code----------------------
+import { z } from 'zod';
+-------------------code----------------------
+
+At this point, all errors in the controller should be resolved.
+
+---
+
+## Encapsulation and Implementation Details
+
+### Key Design Principle
+
+* `chatController` is the **public interface**
+* Request validation is an **implementation detail**
+
+The consumer of this module (the `index` module):
+
+* Should not know which validation library is used
+* Should not depend on Zod
+
+Today the controller uses Zod.
+Tomorrow it might use a different validation library.
+
+Only the controller should change.
+The index module must remain untouched.
+
+---
+
+## Updating the Index Module
+
+### Replacing the Route Handler
+
+Replace the inline lambda function with:
+
+-------------------code----------------------
+chatController.sendMessage
+-------------------code----------------------
+
+The index module now:
+
+* Defines routes
+* Delegates request handling to controllers
+
+---
+
+## Cleaning Up Imports
+
+* Remove unused imports from the index module
+* Shortcut:
+
+  * macOS: `Cmd + .`
+  * Windows: `Ctrl + .`
+
+This further simplifies the index module.
+
+---
+
+## Resulting Architecture
+
+* `index` module: routing only
+* Controller: HTTP handling and validation
+* Service: application logic
+* Repository: data access
+
+Each layer has a single responsibility.
+
+---
+-------------------code----------------------
+import type { Request, Response } from "express";
+import z from "zod";
+import { chatService } from "../services/chat.service";
+
+const chatSchema = z.object({
+  prompt: z
+    .string()
+    .trim()
+    .min(1, "prompt is required")
+    .max(1000, "prompt is too long, maximum 1000 characters"),
+  conversationId: z.uuid("invalid UUID"),
+});
+
+export const chatController = {
+  async sendMessage(req: Request, res: Response) {
+    try {
+      const { prompt, conversationId } = req.body;
+
+      const parsedResult = chatSchema.safeParse(req.body);
+
+      if (!parsedResult.success) {
+        return res.status(400).json(parsedResult.error.format());
+      }
+
+      const response = await chatService.sendMessage(prompt, conversationId);
+      res.json({
+        message: response.message,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        error: "Failed to generate a response",
+      });
+    }
+  },
+};
+-------------------code----------------------
+
+## Next Refactoring
+
+* One additional refactoring step remains
+* This will be covered in the next lesson
