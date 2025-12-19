@@ -1,19 +1,14 @@
 import dotenv from "dotenv";
 import type { Request, Response } from "express";
 import express from "express";
-import OpenAI from "openai";
 import { z } from "zod";
-import { conversationRepository } from "./repositories/conversation.repository";
+import { chatService } from "./services/chat.service";
 
 dotenv.config();
 
 const app = express();
 // Enable JSON parsing
 app.use(express.json());
-
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 
 const port = process.env.PORT || 3000;
 
@@ -44,19 +39,9 @@ app.post("/api/chat", async (req: Request, res: Response) => {
       return res.status(400).json(parsedResult.error.format());
     }
 
-    const response = await client.responses.create({
-      model: "gpt-5-mini",
-      input: prompt,
-      // NOTE: this is not support with GPT 5
-      // temperature: 0.2,
-      max_output_tokens: 100,
-      previous_response_id:
-        conversationRepository.getLastResponseId(conversationId),
-    });
-
-    conversationRepository.setLastResponseId(conversationId, response.id);
+    const response = await chatService.sendMessage(prompt, conversationId);
     res.json({
-      message: response.output_text,
+      message: response.message,
     });
   } catch (error) {
     return res.status(500).json({
