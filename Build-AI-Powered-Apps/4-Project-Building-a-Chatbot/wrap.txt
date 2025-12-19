@@ -1680,3 +1680,207 @@ export const chatController = {
 
 * One additional refactoring step remains
 * This will be covered in the next lesson
+
+*** 3.4- Extractring Routes ***
+# Refactoring Route Definitions into a Routes Module
+
+## Motivation
+
+* Keeping all route definitions inside `index.ts` works for small projects.
+* As an application grows, a single large file becomes difficult to read and maintain.
+* Separating routes into their own module improves:
+
+  * Code cleanliness
+  * Modularity
+  * Maintainability
+  * Scalability as more endpoints are added
+
+---
+
+## Goal of This Lesson
+
+* Move all route definitions out of `index.ts`
+* Create a dedicated routes module
+* Make `index.ts` responsible only for application startup
+
+---
+
+## Creating the Routes Module
+
+### File Structure
+
+In the `server` directory, create a new file:
+
+-------------------code----------------------
+routes.ts
+-------------------code----------------------
+
+---
+
+## Setting Up the Routes File
+
+### Importing Express
+
+-------------------code----------------------
+import express from 'express';
+-------------------code----------------------
+
+### Moving Route Definitions
+
+* Go back to `index.ts`
+* Select all route definitions
+* Cut them and paste them into `routes.ts`
+
+### Importing Express Types
+
+Because route handlers use request and response types:
+
+-------------------code----------------------
+import type { Request, Response } from 'express';
+-------------------code----------------------
+
+---
+
+## Using an Express Router Instead of the App
+
+* The routes module should not work with the Express app instance directly.
+* Instead, it should use an Express `Router`.
+
+### Creating the Router
+
+-------------------code----------------------
+const router = express.Router();
+-------------------code----------------------
+
+### Registering Endpoints
+
+* All endpoints are now registered on `router` instead of `app`.
+
+---
+
+## Renaming app to router Efficiently
+
+### Multi-Cursor Editing
+
+* Select the variable name `app`
+* Use the shortcut for selecting all occurrences:
+
+  * macOS: `Shift + Command + L`
+  * Windows: `Shift + Control + L`
+
+### Refactoring Step
+
+* All instances of `app` are selected
+* Replace them with `router`
+* Exit multi-cursor mode by pressing `Esc` twice
+
+---
+
+## Importing the Controller
+
+* Import `chatController` at the bottom or top of the routes file
+* The controller methods are used as route handlers
+
+### Design Note
+
+* Ideally, routes should only reference controller methods
+* Inline route handlers were kept temporarily for demonstration purposes
+* Since they are simple one-liners, they are acceptable for now
+
+---
+
+## Exporting the Router
+
+At the end of `routes.ts`:
+
+-------------------code----------------------
+export default router;
+-------------------code----------------------
+
+* A default export is used because this is the only object exposed by this module
+
+---
+
+## Updating index.ts
+
+### Removing Unused Code
+
+* Remove:
+
+  * Inline route definitions
+  * Direct imports of `chatController`
+
+### Importing the Router
+
+-------------------code----------------------
+import router from './routes';
+-------------------code----------------------
+
+---
+
+## Final index.ts Responsibilities
+
+In `index.ts`:
+
+1. Configure environment variables
+2. Create the Express application
+3. Register middleware (JSON parsing)
+4. Register the router
+5. Initialize the port
+6. Start the server
+
+### Readability Improvement
+
+* Group related setup code together
+* Add a line break between:
+
+  * App setup
+  * Port initialization and server start
+
+The file now contains only startup-related logic.
+
+---
+
+## Architectural Review
+
+After refactoring, the application is split into focused modules:
+
+* **Routes**
+
+  * Defines endpoints
+  * Connects routes to controllers
+
+* **Controller**
+
+  * Acts as the gateway to the application
+  * Handles HTTP requests and responses
+  * Validates input
+  * Delegates work to services
+
+* **Service**
+
+  * Contains application logic
+  * Handles LLM calls and business rules
+
+* **Repository**
+
+  * Contains data access logic only
+  * No HTTP concerns
+  * No LLM logic
+
+Each module has a single responsibility.
+
+---
+
+## Result
+
+* `index.ts` is small, clean, and focused
+* Application details are encapsulated in dedicated modules
+* The codebase is easier to extend and maintain
+
+---
+
+## Next Steps
+
+* Backend implementation is complete
+* Upcoming lessons will focus on building the frontend
