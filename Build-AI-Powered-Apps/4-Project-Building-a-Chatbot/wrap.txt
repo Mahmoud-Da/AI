@@ -2378,3 +2378,206 @@ This is required because TypeScript cannot infer the type when the function is d
 
 The form data is now ready to be sent to the backend.
 The next lesson will focus on **posting the prompt to the server**.
+
+
+*** 4.3- Calling the Backend ***
+
+## Lesson: Posting Chat Data to the Server with Axios
+
+### Objective
+
+Send the chatbot prompt from the frontend to the backend using an HTTP POST request, attach a persistent conversation ID, and handle the server response.
+
+---
+
+## Choosing an HTTP Client
+
+### Fetch vs Axios
+
+Two common options exist for making HTTP requests:
+
+* `fetch`
+* `axios`
+
+Axios is preferred because it:
+
+* Automatically parses JSON responses
+* Has built-in error handling
+* Supports request cancellation
+* Provides a cleaner and more readable API
+
+---
+
+## Installing Axios
+
+From the **client** directory:
+
+-------------------code----------------------
+bun add axios
+-------------------code----------------------
+
+---
+
+## Import Order Convention
+
+Imports should follow this order:
+
+1. Third-party libraries
+2. Internal UI components
+3. Local application logic
+
+This keeps files consistent and readable.
+
+---
+
+## Creating a Conversation ID
+
+### Why a Conversation ID?
+
+* Each chatbot session needs a unique identifier
+* Allows the backend to keep conversation context
+
+---
+
+### Why `useRef` Instead of `useState`?
+
+* The conversation ID:
+
+  * Should be created only once
+  * Should not change
+  * Should not trigger re-renders
+
+`useRef` is ideal for storing:
+
+* IDs
+* Timers
+* Mutable values unrelated to UI rendering
+
+---
+
+### Generating the ID
+
+* Use the browser’s built-in `crypto.randomUUID()`
+* Store it in a ref
+* Access it using `.current`
+
+---
+
+## Sending Data to the Server
+
+### Endpoint
+
+-------------------code----------------------
+POST /api/chat
+-------------------code----------------------
+
+### Request Payload
+
+* `prompt`
+* `conversationId`
+
+---
+
+## Resetting the Form
+
+* Call `reset()` **before** making the HTTP request
+* Reason:
+
+  * Server calls may take time
+  * The input should clear immediately for better UX
+
+---
+
+## Handling the Server Response
+
+* Mark the submit handler as `async`
+* Await the Axios request
+* Destructure the `data` property from the response
+* Log the response for verification
+
+---
+
+## Updated ChatBot Component (Full Code)
+
+-------------------code----------------------
+import axios from "axios";
+import { useForm } from "react-hook-form";
+import { useRef, KeyboardEvent } from "react";
+import { FaArrowUp } from "react-icons/fa";
+import { Button } from "./ui/button";
+
+type FormData = {
+  prompt: string;
+};
+
+const ChatBot = () => {
+  const conversationId = useRef<string>(crypto.randomUUID());
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState,
+  } = useForm<FormData>({
+    mode: "onChange",
+  });
+
+  const onSubmit = async ({ prompt }: FormData) => {
+    reset();
+
+    const { data } = await axios.post("/api/chat", {
+      prompt,
+      conversationId: conversationId.current,
+    });
+
+    console.log(data);
+  };
+
+  const onKeyDown = (e: KeyboardEvent<HTMLFormElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(onSubmit)();
+    }
+  };
+
+  return (
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      onKeyDown={onKeyDown}
+      className="flex flex-col gap-2 items-end border-2 p-4 rounded-3xl"
+    >
+      <textarea
+        className="w-full border-0 focus:outline-0 resize-none"
+        placeholder="Ask anything"
+        maxLength={1000}
+        {...register("prompt", {
+          required: true,
+          validate: (value) => value.trim().length > 0,
+        })}
+      />
+
+      <Button
+        disabled={!formState.isValid}
+        className="rounded-full w-9 h-9 flex items-center justify-center border"
+      >
+        <FaArrowUp />
+      </Button>
+    </form>
+  );
+};
+
+export default ChatBot;
+-------------------code----------------------
+
+---
+
+## Lesson Wrap-Up
+
+* The frontend now sends chat prompts to the backend
+* Each request includes a persistent conversation ID
+* The form resets immediately after submission
+* Server responses are received and verified
+
+### Next Lesson
+
+The next step is **rendering chat messages in the UI** and building the conversation history display.
