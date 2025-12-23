@@ -2743,3 +2743,217 @@ setMessages(prev => [...prev, data.message]);
 ### 9. Next Step
 
 * With message rendering working correctly, the next lesson focuses on styling the chat messages.
+
+
+*** 4.5- Styling Messages ***
+
+---
+
+## Styling Chat Messages as a Conversation
+
+### 1. Goal of This Lesson
+
+* Now that messages are rendering correctly, the goal is to style them to look like a real conversation.
+* User messages should:
+
+  * Appear on the right side
+  * Have a blue background
+* Bot messages should:
+
+  * Appear on the left side
+  * Have a neutral background
+
+---
+
+### 2. Defining a Message Type
+
+* To distinguish between user and bot messages, we define a new type.
+
+-------------------code----------------------
+type Message = {
+  content: string;
+  role: 'user' | 'bot';
+};
+-------------------code----------------------
+
+* `content` stores the text of the message.
+* `role` indicates who sent the message.
+
+---
+
+### 3. Updating the Messages State
+
+#### State Declaration
+
+* We update the state type from `string[]` to `Message[]`.
+
+-------------------code----------------------
+const [messages, setMessages] = useState<Message[]>([]);
+-------------------code----------------------
+
+#### Adding a User Message
+
+* Instead of pushing a string, we now push an object.
+
+-------------------code----------------------
+setMessages(prev => [
+  ...prev,
+  { content: prompt, role: 'user' }
+]);
+-------------------code----------------------
+
+#### Adding a Bot Message
+
+* When the server responds, we add a bot message object.
+
+-------------------code----------------------
+setMessages(prev => [
+  ...prev,
+  { content: data.message, role: 'bot' }
+]);
+-------------------code----------------------
+
+---
+
+### 4. Rendering Message Content
+
+* In the JSX markup, we no longer render the entire message object.
+* We render only the `content` property.
+
+-------------------code----------------------x
+{messages.map((message, index) => (
+  <p key={index}>{message.content}</p>
+))}
+-------------------code----------------------
+
+---
+
+### 5. Applying Dynamic Styling with Template Literals
+
+* To apply styles conditionally, we switch to using template literals.
+* We replace quotes with braces and use backticks.
+
+#### Common Classes
+
+* Apply shared styles to all messages:
+
+  * Horizontal padding: `px-3`
+  * Vertical padding: `py-1`
+
+---
+
+### 6. Conditional Styles Based on Message Role
+
+* Background color and text color depend on whether the message is from the user or the bot.
+
+-------------------code----------------------x
+className={`
+  px-3 py-1 rounded-xl
+  ${message.role === 'user'
+    ? 'bg-blue-600 text-white'
+    : 'bg-gray-100 text-black'}
+`}
+-------------------code----------------------
+
+* User messages:
+
+  * Blue background
+  * White text
+* Bot messages:
+
+  * Light gray background
+  * Black text
+
+---
+
+### 7. Fixing Broken UI After the Change
+
+* Existing rendered messages lacked a `role` property.
+* This caused the UI to break.
+* Refreshing the page clears the old state and fixes the issue.
+
+---
+
+### 8. Rounding Message Borders
+
+* To improve appearance, we apply rounded corners.
+
+-------------------code----------------------
+rounded-xl
+-------------------code----------------------
+
+* This makes message bubbles look more natural.
+
+---
+
+### 9. Adding Spacing Between Messages
+
+* Messages were too close to each other vertically.
+* We fix this by:
+
+  * Making the container a flex container
+  * Using a column layout
+  * Adding vertical spacing with a gap
+
+-------------------code----------------------x
+<div className="flex flex-col gap-3">
+-------------------code----------------------
+
+---
+
+### 10. Aligning Messages Left and Right
+
+#### Flexbox Axis Refresher
+
+* The container is a vertical flex container:
+
+  * Main axis: vertical
+  * Cross axis: horizontal
+
+#### Why `self-*` Classes Are Needed
+
+* `items-start` or `items-end` affect all children.
+* We want different alignment per message.
+* For this, we use `self-*` classes.
+
+#### Conditional Alignment
+
+-------------------code----------------------x
+${message.role === 'user'
+  ? 'self-end'
+  : 'self-start'}
+-------------------code----------------------
+
+* User messages are pushed to the right.
+* Bot messages are pushed to the left.
+
+---
+
+### 11. Improving Layout Spacing from the Form
+
+* Messages were too close to the input form.
+* We add bottom margin to the messages container.
+
+-------------------code----------------------
+mb-10
+-------------------code----------------------
+
+* This creates a cleaner separation.
+
+---
+
+### 12. Final Result
+
+* Messages now:
+
+  * Look like chat bubbles
+  * Are aligned correctly
+  * Have distinct styles for user and bot
+* The chat interface feels natural and readable.
+
+---
+
+### 13. Next Step
+
+* Styling for this lesson is complete.
+* The next lesson builds on this improved UI and continues enhancing the chat experience.
