@@ -2677,7 +2677,7 @@ const { data } = await axios.post<ChatResponse>(url, payload);
 * We use `messages.map()` to render each message.
 * Each message is displayed inside a `<p>` tag.
 
--------------------code----------------------x
+-------------------code----------------------
 {messages.map((message, index) => (
   <p key={index}>{message}</p>
 ))}
@@ -2820,7 +2820,7 @@ setMessages(prev => [
 * In the JSX markup, we no longer render the entire message object.
 * We render only the `content` property.
 
--------------------code----------------------x
+-------------------code----------------------
 {messages.map((message, index) => (
   <p key={index}>{message.content}</p>
 ))}
@@ -2846,7 +2846,7 @@ setMessages(prev => [
 
 * Background color and text color depend on whether the message is from the user or the bot.
 
--------------------code----------------------x
+-------------------code----------------------
 className={`
   px-3 py-1 rounded-xl
   ${message.role === 'user'
@@ -2895,7 +2895,7 @@ rounded-xl
   * Using a column layout
   * Adding vertical spacing with a gap
 
--------------------code----------------------x
+-------------------code----------------------
 <div className="flex flex-col gap-3">
 -------------------code----------------------
 
@@ -2918,7 +2918,7 @@ rounded-xl
 
 #### Conditional Alignment
 
--------------------code----------------------x
+-------------------code----------------------
 ${message.role === 'user'
   ? 'self-end'
   : 'self-start'}
@@ -3104,3 +3104,243 @@ maxOutputTokens: 200
 * Bot responses now display formatted text correctly.
 * Token truncation was fixed by increasing the output limit.
 * Future lessons will focus on improving prompt quality to guarantee complete responses.
+
+
+*** 4.7- Adding a Typing Indicator ***
+---
+
+## Adding a Typing Indicator to the Chatbot
+
+### 1. Problem Overview
+
+* When a user submits a question, there is a short delay before the bot responds.
+* During this time, there is no visual feedback.
+* This makes the chatbot feel less interactive and less responsive.
+
+---
+
+### 2. Goal of This Lesson
+
+* Add a typing indicator similar to those used in real messaging applications.
+* Provide immediate visual feedback while the bot is generating a response.
+
+---
+
+### 3. Declaring State for Typing Status
+
+* We introduce a new state variable to track whether the bot is typing.
+
+-------------------code----------------------
+const [isBotTyping, setIsBotTyping] = useState(false);
+-------------------code----------------------
+
+* `isBotTyping` indicates whether a response is in progress.
+* `setIsBotTyping` updates the typing state.
+
+---
+
+### 4. Updating Typing State in the Submit Handler
+
+#### When the User Submits a Message
+
+* Immediately after adding the user’s message to the chat:
+
+  * Set the typing state to `true`.
+
+-------------------code----------------------
+setIsBotTyping(true);
+-------------------code----------------------
+
+#### When the Bot Response Arrives
+
+* After receiving the response and updating the messages:
+
+  * Set the typing state back to `false`.
+
+-------------------code----------------------
+setIsBotTyping(false);
+-------------------code----------------------
+
+---
+
+### 5. Rendering the Typing Indicator
+
+* In the JSX markup:
+
+  * Render the typing indicator right after the messages list.
+* Use conditional rendering based on `isBotTyping`.
+
+-------------------code----------------------
+{isBotTyping && (
+  <div className="self-start">
+    <div className="flex gap-1 px-3 py-3 bg-gray-200 rounded-xl">
+      <div className="w-2 h-2 rounded-full bg-gray-800 animate-pulse"></div>
+      <div className="w-2 h-2 rounded-full bg-gray-800 animate-pulse [animation-delay:0.2s]"></div>
+      <div className="w-2 h-2 rounded-full bg-gray-800 animate-pulse [animation-delay:0.4s]"></div>
+    </div>
+  </div>
+)}
+-------------------code----------------------
+
+* This initial step confirms the conditional logic works.
+
+---
+
+### 6. Building the Animated Typing Dots
+
+#### Single Dot Styling
+
+* Each dot is styled as a small circle.
+* Tailwind utility classes:
+
+  * `w-2 h-2` for size
+  * `rounded-full` for circular shape
+  * `bg-gray-800` for color
+  * `animate-pulse` for animation
+
+---
+
+### 7. Creating Three Dots Layout
+
+#### Container Setup
+
+* Wrap the dots inside a parent container.
+* Make the container a horizontal flex layout.
+
+-------------------code----------------------
+flex gap-1
+-------------------code----------------------
+
+#### Container Styling
+
+* Add padding and background styling:
+
+  * `px-3 py-3`
+  * `bg-gray-200`
+  * `rounded-xl`
+
+---
+
+### 8. Preventing the Indicator from Stretching
+
+#### The Issue
+
+* The typing indicator stretches to fill the available width.
+* This happens because:
+
+  * It is inside a vertical flex container.
+  * Flex items stretch along the cross axis by default.
+
+#### The Solution
+
+* Apply a `self-*` class to the typing indicator container.
+
+-------------------code----------------------
+self-start
+-------------------code----------------------
+
+* This:
+
+  * Aligns the indicator to the left
+  * Prevents it from stretching across the container
+
+---
+
+### 9. Improving the Animation with Staggered Delays
+
+#### Problem
+
+* All three dots animate at the same time.
+* This looks unnatural.
+
+#### Adding Animation Delays
+
+* For the second dot:
+
+  * Apply an animation delay of 0.2 seconds.
+
+-------------------code----------------------
+[animation-delay:0.2s]
+-------------------code----------------------
+
+* For the third dot:
+
+  * Apply an animation delay of 0.4 seconds.
+
+-------------------code----------------------
+[animation-delay:0.4s]
+-------------------code----------------------
+
+#### Why Arbitrary Values Are Used
+
+* Tailwind does not include built-in classes for these specific animation delays.
+* Square brackets allow custom CSS values to be applied.
+
+---
+
+### 10. Final Result
+
+* The chatbot now displays:
+
+  * A three-dot animated typing indicator
+  * A staggered animation effect
+* The UI feels more responsive and natural.
+
+---
+
+### 11. Summary
+
+* A typing indicator was added using local state.
+* Conditional rendering controls when the indicator appears.
+* Flexbox and Tailwind utilities were used for layout and styling.
+* Staggered animation delays improved the visual experience.
+
+---
+
+### 12. Next Step
+
+* The typing indicator feature is complete.
+* The next lesson will continue enhancing the chatbot experience.
+
+
+### 13.Error fixing:
+when we have a response that had bold text it doesn`t appear on the screen 
+
+The reason you are seeing an "empty" response (or the text disappearing) when using bold text like `**hello**` is due to **invalid HTML nesting**.
+
+### The Problem
+In your code, you have wrapped the `ReactMarkdown` component inside a `<p>` tag:
+
+-------------------code----------------------
+<p className={`px-3 py-1 ...`}>
+  <ReactMarkdown>{message.content}</ReactMarkdown>
+</p>
+-------------------code----------------------
+
+**Why this fails:**
+1.  `ReactMarkdown` automatically wraps its content in a `<p>` tag by default.
+2.  In HTML, **you cannot put a `<p>` tag inside another `<p>` tag**.
+3.  When the browser sees `<p><p>...</p></p>`, it tries to "fix" the broken HTML. This often causes the internal content to be pushed outside the parent container or causes React's rendering engine to lose track of the elements, making them appear invisible or empty.
+
+When you write plain text, it might survive, but as soon as you add Markdown (like `**` which adds a `<strong>` tag inside that nested `<p>`), the browser's parser gives up on the structure.
+
+### The Solution: Change `<p>` to `<div>`
+
+Change the wrapper tag from a `<p>` to a `<div>`. This is standard practice when using Markdown components.
+
+-------------------code----------------------
+// Change this line from <p> to <div>
+<div
+  key={index}
+  className={`
+    px-3 py-1 rounded-xl max-w-[80%] 
+    ${
+      message.role === "user"
+        ? "bg-blue-600 text-white self-end"
+        : "bg-gray-100 text-black self-start"
+    }
+  `}
+>
+  <ReactMarkdown>{message.content}</ReactMarkdown>
+</div>
+-------------------code----------------------

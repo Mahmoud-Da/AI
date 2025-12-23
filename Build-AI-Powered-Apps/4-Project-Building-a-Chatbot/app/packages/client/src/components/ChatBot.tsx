@@ -20,6 +20,7 @@ type Message = {
 
 const ChatBot = () => {
   const [messages, setMessages] = useState<Message[]>([]);
+  const [isBotTyping, setIsBotTyping] = useState(false);
   const conversationId = useRef<string>(crypto.randomUUID());
 
   const { register, handleSubmit, reset, formState } = useForm<FormData>({
@@ -28,6 +29,7 @@ const ChatBot = () => {
 
   const onSubmit = async ({ prompt }: FormData) => {
     setMessages((prev) => [...prev, { content: prompt, role: "user" }]);
+    setIsBotTyping(true);
     reset();
 
     const { data } = await axios.post<ChatResponse>("/api/chat", {
@@ -36,6 +38,7 @@ const ChatBot = () => {
     });
 
     setMessages((prev) => [...prev, { content: data.message, role: "bot" }]);
+    setIsBotTyping(false);
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
@@ -48,7 +51,7 @@ const ChatBot = () => {
   return (
     <div className="flex flex-col gap-3 mb-10">
       {messages.map((message, index) => (
-        <p
+        <div
           key={index}
           className={`
           px-3 py-1 rounded-xl
@@ -60,8 +63,17 @@ const ChatBot = () => {
         `}
         >
           <ReactMarkdown>{message.content}</ReactMarkdown>
-        </p>
+        </div>
       ))}
+      {isBotTyping && (
+        <div className="self-start">
+          <div className="flex gap-1 px-3 py-3 bg-gray-200 rounded-xl">
+            <div className="w-2 h-2 rounded-full bg-gray-800 animate-pulse"></div>
+            <div className="w-2 h-2 rounded-full bg-gray-800 animate-pulse [animation-delay:0.2s]"></div>
+            <div className="w-2 h-2 rounded-full bg-gray-800 animate-pulse [animation-delay:0.4s]"></div>
+          </div>
+        </div>
+      )}
       <form
         onSubmit={handleSubmit(onSubmit)}
         onKeyDown={onKeyDown}
