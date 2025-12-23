@@ -2581,3 +2581,165 @@ export default ChatBot;
 ### Next Lesson
 
 The next step is **rendering chat messages in the UI** and building the conversation history display.
+
+
+*** 4.4- Rendering the Messages ***
+
+---
+
+## Rendering Chat Messages with React State and TypeScript
+
+### 1. Declaring State for Messages
+
+* To render chat messages, we declare a state variable using the `useState` hook.
+* The state should be an array of strings.
+* We initialize it as an empty array.
+
+-------------------code----------------------
+const [messages, setMessages] = useState<string[]>([]);
+-------------------code----------------------
+
+* `messages` holds all chat messages.
+* `setMessages` is used to update the list.
+
+---
+
+### 2. Adding Messages on Form Submission
+
+#### Adding the User Prompt
+
+* When the form is submitted, the first step is to add the user’s prompt to the messages array.
+* We do this by copying the existing messages and appending the new prompt.
+
+-------------------code----------------------
+setMessages([...messages, prompt]);
+-------------------code----------------------
+
+#### Adding the Server Response
+
+* Once we receive a response from the server, we add it to the messages list instead of logging it.
+* The server response is an object, not a string.
+* The actual message is stored in `data.message`.
+
+-------------------code----------------------
+setMessages([...messages, data.message]);
+-------------------code----------------------
+
+---
+
+### 3. Fixing TypeScript IntelliSense for Server Responses
+
+#### The Problem
+
+* When typing `data.message`, TypeScript does not provide IntelliSense.
+* This happens because TypeScript does not know the shape of the server response.
+
+#### The Solution: Define a Response Type
+
+* We define a new type that matches the server response.
+
+-------------------code----------------------
+type ChatResponse = {
+  message: string;
+};
+-------------------code----------------------
+
+* We then pass this type as a generic argument to `axios.post`.
+
+-------------------code----------------------
+const { data } = await axios.post<ChatResponse>(url, payload);
+-------------------code----------------------
+
+* Now TypeScript understands that `data` has a `message` property.
+* IntelliSense works correctly.
+
+---
+
+### 4. Structuring the Markup
+
+#### Wrapping the Form in a Container
+
+* The form is wrapped inside a `div` to act as a container.
+* This is done using the “Wrap with Abbreviation” command in the command palette.
+
+  * macOS: `Shift + Command + P`
+  * Windows: `Shift + Control + P`
+* Choose `Wrap with Abbreviation`, type `div`, and press Enter.
+
+#### Messages Container
+
+* Inside the main container, add another `div` to render messages.
+
+---
+
+### 5. Rendering Messages with `map`
+
+* We use `messages.map()` to render each message.
+* Each message is displayed inside a `<p>` tag.
+
+-------------------code----------------------x
+{messages.map((message, index) => (
+  <p key={index}>{message}</p>
+))}
+-------------------code----------------------
+
+#### Keys in React
+
+* Since we are rendering a list, each element must have a `key`.
+* We use the index as the key.
+* This is standard React practice and should already be familiar.
+
+---
+
+### 6. Bug: Messages Overwriting Each Other
+
+#### What Happens
+
+* After testing, the server response overwrites the user prompt.
+* Instead of seeing both messages, only the last one appears.
+
+#### Why This Happens
+
+* There are two calls to `setMessages`.
+* Both calls reference the same stale version of the `messages` array.
+* That version is the initial empty array.
+* As a result:
+
+  * The first update adds the prompt to an empty array.
+  * The second update also starts from an empty array and adds only the server response.
+
+---
+
+### 7. Fix: Using the Functional State Update Pattern
+
+* To ensure React uses the latest state, we use the functional form of `setMessages`.
+
+#### Updating with the Latest State
+
+-------------------code----------------------
+setMessages(prev => [...prev, prompt]);
+-------------------code----------------------
+
+-------------------code----------------------
+setMessages(prev => [...prev, data.message]);
+-------------------code----------------------
+
+* `prev` represents the most recent version of the state.
+* This guarantees that messages are appended correctly.
+
+---
+
+### 8. Final Result
+
+* After applying the fix:
+
+  * The user prompt is displayed.
+  * The server response appears below it.
+* The issue is resolved.
+* The application is now ready for styling the messages.
+
+---
+
+### 9. Next Step
+
+* With message rendering working correctly, the next lesson focuses on styling the chat messages.
