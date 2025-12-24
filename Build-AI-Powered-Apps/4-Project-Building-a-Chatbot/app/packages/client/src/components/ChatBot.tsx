@@ -57,11 +57,20 @@ const ChatBot = () => {
     }
   };
 
+  const onCopyMessage = (e: React.ClipboardEvent<HTMLParagraphElement>) => {
+    const selection = window.getSelection()?.toString().trim();
+    if (selection) {
+      e.preventDefault();
+      e.clipboardData.setData("text/plain", selection);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-3 mb-10">
       {messages.map((message, index) => (
         <div
           key={index}
+          onCopy={onCopyMessage}
           className={`
           px-3 py-1 rounded-xl
           ${
