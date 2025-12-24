@@ -1,6 +1,6 @@
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaArrowUp } from "react-icons/fa";
 import { Button } from "./ui/button";
@@ -20,12 +20,21 @@ type Message = {
 
 const ChatBot = () => {
   const [messages, setMessages] = useState<Message[]>([]);
+  const formRef = useRef<HTMLFormElement | null>(null);
   const [isBotTyping, setIsBotTyping] = useState(false);
   const conversationId = useRef<string>(crypto.randomUUID());
 
   const { register, handleSubmit, reset, formState } = useForm<FormData>({
     mode: "onChange",
   });
+
+  useEffect(() => {
+    if (formRef.current) {
+      formRef.current.scrollIntoView({
+        behavior: "smooth",
+      });
+    }
+  }, [messages]);
 
   const onSubmit = async ({ prompt }: FormData) => {
     setMessages((prev) => [...prev, { content: prompt, role: "user" }]);
@@ -77,6 +86,7 @@ const ChatBot = () => {
       <form
         onSubmit={handleSubmit(onSubmit)}
         onKeyDown={onKeyDown}
+        ref={formRef}
         className="flex flex-col gap-2 items-end border-2 p-4 rounded-3xl"
       >
         <textarea
