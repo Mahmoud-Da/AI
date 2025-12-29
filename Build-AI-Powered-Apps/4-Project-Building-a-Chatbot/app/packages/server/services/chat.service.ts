@@ -24,6 +24,7 @@ export const chatService = {
       previous_response_id:
         conversationRepository.getLastResponseId(conversationId),
     });
+    console.log(response);
 
     conversationRepository.setLastResponseId(conversationId, response.id);
     return {

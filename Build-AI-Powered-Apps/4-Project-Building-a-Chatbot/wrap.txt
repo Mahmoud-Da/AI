@@ -4161,3 +4161,375 @@ If you want, next I can:
 * Extract **ChatMessages**
 * Extract **ChatInput**
 * Or fully refactor `ChatBot` into a container component only
+
+
+*** 5.2- Extracting ChatMessages Component ***
+---
+
+## Lecture Notes: Extracting the Chat Messages Component
+
+### 1. Goal of This Refactor
+
+* The next component to extract is the **Chat Messages** component.
+* Responsibility:
+
+  * Render the list of chat messages.
+  * Encapsulate all message-related behavior.
+
+This further reduces the complexity of the main `ChatBot` component.
+
+---
+
+### 2. Creating the Chat Messages Component
+
+* Navigate to the `chat` directory.
+* Create a new file named:
+
+  * `ChatMessages.tsx`
+* Generate a React component inside this file.
+
+---
+
+### 3. Moving Message Rendering Logic
+
+* In `ChatBot.tsx`, locate the JSX responsible for rendering messages.
+* Select **only** the message-rendering logic.
+* Cut the code.
+* Paste it into the new `ChatMessages.tsx` component inside its container.
+
+---
+
+### 4. Fixing Missing Imports
+
+* After pasting the code, several imports will be missing.
+* Use the editor shortcut:
+
+  * Mac: `Command + .`
+  * Windows: `Control + .`
+* Automatically add missing imports such as:
+
+  * `ReactMarkdown`
+  * React hooks used in the component
+
+---
+
+### 5. Defining Props for the Component
+
+* The new component needs access to the list of messages.
+* Define a `Props` type or interface:
+
+  * Property: `messages`
+  * Type: `Message[]`
+
+---
+
+### 6. Relocating the Message Type
+
+* The `Message` type was originally defined in `ChatBot.tsx`.
+* Since this module is responsible for messages:
+
+  * Move the `Message` type definition to `ChatMessages.tsx`.
+* This makes the module self-contained and logically consistent.
+
+---
+
+### 7. Wiring Props into the Component
+
+* Annotate the `messages` prop with `Message[]`.
+* Destructure `messages` from props inside the component.
+* This resolves several type errors.
+
+---
+
+### 8. Moving Copy-to-Clipboard Logic
+
+* The `onCopyMessage` function is closely related to message behavior.
+* Steps:
+
+  * Locate `onCopyMessage` in `ChatBot.tsx`.
+  * Cut and paste it into `ChatMessages.tsx`.
+* This keeps message-related logic together.
+
+---
+
+### 9. Moving Auto-Scrolling Logic
+
+* Auto-scrolling depends on message rendering.
+* Move the following into `ChatMessages.tsx`:
+
+  * `lastMessageRef`
+  * `useEffect` that scrolls into view
+* Import required hooks:
+
+  * `useRef`
+  * `useEffect`
+
+Result:
+
+* The chat messages module now fully owns:
+
+  * Rendering
+  * Copying
+  * Auto-scrolling
+
+---
+
+### 10. Exporting the Message Type
+
+* `ChatBot.tsx` still needs the `Message` type.
+* Solution:
+
+  * Export `Message` from `ChatMessages.tsx`.
+  * Import it into `ChatBot.tsx`.
+* Important:
+
+  * Select the `Message` type from your own module,
+    not similarly named types from external libraries.
+
+---
+
+### 11. Using the Chat Messages Component
+
+* Replace message rendering logic in `ChatBot.tsx` with:
+
+  * `<ChatMessages messages={messages} />`
+* This resolves all remaining errors.
+
+---
+
+### 12. Testing and Fixing Layout Issues
+
+* After testing, a layout issue appears:
+
+  * Messages stretch across the full width.
+* Cause:
+
+  * `div` elements are block-level by default.
+
+---
+
+### 13. Fixing the Layout
+
+* Make the container a flex container.
+* Add classes:
+
+  * `flex`
+  * `flex-col`
+  * `gap-3`
+* This allows:
+
+  * `self-start` and `self-end` to work correctly
+  * Proper message sizing and alignment
+
+---
+
+### 14. Final Outcome
+
+* The layout issue is resolved.
+* The application works correctly.
+* The `ChatBot` component is now significantly simpler.
+* Message-related logic is fully isolated in one module.
+
+---
+
+### 15. Next Step
+
+* The next refactor will extract the **Chat Input** component.
+* Goal:
+
+  * Further simplify `ChatBot`
+  * Achieve clearer separation of responsibilities
+
+---
+
+### Key Takeaway
+
+By moving message rendering, copying, and auto-scrolling into a dedicated component, we achieve:
+
+* Better readability
+* Cleaner architecture
+* Easier maintenance
+* Clear ownership of related logic
+
+
+Here is the **actual working code**, not notes.
+
+
+1. `ChatMessages.tsx` (new extracted component)
+2. Updated `ChatBot.tsx` (after extraction)
+
+No explanations mixed in — code first.
+
+---
+
+## 1. `chat/ChatMessages.tsx`
+
+-------------------code----------------------
+import { useEffect, useRef } from "react";
+import ReactMarkdown from "react-markdown";
+
+export type Message = {
+  content: string;
+  role: "user" | "bot";
+};
+
+type ChatMessagesProps = {
+  messages: Message[];
+};
+
+const ChatMessages = ({ messages }: ChatMessagesProps) => {
+  const lastMessageRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const onCopyMessage = (e: React.ClipboardEvent<HTMLParagraphElement>) => {
+    const selection = window.getSelection()?.toString().trim();
+    if (selection) {
+      e.preventDefault();
+      e.clipboardData.setData("text/plain", selection);
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-3">
+      {messages.map((message, index) => (
+        <div
+          key={index}
+          ref={index === messages.length - 1 ? lastMessageRef : null}
+          onCopy={onCopyMessage}
+          className={`
+            px-3 py-1 rounded-xl max-w-[80%]
+            ${
+              message.role === "user"
+                ? "bg-blue-600 text-white self-end"
+                : "bg-gray-100 text-black self-start"
+            }
+          `}
+        >
+          <ReactMarkdown>{message.content}</ReactMarkdown>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default ChatMessages;
+-------------------code----------------------
+
+---
+
+## 2. Updated `ChatBot.tsx`
+
+-------------------code----------------------
+import axios from "axios";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { FaArrowUp } from "react-icons/fa";
+import { Button } from "./ui/button";
+
+import ChatMessages, { Message } from "./chat/ChatMessages";
+import TypingIndicator from "./chat/typing-indicator";
+
+type FormData = {
+  prompt: string;
+};
+
+type ChatResponse = {
+  message: string;
+};
+
+const ChatBot = () => {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isBotTyping, setIsBotTyping] = useState(false);
+  const [error, setError] = useState("");
+  const conversationId = crypto.randomUUID();
+
+  const { register, handleSubmit, reset, formState } = useForm<FormData>({
+    mode: "onChange",
+  });
+
+  const onSubmit = async ({ prompt }: FormData) => {
+    try {
+      setError("");
+      setMessages((prev) => [...prev, { content: prompt, role: "user" }]);
+      setIsBotTyping(true);
+      reset({ prompt: "" });
+
+      const { data } = await axios.post<ChatResponse>("/api/chat", {
+        prompt,
+        conversationId,
+      });
+
+      setMessages((prev) => [
+        ...prev,
+        { content: data.message, role: "bot" },
+      ]);
+    } catch {
+      setError("Something went wrong, please try again.");
+    } finally {
+      setIsBotTyping(false);
+    }
+  };
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(onSubmit)();
+    }
+  };
+
+  return (
+    <div className="flex flex-col h-full">
+      <div className="flex flex-col flex-1 gap-3 mb-10 overflow-y-auto">
+        <ChatMessages messages={messages} />
+        {isBotTyping && <TypingIndicator />}
+        {error && <p className="text-red-500">{error}</p>}
+      </div>
+
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        onKeyDown={onKeyDown}
+        className="flex flex-col gap-2 items-end border-2 p-4 rounded-3xl"
+      >
+        <textarea
+          className="w-full border-0 focus:outline-0 resize-none"
+          placeholder="Ask anything"
+          maxLength={1000}
+          autoFocus
+          {...register("prompt", {
+            required: true,
+            validate: (value) => value.trim().length > 0,
+          })}
+        />
+
+        <Button
+          disabled={!formState.isValid}
+          className="rounded-full w-9 h-9 flex items-center justify-center border"
+        >
+          <FaArrowUp />
+        </Button>
+      </form>
+    </div>
+  );
+};
+
+export default ChatBot;
+-------------------code----------------------
+
+---
+
+## What we achieved (factually)
+
+* `ChatBot` is now a **container only**
+* `ChatMessages` owns:
+
+  * Message rendering
+  * Copy logic
+  * Auto-scroll
+* `TypingIndicator` is fully isolated
+* Message layout bug fixed via `flex flex-col`
+* Clean separation of concerns
+
+
