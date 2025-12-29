@@ -2957,3 +2957,150 @@ mb-10
 
 * Styling for this lesson is complete.
 * The next lesson builds on this improved UI and continues enhancing the chat experience.
+
+*** 4.6- Rendering Markdown Text ***
+
+---
+
+## Rendering Markdown in Bot Responses
+
+### 1. Problem Overview
+
+* Bot messages are currently rendered as plain text.
+* Some responses include Markdown formatting such as:
+
+  * Bold text (`**text**`)
+  * Code blocks
+  * Lists
+  * Italic text
+* When rendered as plain text, Markdown syntax appears literally instead of being formatted.
+
+---
+
+### 2. Goal of This Lesson
+
+* Properly render bot responses that contain Markdown.
+* Ensure formatted text appears as intended in the UI.
+
+---
+
+### 3. Installing a Markdown Renderer
+
+* We use a third-party library to render Markdown.
+* From the terminal, inside the `client` directory, install the package:
+
+-------------------code----------------------
+bun add react-markdown
+-------------------code----------------------
+
+---
+
+### 4. Importing the Library
+
+* In the component file, import `react-markdown`.
+* Since this is third-party code, it is placed at the top of the file.
+
+-------------------code----------------------
+import ReactMarkdown from 'react-markdown';
+-------------------code----------------------
+
+---
+
+### 5. Rendering Messages with Markdown
+
+* Locate the section where messages are rendered.
+* Wrap the message content inside the `ReactMarkdown` component.
+
+#### Before
+
+-------------------code----------------------
+<p>{message.content}</p>
+-------------------code----------------------
+
+#### After
+
+-------------------code----------------------
+<ReactMarkdown>{message.content}</ReactMarkdown>
+-------------------code----------------------
+
+* This allows Markdown syntax in bot responses to be parsed and rendered correctly.
+
+---
+
+### 6. Testing Markdown Rendering
+
+* In the browser, send a prompt such as:
+
+  * “What are three benefits of exercising?”
+* The response now displays:
+
+  * Bold text
+  * Proper formatting
+* Markdown rendering is working as expected.
+
+---
+
+### 7. Issue: Response Cut Off Mid-Sentence
+
+* The bot response appears incomplete.
+* This happens due to a limit on the maximum output tokens.
+
+---
+
+### 8. Identifying Where to Fix the Token Limit
+
+* Token limits are part of application logic.
+* The correct place to modify this is in the chat service.
+* This is where the OpenAI API call is made.
+
+---
+
+### 9. Increasing the Maximum Output Tokens
+
+* Previously, the maximum output tokens were set to `100`.
+* Increase this value to `200`.
+
+-------------------code----------------------
+maxOutputTokens: 200
+-------------------code----------------------
+
+* After updating, restart the request and test again.
+
+---
+
+### 10. Verifying the Fix
+
+* Repeat the same question:
+
+  * “What are three benefits of exercising?”
+* The response is now complete and fully rendered.
+
+---
+
+### 11. Notes on Token Limits
+
+* A value of `200` tokens may still be insufficient for longer or more complex responses.
+* There is no universal optimal value.
+* The ideal token limit depends on:
+
+  * The chatbot’s purpose
+  * Expected response length
+
+---
+
+### 12. Future Improvement
+
+* Instead of relying only on higher token limits:
+
+  * Improve the prompt design
+  * Instruct the model to return complete responses
+* This ensures better output consistency regardless of token limits.
+
+---
+
+### 13. Summary
+
+* Markdown rendering was added using `react-markdown`.
+* Bot responses now display formatted text correctly.
+* Token truncation was fixed by increasing the output limit.
+* Future lessons will focus on improving prompt quality to guarantee complete responses.
