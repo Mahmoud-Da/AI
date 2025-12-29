@@ -3923,3 +3923,241 @@ Proposed breakdown:
 * Ensure each component has a clear, single responsibility.
 
 ---
+
+*** 5.1- Extracting TypingIndicator Component ***
+
+---
+
+## Lecture Notes: Extracting the Typing Indicator Component
+
+### 1. Choosing the First Component to Extract
+
+* The **typing indicator** is selected as the first component to extract.
+* Reasons:
+
+  * It is simple.
+  * It is isolated.
+  * It has no direct dependency on the rest of the chatbot logic.
+
+This makes it a good starting point for refactoring.
+
+---
+
+### 2. Organizing the Project Structure
+
+* A new directory named **`chat`** is created inside the `components` directory.
+* Purpose:
+
+  * Group all chat-related components in one place.
+* Steps:
+
+  * Move the existing `ChatBot` component into the `chat` directory.
+  * Create a new file: `typing-indicator.tsx`.
+
+---
+
+### 3. Creating the Typing Indicator Component
+
+* A React component is generated using the `rafce` snippet.
+* Multi-cursor editing is canceled to avoid accidental edits.
+* The typing indicator markup is:
+
+  * Cut from `ChatBot.tsx`
+  * Pasted into `typing-indicator.tsx`
+* The new `TypingIndicator` component is then imported and rendered inside `ChatBot`.
+
+Result:
+
+* The main chatbot component becomes cleaner and easier to read.
+
+---
+
+### 4. Identifying Code Duplication
+
+* The typing indicator contains **three nearly identical divs** representing animated dots.
+* Problem:
+
+  * Repeated class names and markup.
+  * Difficult to maintain if changes are needed later.
+
+This duplication violates clean code principles.
+
+---
+
+### 5. Creating a Reusable Internal Component
+
+* A small internal component called `Dot` is created.
+* Characteristics:
+
+  * Returns a single dot element.
+  * Is **not exported**.
+  * Used only inside `typing-indicator.tsx`.
+* This keeps implementation details private.
+
+---
+
+### 6. Adding Props for Dynamic Styling
+
+* A `DotProps` type is defined.
+* It includes:
+
+  * `className?: string`
+* Purpose:
+
+  * Allow dynamic insertion of animation delay classes.
+
+Implementation details:
+
+* The `className` prop is destructured in the component.
+* Static class strings are converted into template literals.
+* This enables clean and flexible class composition.
+
+---
+
+### 7. Removing Duplication
+
+* The original repeated divs are replaced with `Dot` components.
+* Animation delays are passed as props:
+
+  * First dot: no delay
+  * Second dot: `0.2s`
+  * Third dot: `0.4s`
+* The old duplicated lines are removed entirely.
+
+Benefits:
+
+* One place to change dot appearance.
+* One place to change typing indicator structure.
+* No need to search through the chatbot logic.
+
+---
+
+### 8. Benefits of Modularization
+
+* Improved readability.
+* Reduced cognitive load.
+* Easier maintenance.
+* Better scalability.
+* Clear separation of responsibilities.
+
+If changes are needed:
+
+* Dot appearance → modify `Dot`
+* Typing indicator layout → modify `TypingIndicator`
+* Chat logic → modify `ChatBot`
+
+---
+
+### 9. Verifying Application Behavior
+
+* A test message is sent after refactoring.
+* The typing indicator works as expected.
+* No regressions are introduced.
+
+---
+
+### 10. Next Refactoring Step
+
+* The next lesson will focus on extracting the **Chat Messages** component.
+* Goal:
+
+  * Further simplify `ChatBot.tsx`
+  * Isolate rendering logic from business logic
+
+---
+
+### 11. Current Role of `ChatBot.tsx`
+
+At this stage, `ChatBot.tsx` still handles:
+
+* Message state management
+* API communication
+* Scroll behavior
+* Form handling
+* Error handling
+* Composition of child components
+
+These responsibilities will be reduced further in upcoming refactors.
+
+---
+
+### Key Takeaway
+
+Modularization is not just about cleaner files; it enables:
+
+* Focused reasoning
+* Safer changes
+* Long-term maintainability
+
+This lesson demonstrates how even a small refactor can significantly improve code quality.
+
+
+Below are **two files**:
+
+1. `typing-indicator.tsx` (new extracted component)
+2. Updated `ChatBot.tsx` (using the new component)
+
+---
+
+## 1. `typing-indicator.tsx`
+
+-------------------code----------------------
+import React from "react";
+
+type DotProps = {
+  className?: string;
+};
+
+const Dot = ({ className }: DotProps) => {
+  return (
+    <div
+      className={`w-2 h-2 rounded-full bg-gray-800 animate-pulse ${className ?? ""}`}
+    />
+  );
+};
+
+const TypingIndicator = () => {
+  return (
+    <div className="self-start">
+      <div className="flex gap-1 px-3 py-3 bg-gray-200 rounded-xl">
+        <Dot />
+        <Dot className="[animation-delay:0.2s]" />
+        <Dot className="[animation-delay:0.4s]" />
+      </div>
+    </div>
+  );
+};
+
+export default TypingIndicator;
+-------------------code----------------------
+
+Key points:
+
+* `Dot` is **internal** (not exported)
+* Animation delay is passed via `className`
+* No duplication of dot markup
+
+---
+
+## 2. Updated `ChatBot.tsx`
+
+Only relevant changes are shown fully for clarity.
+
+-------------------code----------------------
+{isBotTyping && <TypingIndicator />}
+-------------------code----------------------
+
+---
+
+## What Changed
+
+* Typing indicator markup **removed** from `ChatBot`
+* Replaced with `<TypingIndicator />`
+* Dot duplication eliminated
+* Clear separation of concerns achieved
+
+If you want, next I can:
+
+* Extract **ChatMessages**
+* Extract **ChatInput**
+* Or fully refactor `ChatBot` into a container component only
