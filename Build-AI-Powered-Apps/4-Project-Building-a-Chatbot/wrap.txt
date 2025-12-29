@@ -3844,3 +3844,82 @@ const onSubmit = async ({ prompt }: FormData) => {
 * Keep the typing indicator state consistent regardless of success or failure.
 
 ---
+
+*** 5- Refactorings ***
+---
+
+## Lecture Notes: Refactoring and Modularizing a Chatbot Component
+
+### 1. Current Situation
+
+* All chatbot logic is implemented in a single file.
+* While functional, the file has become cluttered and difficult to manage.
+* The component currently includes:
+
+  * State management
+  * Scrolling behavior
+  * Form handling
+  * API communication logic
+  * Message rendering
+  * Typing indicator logic
+
+### 2. Core Problem: Lack of Separation of Concerns
+
+* The issue is not just the number of lines of code.
+* Multiple responsibilities are mixed into one component.
+* Consequences of this approach:
+
+  * Harder to read and understand
+  * More difficult to debug
+  * Challenging to test individual parts in isolation
+  * Poor reusability as the application grows
+
+### 3. Goal: Refactoring Through Modularization
+
+* Refactoring aims to improve structure without changing behavior.
+* Modularization means:
+
+  * Breaking a large component into smaller components
+  * Assigning each component a single, focused responsibility
+
+### 4. Identifying Logical Modules
+
+Key question posed:
+
+* What are the logical chunks of responsibility in the current file?
+
+Proposed breakdown:
+
+* **Chat Input Component**
+
+  * Responsible only for rendering the input field
+  * Handles prompt submission
+* **Chat Messages Component**
+
+  * Displays the list of messages
+  * Keeps message rendering logic clean and isolated
+* **Typing Indicator Component**
+
+  * Manages and displays typing feedback
+  * Keeps related logic separate from message rendering
+* **Main Chatbot Component**
+
+  * Composes all subcomponents together
+  * Handles high-level coordination
+
+### 5. Expected Outcome
+
+* The main chatbot component becomes:
+
+  * Simpler
+  * Easier to read
+  * Easier to maintain
+* Improved maintainability and scalability as the application grows
+
+### 6. Next Steps
+
+* Begin refactoring by extracting components one by one.
+* Gradually move logic into their respective modules.
+* Ensure each component has a clear, single responsibility.
+
+---
