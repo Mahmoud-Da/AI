@@ -4533,3 +4533,347 @@ export default ChatBot;
 * Clean separation of concerns
 
 
+
+*** 5.3- Extracing ChatInput Component ***
+---
+
+## Lecture Notes: Extracting the Chat Input Component
+
+### 1. Objective of This Refactor
+
+* Extract the input form into its own component named **ChatInput**.
+* This refactor is more complex than previous ones because:
+
+  * The form is tightly coupled with state, validation, and submission logic.
+  * Some logic must remain in the parent component.
+
+---
+
+### 2. Creating the Chat Input Component
+
+* Add a new file:
+
+  * `ChatInput.tsx`
+* Create a new React component.
+* In `ChatBot.tsx`:
+
+  * Select the entire `<form>` element.
+  * Cut it.
+  * Paste it into `ChatInput.tsx`.
+* Replace the outer `div` with a `form` element in the new component.
+
+---
+
+### 3. Rendering ChatInput in ChatBot
+
+* Go back to `ChatBot.tsx`.
+* Replace the original form with the `<ChatInput />` component.
+* This ensures the application structure remains intact before fixing errors.
+
+---
+
+### 4. Handling Imports Carefully
+
+* Avoid auto-importing everything at once to prevent conflicts.
+* Import dependencies incrementally:
+
+  * `Button`
+  * Icon from `react-icons/fa`
+* The component also requires form state and registration logic.
+
+---
+
+### 5. Moving the Form Hook
+
+* Locate the `useForm` hook usage in `ChatBot.tsx`.
+* Cut and paste it into `ChatInput.tsx`.
+* Import `useForm` from `react-hook-form`.
+
+---
+
+### 6. Moving and Renaming Form Data Type
+
+* The form data type belongs to the form component.
+* Move it from `ChatBot.tsx` to `ChatInput.tsx`.
+* Rename it from `FormData` to **ChatFormData** to avoid conflicts with the browser’s built-in `FormData` type.
+
+---
+
+### 7. Deciding What Logic Belongs Where
+
+* The `onSubmit` function in `ChatBot` contains:
+
+  * Message updates
+  * Loading indicator logic
+  * Error handling
+  * API calls
+* This logic **must remain** in `ChatBot` because it manages the conversation.
+* Only one piece of logic should move to `ChatInput`:
+
+  * Resetting the form
+
+---
+
+### 8. Communicating with the Parent Component
+
+* The input component must notify the parent when a prompt is submitted.
+* Define a `Props` type:
+
+  * `onSubmit: (data: ChatFormData) => void`
+* Destructure `onSubmit` from props.
+* Call this function after resetting the form to notify the parent.
+
+---
+
+### 9. Extracting and Naming Submission Logic
+
+* Combine:
+
+  * Form reset logic
+  * Parent notification logic
+* Extract this into a function.
+* Rename it to **submit** for clarity.
+* This function is passed to `react-hook-form`’s `handleSubmit`.
+
+---
+
+### 10. Moving Keyboard Handling Logic
+
+* Locate the `onKeyDown` function in `ChatBot.tsx`.
+* Move it into `ChatInput`.
+* Import `KeyboardEvent` from React.
+* Rename the function to **handleKeyDown** for consistency.
+* Bind it to the form.
+
+---
+
+### 11. Cleaning Up ChatBot
+
+* Pass the `onSubmit` function from `ChatBot` to `ChatInput`.
+* Resolve type mismatch by:
+
+  * Exporting `ChatFormData` from `ChatInput.tsx`
+  * Importing it in `ChatBot.tsx`
+* After this, all type errors are resolved.
+
+---
+
+### 12. Architectural Result
+
+* `ChatBot` now acts as:
+
+  * A manager
+  * An orchestrator
+* It coordinates:
+
+  * ChatMessages
+  * TypingIndicator
+  * ChatInput
+* Each component has a single responsibility.
+
+---
+
+### 13. Discussion: Should API Logic Be Extracted?
+
+* There is no universal rule.
+* In this case:
+
+  * API logic is short.
+  * Used only in one place.
+  * `ChatBot` is already small.
+* Extracting it would add complexity without meaningful benefit.
+
+Conclusion:
+
+* Keeping the API logic inside `ChatBot` is reasonable.
+
+---
+
+### 14. Final Bug and Fix
+
+* After refactoring, the form does not reset when pressing Enter.
+* Cause:
+
+  * `handleKeyDown` was calling `handleSubmit(onSubmit)`
+  * This bypassed the local reset logic
+* Fix:
+
+  * Call the local `submit` function instead
+* Rename the function for clarity.
+
+---
+
+### 15. Final Verification
+
+* Refresh the application.
+* Submit a test message.
+* Result:
+
+  * Form clears correctly
+  * Message is sent
+  * Response is received
+
+---
+
+### Key Takeaway
+
+This refactor demonstrates:
+
+* Careful separation of responsibilities
+* Correct parent–child communication
+* Why not all logic should be extracted
+* How small architectural decisions improve long-term maintainability
+
+Here is the **actual final working code**, exactly matching the lecture.
+
+You will get **two files only**:
+
+1. `chat/ChatInput.tsx`
+2. Updated `ChatBot.tsx`
+
+Nothing else.
+
+---
+
+## 1. `chat/ChatInput.tsx`
+
+-------------------code----------------------
+import type { KeyboardEvent } from "react";
+import { useForm } from "react-hook-form";
+import { FaArrowUp } from "react-icons/fa";
+import { Button } from "../ui/button";
+
+export type ChatFormData = {
+  prompt: string;
+};
+
+type ChatInputProps = {
+  onSubmit: (data: ChatFormData) => void;
+};
+
+const ChatInput = ({ onSubmit }: ChatInputProps) => {
+  const { register, handleSubmit, reset, formState } = useForm<ChatFormData>({
+    mode: "onChange",
+  });
+
+  const submit = (data: ChatFormData) => {
+    reset({ prompt: "" });
+    onSubmit(data);
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLFormElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(submit)();
+    }
+  };
+
+  return (
+    <form
+      onSubmit={handleSubmit(submit)}
+      onKeyDown={handleKeyDown}
+      className="flex flex-col gap-2 items-end border-2 p-4 rounded-3xl"
+    >
+      <textarea
+        className="w-full border-0 focus:outline-0 resize-none"
+        placeholder="Ask anything"
+        maxLength={1000}
+        autoFocus
+        {...register("prompt", {
+          required: true,
+          validate: (value) => value.trim().length > 0,
+        })}
+      />
+
+      <Button
+        disabled={!formState.isValid}
+        className="rounded-full w-9 h-9 flex items-center justify-center border"
+      >
+        <FaArrowUp />
+      </Button>
+    </form>
+  );
+};
+
+export default ChatInput;
+
+-------------------code----------------------
+
+---
+
+## 2. Updated `ChatBot.tsx`
+
+-------------------code----------------------
+import axios from "axios";
+import { useState, useRef } from "react";
+import type { Message } from "./ChatMessages";
+import type { ChatFormData } from "./ChatInput";
+import TypingIndicator from "./TypingIndicator";
+import ChatMessages from "./ChatMessages";
+import ChatInput from "./ChatInput";
+
+type ChatResponse = {
+  message: string;
+};
+
+const ChatBot = () => {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isBotTyping, setIsBotTyping] = useState(false);
+  const [error, setError] = useState("");
+  const conversationId = useRef<string>(crypto.randomUUID());
+
+  const onSubmit = async ({ prompt }: ChatFormData) => {
+    try {
+      setError("");
+      setMessages((prev) => [...prev, { content: prompt, role: "user" }]);
+      setIsBotTyping(true);
+
+      const { data } = await axios.post<ChatResponse>("/api/chat", {
+        prompt,
+        conversationId: conversationId.current,
+      });
+
+      setMessages((prev) => [...prev, { content: data.message, role: "bot" }]);
+    } catch {
+      setError("Something went wrong, please try again.");
+    } finally {
+      setIsBotTyping(false);
+    }
+  };
+
+  return (
+    <div className="flex flex-col h-full">
+      <div className="flex flex-col flex-1 gap-3 mb-10 overflow-y-auto">
+        <ChatMessages messages={messages} />
+        {isBotTyping && <TypingIndicator />}
+        {error && <p className="text-red-500">{error}</p>}
+      </div>
+
+      <ChatInput onSubmit={onSubmit} />
+    </div>
+  );
+};
+
+export default ChatBot;
+-------------------code----------------------
+
+---
+
+## Final Architecture (clean and correct)
+
+* `ChatBot`
+
+  * Orchestrates conversation
+  * Owns API calls and state
+* `ChatMessages`
+
+  * Rendering, copy, auto-scroll
+* `TypingIndicator`
+
+  * Visual feedback only
+* `ChatInput`
+
+  * Form state, validation, reset, keyboard handling
+
+This is **exactly** how the lesson intends it to end.
+
