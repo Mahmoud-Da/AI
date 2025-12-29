@@ -1167,4 +1167,275 @@ export const conversationRepository = {
 
 ---
 
+*** 3.2- Extracting Chat Service ***
+# Introducing the Service Layer
 
+## Purpose of the Service Layer
+
+* The service layer contains the **application logic**.
+* Controllers act as **gateways**:
+
+  * Receive HTTP requests
+  * Validate input
+  * Delegate work to services
+* Services:
+
+  * Must not know anything about HTTP requests or responses
+  * Should only focus on business and application logic
+
+In the Chat API:
+
+* Code that works directly with `request` and `response` belongs to the **controller**.
+* All logic between request validation and response formatting belongs to the **service**.
+
+---
+
+## Creating the Chat Service
+
+### Folder Structure
+
+* In the `server` directory, create a new folder:
+
+  -------------------code----------------------
+  server/services
+  -------------------code----------------------
+* Inside it, create a new file:
+
+  -------------------code----------------------
+  chat.service.ts
+  -------------------code----------------------
+
+---
+
+## Initial Chat Service Implementation
+
+### Public Interface
+
+The service exports an object called `chatService` with a single method:
+
+-------------------code----------------------
+export const chatService = {
+  sendMessage(prompt: string, conversationId: string) {
+    // implementation
+  }
+};
+-------------------code----------------------
+
+Parameters:
+
+* `prompt: string`
+* `conversationId: string`
+
+This method represents the **public interface** of the service.
+
+---
+
+## Moving Logic from the Controller to the Service
+
+From the `index` module:
+
+* Move the following into `chat.service.ts`:
+
+  * The OpenAI call that generates a response
+  * The logic that updates the `lastResponseId` in the conversation repository
+
+### Import Dependencies
+
+In `chat.service.ts`:
+
+* Import the conversation repository
+* Import OpenAI
+
+Because `await` is used, mark the method as `async`:
+
+-------------------code----------------------
+async sendMessage(prompt: string, conversationId: string) {
+  // async logic
+}
+-------------------code----------------------
+
+---
+
+## Encapsulating the LLM Client
+
+### Moving the OpenAI Client
+
+* Move the OpenAI client creation from `index.ts` into `chat.service.ts`.
+* Use the editor shortcut:
+
+  * macOS: `Cmd + P`
+  * Windows: `Ctrl + P`
+  * Type `@` to jump to a symbol (variable, function, constant)
+
+### Important Design Decision
+
+* The OpenAI client is an **implementation detail**.
+* It must NOT be exported.
+* This service is the **only module** that knows:
+
+  * Which LLM is being used
+  * How the LLM is configured
+
+If the application switches from OpenAI to another LLM (e.g., Gemini), only this module should change.
+
+---
+
+## Simplifying the Controller (Index Module)
+
+After refactoring:
+
+* Remove imports for:
+
+  * OpenAI
+  * Conversation repository
+
+The index module now:
+
+* Extracts `prompt` and `conversationId` from the request body
+* Calls the service:
+
+-------------------code----------------------
+const response = await chatService.sendMessage(prompt, conversationId);
+-------------------code----------------------
+
+---
+
+## Fixing the Missing Return Value
+
+Initially, the service does not return anything.
+
+Inside `sendMessage`:
+
+1. Generate the LLM response
+2. Update the `lastResponseId` in the conversation repository
+3. Return the response
+
+---
+
+## Identifying a Leaky Abstraction
+
+### The Problem
+
+* The service returns the raw OpenAI response object
+* The controller accesses `response.output_text`
+
+This is problematic because:
+
+* `output_text` is **OpenAI-specific**
+* Another LLM may return data in a different shape
+
+Even though the service hides OpenAI usage, OpenAI-specific details are leaking outside.
+
+This is known as a **leaky abstraction**.
+
+---
+
+## Introducing a Platform-Agnostic Response Type
+
+### Defining a ChatResponse Interface
+
+-------------------code----------------------
+interface ChatResponse {
+  id: string;
+  message: string;
+}
+-------------------code----------------------
+
+This represents a generic response from any LLM.
+
+### Updating the Method Signature
+
+-------------------code----------------------
+async sendMessage(
+  prompt: string,
+  conversationId: string
+): Promise<ChatResponse> {
+  // implementation
+}
+-------------------code----------------------
+
+---
+
+## Mapping OpenAI Response to ChatResponse
+
+The OpenAI response is converted into a platform-agnostic object:
+
+-------------------code----------------------
+return {
+  id: response.id,
+  message: response.output_text
+};
+-------------------code----------------------
+
+Benefits:
+
+* OpenAI-specific fields are contained in one place
+* Switching LLM providers requires changes only in this service
+
+The service now fully **encapsulates** LLM details.
+
+---
+
+## Updating the Controller to Use the New Interface
+
+In the index module:
+
+* Replace `output_text` with `message`
+
+-------------------code----------------------
+res.json({ message: response.message });
+-------------------code----------------------
+
+No LLM-specific logic remains in the controller.
+
+---
+
+## Summary
+
+* Controllers handle HTTP concerns only
+* Services contain application logic
+* LLM usage is fully encapsulated in the Chat Service
+* Platform-agnostic interfaces prevent leaky abstractions
+* The codebase is cleaner, leaner, and easier to maintain
+-------------------code----------------------
+import { conversationRepository } from "../repositories/conversation.repository";
+import OpenAI from "openai";
+
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+interface ChatResponse {
+  id: string;
+  message: string;
+}
+
+export const chatService = {
+  async sendMessage(
+    prompt: string,
+    conversationId: string
+  ): Promise<ChatResponse> {
+    const response = await client.responses.create({
+      model: "gpt-5-mini",
+      input: prompt,
+      // NOTE: this is not support with GPT 5
+      // temperature: 0.2,
+      max_output_tokens: 100,
+      previous_response_id:
+        conversationRepository.getLastResponseId(conversationId),
+    });
+
+    conversationRepository.setLastResponseId(conversationId, response.id);
+    return {
+      id: response.id,
+      message: response.output_text,
+    };
+  },
+};
+-------------------code----------------------
+
+---
+
+## Next Lesson
+
+* Introducing the Controller layer in detail
