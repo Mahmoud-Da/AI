@@ -1884,3 +1884,34 @@ Each module has a single responsibility.
 
 * Backend implementation is complete
 * Upcoming lessons will focus on building the frontend
+
+
+*** 4- Building the Frontend ***
+
+### Development Approach
+
+The frontend will be built incrementally, following a structured and deliberate process:
+
+* Implement core functionality step by step
+* Verify that each part works correctly before moving forward
+* Ensure the chatbot behaves as expected at every stage
+
+---
+
+### Refactoring and Code Organization
+
+Once the chatbot is fully functional:
+
+* The code will be reviewed and refactored
+* Responsibilities will be separated into clean, modular components
+* Overall readability and maintainability will be improved
+
+---
+
+### Next Steps
+
+* Begin implementing the chatbot UI and logic
+* Gradually connect the frontend to the backend
+* Prepare the codebase for future scaling and enhancements
+
+This approach ensures a stable foundation while maintaining clean and organized frontend code.
