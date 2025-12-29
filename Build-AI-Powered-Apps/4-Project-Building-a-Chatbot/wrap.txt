@@ -2159,3 +2159,222 @@ export default ChatBot;
 * The next lesson will focus on **submitting the form and handling user input**.
 
 ---
+
+*** 4.2- Handling Form Submission ***
+## Lesson: Handling Form Submission with React Hook Form
+
+### Objective
+
+Make the chatbot form functional by handling form submission, validation, and user interactions using **React Hook Form**.
+
+---
+
+## Installing React Hook Form
+
+1. Open a terminal in the **client** directory.
+2. Install the library:
+
+-------------------code----------------------
+bun add react-hook-form
+-------------------code----------------------
+
+---
+
+## Setting Up the Form
+
+### Importing the Hook
+
+In the chatbot component, import the `useForm` hook from React Hook Form.
+
+---
+
+## Defining Form Data
+
+Create a type to represent the structure of the form:
+
+* The form contains a single field:
+
+  * `prompt`: string
+
+This type will be used to strongly type the form data throughout the component.
+
+---
+
+## Initializing `useForm`
+
+Call `useForm` and provide the form data type as a generic argument.
+
+From the returned object, destructure the following at minimum:
+
+* `register`
+* `handleSubmit`
+
+Later, additional properties will be added as needed.
+
+---
+
+## Registering the Text Area
+
+* Use the `register` function to register the `<textarea>` input.
+* Pass `"prompt"` as the field name.
+
+  * This name is type-safe and auto-suggested based on the form data type.
+* Add validation options:
+
+  * Mark the field as required.
+
+### Spreading Input Props
+
+The `register` function returns an object containing multiple input props (e.g., `onChange`, `onBlur`, `maxLength`).
+
+* Spread this object directly into the `<textarea>` to apply all required behavior.
+
+---
+
+## Converting the Container to a Form
+
+* Replace the wrapping `<div>` with a `<form>`.
+* Use multi-cursor editing:
+
+  * Select the tag
+  * Use **Add Next Occurrence** (`Cmd + D` on macOS, `Ctrl + D` on Windows)
+  * Replace both opening and closing tags at once
+
+---
+
+## Handling Form Submission
+
+### `onSubmit` Prop
+
+* Add the `onSubmit` prop to the `<form>`.
+* Pass `handleSubmit` to it.
+
+### Submit Callback
+
+* Provide an arrow function that:
+
+  * Receives validated form data
+  * Has the correct inferred type
+* Initially, log the data to the console to verify behavior.
+
+### Testing
+
+* Submit the form from the browser.
+* Confirm that the submitted object contains the `prompt` field.
+
+---
+
+## Resetting the Form After Submission
+
+### Adding `reset`
+
+* Destructure `reset` from `useForm`.
+
+### Creating a Dedicated Submit Handler
+
+* Define a function named `onSubmit`:
+
+  * Accepts form data
+  * Logs the data
+  * Calls `reset()` to clear the form
+
+Replace the inline arrow function with a reference to this handler.
+
+---
+
+## Submitting with the Enter Key
+
+### Desired Behavior
+
+* Pressing **Enter** submits the form.
+* **Shift + Enter** inserts a new line.
+
+### Handling `onKeyDown`
+
+* Attach an `onKeyDown` handler to the textarea.
+* Check:
+
+  * `e.key === "Enter"`
+  * `e.shiftKey === false`
+
+If both conditions are met:
+
+* Prevent the default behavior
+* Trigger form submission
+
+---
+
+## Understanding `handleSubmit`
+
+* `handleSubmit(onSubmit)` returns a function.
+* When calling it manually (e.g., from `onKeyDown`), you must invoke it:
+
+  * `handleSubmit(onSubmit)()`
+
+This differs from passing a function reference in JSX.
+
+---
+
+## Extracting the Keydown Logic
+
+### Creating a Separate Function
+
+* Move the keydown logic into a dedicated function:
+
+  * `onKeyDown`
+
+### Typing the Event
+
+* Explicitly annotate the event parameter:
+
+  * `KeyboardEvent<HTMLFormElement>`
+
+This is required because TypeScript cannot infer the type when the function is declared separately.
+
+---
+
+## Enabling and Disabling the Submit Button
+
+### Using `formState`
+
+* Destructure `formState` from `useForm`.
+* Use `formState.isValid` to control the button state.
+
+### Button Logic
+
+* Disable the button when the form is not valid.
+* Keep behavioral props before styling props for consistency.
+
+---
+
+## Improving Validation Logic
+
+### Problem
+
+* A string containing only spaces passes the `required` check.
+
+### Solution
+
+* Add a custom `validate` function to the `register` options:
+
+  * Trim the input
+  * Ensure the length is greater than zero
+
+### Result
+
+* Whitespace-only input is rejected.
+* The form becomes valid only when meaningful input is entered.
+
+---
+
+## Lesson Wrap-Up
+
+* Form submission is fully handled.
+* The input resets after submission.
+* Enter and Shift + Enter behave as expected.
+* Validation is robust and user-friendly.
+
+### Next Step
+
+The form data is now ready to be sent to the backend.
+The next lesson will focus on **posting the prompt to the server**.
