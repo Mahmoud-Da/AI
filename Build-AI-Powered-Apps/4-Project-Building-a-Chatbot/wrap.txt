@@ -3731,3 +3731,116 @@ const lastMessageRef = useRef<HTMLDivElement | null>(null);
 
 ---
 
+*** 4.11- Handling Errors ***
+---
+
+## Adding Basic Error Handling to Chatbot
+
+### 1. Problem Description
+
+* Currently, if a network error or server crash occurs:
+
+  * The typing indicator stays visible indefinitely.
+  * The user receives no feedback about the failure.
+* Goal: inform the user when something goes wrong and stop the typing indicator.
+
+---
+
+### 2. Add State for Error Tracking
+
+-------------------code----------------------
+const [error, setError] = useState<string>("");
+-------------------code----------------------
+
+* `error` stores the error message.
+* `setError` updates the error state.
+
+---
+
+### 3. Wrap Submit Handler in Try-Catch
+
+* Wrap the entire `onSubmit` function or at least the server call in a `try-catch` block.
+* This allows handling of any runtime or network errors gracefully.
+
+-------------------code----------------------
+const onSubmit = async ({ prompt }: FormData) => {
+  try {
+    // Reset previous error
+    setError("");
+
+    // Add user message
+    setMessages((prev) => [...prev, { content: prompt, role: "user" }]);
+    setIsBotTyping(true);
+    reset({ prompt: "" });
+
+    // Call API
+    const { data } = await axios.post<ChatResponse>("/api/chat", {
+      prompt,
+      conversationId: conversationId.current,
+    });
+
+    // Add bot response
+    setMessages((prev) => [...prev, { content: data.message, role: "bot" }]);
+  } catch (err) {
+    console.error(err); // Log for debugging (or send to a logging service like Sentry)
+    setError("Something went wrong, please try again.");
+  } finally {
+    // Always stop typing indicator
+    setIsBotTyping(false);
+  }
+};
+-------------------code----------------------
+
+**Notes:**
+
+* Reset `error` at the start of the `try` block so old errors are cleared.
+* `finally` ensures `isBotTyping` is set to `false` even if an error occurs.
+
+---
+
+### 4. Render the Error in the UI
+
+* Display the error message below the typing indicator.
+
+-------------------code----------------------
+{isBotTyping && (
+  <div className="self-start">
+    <div className="flex gap-1 px-3 py-3 bg-gray-200 rounded-xl">
+      <div className="w-2 h-2 rounded-full bg-gray-800 animate-pulse"></div>
+      <div className="w-2 h-2 rounded-full bg-gray-800 animate-pulse [animation-delay:0.2s]"></div>
+      <div className="w-2 h-2 rounded-full bg-gray-800 animate-pulse [animation-delay:0.4s]"></div>
+    </div>
+  </div>
+)}
+
+{error && <p className="text-red-500">{error}</p>}
+-------------------code----------------------
+
+* Conditional rendering shows the error only if `error` is not empty.
+* Red text highlights the error for visibility.
+
+---
+
+### 5. Testing Steps
+
+1. **Simulate a failure** by modifying the API endpoint (e.g., adding a typo).
+2. Submit a message:
+
+   * The typing indicator appears but is stopped by `finally`.
+   * The error message appears in red.
+3. **Restore the API endpoint** and submit again:
+
+   * The error is cleared at the start of the `try` block.
+   * A proper bot response appears.
+   * The typing indicator behaves normally.
+
+---
+
+### 6. Key Takeaways
+
+* Always reset error state before attempting a new operation.
+* Use `try-catch-finally` to handle errors and clean up state.
+* Provide user feedback when an operation fails.
+* Keep the typing indicator state consistent regardless of success or failure.
+
+---
