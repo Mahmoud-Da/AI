@@ -4877,3 +4877,148 @@ export default ChatBot;
 
 This is **exactly** how the lesson intends it to end.
 
+
+*** 5.4- Recap ***
+---
+
+## Lecture Recap: Building a Modular Chatbot
+
+### 1. What We Built
+
+* Started with a simple idea: a chatbot.
+* Incrementally brought it to life by adding:
+
+  * Backend integration
+  * Message rendering
+  * Typing indicators
+  * Auto-scroll behavior
+  * Markdown support
+* The result is a fully working chat experience with a polished UI.
+
+---
+
+### 2. Architectural Approach
+
+* Instead of placing all logic in a single component, the chatbot was broken into smaller modules.
+* Each module has:
+
+  * A **single, focused responsibility**
+  * Its own internal logic
+  * A clean and simple public interface
+
+Key modules include:
+
+* Chat input
+* Chat messages
+* Typing indicator
+* Chatbot (orchestrator)
+
+---
+
+### 3. Encapsulation and Clean Interfaces
+
+* Internal details of each module are hidden.
+* Only what is necessary is exposed to the outside.
+* This makes modules easier to:
+
+  * Understand
+  * Maintain
+  * Replace or refactor independently
+
+---
+
+### 4. Abstraction Explained (Remote Control Analogy)
+
+* A remote control has a few buttons on the outside.
+* Internally, it may have complex circuitry.
+* The manufacturer can completely change the internal design:
+
+  * Faster
+  * Cheaper
+  * Built with different technology
+* As long as the buttons stay the same, users don’t care.
+
+This is abstraction.
+
+---
+
+### 5. Abstraction in Our Code
+
+* Each chatbot module behaves like the remote control:
+
+  * A stable public interface
+  * Hidden internal implementation
+* This allows us to:
+
+  * Change how chat input works
+  * Change how messages are rendered
+  * Refactor internals
+* All without breaking the rest of the application.
+
+---
+
+### 6. Why This Matters
+
+* This approach minimizes the impact of changes.
+* It enables:
+
+  * Easier refactoring
+  * Safer updates
+  * Better collaboration in teams
+* These design decisions are what allow large systems to scale without collapsing.
+
+---
+
+### 7. What Separates Strong Engineers
+
+* Writing code that works is not enough.
+* Strong engineers focus on:
+
+  * Maintainability
+  * Flexibility
+  * Resilience to change
+* Thoughtful design choices make future changes predictable and low-risk.
+
+---
+
+### 8. Current Limitations of the Chatbot
+
+* The chatbot works and responds correctly.
+* However:
+
+  * It is just a wrapper around ChatGPT.
+  * It has no domain knowledge.
+  * It cannot answer business-specific questions.
+
+Examples:
+
+* Banking websites
+* E-commerce platforms
+* Customer support systems
+
+---
+
+### 9. What’s Coming Next
+
+* In the next section, the chatbot will be given **knowledge**.
+* Using **prompt engineering**, we will:
+
+  * Teach the bot about a specific domain
+  * Control response format
+  * Shape how it answers questions
+* The example domain will be an imaginary theme park.
+
+---
+
+### 10. Closing
+
+* You’ve built a solid, well-structured foundation.
+* The chatbot is clean, modular, and maintainable.
+* Next, it will become truly useful by answering real-world questions.
+
+---
+
+### Key Takeaway
+
+Good software design is about more than functionality.
+It’s about building systems that can evolve without breaking.
