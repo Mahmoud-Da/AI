@@ -347,3 +347,121 @@ This demonstrates how structure and clarity significantly improve results.
   * Structured data
   * Lists
   * Formats that applications can reliably consume
+
+*** 4- Controlling the Output Format ***
+---
+
+## Controlling Output Format in Prompts
+
+### 1. Why Output Format Matters
+
+* In real applications, output format is just as important as content.
+* We need to control:
+
+  * Whether the response is plain text, a list, or structured data
+  * How the output can be consumed by code
+* At this point, prompt engineering starts to resemble programming.
+
+---
+
+### 2. Default Model Behavior
+
+* By default, models return plain text in paragraph form.
+* This is often sufficient for readability and natural responses.
+* However, even with plain text, we should control:
+
+  * Length
+  * Completeness
+  * Cost
+
+---
+
+### 3. Controlling Length and Cost
+
+* If length is not specified, responses may:
+
+  * Be longer than necessary
+  * Exceed output token limits
+  * Increase costs
+* Best practices include specifying:
+
+  * Sentence count
+  * Token limits
+* Examples:
+
+  * “Summarize this in two short sentences.”
+  * “Summarize this in under 100 tokens.”
+* Additional guidance:
+
+  * Ask the model to ensure the response is complete and does not end mid-sentence.
+
+---
+
+### 4. Using Markdown for Structured Text
+
+* Markdown allows for simple formatting such as:
+
+  * Bold text
+  * Italics
+  * Bullet points
+* Useful for:
+
+  * Summaries
+  * Lists
+  * Readable UI output
+* Example:
+
+  * “Summarize this review in two bullet points using markdown. Highlight important details in bold.”
+
+---
+
+### 5. Returning Simple Structured Formats
+
+* For lightweight structure, formats like comma-separated lists are useful.
+* Example use case:
+
+  * Extracting keywords or tags
+* Example prompt:
+
+  * “Extract three keywords that describe this article. Return them as a comma-separated list in lowercase.”
+* Greater specificity leads to more consistent output.
+
+---
+
+### 6. Requesting Structured Data with JSON
+
+* JSON is ideal when output must be consumed directly by code.
+* Example use case:
+
+  * Extracting product names and prices from text
+* Example prompt:
+
+  * “From the paragraph below, extract all product names and their prices. Return a valid JSON array of objects. Each object should include a `name` (string) and a `price` (number without currency symbols).”
+
+---
+
+### 7. Enforcing Strict JSON Output
+
+* Models may add explanations or extra text unless instructed otherwise.
+* To prevent this, add explicit constraints:
+
+  * “Only return valid JSON.”
+  * “No explanation or additional text.”
+* This ensures the output can be safely parsed and used in applications.
+
+---
+
+### 8. Key Takeaways
+
+* Always specify the desired output format.
+* Control response length to improve UX and reduce cost.
+* Use markdown for human-readable formatting.
+* Use JSON when output needs to integrate directly with code.
+* Clear formatting instructions lead to predictable, reliable results.
+
+---
+
+### 9. What’s Next
+
+* The next lesson will focus on providing examples in prompts.
+* This technique helps models learn patterns and match a desired style or structure more consistently.
