@@ -197,3 +197,153 @@ This demonstrates how structure and clarity significantly improve results.
 ### 7. What’s Next
 
 * The next lesson will explore how to provide context more effectively and in greater detail.
+
+*** 3- Providing Context ***
+---
+
+## Providing Effective Context in Prompts
+
+### 1. Recap: Prompt Structure
+
+* So far, prompts have been structured around:
+
+  * Clear instructions
+  * Context (often with examples)
+  * A desired output format
+* In this lesson, the focus is specifically on **context**, which becomes critical when building real applications with LLMs.
+
+---
+
+### 2. Why Context Matters in Real Applications
+
+* A basic chatbot can answer questions, but without context it is just a generic wrapper around ChatGPT.
+* Without additional information, the model:
+
+  * Knows nothing about your business, product, or customers
+  * Produces general-purpose responses
+* Adding context transforms the model into something useful and valuable.
+* Context allows the model to:
+
+  * Answer questions accurately
+  * Reflect your product’s voice
+  * Reduce user effort and navigation
+
+---
+
+### 3. Example: Improving a Chatbot with Context
+
+* Consider a chatbot for a theme park.
+* Without context:
+
+  * Users receive generic answers
+  * They still need to browse multiple pages for basic information
+* With context (rides, hours, ticket policies):
+
+  * The chatbot can answer real customer questions directly
+  * Users can quickly learn things like:
+
+    * Closing times
+    * Which rides are suitable for toddlers
+* This illustrates the practical power of context.
+
+---
+
+### 4. Assigning a Role to the Model
+
+* One simple way to provide context is by assigning a role.
+* Examples:
+
+  * “You are a senior backend engineer. Explain the code below to a junior developer.”
+  * “You are a customer support agent. Respond in a polite and empathetic tone.”
+* Role assignment:
+
+  * Does not add new capabilities
+  * Strongly influences tone, structure, and focus
+  * Immediately changes how the model communicates
+
+---
+
+### 5. Supplying Background Information
+
+* Background information is useful when the model must follow specific rules or facts.
+* Examples:
+
+  * Refund policies
+  * Business rules
+  * Product details
+* Example prompt structure:
+
+  * “You are a customer support assistant. Here is our refund policy. Now answer the customer’s question.”
+* This ensures responses are aligned with real constraints and knowledge.
+
+---
+
+### 6. Defining the Audience
+
+* Specifying the audience helps control tone and complexity.
+* Examples:
+
+  * “Explain this topic to a non-technical user.”
+  * “Write this summary for a high school student.”
+* This helps the model:
+
+  * Adjust vocabulary
+  * Simplify or deepen explanations
+  * Match user expectations
+
+---
+
+### 7. Controlling Tone and Style
+
+* Tone is especially important in customer-facing features.
+* You can specify tone directly in the prompt.
+* Examples:
+
+  * “Respond in a friendly, conversational tone. Avoid sounding formal or robotic.”
+  * “Use professional, empathetic language like a calm support representative helping a frustrated customer.”
+* These instructions make interactions feel more human and natural.
+
+---
+
+### 8. Including Reference Material
+
+* Often, the model needs source material to work with, such as:
+
+  * Product descriptions
+  * Customer reviews
+  * Emails or transcripts
+* Best practice:
+
+  * Visually separate instructions from reference content
+* Common separators:
+
+  * Triple dashes
+  * Triple quotes
+  * XML-style tags
+* The key principle is clarity, not the specific format.
+
+---
+
+### 9. Key Takeaways on Context
+
+* Providing context does not mean writing long or repetitive prompts.
+* It means giving the model exactly what it needs to produce:
+
+  * Accurate results
+  * Relevant answers
+  * Useful, application-ready output
+* Context bridges the gap between:
+
+  * Generic responses
+  * Real, functional product behavior
+
+---
+
+### 10. What’s Next
+
+* The next lesson will focus on controlling the structure of the model’s output.
+* This includes returning:
+
+  * Structured data
+  * Lists
+  * Formats that applications can reliably consume
