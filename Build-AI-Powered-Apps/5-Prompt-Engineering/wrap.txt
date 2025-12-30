@@ -94,3 +94,106 @@ This demonstrates how structure and clarity significantly improve results.
 * The goal is to make prompts more effective and more aligned with real-world use cases.
 
 ---
+
+*** 2- Anatomy of a Good Prompt ***
+---
+
+## The Anatomy of a Good Prompt
+
+### 1. Overview
+
+* High-quality, consistent prompts usually follow a simple structure.
+* A well-designed prompt typically includes:
+
+  1. An **instruction**
+  2. **Context**
+  3. A **desired output format**
+* Each part plays a role in shaping how the model responds.
+
+---
+
+### 2. Instruction: Telling the Model What to Do
+
+* The instruction is the core action you want the model to perform.
+* Example (basic):
+
+  * “Summarize the following product reviews.”
+* Improved version:
+
+  * “Summarize the following reviews in three short bullet points using simple language.”
+* Improvements in the second version:
+
+  * Specifies the task (summarize).
+  * Defines the output length.
+  * Specifies the format (bullet points).
+  * Sets expectations for tone and complexity.
+* Small refinements to instructions can significantly improve output quality.
+
+---
+
+### 3. Context: Giving Background Information
+
+* Context provides supporting information that helps the model understand the task better.
+* Context can include:
+
+  * A role for the model to assume.
+  * Text or data to analyze.
+  * Background information relevant to the task.
+* Example:
+
+  * “You are a senior software engineer. Read the code snippet below and explain it in plain English.”
+* Clear and detailed context:
+
+  * Guides the tone and focus of the response.
+  * Improves accuracy and relevance.
+* In general, more relevant context leads to better results.
+
+---
+
+### 4. Output Format: Defining the Shape of the Response
+
+* Output format is often overlooked but is especially important in development workflows.
+* The prompt should clearly specify the expected structure of the output.
+* Common formats include:
+
+  * Bullet lists
+  * Tables
+  * Paragraphs
+  * Structured data such as JSON
+* Example:
+
+  * “Label this message as spam or not spam. Return the result as JSON with a single key called `label`.”
+* This approach tells the model:
+
+  * What decision to make.
+  * Exactly how the result should be returned.
+
+---
+
+### 5. Combining Instruction, Context, and Format
+
+* A strong prompt combines all three components into a single, coherent request.
+* Example:
+
+  * “You are a helpful support agent. Summarize the following customer reviews in two to three bullet points. Focus on pain points related to the login experience.”
+* This prompt specifies:
+
+  * **Role**: Helpful support agent
+  * **Task**: Summarization
+  * **Focus**: Login-related pain points
+  * **Format**: Bullet points in plain text
+
+---
+
+### 6. Key Takeaways
+
+* Clear instructions reduce ambiguity.
+* Relevant context improves tone, focus, and accuracy.
+* Explicit output formats increase consistency and make results easier to use in applications.
+* Combining these elements leads to reliable, production-ready prompts.
+
+---
+
+### 7. What’s Next
+
+* The next lesson will explore how to provide context more effectively and in greater detail.
