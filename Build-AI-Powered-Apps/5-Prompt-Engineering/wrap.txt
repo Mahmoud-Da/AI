@@ -1,0 +1,96 @@
+*** 1- What is Prompt Engineering ***
+---
+
+## Prompt Engineering: Core Concepts
+
+### 1. What Prompt Engineering Is
+
+* Prompt engineering is the skill of writing better instructions for language models.
+* It is not complex or mystical; it simply means communicating more clearly with the model.
+* When using tools like ChatGPT or integrating models such as GPT-4 into applications, we do not write code for the model.
+* Instead, we provide **text prompts**, and the model predicts the next output based on those prompts.
+
+---
+
+### 2. Why Prompt Engineering Matters
+
+* Small changes in how a prompt is written can lead to dramatically different results.
+* The model behaves like a very intelligent assistant that:
+
+  * Does exactly what you ask.
+  * Does nothing beyond what you specify.
+* If the prompt is vague, the model must guess.
+* If the prompt is clear and specific, the model delivers more accurate and useful results.
+
+---
+
+### 3. Example: Vague vs. Clear Prompts
+
+**Vague Prompt**
+
+* “Summarize this text.”
+* Problems:
+
+  * No indication of length.
+  * No target audience.
+  * No format or tone specified.
+
+**Improved Prompt**
+
+* “Summarize the following product reviews in three short bullet points. Focus on common themes and use simple language.”
+* Improvements:
+
+  * Specifies output length.
+  * Defines formatting.
+  * Clarifies tone and focus.
+
+This demonstrates how structure and clarity significantly improve results.
+
+---
+
+### 4. The Essence of Prompt Engineering
+
+* Prompt engineering is about learning how to “talk” to the model effectively.
+* Good prompts:
+
+  * Reduce ambiguity.
+  * Provide structure.
+  * Guide tone, format, and intent.
+* Writing good prompts is a skill, similar to writing good code.
+* It improves with practice.
+
+---
+
+### 5. Prompt Engineering for Developers
+
+* Prompt engineering is not limited to marketing or copywriting.
+* Developers use it constantly, including when building:
+
+  * Chatbots
+  * Summarization tools
+  * Content generators
+  * Any application that interacts with a language model
+* Even for code generation:
+
+  * The quality of generated code depends heavily on the quality of the prompt.
+
+---
+
+### 6. Benefits in Real Applications
+
+* Helps reduce ambiguity in outputs.
+* Improves consistency and reliability.
+* Allows developers to shape outputs that are directly used inside applications.
+* Makes model behavior more predictable and controllable.
+
+---
+
+### 7. What Comes Next
+
+* Upcoming lessons will cover:
+
+  * Core principles of effective prompts
+  * Practical techniques to improve prompt quality
+* The goal is to make prompts more effective and more aligned with real-world use cases.
+
+---

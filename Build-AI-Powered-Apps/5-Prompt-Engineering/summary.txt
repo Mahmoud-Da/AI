@@ -1,0 +1,58 @@
+Build AI-Powered Apps
+Section Recap: Prompt Engineering
+• Prompt engineering is the art of crafting instructions that guide a language model to
+produce better, more reliable responses.
+• A well-crafted prompt typically includes three parts: instructions, context, and the
+desired output format.
+• The way we word a prompt can significantly impact the quality, accuracy, and
+structure of the model’s output.
+• A good prompt clearly defines the model’s role, target audience, tone, and desired
+outcome.
+• We explored different prompting techniques, including zero-shot, one-shot, and
+few-shot prompting, depending on how much guidance the model needs.
+• Providing context and background information helps the model generate responses
+that are grounded and relevant.
+• Giving explicit instructions improves clarity and reduces ambiguity in the model’s
+behavior.
+• We can shape the output format by asking for plain text, markdown, comma-
+separated values, or structured JSON.
+• For structured output, we learned to define the expected shape using schema
+examples or descriptions of valid keys and values.
+• We practiced building and refining prompts using OpenAI’s Playground, applying
+what we learned to guide and test model behavior.
+
+
+
+Prompt Engineering Exercises
+In this set of exercises, you’ll play around with prompts and see how small tweaks can
+make your chatbot much more helpful and user-friendly. The idea is to break the chatbot
+a little, notice the problem, and then fix it with a better prompt.
+You’ll find the suggested answers at the end of this PDF. But try the exercises yourself
+first. You’ll learn a lot more that way!
+
+Exercise 1: Fixing Poorly Formatted Ticket Prices
+1. Ask your chatbot: “How much are tickets?”
+2. Pay attention to the response. Right now, it probably tries to dump a table into
+the chat - not very user-friendly!
+3. Your challenge: update your prompt so the chatbot summarizes ticket prices in a
+simple list.
+4. You might notice that when the chatbot outputs a bulleted list, the bullets don’t
+actually show up in your app. That’s because Tailwind removes default list styles.
+To fix this, you can use the Tailwind Typography plugin, which restores nice
+defaults for lists, headings, and other rich text.
+
+Exercise 2: Adding a Ticket Link
+1. Ask: “Where can I buy tickets?” or “How much are tickets?”
+2. Notice that the chatbot gives you prices, but it doesn’t actually help you buy
+them.
+3. Your task: refine the prompt so whenever tickets are mentioned, the chatbot
+includes this link: https://wonderworld.com/tickets
+
+Exercise 3: Adding a Ticket Link
+1. Ask your chatbot: “What rides do you have?”
+2. Notice how it just throws out a huge list for every age group. That’s
+overwhelming!
+3. Your job: tweak the prompt so the chatbot first asks a quick clarifying question to
+identify the rider profile.
+4. Once the user picks, the chatbot should only show the rides for that group. Much
+cleaner and more helpful.
