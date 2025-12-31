@@ -1409,3 +1409,159 @@ Result:
 * Small UI changes can significantly improve user experience.
 
 ---
+
+*** 10- Adding Sound Effects ***
+
+---
+
+## Section Wrap-Up: Adding Sound to the ChatBot
+
+### Goal
+
+Enhance the chatBot experience by adding **subtle audio feedback** when:
+
+* A user sends a message
+* The chatBot returns a response
+
+This small detail makes the interface feel more polished and interactive, similar to modern chat applications.
+
+---
+
+## Step 1: Add Sound Assets
+
+1. Navigate to the client application.
+2. Go to:
+
+   -------------------code----------------------
+   src/assets
+   -------------------code----------------------
+3. Create a new directory named:
+
+   -------------------code----------------------
+   sounds
+   -------------------code----------------------
+4. Download the two provided MP3 files from the lesson resources:
+
+   * `pop.mp3`
+   * `notification.mp3`
+5. Drag and drop both files into the `sounds` directory.
+
+Final structure:
+
+-------------------code----------------------
+src/
+ └─ assets/
+    └─ sounds/
+       ├─ pop.mp3
+       └─ notification.mp3
+-------------------code----------------------
+
+---
+
+## Step 2: Decide Where Audio Logic Belongs
+
+The audio logic should live inside the **ChatBot component**, because:
+
+* It manages the entire chat experience
+* It handles message submission
+* It displays the typing indicator
+* It already coordinates user interaction and bot responses
+
+---
+
+## Step 3: Import the Sound Files
+
+At the top of the ChatBot component, import the audio files:
+
+-------------------code----------------------
+import popSound from "@/assets/sounds/pop.mp3";
+import notificationSound from "@/assets/sounds/notification.mp3";
+-------------------code----------------------
+
+---
+
+## Step 4: Create Audio Objects
+
+Create two audio instances—one for sending messages and one for receiving responses.
+
+-------------------code----------------------
+const popAudio = new Audio(popSound);
+popAudio.volume = 0.2;
+
+const notificationAudio = new Audio(notificationSound);
+notificationAudio.volume = 0.2;
+-------------------code----------------------
+
+### Notes
+
+* Volume is reduced to `0.2` to keep sounds subtle
+* This avoids being distracting or annoying to users
+
+---
+
+## Step 5: Play Sounds at the Right Moments
+
+### When a Message Is Sent
+
+After updating the message state:
+
+-------------------code----------------------
+popAudio.play();
+-------------------code----------------------
+
+### When the Bot Responds
+
+Once the chatbot response is received:
+
+-------------------code----------------------
+notificationAudio.play();
+-------------------code----------------------
+
+ex:
+-------------------code----------------------
+const onSubmit = async ({ prompt }: ChatFormData) => {
+  try {
+    setError("");
+    setMessages((prev) => [...prev, { content: prompt, role: "user" }]);
+    setIsBotTyping(true);
+    popAudio.play();
+
+    const { data } = await axios.post<ChatResponse>("/api/chat", {
+      prompt,
+      conversationId: conversationId.current,
+    });
+
+    setMessages((prev) => [...prev, { content: data.message, role: "bot" }]);
+    notificationAudio.play();
+  } catch {
+    setError("Something went wrong, please try again.");
+  } finally {
+    setIsBotTyping(false);
+  }
+};
+-------------------code----------------------
+---
+
+## Step 6: Test the Feature
+
+1. Run the application in the browser.
+2. Send a message.
+3. Listen for:
+
+   * A soft “pop” sound on message send
+   * A notification sound when the bot replies
+
+Result:
+The chat feels more lively and responsive.
+
+---
+
+## Conclusion
+
+* Audio feedback significantly improves user experience
+* The implementation is simple but impactful
+* This concludes the current section
+
+In the next section, the course moves on to a **different and more challenging project**.
+
+---
