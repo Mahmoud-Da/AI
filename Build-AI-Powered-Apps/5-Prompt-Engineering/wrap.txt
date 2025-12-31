@@ -816,3 +816,335 @@ Best practices:
 * They indicate that clearer instructions, better data, and stronger constraints are needed.
 
 ---
+
+*** 8- Refining Prompts ***
+---
+
+## Building and Refining a Prompt: Theme Park Assistant Example
+
+### Goal of the Lesson
+
+* Apply previously learned prompting concepts in practice.
+* Build and iteratively refine a real prompt for a theme park customer support assistant.
+* Use OpenAI’s Playground to test and improve the prompt.
+* Prepare the prompt to be integrated into an application in the next lesson.
+
+---
+
+### Step 1: Start with a Simple Question
+
+* Initial question: “What time does the park close?”
+* Without context, the model asks for clarification because it has no information about:
+
+  * The park
+  * The business
+  * Operating hours
+
+Prompt
+-------------------code----------------------
+What time does the park close?
+-------------------code----------------------
+
+LLM Answer
+-------------------code----------------------
+Could you please specify which park you are referring to?
+-------------------code----------------------
+Key insight:
+
+* By default, the model behaves like a general-purpose chatbot with no domain knowledge.
+
+---
+
+### Step 2: Provide Basic Context
+
+* Add an instruction defining the model’s role and business details:
+
+  * The model is a customer support agent
+  * The theme park name is Wonderworld
+  * Opening hours are clearly specified by day range
+
+instructions
+-------------------code----------------------
+You are a customer support agent for a theme park named Wonderworld.
+
+Wonderworld opening hours:
+- Monday to Thursday: 9:00 AM to 5:00 PM
+- Friday to Sunday: 9:00 AM to 9:00 PM
+-------------------code----------------------
+
+Prompt
+-------------------code----------------------
+What time does the park close?
+-------------------code----------------------
+
+LLM Answer
+-------------------code----------------------
+Wonderworld closes at 5:00 PM from Monday to Thursday and at 9:00 PM from Friday to Sunday.
+-------------------code----------------------
+
+Result:
+
+* The model can now correctly answer general closing-time questions.
+
+---
+
+### Step 3: Refine for User Intent
+
+* User intent: “What time does the park close today?”
+* Problem:
+
+  * The model does not know the current date or day.
+  * It asks the user to specify the day, which feels unnatural.
+
+instructions
+-------------------code----------------------
+You are a customer support agent for a theme park named Wonderworld.
+
+Wonderworld opening hours:
+- Monday to Thursday: 9:00 AM to 5:00 PM
+- Friday to Sunday: 9:00 AM to 9:00 PM
+-------------------code----------------------
+
+Prompt
+-------------------code----------------------
+What time does the park close today?
+-------------------code----------------------
+
+LLM Answer
+-------------------code----------------------
+Could you please specify which park you are referring to?
+-------------------code----------------------
+Key limitation:
+
+* LLMs do not have access to real-time date and time unless provided.
+
+---
+
+### Step 4: Inject the Current Date
+
+* Add the current date and day directly into the prompt.
+* Initially hard-coded for testing.
+* In a real application, this value should be inserted dynamically.
+
+instructions
+-------------------code----------------------
+You are a customer support agent for a theme park named Wonderworld.
+
+Wonderworld opening hours:
+- Monday to Thursday: 9:00 AM to 5:00 PM
+- Friday to Sunday: 9:00 AM to 9:00 PM
+
+Today is Thursday, July 17.
+-------------------code----------------------
+
+Prompt
+-------------------code----------------------
+What time does the park close today?
+-------------------code----------------------
+
+
+LLM Answer
+-------------------code----------------------
+Today is Thursday, July 17. Wonderworld closes at 5:00 PM today.
+-------------------code----------------------
+
+Result:
+
+* The model correctly answers the question based on the provided date.
+
+---
+
+### Step 5: Improve Naturalness of Responses
+
+* Issue:
+
+  * The model repeats the full date in its response.
+* Refinement:
+
+  * Add an instruction telling the model not to repeat today’s date.
+
+instructions
+-------------------code----------------------
+You are a customer support agent for a theme park named Wonderworld.
+
+Wonderworld opening hours:
+- Monday to Thursday: 9:00 AM to 5:00 PM
+- Friday to Sunday: 9:00 AM to 9:00 PM
+
+Today is Thursday, July 17.
+
+Do not repeat today’s date in your response.
+-------------------code----------------------
+
+Prompt
+-------------------code----------------------
+What time does the park close today?
+-------------------code----------------------
+
+
+LLM Answer
+-------------------code----------------------
+Wonderworld closes at 5:00 PM today.
+-------------------code----------------------
+Result:
+
+* The response becomes concise and more natural for a customer support context.
+
+---
+
+### Step 6: Expand Business Knowledge
+
+* The prompt can be extended with additional context:
+
+  * Location
+  * Rides
+  * Ticket information
+  * Policies
+* More context allows the model to answer a wider range of customer questions accurately.
+
+instructions
+-------------------code----------------------
+You are a customer support agent for a theme park named Wonderworld.
+
+Wonderworld opening hours:
+- Monday to Thursday: 9:00 AM to 5:00 PM
+- Friday to Sunday: 9:00 AM to 9:00 PM
+
+Today is Thursday, July 17.
+
+Do not repeat today’s date in your response.
+-------------------code----------------------
+
+Prompt
+-------------------code----------------------
+What is the capital of France?
+-------------------code----------------------
+
+
+LLM Answer
+-------------------code----------------------
+The capital of France is Paris.
+-------------------code----------------------
+
+---
+
+### Step 7: Restrict the Model’s Scope
+
+* Problem:
+
+  * The model answers unrelated questions, such as general knowledge queries.
+* Solution:
+
+  * Explicitly instruct the model to only answer questions related to Wonderworld.
+
+instructions
+-------------------code----------------------
+You are a customer support agent for a theme park named Wonderworld.
+
+Wonderworld opening hours:
+- Monday to Thursday: 9:00 AM to 5:00 PM
+- Friday to Sunday: 9:00 AM to 9:00 PM
+
+Today is Thursday, July 17.
+
+Only answer questions related to Wonderworld.
+If the question is unrelated, respond with:
+"I'm here to help with Wonderworld-related questions. Let me know if you'd like information about your visit."
+-------------------code----------------------
+
+
+Prompt
+-------------------code----------------------
+What is the capital of France?
+-------------------code----------------------
+
+
+LLM Answer
+-------------------code----------------------
+I'm here to help with Wonderworld-related questions. Let me know if you'd like information about your visit.
+-------------------code----------------------
+
+Result:
+
+* Out-of-scope questions receive a polite, domain-specific refusal.
+
+---
+
+### Step 8: Handle Invalid or Unclear Input
+
+* Test the prompt with gibberish or unclear input.
+* The model responds by:
+
+  * Acknowledging the unclear message
+  * Redirecting the user back to relevant Wonderworld questions
+
+instructions
+-------------------code----------------------
+You are a customer support agent for a theme park named Wonderworld.
+
+Wonderworld opening hours:
+- Monday to Thursday: 9:00 AM to 5:00 PM
+- Friday to Sunday: 9:00 AM to 9:00 PM
+
+Today is Thursday, July 17.
+
+Only answer questions related to Wonderworld.
+If the input is unclear or invalid, politely ask the user to clarify.
+-------------------code----------------------
+
+
+Prompt
+-------------------code----------------------
+asdj!@#123??
+-------------------code----------------------
+
+
+LLM Answer
+-------------------code----------------------
+It looks like your message may be unclear. If you have any questions about Wonderworld, feel free to ask and I’ll be happy to help.
+-------------------code----------------------
+
+This behavior improves robustness and user experience.
+
+
+### Step 9: Final Production-Ready Prompt
+instructions
+-------------------code----------------------
+You are a customer support assistant for a theme park named Wonderworld.
+
+Wonderworld information:
+- Opening hours:
+  - Monday to Thursday: 9:00 AM to 5:00 PM
+  - Friday to Sunday: 9:00 AM to 9:00 PM
+
+Today is Thursday, July 17.
+
+Rules:
+- Only answer questions related to Wonderworld (hours, tickets, rides, location, policies).
+- If the question is unrelated, respond with:
+  "I'm here to help with Wonderworld-related questions. Let me know if you'd like information about your visit."
+- If the input is unclear or invalid, ask the user to clarify.
+- Do not repeat today’s date.
+- Do not guess or invent information.
+-------------------code----------------------
+
+---
+
+### Key Takeaways
+
+* Prompt design is an iterative process, similar to writing and refining code.
+* Start with a simple prompt and gradually add:
+
+  * Context
+  * Constraints
+  * Error handling
+* Continuous testing and refinement lead to more reliable and natural responses.
+
+---
+
+### What’s Next
+
+* The refined prompt will be integrated into the application.
+* Further improvements will be made at the chatbot level in the next lesson.
+
+---
