@@ -605,3 +605,112 @@ This demonstrates how structure and clarity significantly improve results.
 ### 9. What’s Next
 
 * The next lesson will focus on handling errors and edge cases in model outputs.
+
+*** 6- Handling Errors and Edge Cases ***
+---
+
+## Prompt Reliability and Handling Edge Cases
+
+### Core Idea
+
+Prompting should be treated like writing a well-tested function.
+A prompt that works with ideal input is not enough; it must also behave correctly when the input is bad, incomplete, or unexpected.
+
+---
+
+### Analogy: Prompts vs Functions
+
+* When writing a function:
+
+  * You test the happy path (valid input).
+  * You also test how it handles invalid or unexpected data.
+* Prompting follows the same principle:
+
+  * Even if a prompt works with clean input, it must be tested against edge cases.
+
+---
+
+### Why Edge Case Handling Is Necessary
+
+* By default, language models try to answer even when the input is:
+
+  * Empty
+  * Vague
+  * Incorrect
+  * Total nonsense
+* This can lead to misleading or low-quality output.
+* It is the prompt designer’s responsibility to define boundaries.
+
+---
+
+### Technique 1: Explicit Error Handling
+
+You can instruct the model to return an error instead of guessing.
+
+Examples:
+
+* If the input is empty or not a valid product review, return a specific error object.
+* If the input contains fewer than a certain number of words (e.g., fewer than 5), return a different error object.
+
+Key point:
+
+* The exact rules depend on what you are building and your application’s requirements.
+
+---
+
+### Applicability Across Tasks
+
+The same edge case principles apply to all types of tasks, including:
+
+* Summarization
+* Data extraction
+* Translation
+* Content generation
+
+In every case, the prompt should define what the model should do when input is missing or invalid.
+
+---
+
+### Technique 2: Asking Clarifying Questions
+
+* Instead of returning an error, the model can ask for clarification.
+* This approach makes sense mainly in chatbot scenarios.
+
+Example instruction:
+
+* If the user’s request is vague or lacks necessary detail, ask a clarifying question instead of guessing.
+
+---
+
+### Prompt Testing Strategy
+
+Always test prompts with a variety of edge cases, such as:
+
+* Empty input
+* Input containing only whitespace
+* One or two random words
+* Gibberish text
+* Extremely long input
+* Input missing key details
+
+---
+
+### Iteration and Refinement
+
+* Observe how the model responds to edge cases.
+* If the output is incorrect or unreliable:
+
+  * Refine the prompt.
+  * Add clearer constraints or instructions.
+* Repeat testing until the behavior is stable and predictable.
+
+---
+
+### What’s Next
+
+* The next lesson focuses on:
+
+  * Why language models sometimes make things up
+  * Techniques to reduce hallucinations and unreliable output
+
+---
