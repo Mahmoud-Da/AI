@@ -714,3 +714,105 @@ Always test prompts with a variety of edge cases, such as:
   * Techniques to reduce hallucinations and unreliable output
 
 ---
+
+*** 7- Reducing Hallucinations ***
+---
+
+## Hallucinations in Large Language Models
+
+### Definition
+
+* **Hallucination** refers to situations where a language model generates information that sounds plausible but is not true.
+* This behavior is not malicious; it is a natural outcome of how language models work.
+
+---
+
+### Why Hallucinations Happen
+
+* Language models do not “know” facts.
+* They do not query databases or verify information.
+* Instead, they predict the next piece of text based on patterns learned during training.
+* Hallucinations are more likely when:
+
+  * Questions are vague or open-ended
+  * Prompts lack sufficient context or constraints
+  * The model is forced to fill in missing information
+
+---
+
+### Strategy 1: Ground the Model with Facts
+
+* If accuracy matters, include the relevant data directly in the prompt.
+* Do not expect the model to recall policies or rules correctly on its own.
+
+Example concept:
+
+* Provide the refund policy first.
+* Then ask the model to answer the customer’s question based on that policy.
+
+Key idea:
+
+* This approach is called **grounding**.
+* The response is anchored to real, provided information.
+
+---
+
+### Strategy 2: Define What to Do When the Model Does Not Know
+
+* Sometimes the answer is unavailable or the input is unclear.
+* In these cases, it is better for the model to admit uncertainty than to guess.
+
+Prompt instruction example:
+
+* If the answer is unknown or unclear, respond with a statement indicating that the information is not available.
+* Explicitly tell the model not to guess or invent an answer.
+
+Principle:
+
+* Silence or refusal is better than fabricated content.
+
+---
+
+### Strategy 3: Limit the Model’s Scope
+
+* Hallucinations often occur when the model answers questions outside its intended domain.
+* Without constraints, the model will attempt to answer anything confidently.
+
+Example scenario:
+
+* A chatbot built for a theme park may receive unrelated questions.
+* Without guidance, the model will still try to respond.
+
+Solution:
+
+* Clearly define the model’s role and allowed topics.
+* Specify how it should respond to out-of-scope questions.
+
+Result:
+
+* The model stays focused on relevant topics and avoids off-topic hallucinations.
+
+---
+
+### Post-Processing and Safety Measures
+
+* Even with strong prompts, hallucinations can still occur.
+* General-purpose models are especially prone to this.
+
+Best practices:
+
+* Validate structured outputs such as JSON using a schema or validation library.
+* Treat model output the same way as untrusted API input.
+* Avoid using AI outputs directly for critical decisions without human review.
+* Log and monitor outputs to detect unusual or incorrect behavior.
+
+---
+
+### Key Takeaways
+
+* Language models are not fact-checkers; they are text prediction systems.
+* Reliable output requires reliable input.
+* Hallucinations do not mean the model is broken.
+* They indicate that clearer instructions, better data, and stronger constraints are needed.
+
+---
