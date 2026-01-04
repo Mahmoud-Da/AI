@@ -465,3 +465,143 @@ This demonstrates how structure and clarity significantly improve results.
 
 * The next lesson will focus on providing examples in prompts.
 * This technique helps models learn patterns and match a desired style or structure more consistently.
+
+
+*** 5- Providing Examples ***
+---
+
+## Common Prompting Strategies
+
+### 1. Overview
+
+* There are three widely used prompting strategies:
+
+  * **Zero-shot prompting**
+  * **One-shot prompting**
+  * **Few-shot prompting**
+* These strategies differ in how many examples are provided to guide the model’s behavior.
+
+---
+
+### 2. Zero-Shot Prompting
+
+* Zero-shot prompting provides:
+
+  * A task description
+  * No examples
+* The model is expected to infer how to perform the task.
+
+**Example**
+
+* “Classify product reviews as positive, neutral, or negative.”
+
+**Why This Works**
+
+* Sentiment analysis is a well-known NLP task.
+* Large language models have seen many similar examples during training.
+* The categories are intuitive and easy to understand.
+
+**Best Practices**
+
+* Always constrain the possible outputs.
+* Explicitly state allowed values (e.g., positive, neutral, negative).
+* Without constraints, the model may return vague or verbose responses that are difficult to use in code.
+
+---
+
+### 3. Limitations of Zero-Shot Prompting
+
+* Zero-shot prompts may fail when:
+
+  * A specific output structure is required
+  * Consistency is critical
+* Example issue:
+
+  * Asking the model to “turn this review into a JSON object” without guidance
+  * The model may invent its own schema or produce inconsistent output
+
+---
+
+### 4. One-Shot Prompting
+
+* One-shot prompting provides:
+
+  * A task description
+  * One example showing the desired output
+* This single example teaches the model:
+
+  * The expected structure
+  * The key names
+  * The type of values to return
+
+**Example Use Case**
+
+* Returning sentiment as a structured JSON object with a specific key (e.g., `sentiment`).
+
+**When to Use**
+
+* The task is relatively simple
+* The output format is clear and constrained
+* One example is enough to demonstrate the pattern
+
+---
+
+### 5. Few-Shot Prompting
+
+* Few-shot prompting provides:
+
+  * Multiple examples (typically three to five)
+* Used when tasks are more complex or ambiguous.
+
+**Example Use Case**
+
+* Analyzing support messages and returning structured data with multiple fields:
+
+  * `intent`
+  * `urgency`
+  * `mentions_order`
+
+**Why Few-Shot Is Needed**
+
+* The model must learn:
+
+  * Valid values for each field
+  * How to infer urgency
+  * When to set boolean flags to true or false
+* One example is insufficient to cover all decision rules.
+
+---
+
+### 6. How Many Examples to Use
+
+* There is no fixed rule for the number of examples.
+* General guideline:
+
+  * Three to five high-quality examples work well in most cases
+* More complex tasks may require more examples.
+
+---
+
+### 7. Characteristics of Good Examples
+
+* Examples should be:
+
+  * Clear and unambiguous
+  * Well formatted and consistent in structure
+  * Diverse, covering different scenarios
+  * Inclusive of edge cases
+* High-quality examples lead to more reliable and predictable outputs.
+
+---
+
+### 8. Summary
+
+* **Zero-shot**: No examples; relies on model’s prior knowledge
+* **One-shot**: One example; teaches structure and format
+* **Few-shot**: Multiple examples; teaches rules, variations, and edge cases
+
+---
+
+### 9. What’s Next
+
+* The next lesson will focus on handling errors and edge cases in model outputs.
