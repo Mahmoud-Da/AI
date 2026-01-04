@@ -1148,3 +1148,264 @@ Rules:
 * Further improvements will be made at the chatbot level in the next lesson.
 
 ---
+
+
+*** 9- Improving Chatbot Responses ***
+
+---
+
+## Integrating the Prompt into the Application
+
+### Goal of the Lesson
+
+* Bring the refined prompt from the previous lesson into the actual application.
+* Improve the chatbot by separating prompt logic from business content.
+* Load and inject structured park information dynamically.
+* Make small UI improvements to enhance chat readability.
+
+Directory Structure
+-------------------code----------------------
+server/
+ ├── prompts/
+ │    ├── chatbot.txt
+ │    └── wonderworld.md
+ ├── services/
+ │    └── chat.service.ts
+-------------------code----------------------
+---
+
+## Organizing Prompts in the Project
+
+### Creating a Prompts Directory
+
+* Inside the `server` directory, create a new folder named `prompts`.
+* Purpose:
+
+  * Keep prompt text separate from application logic.
+  * Avoid embedding long instruction text directly in code.
+  * Make prompts easier to maintain and refine over time.
+
+### Creating the Prompt File
+
+* Add a file named `chatbot.txt` inside the `prompts` directory.
+* Paste the refined prompt from the previous lesson into this file.
+
+---
+
+## Moving Park Information to a Markdown File
+
+### Why Use a Markdown File
+
+* Park information is content, not instructions.
+* Prompt instructions and park data are separate concerns.
+* Park details may change without needing to rewrite prompt logic.
+-------------------code----------------------
+Markdown Preview Enhanced
+-------------------code----------------------
+
+### Adding the Markdown File
+
+* Download the provided `wonderworld.md` file.
+* Place it in the `prompts` directory.
+* This file contains:
+
+  * Ticket and pricing information
+  * Park hours
+  * Ride descriptions
+  * Accommodation and other park services
+
+---
+
+## Previewing Markdown Content
+
+* Install the VS Code extension **Markdown Preview Enhanced** by Yi Yi Wong.
+* Use the preview feature to easily read and verify the park content.
+
+---
+
+## Updating the Prompt Structure
+
+### Removing Hard-Coded Details
+-------------------code----------------------
+You're a customer support agent for a theme park named WonderWorld.
+
+Monday - Thursday: 9am - 5pm
+Friday - Sunday: 9am - 9pm
+
+Today is Thursday, July 17. Do not repeat today's date in your response.
+
+Only answer questions related to WonderWorld.
+-------------------code----------------------
+
+* Remove park hours from `chatbot.txt`.
+* Remove references to the current date.
+* Assumption:
+
+  * The park closes at the same time every day, so no date logic is needed.
+
+-------------------code----------------------
+You're a customer support agent for a theme park named WonderWorld.
+
+Here's some key information about the park:
+
+{{parkInfo}}
+
+Only answer questions related to WonderWorld.
+-------------------code----------------------
+
+### Adding a Placeholder for Park Information
+
+* Add a section such as:
+
+  * “Here is some key information about the park:”
+* Insert a placeholder like `{{park_info}}`.
+* This placeholder will be replaced dynamically at runtime.
+-------------------code----------------------
+You're a customer support agent for a theme park named WonderWorld.
+
+Here's some key information about the park:
+
+{{parkInfo}}
+
+Only answer questions related to WonderWorld.
+-------------------code----------------------
+
+### Refining Prompt Instructions
+
+* Restrict answers to Wonderworld-related questions only.
+* Add behavioral guidance:
+
+  * Always respond in a cheerful tone.
+  * Avoid making up information.
+* The prompt now focuses purely on:
+
+  * Role definition
+  * Scope
+  * Tone
+  * Safety constraints
+
+-------------------code----------------------
+You're a customer support agent for a theme park named WonderWorld.
+
+Here's some key information about the park:
+
+{{parkInfo}}
+
+Only answer questions related to WonderWorld.
+Always answer in a cheerful tone and avoid making up information.
+-------------------code----------------------
+---
+
+## Loading Prompt and Markdown Files in Code
+
+### Importing the Prompt Template
+
+* Import `chatbot.txt` into the chat service.
+* Name it `template` to reflect its role as a reusable prompt template.
+
+### Reading the Markdown File
+
+* Markdown files cannot be imported directly.
+* Use Node.js modules:
+
+  * `fs` for file reading
+  * `path` for building file paths
+-------------------code----------------------
+import fs from "fs";
+import path from "path";
+import template from "../prompts/chatbot.txt";
+-------------------code----------------------
+
+### Reading the File
+
+* Use synchronous file reading to load the park information once.
+* Build the path using:
+
+  * Current directory
+  * One level up
+  * `prompts` directory
+  * `wonderworld.md`
+* Read the file using UTF-8 encoding.
+-------------------code----------------------
+const parkInfoPath = path.join(__dirname, "..", "prompts", "wonderworld.md");
+const parkInfo = fs.readFileSync(parkInfoPath, "utf8");
+const instructions = template.replace("{{parkInfo}}", parkInfo);
+-------------------code----------------------
+---
+
+## Injecting Park Information into the Prompt
+
+* Replace the placeholder in the prompt template with the markdown content.
+* This produces the final instruction text sent to the model.
+* This replacement happens once when the module is loaded.
+* The same prompt is reused for every API request.
+
+---
+
+## Testing the Updated Chatbot
+
+### Initial Behavior
+
+* The chatbot greets the user with a Wonderworld-specific welcome message.
+* Confirms that the prompt and park data are loaded correctly.
+
+### Example Questions
+
+* Park closing time:
+
+  * The chatbot responds correctly.
+* Hotel availability:
+
+  * The chatbot provides accurate accommodation details.
+* Irrelevant questions:
+
+  * The chatbot politely redirects the user back to Wonderworld topics.
+
+Result:
+
+* The chatbot is now domain-aware, polite, and controlled.
+
+---
+
+## UI Improvement: Message Width
+
+### Problem
+
+* Chat messages are too wide.
+* Long line lengths reduce readability.
+
+### Solution
+
+* Update the chat message component.
+* Apply a maximum width (e.g., medium size).
+* This results in:
+
+  * Shorter line lengths
+  * Better readability
+  * A more natural chat appearance
+-------------------code----------------------
+<div
+    key={index}
+    ref={index === messages.length - 1 ? lastMessageRef : null}
+    onCopy={onCopyMessage}
+    className={`
+      px-3 py-1 rounded-xl max-w-md 
+      ${
+        message.role === "user"
+          ? "bg-blue-600 text-white self-end"
+          : "bg-gray-100 text-black self-start"
+      }
+    `}
+  >
+-------------------code----------------------
+---
+
+## Key Takeaways
+
+* Prompts should live outside application logic.
+* Instructions and business data should be kept separate.
+* Markdown is a clean way to store structured knowledge.
+* Prompt assembly should happen once and be reused.
+* Small UI changes can significantly improve user experience.
+
+---
