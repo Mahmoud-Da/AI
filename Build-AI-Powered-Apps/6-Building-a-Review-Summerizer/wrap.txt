@@ -389,3 +389,264 @@ DATABASE_URL="mysql://root:your_password@localhost:3306/review_summarizer"
 * This will be done using the Prisma schema.
 
 ---
+
+
+*** 2.3- Defining the Prisma Schema ***
+---
+
+## Lecture Overview: Defining the Prisma Schema
+
+### 1. Purpose of the Prisma Schema
+
+* The Prisma schema defines the **structure of the database** directly in the codebase.
+* It specifies:
+
+  * Tables (models)
+  * Fields (columns)
+  * Data types
+  * Relationships between tables
+
+---
+
+## 2. Installing the Prisma VS Code Extension
+
+* Before editing the schema, install the **Prisma extension**.
+* Steps:
+
+  * Open the Extensions panel in the editor
+  * Search for **Prisma**
+  * Install the extension
+* Benefits:
+
+  * Syntax highlighting
+  * Automatic formatting
+  * Autocompletion
+  * Improved developer experience
+
+---
+
+## 3. Opening the Schema File
+
+* Open `schema.prisma` in the `prisma` directory.
+* This file is where all database models will be defined.
+
+---
+
+## 4. Models to Be Defined
+
+* Three models will be created:
+
+  1. `Product`
+  2. `Review`
+  3. `Summary`
+* Models use **PascalCase naming convention** (first letter uppercase).
+
+---
+
+## 5. Defining the Product Model
+
+### Fields
+
+* `id`
+
+  * Type: `Int`
+  * Attributes:
+
+    * `@id` (primary key)
+    * `@default(autoincrement())`
+* `name`
+
+  * Type: `String`
+* `description`
+
+  * Type: `String?` (optional)
+* `price`
+
+  * Type: `Float`
+* `reviews`
+
+  * Type: `Review[]` (one-to-many relationship)
+* `summary`
+
+  * Type: `Summary?` (optional one-to-one relationship)
+
+### Notes
+
+* The `id` field uniquely identifies each product.
+* Auto-increment allows the database to assign IDs automatically.
+
+---
+
+## 6. Defining the Review Model
+
+### Fields
+
+* `id`
+
+  * Type: `Int`
+  * Attributes:
+
+    * `@id`
+    * `@default(autoincrement())`
+* `author`
+
+  * Type: `String`
+* `rating`
+
+  * Type: `Int`
+* `content`
+
+  * Type: `String`
+* `createdAt`
+
+  * Type: `DateTime`
+  * Attribute:
+
+    * `@default(now())`
+* `productId`
+
+  * Type: `Int`
+* `product`
+
+  * Type: `Product`
+  * Attribute:
+
+    * `@relation(fields: [productId], references: [id])`
+
+### Relationship Explanation
+
+* Each review belongs to a single product.
+* The `productId` field references the `id` field in the `Product` model.
+* This creates a **one-to-many relationship**:
+
+  * One product → many reviews
+
+---
+
+## 7. Defining the Summary Model
+
+### Purpose
+
+* Stores AI-generated summaries for products.
+* Each summary belongs to exactly one product.
+
+### Fields
+
+* `id`
+
+  * Type: `Int`
+  * Attributes:
+
+    * `@id`
+    * `@default(autoincrement())`
+* `productId`
+
+  * Type: `Int`
+  * Attribute:
+
+    * `@unique`
+* `product`
+
+  * Type: `Product`
+  * Attribute:
+
+    * `@relation(fields: [productId], references: [id])`
+* `content`
+
+  * Type: `String`
+* `generatedAt`
+
+  * Type: `DateTime`
+  * Attribute:
+
+    * `@default(now())`
+* `expiresAt`
+
+  * Type: `DateTime`
+
+### Relationship Explanation
+
+* This is a **one-to-one relationship**:
+
+  * One product → one summary
+* The `@unique` attribute on `productId` is required to enforce one-to-one behavior.
+* The `summary` field in the `Product` model is optional because:
+
+  * A product may not yet have reviews or a summary.
+
+---
+
+## 8. Common Schema Errors and Fixes
+
+### Missing Opposite Relationship
+
+* Prisma requires relationships to be defined on both models.
+* Fix by adding:
+
+  * `reviews` and `summary` fields to the `Product` model
+
+### One-to-One Relation Error
+
+* Error: one-to-one relations require unique fields.
+* Fix:
+
+  * Add `@unique` to `productId` in the `Summary` model
+
+---
+
+## 9. Formatting the Schema
+
+* Save the file to auto-format.
+* If formatting does not work:
+
+  * Open the command palette
+  * Select **Format Document**
+  * Choose **Prisma** as the formatter
+
+---
+
+## 10. Lesson Summary
+
+* Database structure is now fully defined using Prisma.
+* Models, fields, and relationships are clearly specified.
+* The schema is ready to be used to generate database tables.
+
+---
+
+## 11. Next Lesson
+
+* Use the Prisma schema to **generate actual database tables**.
+* Apply the schema to the MySQL database.
+
+---
+-------------------code----------------------
+model Product {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  price       Float
+
+  reviews     Review[]
+  summary     Summary?
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  author    String
+  rating    Int
+  content   String
+  createdAt DateTime @default(now())
+
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id])
+}
+
+model Summary {
+  id          Int      @id @default(autoincrement())
+  productId   Int      @unique
+  product     Product  @relation(fields: [productId], references: [id])
+  content     String
+  generatedAt DateTime @default(now())
+  expiresAt   DateTime
+}
+-------------------code----------------------
