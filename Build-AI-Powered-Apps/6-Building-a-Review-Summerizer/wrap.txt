@@ -224,3 +224,168 @@ mysql -u root -p
   * Prisma will be used to interact with the database from the application
 
 ---
+
+*** 2.2- Setting Up Prisma ***
+---
+
+## Lecture Overview: Connecting MySQL to the Application Using Prisma
+
+### 1. Goal of This Lesson
+
+* Now that MySQL is running, the next step is to connect the application to the database.
+* This connection will be handled using **Prisma**.
+
+---
+
+## 2. What Is Prisma?
+
+* Prisma is an **ORM (Object Relational Mapping) tool**.
+* It sits between:
+
+  * The application code
+  * The database
+* Prisma acts like a translator:
+
+  * Converts application code into database queries
+  * Provides a clean and type-safe way to interact with the database
+
+---
+
+## 3. Preparing the Project
+
+* Open a terminal window.
+* Navigate to the **server directory** of the project.
+* Two Prisma-related packages need to be installed:
+
+  * One for development
+  * One for runtime usage
+
+---
+
+## 4. Installing Prisma Dependencies
+
+### 4.1 Install Prisma CLI (Development Dependency)
+
+* Run the following command:
+-------------------code----------------------
+bun add -d prisma
+-------------------code----------------------
+* Purpose:
+
+  * Provides a command-line interface
+  * Used to create and manage the database schema
+
+### 4.2 Install Prisma Client (Runtime Dependency)
+
+* Run:
+-------------------code----------------------
+bun add @prisma/client
+-------------------code----------------------
+* Purpose:
+
+  * Allows the application code to communicate with the database
+
+---
+
+## 5. Initializing Prisma
+
+* Run the following command in the server directory:
+
+-------------------code----------------------
+bunx prisma init
+-------------------code----------------------
+* This initializes Prisma for the project.
+
+### Result of Initialization
+
+* A new directory named **prisma** is created.
+* Inside it, a **schema file** is generated.
+
+---
+
+## 6. Understanding the Prisma Schema File
+
+* The schema file contains two main sections:
+
+  1. **Client definition**
+
+     * Specifies how Prisma generates the client
+  2. **Database definition**
+
+     * Specifies which database is being used and how to connect to it
+
+---
+
+## 7. Configuring Prisma for MySQL
+
+### 7.1 Change Database Provider
+
+* The default provider is set to PostgreSQL.
+* Change the provider to **MySQL**.
+
+### 7.2 Database Connection URL
+
+* Prisma uses an environment variable named:
+
+  * `DATABASE_URL`
+* Copy this key name.
+
+---
+
+## 8. Updating the Environment File
+
+* Open the `.env` file.
+* Prisma may add incorrect or duplicated lines due to a known issue.
+* Delete the incorrect lines.
+* Paste and define the correct `DATABASE_URL`.
+
+---
+
+## 9. MySQL Connection String Format
+
+-------------------code----------------------
+DATABASE_URL="mysql://username:password@host:port/database_name"
+-------------------code----------------------
+
+### Example Used in This Project
+
+* Username: `root`
+* Password: the password set during MySQL installation
+* Host: `localhost`
+* Port: `3306` (default MySQL port)
+* Database name: `review_summarizer`
+
+### Final Example
+
+-------------------code----------------------
+DATABASE_URL="mysql://root:your_password@localhost:3306/review_summarizer"
+-------------------code----------------------
+
+### What This Does
+
+* Connects Prisma to:
+
+  * The local MySQL server
+  * Using the root user
+  * Targeting the specified database
+
+---
+
+## 10. Lesson Summary
+
+* Prisma is successfully installed and initialized.
+* The application is now connected to MySQL.
+* The database connection is configured using environment variables.
+
+---
+
+## 11. Next Lesson
+
+* Define the **structure of the database**:
+
+  * Tables
+  * Relationships
+  * Fields
+* This will be done using the Prisma schema.
+
+---
