@@ -1116,3 +1116,477 @@ prisma/migrations/
 * The next lesson will focus on **populating the database with sample data**.
 
 ---
+
+
+*** 2.6- Populating the Database with Realistic Data ***
+---
+
+## Populating the Database with Sample Data
+
+### 1. Goal of This Lesson
+
+* Populate the database with **realistic sample data**.
+* This data will be used while developing and testing the application.
+* Instead of writing SQL manually, we use **AI assistance** to work faster and smarter.
+
+---
+
+### 2. Why Use AI for Sample Data
+
+* Writing large SQL insert scripts manually is time-consuming.
+* AI can:
+
+  * Generate realistic data
+  * Follow schema constraints
+  * Speed up development
+* This demonstrates how AI helps developers beyond just writing application code.
+
+---
+
+### 3. Providing Context to ChatGPT
+
+#### Step 1: Share the Prisma Schema
+
+* Copy the entire `schema.prisma` file.
+* Paste it into the prompt.
+* This gives AI full context about:
+
+  * Tables
+  * Columns
+  * Relationships
+  * Data types
+
+---
+
+### 4. Writing an Effective Prompt
+
+#### Core Instruction:
+
+* Ask for a **complete SQL script** to populate tables.
+
+Example instruction:
+
+* Generate a complete SQL script to populate the `products` and `reviews` tables in a MySQL database based on the schema above.
+
+---
+
+### 5. Important Prompt Details
+
+#### Specify the Database Engine
+
+* Explicitly mention **MySQL**.
+* If not specified, AI may default to PostgreSQL.
+* PostgreSQL SQL syntax may not work in MySQL.
+
+#### Limit the Scope
+
+* Only populate:
+
+  * `products`
+  * `reviews`
+* Do not include:
+
+  * `summaries` table
+* Reason:
+
+  * Summaries are generated dynamically by AI at runtime.
+
+---
+
+### 6. Refining the Prompt with Constraints
+
+Additional instructions improve quality and relevance.
+
+Example refinements:
+
+* Create 5 products.
+* For each product, insert 5 realistic customer reviews.
+* Ensure each review is:
+
+  * Long
+  * Relevant to the product type
+* Do not include data for the `summaries` table.
+* Output only the SQL script.
+* Do not include comments or explanations.
+
+#### Key Principle:
+
+* The more specific and descriptive the prompt, the better the output.
+
+---
+
+### 7. Generated Sample Data
+
+#### Result:
+
+* 5 products created:
+
+  * Chair
+  * Smartwatch
+  * Coffee maker
+  * Earphones
+  * Scooter
+* 25 reviews total:
+
+  * 5 reviews per product
+* Reviews are realistic and tailored to each product.
+
+---
+
+### 8. Executing the SQL Script in DataGrip
+
+#### Steps:
+
+1. Open DataGrip.
+2. Right-click the application database.
+3. Select **New Query Console**.
+4. Paste the generated SQL script.
+5. Select all:
+
+   * macOS: `Command + A`
+   * Windows: `Ctrl + A`
+6. Execute the script.
+
+---
+
+### 9. Verifying the Data
+
+#### Results:
+
+* `products` table contains 5 realistic entries.
+* `reviews` table contains 25 reviews.
+* Data is consistent and ready for development use.
+
+---
+
+### 10. Key Takeaways
+
+* AI is an effective tool for generating realistic test data.
+* Well-written prompts lead to higher-quality output.
+* Always specify:
+
+  * Database engine
+  * Target tables
+  * Output format
+* Sample data enables faster backend development and testing.
+
+---
+
+### 11. Next Steps
+
+* With realistic data in place, the project is now ready to move on to **building the backend**.
+
+---
+
+## ChatGPT Prompt Template: Generate SQL Seed Data from Prisma Schema
+
+### Context
+
+-------------------code----------------------
+Here is my Prisma schema:
+
+<PASTE YOUR FULL schema.prisma HERE>
+
+
+### Instructions
+
+Based on the Prisma schema above, generate a complete SQL script to populate a MySQL database.
+
+Requirements:
+- Database engine: MySQL
+- Populate ONLY the following tables:
+  - products
+  - reviews
+- Do NOT include any data for the summaries table
+- Create exactly 5 products
+- For each product, insert exactly 5 realistic customer reviews
+- Reviews must be:
+  - Long and detailed
+  - Relevant and tailored to the specific product type
+- Ensure all foreign key relationships are valid
+- Use realistic values for names, descriptions, ratings, and content
+
+Output rules:
+- Output ONLY the SQL script
+- Do NOT include explanations, comments, or markdown
+- The script must be directly executable in MySQL
+-------------------code----------------------
+
+
+- full Example:
+
+-------------------code----------------------
+Here is my Prisma schema:
+
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model Product {
+  id          Int     @id @default(autoincrement())
+  name        String  @db.VarChar(255)
+  description String? @db.Text
+  price       Float
+
+  reviews Review[]
+  summary Summary?
+
+  @@map("products")
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  author    String   @db.VarChar(255)
+  rating    Int      @db.TinyInt
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@map("reviews")
+}
+
+model Summary {
+  id          Int      @id @default(autoincrement())
+  productId   Int      @unique
+  product     Product  @relation(fields: [productId], references: [id])
+  content     String   @db.Text
+  generatedAt DateTime @default(now())
+  expiresAt   DateTime
+
+  @@map("summaries")
+}
+
+
+
+### Instructions
+
+Based on the Prisma schema above, generate a complete SQL script to populate a MySQL database.
+
+Requirements:
+- Database engine: MySQL
+- Populate ONLY the following tables:
+  - products
+  - reviews
+- Do NOT include any data for the summaries table
+- Create exactly 5 products
+- For each product, insert exactly 5 realistic customer reviews
+- Reviews must be:
+  - Long and detailed
+  - Relevant and tailored to the specific product type
+- Ensure all foreign key relationships are valid
+- Use realistic values for names, descriptions, ratings, and content
+
+Output rules:
+- Output ONLY the SQL script
+- Do NOT include explanations, comments, or markdown
+- The script must be directly executable in MySQL
+-------------------code----------------------
+
+
+- result:
+-------------------code----------------------
+INSERT INTO products (name, description, price) VALUES
+('iPhone 15 Pro', 'The latest flagship smartphone from Apple featuring A17 Pro chip, titanium design, 48MP main camera, and Dynamic Island.', 999.99),
+('Samsung Odyssey G9 Gaming Monitor', '49-inch dual QHD curved gaming monitor with 240Hz refresh rate, 1ms response time, and NVIDIA G-Sync compatibility.', 1299.99),
+('Dyson V15 Detect Cordless Vacuum', 'High-power cordless vacuum with laser dust detection, HEPA filtration, and intelligent suction adjustment.', 749.99),
+('Nintendo Switch OLED', 'Gaming console with 7-inch OLED screen, enhanced audio, 64GB internal storage, and adjustable stand.', 349.99),
+('Instant Pot Duo Plus 9-in-1', '9-quart multi-use programmable pressure cooker with 15 safety features and 14 one-touch smart programs.', 129.99);
+
+INSERT INTO reviews (author, rating, content, createdAt, productId) VALUES
+('Sarah Johnson', 5, 'Absolutely love my new iPhone 15 Pro! The titanium build feels premium and surprisingly lightweight. The camera system is phenomenal - the 48MP main sensor captures incredible detail, and the low-light performance is the best I''ve seen on any smartphone. The A17 Pro chip makes everything buttery smooth, from gaming to video editing. Face ID is faster than ever, and the battery life easily gets me through a full day of heavy use. The Dynamic Island is actually useful for tracking deliveries and music playback. Worth every penny!', '2024-01-15 10:30:00', 1),
+('Michael Chen', 4, 'Great phone overall with some minor quirks. The performance is exceptional and the camera upgrades are noticeable, especially the 5x optical zoom. However, the phone does get warm during extended gaming sessions, and the USB-C transition means I had to replace all my cables. The Action Button is customizable but I wish it had more functionality options. Battery life is solid but not groundbreaking compared to previous models. Still, one of the best phones on the market right now.', '2024-01-18 14:22:00', 1),
+('Jessica Williams', 5, 'Coming from iPhone 12, this feels like a massive upgrade. The 120Hz ProMotion display is incredibly smooth, making everything feel more responsive. The photos it takes are professional-level - I''ve stopped carrying my DSLR for casual outings. The build quality is outstanding, and the new matte finish doesn''t show fingerprints. The satellite connectivity for emergencies gives me peace of mind when hiking. The only downside is the price, but if you keep your phones for 3-4 years, it''s justified.', '2024-01-20 09:15:00', 1),
+('Robert Miller', 3, 'Good phone but overheating issues are concerning. During my first week, the phone got uncomfortably hot during video calls and while charging. The camera produces excellent photos but the processing is sometimes too aggressive, making skin tones look unnatural. The titanium frame is nice but I actually preferred the stainless steel of previous Pro models. Performance is top-notch and iOS 17 runs flawlessly. It''s a good phone but not the revolutionary upgrade I was expecting.', '2024-01-22 16:45:00', 1),
+('Amanda Davis', 4, 'The iPhone 15 Pro is a solid evolution of the iPhone formula. The USB-C port is finally here and it''s so convenient to use one cable for all my devices. The camera improvements are substantial, particularly the portrait mode with focus control after taking photos. The battery life has been reliable for my moderate usage pattern. My only complaints are the lack of significant design changes and that the base storage should be 256GB at this price point. Overall, very satisfied with my purchase.', '2024-01-25 11:30:00', 1),
+('Alex Thompson', 5, 'This monitor is an absolute game-changer for both work and gaming. The 49-inch super ultrawide display gives me incredible immersion in racing sims and flight simulators. The 240Hz refresh rate with 1ms response time eliminates all motion blur - everything looks crystal clear even in fast-paced shooters. The curve is perfect and reduces eye strain during long sessions. Productivity is through the roof - I can have three full windows side by side. Picture-by-picture mode lets me connect two computers simultaneously. Best tech purchase I''ve made in years!', '2024-01-16 13:20:00', 2),
+('David Wilson', 4, 'Impressive display with minor quality control issues. The size and curvature create an incredibly immersive experience, and HDR content looks stunning with deep blacks and vibrant colors. However, I experienced some backlight bleed in the bottom corners, which is noticeable in dark scenes. The stand takes up a lot of desk space but is very sturdy. Setup was straightforward and the on-screen display is intuitive. Gaming performance is exceptional - no tearing or stuttering with G-Sync enabled. Worth it if you get a good panel.', '2024-01-19 15:40:00', 2),
+('Jennifer Lee', 5, 'As a video editor and graphic designer, this monitor has transformed my workflow. The color accuracy is outstanding right out of the box, covering 95% of DCI-P3 color space. Having my entire timeline, effects panel, and preview window all visible simultaneously saves me hours each week. The 5120x1440 resolution provides sharp text and detailed images. Gaming is incredible - the field of view in racing games makes me feel like I''m actually in the car. The only drawback is that it requires a powerful GPU to drive at full resolution and refresh rate.', '2024-01-21 10:10:00', 2),
+('Thomas Brown', 3, 'Good monitor but has some limitations. The picture quality is excellent and the curve reduces eye strain, but I''ve encountered occasional flickering issues with certain applications. The monitor runs quite hot after several hours of use. The lack of built-in KVM switch is disappointing at this price point. The stand doesn''t have height adjustment, which might be an issue for some setups. Gaming performance is phenomenal when it works properly, but I''ve had to exchange my first unit due to dead pixels. Buyer beware of quality control.', '2024-01-23 18:30:00', 2),
+('Emily Carter', 4, 'This monitor delivers an incredible immersive experience for both work and entertainment. The sheer size lets me multitask efficiently with multiple windows visible. Gaming is breathtaking - the curve wraps around your field of vision perfectly. HDR performance is good, though not as bright as some dedicated HDR monitors. The build quality feels premium and the thin bezels look modern. It does require a deep desk and a powerful graphics card. Once calibrated, colors are accurate and consistent across the entire panel. A worthwhile investment for serious users.', '2024-01-26 12:15:00', 2),
+('Brian Taylor', 5, 'The Dyson V15 Detect is the best vacuum I''ve ever owned. The laser dust detection feature is revolutionary - it shows exactly where the microscopic dust is that you can''t see with naked eye. The suction power is incredible, picking up everything from pet hair to fine dust. The automatic suction adjustment between different floor types works perfectly. The HEPA filtration means no dust escapes back into the air, which is great for my allergies. Battery life lasts about 60 minutes on medium power, which is enough for my entire house. Worth every cent!', '2024-01-17 08:45:00', 3),
+('Karen Martinez', 4, 'Excellent vacuum with a few design quirks. The laser feature is genuinely useful for ensuring you''ve cleaned thoroughly. The various attachments make it versatile for cleaning cars, furniture, and hard-to-reach places. However, the trigger-style power button can be tiring during longer cleaning sessions - I wish it had a toggle lock. The dust bin is easy to empty but sometimes fine dust gets stuck in crevices. The wand telescopes nicely for high ceilings. It''s significantly lighter than my old corded vacuum. Overall, very satisfied despite the premium price.', '2024-01-20 14:20:00', 3),
+('Richard Clark', 5, 'As a pet owner with two dogs that shed constantly, this vacuum has been life-changing. The motorbar head doesn''t get tangled with hair like previous vacuums I''ve owned. The laser actually shows all the pet hair and dander I was missing before. The display showing exactly what you''re picking up in real-time is both satisfying and informative. Battery lasts long enough to do my entire 2000 sq ft home on a single charge. The wall mount is sturdy and keeps everything organized. It''s expensive but has saved me on professional cleaning services.', '2024-01-22 11:30:00', 3),
+('Lisa Anderson', 3, 'Good vacuum but overhyped in my opinion. The laser feature is cool but after the first few uses, it becomes less necessary. The suction power is strong but not significantly better than competitors at half the price. The battery life diminishes noticeably after 6 months of use. The accessories are high quality but expensive to replace. It does a great job on hard floors but can sometimes scatter debris on low-pile carpets. It''s well-designed and looks premium, but I''m not convinced it''s worth the substantial price premium over other cordless options.', '2024-01-24 16:50:00', 3),
+('Daniel White', 4, 'The Dyson V15 makes cleaning less of a chore. The automatic adjustment between different surfaces works surprisingly well, and the laser genuinely helps identify areas that need more attention. The crevice tool is perfect for car interiors. The hygienic bin emptying system is effective and doesn''t create dust clouds. My only complaints are that the battery takes 4-5 hours to fully charge and the vacuum can be top-heavy when using some attachments. For apartments and smaller homes, this is nearly perfect. For larger homes, you might need the extra battery.', '2024-01-27 09:40:00', 3),
+('Christopher Lee', 5, 'The Switch OLED is the definitive version of the Nintendo Switch. The 7-inch OLED screen is absolutely stunning - colors pop, blacks are deep, and the improved brightness makes handheld play much more enjoyable. The enhanced speakers provide richer sound for both games and media. The new adjustable stand is sturdy and allows for comfortable tabletop gaming at various angles. The 64GB internal storage is welcome, though I still use a microSD card for my digital library. If you play primarily in handheld mode, this upgrade is absolutely worth it.', '2024-01-18 12:15:00', 4),
+('Michelle Garcia', 4, 'Great upgrade for handheld players, less so for docked users. The OLED screen makes games like Metroid Dread and The Legend of Zelda look incredible with vibrant colors and perfect blacks. The improved battery life gives me about 5-6 hours of playtime with Breath of the Wild. The Ethernet port in the dock is convenient for stable online gaming. However, the internal hardware is identical to the original Switch, so don''t expect performance improvements. The white Joy-Cons look sleek but may show dirt more easily. Recommended if you play mostly handheld.', '2024-01-21 15:30:00', 4),
+('Kevin Scott', 5, 'As someone who owns all three Switch models, the OLED is hands-down the best for handheld gaming. The screen is significantly larger than the original Switch while maintaining the same device size. Colors are richer and contrast is dramatically better. The improved kickstand makes tabletop mode actually usable in various environments. The speakers are noticeably clearer with better bass response. While it doesn''t offer performance upgrades, the quality-of-life improvements make it the best Switch experience available. Perfect for gaming on the go or around the house.', '2024-01-23 13:45:00', 4),
+('Nicole Young', 3, 'Good console but the upgrade feels incremental. The OLED screen is beautiful but only really noticeable side-by-side with the original Switch. The lack of hardware improvements means games still run at the same frame rates and resolutions. The new dock looks nice but functionally identical. Battery life is slightly better but not dramatically so. If you already own a Switch and play mostly docked, there''s little reason to upgrade. For new buyers or those who play primarily handheld, it''s the best option. Wait for a true \"Switch Pro\" if you want performance gains.', '2024-01-25 17:20:00', 4),
+('Steven Hall', 4, 'The Switch OLED excels at what it''s designed for - portable and tabletop gaming. The screen is gorgeous, making indie games and first-party Nintendo titles look their absolute best. The new stand is infinitely more useful than the flimsy original. Storage upgrade is appreciated since some games like Doom Eternal are massive downloads. The console feels premium and well-built. My only complaint is that Nintendo didn''t include a screen protector in the box for such an expensive screen. Overall, if you don''t own a Switch yet, this is the version to get.', '2024-01-28 10:55:00', 4),
+('Patricia King', 5, 'The Instant Pot Duo Plus has revolutionized my cooking routine. As someone who works long hours, being able to come home and have a healthy meal ready in minutes is incredible. The 9-quart size is perfect for meal prepping or cooking for my family of four. The yogurt function alone has saved me hundreds of dollars compared to store-bought yogurt. The 15 safety features give me peace of mind, especially the lid lock and pressure release indicators. The stainless steel inner pot is durable and dishwasher safe. This has replaced my slow cooker, rice cooker, and steamer!', '2024-01-19 09:30:00', 5),
+('Matthew Wright', 4, 'Excellent multi-cooker with a learning curve. The number of functions is impressive - I particularly love the sous vide feature for perfect steaks. The 14 smart programs take the guesswork out of pressure cooking times. However, the controls can be confusing initially, and the manual could be more comprehensive. The keep-warm function works well but sometimes overcooks delicate foods if left too long. Cleanup is easy, though the sealing ring tends to retain odors that need occasional cleaning. Once you master it, this becomes an indispensable kitchen appliance.', '2024-01-22 18:15:00', 5),
+('Sandra Lopez', 5, 'This Instant Pot has made cooking from scratch accessible despite my busy schedule. I can make beans from dry in under an hour, tenderize cheap cuts of meat, and cook perfect rice every time. The delay start function lets me prep ingredients in the morning and have dinner ready when I get home. The stainless steel construction feels durable and is BPA-free. The steam release handle is well-designed and prevents accidental burns. I''ve successfully made everything from cheesecake to hard-boiled eggs. The best kitchen investment I''ve made in years - it pays for itself quickly!', '2024-01-24 12:40:00', 5),
+('Edward Hill', 3, 'Good pressure cooker but not without flaws. The cooking functions work well and produce delicious meals quickly. However, I''ve experienced inconsistent results with the rice function - sometimes perfect, sometimes mushy. The size is large, which is great for big batches but takes up considerable counter space. The inner pot has hot spots that can cause burning if not enough liquid is used. The display isn''t backlit, making it hard to read in low light. It''s a solid multicooker but I think some of the hype is overblown. Still useful for busy households.', '2024-01-26 14:25:00', 5),
+('Rebecca Green', 4, 'The Instant Pot Duo Plus lives up to most of its promises. I use it several times a week for everything from quick weeknight dinners to Sunday meal prep. The pressure cooking function tenderizes meats beautifully and infuses flavors deeply. The sauté function means I can brown meat and then pressure cook all in one pot. The sterilize function has been great for baby bottles. My only complaints are that it takes time to come to pressure and release pressure, and the buttons beep loudly. Overall, it''s a versatile tool that has earned its place in my kitchen.', '2024-01-29 11:10:00', 5);
+-------------------code----------------------
+
+
+# fastest:
+1- access the db
+-------------------code----------------------
+mysql -u root -p review_summarizer
+-------------------code----------------------
+
+
+2- paste the result of the chatGPT above
+-------------------code---------------------- 
+Query OK, 25 rows affected (0.008 sec)
+Records: 25  Duplicates: 0  Warnings: 0
+-------------------code----------------------
+
+# other methods:
+
+
+- how to insert the data
+You can add the data directly using your existing database connection. Here are the easiest ways:
+
+## Method 1: Direct MySQL import (Recommended)
+
+1. Save the SQL script to a file:
+-------------------code----------------------
+echo "INSERT INTO products (name, description, price) VALUES
+('iPhone 15 Pro', 'The latest flagship smartphone from Apple featuring A17 Pro chip, titanium design, 48MP main camera, and Dynamic Island.', 999.99),
+('Samsung Odyssey G9 Gaming Monitor', '49-inch dual QHD curved gaming monitor with 240Hz refresh rate, 1ms response time, and NVIDIA G-Sync compatibility.', 1299.99),
+('Dyson V15 Detect Cordless Vacuum', 'High-power cordless vacuum with laser dust detection, HEPA filtration, and intelligent suction adjustment.', 749.99),
+('Nintendo Switch OLED', 'Gaming console with 7-inch OLED screen, enhanced audio, 64GB internal storage, and adjustable stand.', 349.99),
+('Instant Pot Duo Plus 9-in-1', '9-quart multi-use programmable pressure cooker with 15 safety features and 14 one-touch smart programs.', 129.99);
+
+INSERT INTO reviews (author, rating, content, createdAt, productId) VALUES
+('Sarah Johnson', 5, 'Absolutely love my new iPhone 15 Pro! The titanium build feels premium and surprisingly lightweight. The camera system is phenomenal - the 48MP main sensor captures incredible detail, and the low-light performance is the best I''ve seen on any smartphone. The A17 Pro chip makes everything buttery smooth, from gaming to video editing. Face ID is faster than ever, and the battery life easily gets me through a full day of heavy use. The Dynamic Island is actually useful for tracking deliveries and music playback. Worth every penny!', '2024-01-15 10:30:00', 1),
+('Michael Chen', 4, 'Great phone overall with some minor quirks. The performance is exceptional and the camera upgrades are noticeable, especially the 5x optical zoom. However, the phone does get warm during extended gaming sessions, and the USB-C transition means I had to replace all my cables. The Action Button is customizable but I wish it had more functionality options. Battery life is solid but not groundbreaking compared to previous models. Still, one of the best phones on the market right now.', '2024-01-18 14:22:00', 1),
+('Jessica Williams', 5, 'Coming from iPhone 12, this feels like a massive upgrade. The 120Hz ProMotion display is incredibly smooth, making everything feel more responsive. The photos it takes are professional-level - I''ve stopped carrying my DSLR for casual outings. The build quality is outstanding, and the new matte finish doesn''t show fingerprints. The satellite connectivity for emergencies gives me peace of mind when hiking. The only downside is the price, but if you keep your phones for 3-4 years, it''s justified.', '2024-01-20 09:15:00', 1),
+('Robert Miller', 3, 'Good phone but overheating issues are concerning. During my first week, the phone got uncomfortably hot during video calls and while charging. The camera produces excellent photos but the processing is sometimes too aggressive, making skin tones look unnatural. The titanium frame is nice but I actually preferred the stainless steel of previous Pro models. Performance is top-notch and iOS 17 runs flawlessly. It''s a good phone but not the revolutionary upgrade I was expecting.', '2024-01-22 16:45:00', 1),
+('Amanda Davis', 4, 'The iPhone 15 Pro is a solid evolution of the iPhone formula. The USB-C port is finally here and it''s so convenient to use one cable for all my devices. The camera improvements are substantial, particularly the portrait mode with focus control after taking photos. The battery life has been reliable for my moderate usage pattern. My only complaints are the lack of significant design changes and that the base storage should be 256GB at this price point. Overall, very satisfied with my purchase.', '2024-01-25 11:30:00', 1),
+('Alex Thompson', 5, 'This monitor is an absolute game-changer for both work and gaming. The 49-inch super ultrawide display gives me incredible immersion in racing sims and flight simulators. The 240Hz refresh rate with 1ms response time eliminates all motion blur - everything looks crystal clear even in fast-paced shooters. The curve is perfect and reduces eye strain during long sessions. Productivity is through the roof - I can have three full windows side by side. Picture-by-picture mode lets me connect two computers simultaneously. Best tech purchase I''ve made in years!', '2024-01-16 13:20:00', 2),
+('David Wilson', 4, 'Impressive display with minor quality control issues. The size and curvature create an incredibly immersive experience, and HDR content looks stunning with deep blacks and vibrant colors. However, I experienced some backlight bleed in the bottom corners, which is noticeable in dark scenes. The stand takes up a lot of desk space but is very sturdy. Setup was straightforward and the on-screen display is intuitive. Gaming performance is exceptional - no tearing or stuttering with G-Sync enabled. Worth it if you get a good panel.', '2024-01-19 15:40:00', 2),
+('Jennifer Lee', 5, 'As a video editor and graphic designer, this monitor has transformed my workflow. The color accuracy is outstanding right out of the box, covering 95% of DCI-P3 color space. Having my entire timeline, effects panel, and preview window all visible simultaneously saves me hours each week. The 5120x1440 resolution provides sharp text and detailed images. Gaming is incredible - the field of view in racing games makes me feel like I''m actually in the car. The only drawback is that it requires a powerful GPU to drive at full resolution and refresh rate.', '2024-01-21 10:10:00', 2),
+('Thomas Brown', 3, 'Good monitor but has some limitations. The picture quality is excellent and the curve reduces eye strain, but I''ve encountered occasional flickering issues with certain applications. The monitor runs quite hot after several hours of use. The lack of built-in KVM switch is disappointing at this price point. The stand doesn''t have height adjustment, which might be an issue for some setups. Gaming performance is phenomenal when it works properly, but I''ve had to exchange my first unit due to dead pixels. Buyer beware of quality control.', '2024-01-23 18:30:00', 2),
+('Emily Carter', 4, 'This monitor delivers an incredible immersive experience for both work and entertainment. The sheer size lets me multitask efficiently with multiple windows visible. Gaming is breathtaking - the curve wraps around your field of vision perfectly. HDR performance is good, though not as bright as some dedicated HDR monitors. The build quality feels premium and the thin bezels look modern. It does require a deep desk and a powerful graphics card. Once calibrated, colors are accurate and consistent across the entire panel. A worthwhile investment for serious users.', '2024-01-26 12:15:00', 2),
+('Brian Taylor', 5, 'The Dyson V15 Detect is the best vacuum I''ve ever owned. The laser dust detection feature is revolutionary - it shows exactly where the microscopic dust is that you can''t see with naked eye. The suction power is incredible, picking up everything from pet hair to fine dust. The automatic suction adjustment between different floor types works perfectly. The HEPA filtration means no dust escapes back into the air, which is great for my allergies. Battery life lasts about 60 minutes on medium power, which is enough for my entire house. Worth every cent!', '2024-01-17 08:45:00', 3),
+('Karen Martinez', 4, 'Excellent vacuum with a few design quirks. The laser feature is genuinely useful for ensuring you''ve cleaned thoroughly. The various attachments make it versatile for cleaning cars, furniture, and hard-to-reach places. However, the trigger-style power button can be tiring during longer cleaning sessions - I wish it had a toggle lock. The dust bin is easy to empty but sometimes fine dust gets stuck in crevices. The wand telescopes nicely for high ceilings. It''s significantly lighter than my old corded vacuum. Overall, very satisfied despite the premium price.', '2024-01-20 14:20:00', 3),
+('Richard Clark', 5, 'As a pet owner with two dogs that shed constantly, this vacuum has been life-changing. The motorbar head doesn''t get tangled with hair like previous vacuums I''ve owned. The laser actually shows all the pet hair and dander I was missing before. The display showing exactly what you''re picking up in real-time is both satisfying and informative. Battery lasts long enough to do my entire 2000 sq ft home on a single charge. The wall mount is sturdy and keeps everything organized. It''s expensive but has saved me on professional cleaning services.', '2024-01-22 11:30:00', 3),
+('Lisa Anderson', 3, 'Good vacuum but overhyped in my opinion. The laser feature is cool but after the first few uses, it becomes less necessary. The suction power is strong but not significantly better than competitors at half the price. The battery life diminishes noticeably after 6 months of use. The accessories are high quality but expensive to replace. It does a great job on hard floors but can sometimes scatter debris on low-pile carpets. It''s well-designed and looks premium, but I''m not convinced it''s worth the substantial price premium over other cordless options.', '2024-01-24 16:50:00', 3),
+('Daniel White', 4, 'The Dyson V15 makes cleaning less of a chore. The automatic adjustment between different surfaces works surprisingly well, and the laser genuinely helps identify areas that need more attention. The crevice tool is perfect for car interiors. The hygienic bin emptying system is effective and doesn''t create dust clouds. My only complaints are that the battery takes 4-5 hours to fully charge and the vacuum can be top-heavy when using some attachments. For apartments and smaller homes, this is nearly perfect. For larger homes, you might need the extra battery.', '2024-01-27 09:40:00', 3),
+('Christopher Lee', 5, 'The Switch OLED is the definitive version of the Nintendo Switch. The 7-inch OLED screen is absolutely stunning - colors pop, blacks are deep, and the improved brightness makes handheld play much more enjoyable. The enhanced speakers provide richer sound for both games and media. The new adjustable stand is sturdy and allows for comfortable tabletop gaming at various angles. The 64GB internal storage is welcome, though I still use a microSD card for my digital library. If you play primarily in handheld mode, this upgrade is absolutely worth it.', '2024-01-18 12:15:00', 4),
+('Michelle Garcia', 4, 'Great upgrade for handheld players, less so for docked users. The OLED screen makes games like Metroid Dread and The Legend of Zelda look incredible with vibrant colors and perfect blacks. The improved battery life gives me about 5-6 hours of playtime with Breath of the Wild. The Ethernet port in the dock is convenient for stable online gaming. However, the internal hardware is identical to the original Switch, so don''t expect performance improvements. The white Joy-Cons look sleek but may show dirt more easily. Recommended if you play mostly handheld.', '2024-01-21 15:30:00', 4),
+('Kevin Scott', 5, 'As someone who owns all three Switch models, the OLED is hands-down the best for handheld gaming. The screen is significantly larger than the original Switch while maintaining the same device size. Colors are richer and contrast is dramatically better. The improved kickstand makes tabletop mode actually usable in various environments. The speakers are noticeably clearer with better bass response. While it doesn''t offer performance upgrades, the quality-of-life improvements make it the best Switch experience available. Perfect for gaming on the go or around the house.', '2024-01-23 13:45:00', 4),
+('Nicole Young', 3, 'Good console but the upgrade feels incremental. The OLED screen is beautiful but only really noticeable side-by-side with the original Switch. The lack of hardware improvements means games still run at the same frame rates and resolutions. The new dock looks nice but functionally identical. Battery life is slightly better but not dramatically so. If you already own a Switch and play mostly docked, there''s little reason to upgrade. For new buyers or those who play primarily handheld, it''s the best option. Wait for a true \"Switch Pro\" if you want performance gains.', '2024-01-25 17:20:00', 4),
+('Steven Hall', 4, 'The Switch OLED excels at what it''s designed for - portable and tabletop gaming. The screen is gorgeous, making indie games and first-party Nintendo titles look their absolute best. The new stand is infinitely more useful than the flimsy original. Storage upgrade is appreciated since some games like Doom Eternal are massive downloads. The console feels premium and well-built. My only complaint is that Nintendo didn''t include a screen protector in the box for such an expensive screen. Overall, if you don''t own a Switch yet, this is the version to get.', '2024-01-28 10:55:00', 4),
+('Patricia King', 5, 'The Instant Pot Duo Plus has revolutionized my cooking routine. As someone who works long hours, being able to come home and have a healthy meal ready in minutes is incredible. The 9-quart size is perfect for meal prepping or cooking for my family of four. The yogurt function alone has saved me hundreds of dollars compared to store-bought yogurt. The 15 safety features give me peace of mind, especially the lid lock and pressure release indicators. The stainless steel inner pot is durable and dishwasher safe. This has replaced my slow cooker, rice cooker, and steamer!', '2024-01-19 09:30:00', 5),
+('Matthew Wright', 4, 'Excellent multi-cooker with a learning curve. The number of functions is impressive - I particularly love the sous vide feature for perfect steaks. The 14 smart programs take the guesswork out of pressure cooking times. However, the controls can be confusing initially, and the manual could be more comprehensive. The keep-warm function works well but sometimes overcooks delicate foods if left too long. Cleanup is easy, though the sealing ring tends to retain odors that need occasional cleaning. Once you master it, this becomes an indispensable kitchen appliance.', '2024-01-22 18:15:00', 5),
+('Sandra Lopez', 5, 'This Instant Pot has made cooking from scratch accessible despite my busy schedule. I can make beans from dry in under an hour, tenderize cheap cuts of meat, and cook perfect rice every time. The delay start function lets me prep ingredients in the morning and have dinner ready when I get home. The stainless steel construction feels durable and is BPA-free. The steam release handle is well-designed and prevents accidental burns. I''ve successfully made everything from cheesecake to hard-boiled eggs. The best kitchen investment I''ve made in years - it pays for itself quickly!', '2024-01-24 12:40:00', 5),
+('Edward Hill', 3, 'Good pressure cooker but not without flaws. The cooking functions work well and produce delicious meals quickly. However, I''ve experienced inconsistent results with the rice function - sometimes perfect, sometimes mushy. The size is large, which is great for big batches but takes up considerable counter space. The inner pot has hot spots that can cause burning if not enough liquid is used. The display isn''t backlit, making it hard to read in low light. It''s a solid multicooker but I think some of the hype is overblown. Still useful for busy households.', '2024-01-26 14:25:00', 5),
+('Rebecca Green', 4, 'The Instant Pot Duo Plus lives up to most of its promises. I use it several times a week for everything from quick weeknight dinners to Sunday meal prep. The pressure cooking function tenderizes meats beautifully and infuses flavors deeply. The sauté function means I can brown meat and then pressure cook all in one pot. The sterilize function has been great for baby bottles. My only complaints are that it takes time to come to pressure and release pressure, and the buttons beep loudly. Overall, it''s a versatile tool that has earned its place in my kitchen.', '2024-01-29 11:10:00', 5);" > seed_data.sql
+-------------------code----------------------
+
+2. Run the SQL file with MySQL:
+-------------------code----------------------
+mysql -u root -p review_summarizer < seed_data.sql
+-------------------code----------------------
+
+## Method 2: Using Prisma Client in your application
+
+Create a seed script (`prisma/seed.ts` or `prisma/seed.js`):
+
+-------------------code----------------------
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
+
+async function main() {
+  // Clear existing data (optional)
+  await prisma.review.deleteMany()
+  await prisma.summary.deleteMany()
+  await prisma.product.deleteMany()
+
+  // Create products
+  const products = await prisma.product.createMany({
+    data: [
+      {
+        name: 'iPhone 15 Pro',
+        description: 'The latest flagship smartphone from Apple featuring A17 Pro chip, titanium design, 48MP main camera, and Dynamic Island.',
+        price: 999.99
+      },
+      {
+        name: 'Samsung Odyssey G9 Gaming Monitor',
+        description: '49-inch dual QHD curved gaming monitor with 240Hz refresh rate, 1ms response time, and NVIDIA G-Sync compatibility.',
+        price: 1299.99
+      },
+      {
+        name: 'Dyson V15 Detect Cordless Vacuum',
+        description: 'High-power cordless vacuum with laser dust detection, HEPA filtration, and intelligent suction adjustment.',
+        price: 749.99
+      },
+      {
+        name: 'Nintendo Switch OLED',
+        description: 'Gaming console with 7-inch OLED screen, enhanced audio, 64GB internal storage, and adjustable stand.',
+        price: 349.99
+      },
+      {
+        name: 'Instant Pot Duo Plus 9-in-1',
+        description: '9-quart multi-use programmable pressure cooker with 15 safety features and 14 one-touch smart programs.',
+        price: 129.99
+      }
+    ]
+  })
+
+  // Create reviews for each product
+  const reviewsData = [
+    // Product 1 reviews...
+    // (Copy all the review data from the SQL script)
+  ]
+
+  await prisma.review.createMany({
+    data: reviewsData
+  })
+}
+
+main()
+  .catch((e) => {
+    console.error(e)
+    process.exit(1)
+  })
+  .finally(async () => {
+    await prisma.$disconnect()
+  })
+-------------------code----------------------
+
+Then run it:
+-------------------code----------------------
+npx ts-node prisma/seed.ts
+# or if using bun
+bun prisma/seed.ts
+-------------------code----------------------
+
+## Method 3: Quick MySQL command line
+
+Copy the entire SQL script and paste it directly into MySQL:
+
+-------------------code----------------------
+mysql -u root -p review_summarizer
+-------------------code----------------------
+
+Then paste the entire INSERT statements and press Enter.
+
+## Method 4: Using a GUI tool (easiest)
+
+1. Install **TablePlus**, **MySQL Workbench**, or **Sequel Ace**
+2. Connect to your MySQL database
+3. Open a new query window
+4. Paste the entire SQL script
+5. Click "Execute" or "Run"
+
+**Recommendation:** Use **Method 1** (SQL file import) - it's the simplest and most reliable. Just save the SQL script and run one command.
