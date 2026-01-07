@@ -2022,3 +2022,237 @@ model Summary {
   @@map("summaries")
 }
 -------------------code----------------------
+
+*** 3.2- Refactoring- Separation of Concerns ***
+
+---
+
+## Refactoring the Reviews Endpoint (Modular Architecture)
+
+### Goal
+
+Refactor the existing reviews endpoint by:
+
+* Separating concerns
+* Introducing **Controller**, **Service**, and **Repository** layers
+* Improving maintainability and clarity
+
+---
+
+## Application Layers Recap
+
+* **Controller**
+
+  * Handles HTTP requests and responses
+  * Validates inputs
+  * Calls services
+
+* **Service**
+
+  * Contains business logic
+  * Coordinates between controller and repository
+
+* **Repository**
+
+  * Handles data access
+  * Communicates directly with Prisma / database
+
+---
+
+## Step 1: Create the Review Controller
+
+### File
+
+-------------------code----------------------
+controllers/review.controller.ts
+-------------------code----------------------
+
+### Responsibilities
+
+* Handle HTTP requests
+* Validate `productId`
+* Call the service
+* Return HTTP responses
+
+### Code
+
+-------------------code----------------------
+import type { Request, Response } from "express";
+import { reviewService } from "../services/review.service";
+
+export const reviewController = {
+  async getReviews(req: Request, res: Response) {
+    const productId = Number(req.params.id);
+
+    if (isNaN(productId)) {
+      return res.status(400).json({ error: "Invalid product ID" });
+    }
+
+    const reviews = await reviewService.getReviews(productId);
+    res.json(reviews);
+  },
+};
+-------------------code----------------------
+
+---
+
+## Step 2: Update Routes Module
+
+### File
+
+-------------------code----------------------
+routes.ts
+-------------------code----------------------
+
+### Change
+
+Replace inline logic with the controller method.
+
+### Code
+
+-------------------code----------------------
+import { reviewController } from "./controllers/review.controller";
+
+
+
+router.get("/api/products/:id/reviews", reviewController.getReviews);
+-------------------code----------------------
+
+---
+
+## Step 3: Introduce the Review Service
+
+### Purpose
+
+Move business logic out of the controller.
+
+### File
+
+-------------------code----------------------
+services/review.service.ts
+-------------------code----------------------
+
+### Responsibilities
+
+* Accept `productId`
+* Return reviews
+* Call repository
+
+### Code
+
+-------------------code----------------------
+import type { Review } from "@prisma/client";
+import { reviewRepository } from "../repositories/review.repository";
+
+export const reviewService = {
+  getReviews(productId: number): Promise<Review[]> {
+    return reviewRepository.getReviews(productId);
+  },
+};
+-------------------code----------------------
+
+---
+
+## Step 4: Introduce the Review Repository
+
+### Why?
+
+Data access logic should not live in services.
+
+### File
+
+-------------------code----------------------
+repositories/review.repository.ts
+-------------------code----------------------
+
+### Responsibilities
+
+* Query the database
+* Use Prisma directly
+
+### Code
+
+-------------------code----------------------
+import { PrismaClient, type Review } from "@prisma/client";
+
+export const reviewRepository = {
+  getReviews(productId: number): Promise<Review[]> {
+    const prisma = new PrismaClient();
+
+    return prisma.review.findMany({
+      where: { productId },
+      orderBy: { createdAt: "desc" },
+    });
+  },
+};
+
+-------------------code----------------------
+
+---
+
+## Final Architecture Flow
+
+-------------------code----------------------
+HTTP Request
+   ↓
+Review Controller
+   ↓
+Review Service
+   ↓
+Review Repository
+   ↓
+Prisma / Database
+-------------------code----------------------
+
+---
+
+## Notes on Design Decisions
+
+* The **service layer** currently acts as a pass-through.
+* This may seem unnecessary, but it:
+
+  * Keeps architecture consistent
+  * Allows future business logic without refactoring controllers
+* Later in the course, this layer can be removed if proven redundant.
+
+---
+
+## Testing the Endpoint
+
+### Valid Product ID
+
+* Returns an array of reviews
+
+### Invalid Numeric ID
+
+* Returns an empty array
+
+### Non-numeric Product ID
+
+-------------------code----------------------json
+{
+  "error": "Invalid product ID"
+}
+-------------------code----------------------
+
+### Postman Cache Issue
+
+If results do not update:
+
+1. Switch to **Preview** tab
+2. Return to **Pretty** tab
+
+---
+
+## Result
+
+* Clean separation of concerns
+* Modular, scalable structure
+* Endpoint works exactly as before
+* Code is easier to test and maintain
+
+---
+
+## Next Step
+
+Implement an endpoint for **summarizing reviews**.
