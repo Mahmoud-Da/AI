@@ -2516,3 +2516,243 @@ This string will later be sent to a language model for summarization.
 * Replace the placeholder implementation
 
 ---
+
+*** 3.4- Generating Summaries  ***
+
+---
+
+# Summarizing Reviews Using a Language Model
+
+## Objective
+
+Replace the placeholder summary with a real AI-generated summary by:
+
+* Sending the latest reviews to a language model
+* Building a prompt for summarization
+* Returning the model’s output to the client
+
+---
+
+## Recap from Previous Lesson
+
+Previously, we:
+
+* Fetched the latest reviews (limited to 10)
+* Combined them into a single string (`joinedReviews`)
+* Returned a hardcoded placeholder summary
+
+In this lesson, we:
+
+* Send `joinedReviews` to a language model
+* Generate a real summary
+* Prepare the code for future refactoring
+
+---
+
+## Reusing Existing OpenAI Setup
+
+Earlier in the course, an OpenAI client was created inside the **chat service**:
+
+* The client was initialized with an API key
+* The same client was used to generate responses
+
+For now:
+
+* We will **copy this setup** into the review service
+* After confirming everything works, we will refactor to remove duplication
+
+---
+
+## Step 1: Initialize the OpenAI Client in the Review Service
+
+### File
+
+-------------------code----------------------
+services/review.service.ts
+-------------------code----------------------
+
+### Add at the Top of the File
+
+-------------------code----------------------
+import OpenAI from "openai";
+
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+-------------------code----------------------
+
+---
+
+## Step 2: Build the Prompt for Summarization
+
+### Prompt Design Goals
+
+* Short paragraph
+* Highlight key themes
+* Include both positive and negative feedback
+* Deterministic output
+
+Prompt wording is flexible and should be tested and refined over time.
+
+---
+
+## Step 3: Call the Language Model
+
+### Model Configuration Choices
+
+* **Model:** gpt-5-mini (can be changed later)
+* **Temperature:** 0.2
+  Ensures consistent, low-creativity summaries
+* **Max Output Tokens:** 500
+  More than enough for a short paragraph
+
+---
+
+## Final Implementation: Review Service
+
+### File
+
+-------------------code----------------------
+services/review.service.ts
+-------------------code----------------------
+
+### Code
+
+-------------------code----------------------
+import type { Review } from "@prisma/client";
+import { reviewRepository } from "../repositories/review.repository";
+import OpenAI from "openai";
+
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+export const reviewService = {
+  getReviews(productId: number): Promise<Review[]> {
+    return reviewRepository.getReviews(productId);
+  },
+
+  async summarizeReviews(productId: number): Promise<string> {
+    const reviews = await reviewRepository.getReviews(productId, 10);
+
+    const joinedReviews = reviews.map((r) => r.content).join("\n\n");
+    const prompt = `
+      Summarize the following customer reviews into a short paragraph,
+      highlighting key themes, both positive and negative:
+
+      ${joinedReviews}
+          `;
+    console.log(joinedReviews);
+    const response = await client.responses.create({
+      model: "gpt-5-mini",
+      input: prompt,
+      max_output_tokens: 1000,
+    });
+
+    console.log(response);
+    return response.output_text;
+  },
+};
+
+-------------------code----------------------
+
+---
+
+## Step 4: Testing the Endpoint
+
+### Request
+
+* **Method:** POST
+* **URL:**
+
+  -------------------code----------------------
+  http://localhost:3000/api/products/1/reviews/summarize
+  -------------------code----------------------
+
+### Result
+
+* The request takes slightly longer due to model inference
+* A real, AI-generated summary is returned
+
+Example response:
+
+-------------------code----------------------json
+{
+  "summary": "Customers generally praise the product’s build quality and performance, while some mention concerns about pricing and battery life."
+}
+-------------------code----------------------
+
+---
+
+## Key Takeaways
+
+* Review summarization is a **service-level responsibility**
+* Only recent reviews are summarized to:
+
+  * Reduce cost
+  * Control context size
+  * Reflect current product quality
+* Prompt engineering is iterative and experimental
+* Deterministic settings are preferred for summaries
+
+---
+
+## Next Step
+
+Refactor the code to:
+
+* Remove duplicated OpenAI client initialization
+* Centralize AI logic into a shared module or service
+
+
+PS: Based on the logs you provided, the reason `output_text` is empty is that the model **ran out of tokens while "thinking" (reasoning)** before it could generate the actual summary.
+
+Here is the breakdown of the evidence in your log:
+
+1.  **The Error Reason:**
+    -------------------code----------------------
+    [server]   status: "incomplete",
+    [server]   incomplete_details: {
+    [server]     reason: "max_output_tokens",
+    [server]   },
+    -------------------code----------------------
+    The request was stopped because it hit the `max_output_tokens` limit you set.
+
+2.  **The Token Usage:**
+    -------------------code----------------------
+    [server]   usage: {
+    ...
+    [server]     output_tokens: 64,
+    [server]     output_tokens_details: {
+    [server]       reasoning_tokens: 64,
+    [server]     },
+    ...
+    [server]   },
+    -------------------code----------------------
+    You set the limit to `100`. The model used **64** tokens. Crucially, **all 64 of them were `reasoning_tokens`**.
+
+    Modern "reasoning" models (like the `gpt-5-mini` or `o1`/`o3` series you appear to be using) generate hidden "thought" tokens to plan their answer before writing the visible response. The model was still in its reasoning phase when it hit the limit (or got close enough that it couldn't proceed), so it cut off before generating any visible `output_text`.
+
+### Solution
+
+Increase your `max_output_tokens`.
+
+A limit of `100` is too low for reasoning models because they need budget for **both** the hidden thoughts and the final text. Try increasing it to **500** or **1000**.
+
+**Change this:**
+-------------------code----------------------
+    const response = await client.responses.create({
+      model: "gpt-5-mini",
+      input: prompt,
+      max_output_tokens: 100, // <--- Too low
+    });
+-------------------code----------------------
+
+**To this:**
+-------------------code----------------------
+    const response = await client.responses.create({
+      model: "gpt-5-mini",
+      input: prompt,
+      max_output_tokens: 1000, // Give it space to think and write
+    });
+-------------------code----------------------
