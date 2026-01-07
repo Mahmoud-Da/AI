@@ -2256,3 +2256,263 @@ If results do not update:
 ## Next Step
 
 Implement an endpoint for **summarizing reviews**.
+
+
+*** 3.3- Creating an API for Summarizing Reviews ***
+---
+
+# Creating a Reviews Summarization Endpoint
+
+## Objective
+
+Create a new endpoint that summarizes reviews for a given product by:
+
+* Adding a new POST route
+* Extending the controller and service layers
+* Reusing the repository with a configurable limit
+* Returning a placeholder summary (LLM integration will come later)
+
+---
+
+## REST Design Decisions
+
+* **HTTP Method:** `POST`
+
+  * Summarization creates new derived data.
+* **Endpoint Path:** `/products/:productId/reviews/summarize`
+
+  * Follows RESTful conventions.
+* **Response Shape:** Object instead of raw string
+
+  -------------------code----------------------
+  { "summary": "..." }
+  -------------------code----------------------
+
+---
+
+## Step 1: Update Routes Module
+
+### File
+
+-------------------code----------------------
+routes.ts
+-------------------code----------------------
+
+### Changes
+
+* Duplicate the reviews route
+* Change method to `POST`
+* Append `/summarize`
+* Map to a new controller method
+
+### Code
+
+-------------------code----------------------
+import { Router } from "express";
+import { reviewController } from "./controllers/review.controller";
+
+const router = Router();
+
+router.get(
+  "/api/products/:id/reviews",
+  reviewController.getReviews
+);
+
+router.post(
+  "/api/products/:id/reviews/summarize",
+  reviewController.summarizeReviews
+);
+
+export default router;
+-------------------code----------------------
+
+---
+
+## Step 2: Add Controller Method
+
+### File
+
+-------------------code----------------------
+controllers/review.controller.ts
+-------------------code----------------------
+
+### Responsibilities
+
+* Validate `productId`
+* Call the service layer
+* Return the summary in JSON format
+
+### Code
+
+-------------------code----------------------
+import type { Request, Response } from "express";
+import { reviewService } from "../services/review.service";
+
+export const reviewController = {
+  async getReviews(req: Request, res: Response) {
+    const productId = Number(req.params.id);
+
+    if (isNaN(productId)) {
+      return res.status(400).json({ error: "Invalid product ID" });
+    }
+
+    const reviews = await reviewService.getReviews(productId);
+    res.json(reviews);
+  },
+
+  async summarizeReviews(req: Request, res: Response) {
+    const productId = Number(req.params.id);
+
+    if (isNaN(productId)) {
+      return res.status(400).json({ error: "Invalid product ID" });
+    }
+
+    const summary = await reviewService.summarizeReviews(productId);
+
+    res.json({
+      summary,
+    });
+  },
+};
+-------------------code----------------------
+
+---
+
+## Step 3: Extend the Review Service
+
+### File
+
+-------------------code----------------------
+services/review.service.ts
+-------------------code----------------------
+
+### Design Notes
+
+* Summarization belongs to the service layer
+* Only the **latest reviews** are used
+* We intentionally avoid sending all reviews to a language model
+
+Reasons for limiting reviews:
+
+* Prevent large context windows
+* Reduce cost
+* Recent reviews better reflect product quality
+
+### Code
+
+-------------------code----------------------
+import type { Review } from "@prisma/client";
+import { reviewRepository } from "../repositories/review.repository";
+
+export const reviewService = {
+  getReviews(productId: number): Promise<Review[]> {
+    return reviewRepository.getReviews(productId);
+  },
+
+  async summarizeReviews(productId: number): Promise<string> {
+    const reviews = await reviewRepository.getReviews(productId, 10);
+
+    const joinedReviews = reviews.map((r) => r.content).join("\n\n");
+    // later we will add it to LLM
+    // for testing our api we will just send a string
+    const summary = "This is a placeholder summary";
+
+    return summary;
+  },
+};
+-------------------code----------------------
+
+---
+
+## Step 4: Update the Review Repository
+
+### Purpose
+
+Allow fetching a limited number of recent reviews.
+
+### File
+
+-------------------code----------------------
+repositories/review.repository.ts
+-------------------code----------------------
+
+### Changes
+
+* Add optional `limit` parameter
+* Use Prisma’s `take` option
+
+### Code
+
+-------------------code----------------------
+import { prisma } from "../generated/prisma";
+import type { Review } from "@prisma/client";
+
+export const reviewRepository = {
+  getReviews(productId: number, limit?: number): Promise<Review[]> {
+    const prisma = new PrismaClient();
+
+    return prisma.review.findMany({
+      where: { productId },
+      orderBy: { createdAt: "desc" },
+      take: limit,
+    });
+  },
+};
+
+-------------------code----------------------
+
+---
+
+## Step 5: How Review Text Is Prepared
+
+* Fetch the last 10 reviews
+* Extract only the `content`
+* Join them into a single formatted string
+
+-------------------code----------------------
+const joinedReviews = reviews
+  .map((r) => r.content)
+  .join("\n\n");
+-------------------code----------------------
+
+This string will later be sent to a language model for summarization.
+
+---
+
+## Step 6: Testing the Endpoint
+
+### Request
+
+* **Method:** POST
+* **URL:**
+
+  -------------------code----------------------
+  http://localhost:3000/api/products/1/reviews/summarize
+  -------------------code----------------------
+
+### Response
+
+-------------------code----------------------
+{
+  "summary": "This is a placeholder summary"
+}
+-------------------code----------------------
+
+---
+
+## Current State of the Feature
+
+* Endpoint is fully wired
+* Controller, service, and repository are connected
+* Reviews are fetched and prepared correctly
+* Summary is currently hard-coded
+
+---
+
+## Next Lesson
+
+* Send the joined reviews to a language model
+* Generate a real summary
+* Replace the placeholder implementation
+
+---

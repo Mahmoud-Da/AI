@@ -5,4 +5,15 @@ export const reviewService = {
   getReviews(productId: number): Promise<Review[]> {
     return reviewRepository.getReviews(productId);
   },
+
+  async summarizeReviews(productId: number): Promise<string> {
+    const reviews = await reviewRepository.getReviews(productId, 10);
+
+    const joinedReviews = reviews.map((r) => r.content).join("\n\n");
+    // later we will add it to LLM
+    // for testing our api we will just send a string
+    const summary = "This is a placeholder summary";
+
+    return summary;
+  },
 };
