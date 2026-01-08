@@ -3831,3 +3831,272 @@ Is Valid?
 * Improve expiration strategy
 * Add background regeneration
 * Optimize summary length and prompt quality
+
+
+*** 3.9- Handling Edge Cases ***
+---
+
+# Handling Edge Cases in Review Summary API
+
+## Why This Lesson Matters
+
+So far, the review summary feature works only in the **happy path**.
+A production-ready API must correctly handle **invalid input and unexpected scenarios** without crashing.
+
+This lesson focuses on identifying and fixing those edge cases.
+
+---
+
+## Edge Cases to Handle
+
+1. Product ID is **not numeric**
+2. Product ID is numeric but **product does not exist**
+3. Product exists but has **no reviews**
+4. Ensure the happy path still works after fixes
+
+---
+
+## Edge Case 1: Non-Numeric Product ID
+
+### Example
+
+-------------------code----------------------
+/products/A/summarize
+-------------------code----------------------
+
+### Expected Behavior
+
+* HTTP status: `400 Bad Request`
+* Error message: `Invalid product ID`
+
+### Status
+
+Already handled correctly via input validation.
+
+---
+
+## Edge Case 2: Numeric but Invalid Product ID
+
+### Example
+
+-------------------code----------------------
+/products/10/summarize
+-------------------code----------------------
+
+### Problem
+
+* API returned `500 Internal Server Error`
+* Server crashed because product did not exist
+
+### Solution
+
+Validate product existence **before** summarizing reviews.
+
+---
+
+## Step 1: Create Product Repository
+
+### File
+
+-------------------code----------------------
+repositories/product.repository.ts
+-------------------code----------------------
+
+### Code
+
+-------------------code----------------------
+import { PrismaClient } from "../generated/client";
+
+const prisma = new PrismaClient();
+
+export const productRepository = {
+  async getProduct(productId: number) {
+    return prisma.product.findUnique({
+      where: {
+        id: productId,
+      },
+    });
+  },
+};
+-------------------code----------------------
+
+---
+
+## Step 2: Validate Product in Controller
+
+### File
+
+-------------------code----------------------
+controllers/review.controller.ts
+-------------------code----------------------
+
+### Updated Controller Logic
+
+-------------------code----------------------
+import type { Request, Response } from "express";
+import { productRepository } from "../repositories/product.repository";
+import { reviewService } from "../services/review.service";
+
+export const reviewController = {
+  async getReviews(req: Request, res: Response) {
+    const productId = Number(req.params.id);
+
+    if (isNaN(productId)) {
+      return res.status(400).json({ error: "Invalid product ID" });
+    }
+
+    const reviews = await reviewService.getReviews(productId);
+    res.json(reviews);
+  },
+
+  async summarizeReviews(req: Request, res: Response) {
+    const productId = Number(req.params.id);
+
+    if (isNaN(productId)) {
+      return res.status(400).json({ error: "Invalid product ID" });
+    }
+
+    const product = await productRepository.getProduct(productId);
+
+    if (!product) {
+      return res.status(400).json({
+        error: "Invalid product",
+      });
+    }
+
+    const summary = await reviewService.summarizeReviews(productId);
+
+    res.json({
+      summary,
+    });
+  },
+};
+-------------------code----------------------
+
+### Result
+
+* API returns `400`
+* Server no longer crashes
+
+---
+
+## Edge Case 3: Product Has No Reviews
+
+### Problem
+
+If a product has no reviews:
+
+* LLM returns awkward responses like:
+
+  > "It looks like you haven't provided customer reviews yet"
+
+This is unacceptable.
+
+---
+
+## Design Decision
+
+Two valid approaches:
+
+1. Return an empty summary
+2. Return an error
+
+### Chosen Approach
+
+Return an error because:
+
+* Frontend should hide “Summarize” button if no reviews exist
+* This situation should not happen logically
+
+---
+
+## Step 3: Check If Reviews Exist (Efficiently)
+
+### Controller Update
+
+-------------------code----------------------
+const reviews = await reviewRepository.getReviews(productId, 1);
+
+if (!reviews.length) {
+  return res.status(400).json({
+    error: "There are no reviews to summarize",
+  });
+}
+-------------------code----------------------
+
+### Why Limit = 1?
+
+* We only need to know if **at least one review exists**
+* Avoids unnecessary database load
+
+---
+
+## Final Controller Flow
+
+-------------------code----------------------
+1. Validate product ID is numeric
+2. Validate product exists
+3. Validate product has reviews
+4. Call summarize service
+5. Return summary
+-------------------code----------------------
+
+---
+
+## Testing All Scenarios
+
+### Invalid Product ID (Non-Numeric)
+
+* Status: `400`
+* Message: `Invalid product ID`
+
+### Invalid Product ID (Numeric but Missing)
+
+* Status: `400`
+* Message: `Invalid product`
+
+### No Reviews
+
+* Status: `400`
+* Message: `There are no reviews to summarize`
+
+### Happy Path
+
+* Status: `200`
+* Summary generated or fetched from cache
+
+---
+
+## Cleaning Up Bad Data
+
+A summary generated earlier for a product with no reviews must be removed manually from the database.
+
+This was a **bug**, not valid data.
+
+---
+
+## Final Verification
+
+* Cached summaries return instantly
+* Expired summaries regenerate correctly
+* No unnecessary OpenAI calls
+* All execution paths tested successfully
+
+---
+
+## Key Takeaways
+
+* Always think beyond the happy path
+* Validate inputs early
+* Prevent invalid states from reaching business logic
+* Never rely on LLMs to handle missing data gracefully
+* Defensive APIs are stable APIs
+
+---
+
+## What’s Next
+
+* Background summary regeneration
+* Better expiration strategies
+* API rate limiting
+* Observability and logging
