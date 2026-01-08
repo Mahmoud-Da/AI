@@ -3094,3 +3094,170 @@ Extract prompts into dedicated modules to:
 * Improve readability
 * Enable reuse
 * Make prompt iteration easier
+
+*** 3.6- Refactoring- Extracting the Prompt ***
+---
+
+# Refactoring Prompts into Dedicated Files
+
+## Problem Statement
+
+Currently, the review summarization prompt is embedded directly in the service code.
+
+While this is manageable for short prompts, it becomes problematic as prompts:
+
+* Grow longer and more complex
+* Require frequent iteration
+* Need to be reused or adjusted independently from code
+
+To improve maintainability, prompts should be **separated from application logic**.
+
+---
+
+## Existing Pattern
+
+Earlier in the course:
+
+* A `prompts` directory was introduced
+* Prompts were stored as `.txt` files
+* Placeholders were used for dynamic content
+
+We will follow the same pattern for review summarization.
+
+---
+
+## Step 1: Create a Prompt File
+
+### File
+
+-------------------code----------------------
+prompts/summarize-reviews.txt
+-------------------code----------------------
+
+### Content
+
+-------------------code----------------------
+Summarize the following customer reviews into a short paragraph,
+highlighting key themes, both positive and negative:
+
+{{reviews}}
+-------------------code----------------------
+
+* `{{reviews}}` is a placeholder
+* Double braces match the existing prompt templating convention
+
+---
+
+## Step 2: Remove the Inline Prompt from the Review Service
+
+The prompt should no longer be hardcoded in the service logic.
+
+---
+
+## Step 3: Import the Prompt Template
+
+### File
+
+-------------------code----------------------
+services/review.service.ts
+-------------------code----------------------
+
+### Import
+
+-------------------code----------------------
+import template from "../prompts/summarize-reviews.txt";
+-------------------code----------------------
+
+---
+
+## Step 4: Build the Prompt Using the Template
+
+Replace the placeholder with the joined reviews.
+
+### Code
+
+-------------------code----------------------
+const prompt = template.replace(
+  "{{reviews}}",
+  joinedReviews
+);
+-------------------code----------------------
+
+---
+
+## Updated Review Service (Relevant Section)
+
+-------------------code----------------------
+import type { Review } from "@prisma/client";
+import { llmClient } from "../llm/client";
+import { reviewRepository } from "../repositories/review.repository";
+import template from "../prompts/summarize-reviews.txt";
+
+export const reviewService = {
+  getReviews(productId: number): Promise<Review[]> {
+    return reviewRepository.getReviews(productId);
+  },
+
+  async summarizeReviews(productId: number): Promise<string> {
+    const reviews = await reviewRepository.getReviews(productId, 10);
+
+    const joinedReviews = reviews.map((r) => r.content).join("\n\n");
+    const prompt = template.replace("{{reviews}}", joinedReviews);
+
+    console.log(joinedReviews);
+    const response = await llmClient.generateText({
+      model: "gpt-5-mini",
+      prompt,
+      maxTokens: 1000,
+    });
+
+    console.log(response);
+    return response.text;
+  },
+};
+-------------------code----------------------
+
+---
+
+## Step 5: Verify the Refactor
+
+### Test
+
+* Send a POST request to summarize reviews
+
+### Result
+
+* The endpoint works as before
+* The generated summary is unchanged
+* Prompt logic is now cleanly separated
+
+---
+
+## Benefits of This Refactoring
+
+* Prompts are easier to read and edit
+* Code focuses on logic, not text
+* Prompts can be versioned and reused
+* Future prompt complexity is easier to manage
+
+---
+
+## Current State of the Architecture
+
+-------------------code----------------------
+Service Layer
+   ↓
+Prompt Template (File)
+   ↓
+LLM Client
+-------------------code----------------------
+
+---
+
+## Next Lesson
+
+Store the generated review summary in the database for:
+
+* Caching
+* Reuse
+* Performance improvements
