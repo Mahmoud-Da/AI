@@ -2229,7 +2229,7 @@ Prisma / Database
 
 ### Non-numeric Product ID
 
--------------------code----------------------json
+-------------------code----------------------
 {
   "error": "Invalid product ID"
 }
@@ -2676,7 +2676,7 @@ export const reviewService = {
 
 Example response:
 
--------------------code----------------------json
+-------------------code----------------------
 {
   "summary": "Customers generally praise the product’s build quality and performance, while some mention concerns about pricing and battery life."
 }
@@ -4332,7 +4332,7 @@ The controller does not care **how** the summary is validated.
 
 Requesting reviews for a non-existent product returned:
 
--------------------code----------------------json
+-------------------code----------------------
 {
   "summary": null,
   "reviews": []
@@ -4514,3 +4514,294 @@ With a well-designed backend:
 * Refactoring is easier and safer
 
 This lesson marks the transition from **backend architecture** to **user-facing experience**.
+
+*** 4.1- Displaying Reviews ***
+
+---
+
+# Connecting the Frontend to the Backend (Fetching Reviews)
+
+## Objective
+
+In this lesson, we connect the frontend to the backend and fetch product reviews from the API.
+We build the first review-related React component step by step and render real data from the server.
+
+---
+
+## Component Organization
+
+To keep the frontend code organized:
+
+* Navigate to:
+  `client/src/components`
+* Create a new directory called:
+  **reviews**
+
+This directory will contain all components related to rendering reviews.
+
+---
+
+## ReviewList Component
+
+### File Creation
+
+* Inside the `reviews` directory, create:
+
+  * `ReviewList.tsx`
+* Use the `rafce` snippet to generate a React Arrow Function Component.
+
+---
+
+## Props Definition
+
+The component needs to know **which product** to fetch reviews for.
+
+-------------------code----------------------
+type ReviewListProps = {
+  productId: number;
+};
+-------------------code----------------------
+
+* Destructure `productId` from props inside the component.
+
+---
+
+## Review Type Definition
+
+To type our state correctly, we define a `Review` type based on the API response and Prisma schema.
+
+-------------------code----------------------
+type Review = {
+  id: number;
+  author: string;
+  content: string;
+  rating: number;
+  createdAt: string;
+};
+-------------------code----------------------
+
+Note:
+
+* `createdAt` is a Date in the backend but is serialized as a string in JSON.
+
+---
+
+## API Response Type
+
+The reviews endpoint returns an object with **two properties**:
+
+* `summary`: string or null
+* `reviews`: array of reviews
+
+-------------------code----------------------
+type GetReviewsResponse = {
+  summary: string | null;
+  reviews: Review[];
+};
+-------------------code----------------------
+
+---
+
+## State Management
+
+We store the entire API response in state:
+
+-------------------code----------------------
+const [reviewData, setReviewData] = useState<GetReviewsResponse | null>(null);
+-------------------code----------------------
+
+---
+
+## Fetching Reviews with useEffect
+
+### API Call Logic
+
+* Use `axios` to fetch data
+* The endpoint format:
+
+-------------------code----------------------
+/api/products/{productId}/reviews
+-------------------code----------------------
+
+Example implementation:
+
+-------------------code----------------------
+const fetchReviews = async () => {
+  const { data } = await axios.get<GetReviewsResponse>(
+    `/api/products/${productId}/reviews`
+  );
+  setReviewData(data);
+};
+-------------------code----------------------
+
+---
+
+### useEffect Hook
+
+Call `fetchReviews` inside `useEffect`.
+
+Important:
+
+* Always include a dependency array to avoid infinite requests.
+
+-------------------code----------------------
+useEffect(() => {
+  fetchReviews();
+}, [productId]);
+-------------------code----------------------
+
+---
+
+## Rendering Reviews
+
+Once data is fetched:
+
+* Map over `reviewData.reviews`
+* Render each review inside a `div`
+* Use `review.id` as the key
+
+### Rendered Fields
+
+For each review:
+
+* Author
+* Rating (out of 5)
+* Content
+
+Example structure:
+
+-------------------code----------------------
+<div key={review.id}>
+  <div>{review.author}</div>
+  <div>{review.rating} / 5</div>
+  <p>{review.content}</p>
+</div>
+-------------------code----------------------
+
+---
+
+## Integrating ReviewList into App
+
+In `App.tsx`:
+
+* Remove the chatbot component
+* Render the review list instead
+
+-------------------code----------------------
+<ReviewList productId={1} />
+-------------------code----------------------
+
+---
+
+## Styling Improvements
+
+Basic styling using utility classes:
+
+* Parent container:
+
+  * Flex
+  * Column layout
+  * Vertical spacing
+
+-------------------code----------------------
+<div className="flex flex-col gap-5">
+-------------------code----------------------
+
+* Author:
+
+  * Semi-bold font
+
+-------------------code----------------------
+<div className="font-semibold">
+-------------------code----------------------
+
+* Review content:
+
+  * Vertical padding
+
+-------------------code----------------------
+<p className="py-2">
+-------------------code----------------------
+
+---
+
+## Result
+
+* Reviews are fetched from the backend successfully
+* No errors in the browser
+* UI displays real data
+* Styling is clean and readable
+
+---
+
+## Key Takeaways
+
+* Group related components into feature-based directories
+* Always define frontend types based on API responses
+* Use `useEffect` dependency arrays correctly
+* Build UI incrementally: functionality first, styling later
+
+---
+
+## Next Step
+
+Now that reviews are rendering correctly, the next lesson will build on this foundation and further improve the frontend.
+
+
+final file 
+-------------------code----------------------
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+type ReviewListProps = {
+  productId: number;
+};
+
+type Review = {
+  id: number;
+  author: string;
+  content: string;
+  rating: number;
+  createdAt: string;
+};
+
+type GetReviewsResponse = {
+  summary: string | null;
+  reviews: Review[];
+};
+
+const ReviewList = ({ productId }: ReviewListProps) => {
+  const [reviewData, setReviewData] = useState<GetReviewsResponse | null>(null);
+
+  const fetchReviews = async () => {
+    const { data } = await axios.get<GetReviewsResponse>(
+      `/api/products/${productId}/reviews`
+    );
+    setReviewData(data);
+  };
+
+  useEffect(() => {
+    fetchReviews();
+  }, [productId]);
+
+  if (!reviewData) {
+    return <div>Loading reviews...</div>;
+  }
+
+  return (
+    <div className="flex flex-col gap-5">
+      {reviewData.reviews.map((review) => (
+        <div key={review.id} className="border rounded p-4">
+          <div className="font-semibold">{review.author}</div>
+          <div className="text-sm text-gray-600">
+            Rating: {review.rating} / 5
+          </div>
+          <p className="py-2">{review.content}</p>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default ReviewList;
+-------------------code----------------------
