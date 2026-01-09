@@ -5009,3 +5009,310 @@ const StarRating = ({ value }: StarRatingProps) => {
 
 export default StarRating;
 -------------------code----------------------
+
+
+*** 4.3- Displaying Loading Skeletons ***
+---
+
+# Adding a Loading Skeleton for Reviews
+
+## Problem
+
+When fetching reviews from the backend, there is a short delay.
+On fast connections, this delay is barely noticeable, but on slow networks:
+
+* The UI appears empty
+* Users don’t get immediate feedback
+* The experience feels less polished
+
+---
+
+## Goal
+
+Improve user experience by:
+
+* Showing a **loading state** while reviews are being fetched
+* Replacing a plain loading message with a **modern loading skeleton**
+
+---
+
+## Library Used
+
+**react-loading-skeleton**
+
+Why this library:
+
+* Very popular and well-maintained
+* Easy to use
+* Produces clean, modern skeleton UIs
+
+---
+
+## Step 1: Add Loading State
+
+Inside `ReviewList`:
+
+* Add a new state variable:
+
+  * `isLoading` (boolean)
+  * Initialized to `false`
+
+### Loading State Flow
+
+1. Before making the API request:
+
+   * Set `isLoading` to `true`
+2. After the request completes:
+
+   * Set `isLoading` back to `false`
+
+This allows the component to know when data is being fetched.
+
+---
+
+## Step 2: Verify Loading Logic
+
+Before introducing skeletons:
+
+* Return a simple paragraph when `isLoading` is `true`
+* Example: “Loading…”
+
+### Why this step matters
+
+* Ensures the loading logic is correct
+* Prevents debugging skeletons when the real issue is state handling
+
+---
+
+## Step 3: Simulate a Slow Network
+
+Because loading happens quickly on fast connections:
+
+* Open Chrome DevTools
+* Go to the **Network** tab
+* Enable throttling (e.g. **Slow 4G**)
+* Refresh the page
+
+Result:
+
+* The loading message becomes visible
+* Confirms the loading state works correctly
+
+---
+
+## Step 4: Install Skeleton Library
+
+From the **client directory**, run:
+
+-------------------code----------------------
+bun add react-loading-skeleton
+-------------------code----------------------
+
+---
+
+## Step 5: Import Skeleton Styles
+
+The skeleton library requires a CSS file.
+
+In `main.tsx`:
+
+* Import the skeleton CSS file as instructed in the documentation
+
+This step is required for the skeletons to render correctly.
+
+---
+
+## Step 6: Use Skeletons in ReviewList
+
+### Import Skeleton Component
+
+At the top of `ReviewList`:
+
+* Import `Skeleton` from `react-loading-skeleton`
+
+-------------------code----------------------
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "react-loading-skeleton/dist/skeleton.css";
+import App from "./App.tsx";
+import "./index.css";
+
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>
+);
+-------------------code----------------------
+---
+
+## Step 7: Render Skeleton Layout
+
+When `isLoading` is `true`:
+
+### Container
+
+* Use a `div` styled with:
+
+  * `flex`
+  * `flex-col`
+  * `gap-5`
+
+This matches the layout of real reviews.
+
+---
+
+### Skeleton Placeholders
+
+* Create an array with **three elements**
+* Each element represents a placeholder review
+
+Map over this array to render skeletons.
+
+---
+
+### Skeleton Structure per Review
+
+Inside each placeholder:
+
+1. **Author skeleton**
+
+   * Narrow width (e.g. 150px)
+2. **Rating skeleton**
+
+   * Smaller width (e.g. 100px)
+3. **Content skeleton**
+
+   * Use `count={2}` to simulate two lines of text
+
+Each placeholder is given a `key` for React reconciliation.
+
+---
+
+## Step 8: Verify Skeleton Rendering
+
+To confirm skeletons work:
+
+* Temporarily reverse the loading condition
+* Force skeletons to render even when not loading
+
+Result:
+
+* Skeleton layout appears correctly
+* Confirms implementation is visually correct
+
+After verification:
+
+* Restore the original loading condition
+
+---
+
+## Final Result
+
+With network throttling enabled:
+
+* Skeletons appear immediately
+* Reviews load smoothly afterward
+* UI feels faster and more professional
+
+---
+
+## Outcome
+
+* Clear feedback during data fetching
+* Improved perceived performance
+* Modern and polished user experience
+* Clean separation between loading and loaded states
+
+---
+
+## Next Step
+
+With loading handled properly, the next lesson focuses on:
+
+* **Error handling**
+* Gracefully handling failed API requests
+
+-------------------code----------------------
+import axios from "axios";
+import { useEffect, useState } from "react";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import StarRating from "./StarRating";
+
+type Review = {
+  id: number;
+  author: string;
+  content: string;
+  rating: number;
+  createdAt: string;
+};
+
+type GetReviewsResponse = {
+  summary: string | null;
+  reviews: Review[];
+};
+
+type ReviewListProps = {
+  productId: number;
+};
+
+const ReviewList = ({ productId }: ReviewListProps) => {
+  const [reviewData, setReviewData] = useState<GetReviewsResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        setIsLoading(true);
+
+        const { data } = await axios.get<GetReviewsResponse>(
+          `/api/products/${productId}/reviews`
+        );
+
+        setReviewData(data);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchReviews();
+  }, [productId]);
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-5">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="flex flex-col gap-2">
+            <Skeleton width={150} />
+            <Skeleton width={100} />
+            <Skeleton count={2} />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (!reviewData) return null;
+
+  return (
+    <div className="flex flex-col gap-6">
+      {reviewData.summary && (
+        <div className="bg-gray-100 p-4 rounded-md">
+          <h2 className="font-semibold mb-2">Review Summary</h2>
+          <p>{reviewData.summary}</p>
+        </div>
+      )}
+
+      {reviewData.reviews.map((review) => (
+        <div key={review.id} className="border p-4 rounded-md">
+          <div className="font-semibold">{review.author}</div>
+          <StarRating value={review.rating} />
+          <p className="py-2">{review.content}</p>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default ReviewList;
+-------------------code----------------------
