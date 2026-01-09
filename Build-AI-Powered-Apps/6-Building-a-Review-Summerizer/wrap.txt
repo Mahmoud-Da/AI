@@ -4805,3 +4805,207 @@ const ReviewList = ({ productId }: ReviewListProps) => {
 
 export default ReviewList;
 -------------------code----------------------
+
+*** 4.2- Displaying Star Ratings ***
+
+---
+
+# Improving Ratings UI with Star Icons
+
+## Problem
+
+Currently, product ratings are rendered as plain numbers (e.g. `4 / 5`).
+
+While functional, this is:
+
+* Not visually appealing
+* Not user-friendly
+* Inconsistent with modern UI standards
+
+---
+
+## Goal
+
+Replace numeric ratings with **star-based ratings** using icons, improving:
+
+* User experience
+* Visual clarity
+* Consistency with modern applications
+
+---
+
+## Library Used
+
+We use **react-icons**, which was already installed earlier in the project.
+
+Specifically:
+
+* Font Awesome icons
+* Full star icon
+* Empty star icon
+
+Imports come from:
+
+* `react-icons/fa`
+
+---
+
+## Component Design: `StarRating`
+
+### Location
+
+-------------------code----------------------
+src/components/reviews/StarRating.tsx
+-------------------code----------------------
+
+---
+
+## Props
+
+The component accepts a single prop:
+
+-------------------code----------------------
+value: number
+-------------------code----------------------
+
+* Represents the rating
+* Expected range: `0 → 5`
+* Component is defensive and handles invalid values gracefully
+
+---
+
+## Rendering Strategy
+
+### Star Placeholders
+
+We create a fixed array to represent star positions:
+
+-------------------code----------------------
+[1, 2, 3, 4, 5]
+-------------------code----------------------
+
+This avoids unnecessary complexity and keeps the logic readable.
+
+---
+
+### Rendering Logic
+
+For each placeholder:
+
+* If `placeholder <= value` → render a **full star**
+* Otherwise → render an **empty star**
+
+This dynamically reflects the rating value.
+
+---
+
+## Layout & Styling
+
+* Parent container:
+
+  * `flex` layout
+  * Horizontal alignment
+  * Small gap between stars
+* Color:
+
+  * Stars are styled with `text-yellow-500`
+  * Matches common UI conventions
+
+---
+
+## Integration with Review List
+
+In `ReviewList`:
+
+* Replace numeric rating display
+* Render the `StarRating` component instead
+* Pass `review.rating` as the value
+-------------------code----------------------
+<div>
+  <StarRating value={review.rating} />
+</div>
+-------------------code----------------------
+This keeps:
+
+* ReviewList focused on data rendering
+* StarRating focused on visualization
+
+---
+
+## Edge Case Handling
+
+The component behaves correctly for all tested cases:
+
+| Rating Value   | Behavior                     |
+| -------------- | ---------------------------- |
+| `0`            | No full stars                |
+| `1–5`          | Correct number of full stars |
+| Negative       | No full stars                |
+| Greater than 5 | All stars filled             |
+
+No crashes, no unexpected UI behavior.
+
+---
+
+## Half-Star Support
+
+Currently:
+
+* Ratings are stored as integers
+* Half-stars are **not supported**
+
+Supporting half-stars would require:
+
+* Database changes
+* API changes
+* Additional icon logic
+
+This is intentionally left as an optional exercise.
+
+---
+
+## Outcome
+
+* Ratings are now visually intuitive
+* UI looks more polished
+* Component is reusable and robust
+* Code remains simple and maintainable
+
+---
+
+## Next Step
+
+With star ratings complete, the reviews UI is significantly improved.
+
+We can now move forward to:
+
+* Displaying review summaries
+* Enhancing layout
+* Further frontend refactoring
+
+-------------------code----------------------
+import { FaStar } from "react-icons/fa";
+import { FaRegStar } from "react-icons/fa";
+
+type StarRatingProps = {
+  value: number;
+};
+
+const StarRating = ({ value }: StarRatingProps) => {
+  const placeholders = [1, 2, 3, 4, 5];
+
+  return (
+    <div className="flex gap-1 text-yellow-500">
+      {placeholders.map((placeholder) =>
+        placeholder <= value ? (
+          <FaStar key={placeholder} />
+        ) : (
+          <FaRegStar key={placeholder} />
+        )
+      )}
+    </div>
+  );
+};
+
+export default StarRating;
+-------------------code----------------------
