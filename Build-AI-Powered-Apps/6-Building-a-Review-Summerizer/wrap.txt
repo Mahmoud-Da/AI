@@ -4415,3 +4415,102 @@ if (!product) {
 * Clean separation of concerns
 * Predictable, RESTful responses
 * Easier future maintenance and extension
+
+
+*** 4- Building the Frontend ***
+---
+
+# Transition to Frontend Development
+
+## Context
+
+At this point:
+
+* The backend is complete
+* Review fetching, summarization, caching, expiration, and edge cases are all handled correctly
+* The API is stable and production-ready
+
+Now we shift focus to the **frontend**.
+
+---
+
+## Goal of This Phase
+
+The objective is to build a frontend that:
+
+* Displays product reviews
+* Displays the review summary (when available)
+* Uses the backend efficiently
+* Remains clean, responsive, and maintainable
+
+---
+
+## Key Frontend Responsibilities
+
+The frontend will:
+
+* Call the improved reviews endpoint
+* Render:
+
+  * The list of reviews
+  * The review summary (if returned)
+* Handle error states gracefully:
+
+  * Invalid product
+  * No reviews available
+* Avoid unnecessary API calls
+
+Because the backend now returns **reviews and summary in a single request**, the frontend logic becomes simpler and more efficient.
+
+---
+
+## Design Principles
+
+During frontend development, we will focus on:
+
+* Clean UI layout
+* Clear separation of concerns
+* Reusable components
+* Minimal duplication
+* Readable and maintainable code
+
+---
+
+## Planned Refactoring
+
+Once the UI is functional:
+
+* We will refactor frontend code
+* Improve structure and naming
+* Extract reusable components
+* Simplify state and data flow
+
+This mirrors what we did on the backend:
+
+* First make it work
+* Then make it clean
+
+---
+
+## High-Level Flow
+
+1. Call backend reviews endpoint
+2. Receive:
+
+   * Reviews
+   * Optional summary
+3. Render UI accordingly
+4. Refactor for clarity and scalability
+
+---
+
+## Key Takeaway
+
+With a well-designed backend:
+
+* Frontend development becomes straightforward
+* Fewer API calls are needed
+* UI logic stays simple
+* Refactoring is easier and safer
+
+This lesson marks the transition from **backend architecture** to **user-facing experience**.
