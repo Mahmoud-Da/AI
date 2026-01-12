@@ -5954,3 +5954,212 @@ return (
     </div>
   );
 -------------------code----------------------
+
+
+*** 4.7- Triggering Summary Generation ***
+---
+
+## Lecture Notes: Triggering Review Summary Generation
+
+### 1. Goal of This Lesson
+
+In this lesson, we make the **Summarize** button functional:
+
+* When the user clicks the button, the frontend calls the backend API
+* The backend generates a summary for the product reviews
+* Once the response is returned, the UI updates immediately to display the new summary
+
+---
+
+### 2. Tracking the Generated Summary
+
+We need a local state to store a newly generated summary that was not part of the initial page load.
+
+#### Step:
+
+* Declare a state variable named `summary`
+* Initialize it to an empty string
+-------------------code----------------------
+const [summary, setSummary] = useState("");
+-------------------code----------------------
+Purpose:
+
+* This state will hold the summary returned after clicking the summarize button
+
+---
+
+### 3. Handling Summary Generation
+
+We define a function that is triggered when the user clicks the button.
+
+#### Function Responsibilities:
+
+* Call the backend API
+* Extract the generated summary
+* Store it in local state
+
+#### API Endpoint Used:
+
+-------------------code----------------------
+POST /api/products/{productId}/reviews/summarize
+-------------------code----------------------
+
+#### Key Steps:
+
+1. Define an async function (e.g. `handleSummarize`)
+2. Use `axios.post` to call the summarize endpoint
+3. Destructure the response and extract `data`
+4. Update the `summary` state with `data.summary`
+
+-------------------code----------------------
+const handleSummaries = async () => {
+  const { data } = await axios.post(
+    `/api/products/${productId}/reviews/summarize`
+  );
+  setSummary(data.summary);
+};
+-------------------code----------------------
+---
+
+### 4. Typing the Summarize API Response
+
+While implementing the API call, IntelliSense does not recognize `data.summary`.
+
+#### Reason:
+
+* The response type is not defined, so TypeScript treats `data` as `any`
+
+#### Solution:
+
+Define a response type for the summarize endpoint.
+
+-------------------code----------------------
+type SummarizeResponse = {
+  summary: string;
+};
+-------------------code----------------------
+
+Then pass this type to `axios.post`:
+
+-------------------code----------------------
+axios.post<SummarizeResponse>(...)
+-------------------code----------------------
+
+Result:
+
+* IntelliSense correctly detects `data.summary`
+* Improved type safety and developer experience
+
+---
+
+### 5. Wiring the Button
+
+To trigger summary generation:
+
+* Attach `handleSummarize` to the button’s `onClick` handler
+
+Now the button successfully calls the backend API.
+
+-------------------code----------------------
+<Button onClick={handleSummaries}>
+  <HiSparkles />
+  Summarize
+</Button>
+-------------------code----------------------
+---
+
+### 6. Debugging the Missing UI Update
+
+After clicking the button:
+
+* The summary is generated successfully in the database
+* But it does not appear in the UI immediately
+
+#### Root Cause:
+
+The UI condition checks only:
+
+-------------------code----------------------
+reviewData.summary
+-------------------code----------------------
+
+This value represents:
+
+* The summary fetched when the page first loaded
+* Not the newly generated summary stored in local state
+
+---
+
+### 7. Fixing the Summary Display Logic
+
+Introduce a derived value that always reflects the latest summary.
+
+#### Solution:
+
+Create a new variable:
+
+-------------------code----------------------
+const currentSummary = reviewData.summary || summary;
+-------------------code----------------------
+
+Logic:
+
+* If a summary already exists from the backend, use it
+* Otherwise, use the newly generated summary from local state
+
+---
+
+### 8. Updating the Render Logic
+
+Replace the original condition:
+
+-------------------code----------------------
+if (reviewData.summary)
+-------------------code----------------------
+
+With:
+
+-------------------code----------------------
+if (currentSummary)
+-------------------code----------------------
+
+This ensures:
+
+* Existing summaries display correctly
+* Newly generated summaries appear instantly without page refresh
+
+
+-------------------code----------------------
+<div className="mb-5">
+  {currentSummary ? (
+    <p>{currentSummary}</p>
+  ) : (
+    <Button onClick={handleSummaries}>
+      <HiSparkles />
+      Summarize
+    </Button>
+  )}
+</div>
+-------------------code----------------------
+---
+
+### 9. Final Result
+
+* Clicking **Summarize** calls the backend
+* The summary is generated and saved
+* The UI updates immediately to display the new summary
+* No page refresh is required
+
+---
+
+### 10. Next Improvement
+
+At this point:
+
+* Summary generation works correctly
+* However, there is no loading indicator while the summary is being generated
+
+The next lesson will focus on:
+
+* Adding loading skeletons
+* Improving UX during summary generation
