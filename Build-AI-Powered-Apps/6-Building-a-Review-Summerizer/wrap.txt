@@ -7260,3 +7260,377 @@ In the next lesson, we will:
 * Make the component even easier to test and maintain
 
 ---
+
+*** 4.12- Extracting the API Layer ***
+## Lecture Summary
+
+**Refactoring Backend Communication into a Dedicated API Layer**
+
+---
+
+## Lesson Goal
+
+The purpose of this lecture is to **separate backend communication logic from the UI layer** by introducing a dedicated **API module**.
+This refactoring improves:
+
+* Separation of concerns
+* Readability of components
+* Maintainability
+* Scalability of the codebase
+
+After this change:
+
+* React components focus only on UI and rendering logic
+* All HTTP-related logic lives in a single-purpose API module
+
+---
+
+## 1. Motivation for an API Layer
+
+Before this refactor, the `ReviewList` component was responsible for:
+
+* Calling Axios
+* Constructing URLs
+* Handling HTTP responses
+* Extracting data
+
+This violates the **Single Responsibility Principle**.
+
+### Desired Outcome
+
+* Components should not know *how* data is fetched
+* Components should only know *what* data they need
+* HTTP logic should be reusable and isolated
+
+---
+
+## 2. Where to Place the API Module
+
+A new file is created:
+
+-------------------code----------------------
+reviewsApi.ts
+-------------------code----------------------
+
+**Location**: inside the `reviews` directory
+
+### Why not a shared `api/` or `services/` folder?
+
+Because:
+
+* This logic is **only used by the reviews feature**
+* Keeping related code together improves cohesion
+* Shared directories should only contain truly shared logic
+
+If the API logic were used by multiple features, then a shared directory would be appropriate.
+
+---
+
+## 3. Design of the API Module
+
+The module follows the same structural pattern used in backend controllers and services.
+
+### Structure
+
+* Export a single object: `reviewsApi`
+* This object contains methods related to reviews
+* All backend communication lives here
+
+### Responsibilities of the Module
+
+* Make HTTP requests
+* Extract and return data
+* Define and export related types
+
+The module has **one responsibility only**:
+**Talking to the backend**
+
+---
+
+## 4. Moving Types into the API Module
+
+The following types are moved from the component into `reviewsapi.ts`:
+
+* `Review`
+* `GetReviewsResponse`
+* `SummarizeResponse`
+
+### Reason
+
+* These types are directly tied to backend contracts
+* Keeping them next to the API logic improves discoverability
+* Components simply import what they need
+
+The API module becomes the **single source of truth** for backend data shapes.
+
+---
+
+## 5. Implementing `fetchReviews`
+
+### Key Changes
+
+* The function accepts `productId: number`
+* Axios is imported inside the API module
+* The function returns only `response.data`
+* The component never sees Axios or HTTP details
+
+### Implementation Style
+
+Instead of:
+
+* `async/await`
+* manual response destructuring
+
+The implementation uses:
+
+* `axios.get(...)`
+* `.then(response => response.data)`
+
+This approach:
+
+* Is concise
+* Avoids unnecessary `async`
+* Is stylistic (both approaches are valid)
+
+---
+
+## 6. Implementing `summarizeReviews`
+
+### Behavior
+
+* Accepts `productId`
+* Sends a POST request to the summarize endpoint
+* Returns the summary data directly
+
+### Important Detail
+
+* The function **returns the promise**
+* React Query handles loading, retries, and errors
+* No UI state is managed here
+
+---
+
+## 7. Cleaning Up the Component
+
+After introducing the API layer:
+
+### Removed from the Component
+
+* Axios imports
+* HTTP logic
+* Response parsing
+* Backend-specific concerns
+
+### What Remains in the Component
+
+* `useQuery`
+* `useMutation`
+* Rendering logic
+* Conditional UI states
+
+The component now reads as:
+
+> “Here is how I fetch data”
+> “Here is how I mutate data”
+> “Here is how I render UI”
+
+Nothing more.
+
+---
+
+## 8. Wiring React Query to the API Layer
+
+### Query Hook
+
+Instead of calling Axios directly:
+
+* The query calls `reviewsApi.fetchReviews(productId)`
+
+### Mutation Hook
+
+Instead of inline logic:
+
+* The mutation calls `reviewsApi.summarizeReviews(productId)`
+
+This makes the intent extremely clear:
+
+* Queries fetch data
+* Mutations update data
+* API layer performs the actual HTTP work
+
+---
+
+## 9. Resulting Architecture
+
+After refactoring:
+
+### ReviewList Component
+
+* UI only
+* React Query only
+* No backend knowledge
+
+### reviewsApi Module
+
+* HTTP calls only
+* Axios usage
+* Backend data contracts
+
+Each module now has **a single responsibility**.
+
+---
+
+## 10. Verification
+
+The application is tested after refactoring:
+
+* Reviews load correctly
+* Summaries can be generated
+* Loading skeletons appear
+* UI updates correctly
+* No regression introduced
+
+Everything works as before, but with a cleaner structure.
+
+---
+
+## 11. Key Takeaways
+
+* API layers improve maintainability
+* Feature-scoped APIs are preferable when logic is not shared
+* Components should not manage HTTP details
+* React Query works best when paired with clean API functions
+* Single Responsibility Principle leads to clearer code
+
+---
+-------------------code----------------------
+import axios from "axios";
+
+export type Review = {
+  id: number;
+  author: string;
+  content: string;
+  rating: number;
+  createdAt: string;
+};
+
+export type GetReviewsResponse = {
+  summary: string | null;
+  reviews: Review[];
+};
+
+export type SummarizeResponse = {
+  summary: string;
+};
+
+export const reviewApi = {
+  fetchReviews(productId: number) {
+    return axios
+      .get<GetReviewsResponse>(`/api/products/${productId}/reviews`)
+      .then((res) => res.data);
+  },
+
+  summarizeReviews(productId: number) {
+    return axios
+      .post<SummarizeResponse>(`/api/products/${productId}/reviews/summarize`)
+      .then((res) => res.data);
+  },
+};
+-------------------code----------------------
+
+and the tsx file
+-------------------code----------------------
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { HiSparkles } from "react-icons/hi";
+import "react-loading-skeleton/dist/skeleton.css";
+import { Button } from "../ui/button";
+import ReviewSkeleton from "./ReviewSkeleton";
+import StarRating from "./StarRating";
+import {
+  type GetReviewsResponse,
+  reviewApi,
+  type SummarizeResponse,
+} from "./reviewsApi";
+
+type ReviewListProps = {
+  productId: number;
+};
+
+const ReviewList = ({ productId }: ReviewListProps) => {
+  const summaryMutation = useMutation<SummarizeResponse>({
+    mutationFn: () => reviewApi.summarizeReviews(productId),
+  });
+
+  const reviewsQuery = useQuery<GetReviewsResponse>({
+    queryKey: ["reviews", productId],
+    queryFn: () => reviewApi.fetchReviews(productId),
+  });
+
+  if (reviewsQuery.isLoading) {
+    return (
+      <div className="flex flex-col gap-5">
+        {[1, 2, 3].map((i) => (
+          <ReviewSkeleton key={i} />
+        ))}
+      </div>
+    );
+  }
+
+  if (reviewsQuery.isError) {
+    return <p className="text-red-500">Could not fetch reviews. Try again.</p>;
+  }
+
+  if (!reviewsQuery.data?.reviews.length) return null;
+
+  const currentSummary =
+    reviewsQuery.data?.summary || summaryMutation.data?.summary;
+
+  return (
+    <div>
+      <div className="mb-5">
+        {currentSummary ? (
+          <p>{currentSummary}</p>
+        ) : (
+          <div>
+            <Button
+              onClick={() => summaryMutation.mutate()}
+              className="cursor-pointer"
+              disabled={summaryMutation.isPending}
+            >
+              <HiSparkles />
+              Summarize
+            </Button>
+            {summaryMutation.isPending && (
+              <div className="py-3">
+                <ReviewSkeleton />
+              </div>
+            )}
+            {summaryMutation.isError && (
+              <p className="text-red-500">
+                Could not summarize the reviews. Try again!
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+      <div className="flex flex-col gap-6">
+        {reviewsQuery.data?.summary && (
+          <div className="bg-gray-100 p-4 rounded-md">
+            <h2 className="font-semibold mb-2">Review Summary</h2>
+            <p>{reviewsQuery.data?.summary}</p>
+          </div>
+        )}
+        {reviewsQuery.data?.reviews.map((review) => (
+          <div key={review.id} className="border p-4 rounded-md">
+            <div className="font-semibold">{review.author}</div>
+            <StarRating value={review.rating} />
+            <p className="py-2">{review.content}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default ReviewList;
+-------------------code----------------------
