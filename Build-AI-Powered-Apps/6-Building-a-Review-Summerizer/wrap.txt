@@ -6429,3 +6429,252 @@ If you want, I can also refactor this lesson into:
 * A clean final `ReviewList.tsx`
 * A mutation-based React Query implementation
 * A UX checklist for AI-powered frontend features
+
+
+*** 4.9- Handling Errors ***
+### Lecture Title
+
+**Error Handling for Summary Generation (Frontend)**
+
+---
+
+## Lesson Objective
+
+In this lesson, we improve the robustness of the summary feature by adding **proper error handling** for summary generation.
+The goal is to ensure that when something goes wrong while summarizing reviews:
+
+* The UI does not break
+* The user receives a clear, friendly error message
+* The loading state is always reset correctly
+* Retrying the action works as expected
+
+This completes the implementation beyond the “happy path”.
+
+---
+
+## 1. Introducing a Separate Error State for Summary
+
+### Why a Separate Error State Is Needed
+
+* The component already has error handling for **fetching reviews**
+* Summary generation is a **different operation**
+* Mixing both error states would lead to confusion and poor UI control
+
+### Implementation
+
+We introduce a new state variable specifically for summary-related errors:
+
+-------------------code----------------------
+const [summaryError, setSummaryError] = useState('');
+-------------------code----------------------
+
+* Initialized to an empty string
+* Clearly scoped to summary generation only
+
+---
+
+## 2. Resetting Errors Before Retrying
+
+### Why This Matters
+
+If the user clicks **Summarize** again after a failure:
+
+* The old error message should not persist
+* The UI should start fresh
+
+### Implementation
+
+At the very beginning of `handleSummarize`:
+
+-------------------code----------------------
+setSummaryError('');
+-------------------code----------------------
+
+This ensures:
+
+* Old errors are cleared
+* The retry experience is clean and predictable
+
+---
+
+## 3. Wrapping Summary Logic in a Try–Catch Block
+
+### Purpose
+
+Summary generation involves:
+
+* An API call
+* Async behavior
+* Potential network or server failures
+
+All of this must be safely handled.
+
+### Implementation Steps
+
+1. Add a `try–catch–finally` block
+2. Move all summary logic into the `try` block
+
+Conceptually:
+
+-------------------code----------------------
+try {
+  // API call
+  // state updates
+} catch (error) {
+  // error handling
+} finally {
+  // cleanup
+}
+-------------------code----------------------
+
+---
+
+## 4. Handling Errors in the Catch Block
+
+### Logging Errors
+
+In production:
+
+* Errors should be logged using a service like **Sentry**
+
+For now:
+
+* Log the error to the console
+
+-------------------code----------------------
+console.error(error);
+-------------------code----------------------
+
+### User-Friendly Error Message
+
+Instead of exposing raw error objects, we show a clear message:
+
+-------------------code----------------------
+setSummaryError('Could not summarize the reviews. Try again.');
+-------------------code----------------------
+
+Why this is important:
+
+* Users do not care about stack traces
+* Messages must be actionable and understandable
+
+---
+
+## 5. Ensuring Loading State Is Always Reset
+
+### Critical Rule
+
+No matter what happens:
+
+* Success
+* Failure
+* Exception
+
+The loading state must always be reset.
+
+### Implementation
+
+Move this line:
+
+-------------------code----------------------
+setIsSummaryLoading(false);
+-------------------code----------------------
+
+Into a `finally` block.
+
+This guarantees:
+
+* The UI never gets stuck in a loading state
+* The button becomes usable again after errors
+
+---
+-------------------code----------------------
+const handleSummaries = async () => {
+    try {
+      setIsSummaryLoading(true);
+      setSummaryError("");
+
+      const { data } = await axios.post<SummarizeResponse>(
+        `/api/products/${productId}/reviews/summarize`
+      );
+      setSummary(data.summary);
+    } catch (error) {
+      console.log(error);
+      setSummaryError("Could not summarize the reviews. Try again.");
+    } finally {
+      setIsSummaryLoading(false);
+    }
+  };
+-------------------code----------------------
+## 6. Rendering the Error Message in the UI
+
+### Where to Render
+
+* Right below the summary loading skeleton
+* Close to where the user triggered the action
+
+### Conditional Rendering Logic
+
+-------------------code----------------------x
+<div>
+  <Button
+    onClick={handleSummaries}
+    className="cursor-pointer"
+    disabled={isSummaryLoading}
+  >
+    <HiSparkles />
+    Summarize
+  </Button>
+  {isSummaryLoading && (
+    <div className="py-3">
+      <ReviewSkeleton />
+    </div>
+  )}
+  {summaryError && <p className="text-red-500">{summaryError}</p>}
+</div>
+-------------------code----------------------
+
+### UX Considerations
+
+* Red color clearly indicates an error
+* Message appears only when an error exists
+* Keeps the UI clean and focused
+
+---
+
+## 7. Testing the Error Handling
+
+### Simulating an Error
+
+* Navigate to the `handleSummarize` function
+* Intentionally break the API URL by adding an extra character (e.g., `x`)
+
+### Result
+
+* Clicking **Summarize** shows the error message
+* Button is re-enabled
+* Retrying works correctly
+
+This confirms:
+
+* Error handling logic is correct
+* Retry flow behaves as expected
+
+---
+
+## 8. Final Outcome
+
+After this lesson, the summary feature now:
+
+* Handles failures gracefully
+* Displays clear, user-friendly error messages
+* Resets loading state correctly
+* Allows safe retries
+* Matches real-world production standards
+
+This completes the summary feature with both:
+
+* Strong UX
+* Professional error handling
+
+---
