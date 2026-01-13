@@ -6961,3 +6961,302 @@ After this refactor, the component:
 This is the **recommended production approach** when using React Query.
 
 ---
+
+*** 4.11- Refactoring for Readability ***
+
+### Lecture Title
+
+**Improving Readability by Avoiding Destructuring React Query Results**
+
+---
+
+## Lesson Objective
+
+In this lecture, we improve **code clarity and naming consistency** by refactoring how we consume the objects returned from **React Query’s `useMutation` and `useQuery` hooks**.
+
+Instead of destructuring many properties with awkward renamed variables, we keep the returned objects intact and access their properties directly.
+
+The result:
+
+* Cleaner code
+* More descriptive expressions
+* Fewer confusing variable names
+* Better long-term maintainability
+
+---
+
+## 1. The Problem with Destructuring
+
+Previously, we destructured the mutation and query results like this (conceptually):
+
+* `isPending → isSummaryLoading`
+* `isError → isSummaryError`
+* `data → summarizeResponse`
+
+This led to:
+
+* Verbose and unnatural variable names
+* Multiple similarly named variables (`isLoading`, `isSummaryLoading`, `isLoadingError`, etc.)
+* Reduced readability when scanning JSX
+
+The root cause:
+
+> We are destructuring objects that already have meaningful structure.
+
+---
+
+## 2. Refactoring the Mutation Hook Usage
+
+### Step 1: Stop Destructuring the Mutation Result
+
+Instead of destructuring the mutation return value, we store it as a single object:
+
+-------------------code----------------------
+const summaryMutation = useMutation(...)
+-------------------code----------------------
+
+This object already contains:
+
+* `data`
+* `mutate`
+* `isPending`
+* `isError`
+* and more
+
+---
+
+### Step 2: Fix Breaking Changes (Mutation)
+
+Because we removed destructuring, we must update all references.
+
+#### Accessing the Summary
+
+Before:
+
+-------------------code----------------------
+summarizeResponse.summary
+-------------------code----------------------
+
+After:
+
+-------------------code----------------------
+summaryMutation.data?.summary
+-------------------code----------------------
+
+This clearly communicates:
+
+* The summary comes from a mutation
+* The data may or may not exist yet
+
+---
+
+#### Handling the Button Click
+
+Before:
+
+-------------------code----------------------
+handleSummarize()
+-------------------code----------------------
+
+After:
+
+-------------------code----------------------
+summaryMutation.mutate()
+-------------------code----------------------
+
+This is clearer because:
+
+* It directly reflects React Query’s API
+* No renamed indirection is involved
+
+---
+
+#### Disabling the Button
+
+Before:
+
+-------------------code----------------------
+disabled={isSummaryLoading}
+-------------------code----------------------
+
+After:
+
+-------------------code----------------------
+disabled={summaryMutation.isPending}
+-------------------code----------------------
+
+This reads naturally:
+
+> Disable the button while the mutation is pending.
+
+---
+
+#### Rendering the Skeleton
+
+Before:
+
+-------------------code----------------------
+if (isSummaryLoading) { ... }
+-------------------code----------------------
+
+After:
+
+-------------------code----------------------
+if (summaryMutation.isPending) { ... }
+-------------------code----------------------
+
+Again, this is more descriptive and self-explanatory.
+
+---
+
+#### Handling Errors
+
+Before:
+
+-------------------code----------------------
+if (isSummaryError) { ... }
+-------------------code----------------------
+
+After:
+
+-------------------code----------------------
+if (summaryMutation.isError) { ... }
+-------------------code----------------------
+
+No custom naming required. The intent is obvious.
+
+---
+
+## 3. Result of the Mutation Refactor
+
+After this change:
+
+* No awkward variable names
+* No renaming mental overhead
+* The code reads closer to English
+* The mutation’s lifecycle is explicit
+
+This is a significant readability improvement.
+
+---
+
+## 4. Applying the Same Refactor to Queries
+
+We apply the same principle to `useQuery`.
+
+---
+
+### Step 1: Stop Destructuring the Query Result
+
+Instead of destructuring, we store the result as:
+
+-------------------code----------------------
+const reviewsQuery = useQuery(...)
+-------------------code----------------------
+
+---
+
+### Step 2: Fix Breaking Changes (Query)
+
+#### Loading State
+
+Before:
+
+-------------------code----------------------
+isLoading
+-------------------code----------------------
+
+After:
+
+-------------------code----------------------
+reviewsQuery.isLoading
+-------------------code----------------------
+
+Much clearer:
+
+> The reviews query is loading.
+
+---
+
+#### Error Handling
+
+Before:
+
+-------------------code----------------------
+error
+-------------------code----------------------
+
+After:
+
+-------------------code----------------------
+reviewsQuery.isError
+-------------------code----------------------
+
+This avoids ambiguity about which error we are checking.
+
+---
+
+#### Accessing Data
+
+Before:
+
+-------------------code----------------------
+reviews
+-------------------code----------------------
+
+After:
+
+-------------------code----------------------
+reviewsQuery.data
+-------------------code----------------------
+
+This makes the data source explicit and predictable.
+
+---
+
+#### Multiple References
+
+Every place where we previously used `reviews` or `data` is updated to:
+
+-------------------code----------------------
+reviewsQuery.data
+-------------------code----------------------
+
+Consistency is maintained across the entire component.
+
+---
+
+## 5. Verifying the Application
+
+After all refactoring steps:
+
+* Refresh the browser
+* Reviews load correctly
+* Summary mutation works
+* Skeletons render properly
+* Errors behave as expected
+
+No behavior changed — only structure and readability improved.
+
+---
+
+## 6. Key Takeaways
+
+* Destructuring is not always beneficial
+* Keeping React Query results as objects improves clarity
+* `summaryMutation.isPending` is more readable than `isSummaryLoading`
+* `reviewsQuery.data` clearly communicates ownership
+* This approach scales better as components grow
+
+---
+
+## 7. What’s Next
+
+In the next lesson, we will:
+
+* Refactor the component further
+* Extract the API logic into a dedicated API layer
+* Improve separation of concerns
+* Make the component even easier to test and maintain
+
+---
