@@ -6,6 +6,7 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { Button } from "../ui/button";
 import StarRating from "./StarRating";
+import ReviewSkeleton from "./ReviewSkeleton";
 
 type Review = {
   id: number;
@@ -30,6 +31,8 @@ type SummarizeResponse = {
 
 const ReviewList = ({ productId }: ReviewListProps) => {
   const [summary, setSummary] = useState("");
+  const [isSummaryLoading, setIsSummaryLoading] = useState(false);
+
   const {
     data: reviewData,
     isLoading,
@@ -40,10 +43,13 @@ const ReviewList = ({ productId }: ReviewListProps) => {
   });
 
   const handleSummaries = async () => {
+    setIsSummaryLoading(true);
+
     const { data } = await axios.post<SummarizeResponse>(
       `/api/products/${productId}/reviews/summarize`
     );
     setSummary(data.summary);
+    setIsSummaryLoading(false);
   };
 
   const fetchReviews = async () => {
@@ -58,11 +64,7 @@ const ReviewList = ({ productId }: ReviewListProps) => {
     return (
       <div className="flex flex-col gap-5">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="flex flex-col gap-2">
-            <Skeleton width={150} />
-            <Skeleton width={100} />
-            <Skeleton count={2} />
-          </div>
+          <ReviewSkeleton key={i} />
         ))}
       </div>
     );
@@ -82,10 +84,21 @@ const ReviewList = ({ productId }: ReviewListProps) => {
         {currentSummary ? (
           <p>{currentSummary}</p>
         ) : (
-          <Button onClick={handleSummaries}>
-            <HiSparkles />
-            Summarize
-          </Button>
+          <div>
+            <Button
+              onClick={handleSummaries}
+              className="cursor-pointer"
+              disabled={isSummaryLoading}
+            >
+              <HiSparkles />
+              Summarize
+            </Button>
+            {isSummaryLoading && (
+              <div className="py-3">
+                <ReviewSkeleton />
+              </div>
+            )}
+          </div>
         )}
       </div>
       <div className="flex flex-col gap-6">

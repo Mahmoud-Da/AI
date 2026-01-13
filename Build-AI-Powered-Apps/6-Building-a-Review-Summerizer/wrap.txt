@@ -6163,3 +6163,269 @@ The next lesson will focus on:
 
 * Adding loading skeletons
 * Improving UX during summary generation
+
+*** 4.8- Displaying Loading Skeletons  ***
+### Lecture Title
+
+**Adding a Loading Skeleton for Summary Generation (Frontend UX Improvement)**
+
+---
+
+## Lesson Objective
+
+In this lesson, the goal is to improve the user experience when generating a review summary by:
+
+* Showing a loading skeleton while the summary is being generated
+* Preventing duplicate API requests
+* Improving UI clarity and usability
+* Refactoring skeleton code into a reusable component
+
+This ensures the UI remains responsive, clear, and professional during asynchronous operations.
+
+---
+
+## 1. Tracking Summary Loading State
+
+### Why This Is Needed
+
+When the user clicks the **Summarize** button, there is a delay while the backend generates the summary. Without visual feedback, the UI feels unresponsive and confusing.
+
+### Implementation
+
+* A new state variable is introduced to track whether the summary is being generated.
+
+-------------------code----------------------ts
+const [isSummaryLoading, setIsSummaryLoading] = useState(false);
+-------------------code----------------------
+
+* This state is **separate** from the reviews loading state because:
+
+  * Reviews are fetched automatically
+  * Summary generation is triggered manually by the user
+
+---
+
+## 2. Updating `handleSummarize` Logic
+
+### Workflow
+
+Inside the `handleSummarize` function:
+
+1. Set `isSummaryLoading` to `true`
+2. Call the backend API to generate the summary
+3. Update the summary state once the response arrives
+4. Set `isSummaryLoading` back to `false`
+
+### Important Code Style Note
+
+A line break is intentionally added between:
+
+* State management logic
+* API call logic
+
+This improves readability and maintains clean separation of responsibilities.
+-------------------code----------------------
+const handleSummaries = async () => {
+    setIsSummaryLoading(true);
+
+    const { data } = await axios.post<SummarizeResponse>(
+      `/api/products/${productId}/reviews/summarize`
+    );
+    setSummary(data.summary);
+    setIsSummaryLoading(false);
+  };
+-------------------code----------------------
+---
+
+## 3. Preparing the UI for Summary Skeletons
+
+### Wrapping the Button
+
+* The **Summarize** button is wrapped inside a `div`
+* This allows rendering additional UI elements below it (the skeleton)
+
+This wrapper is created using:
+
+* “Wrap with abbreviation” → `div`
+
+---
+
+## 4. Extracting a Reusable Skeleton Component
+
+### Why Refactor?
+
+Previously, skeleton markup was duplicated in multiple places:
+
+* While loading reviews
+* Now while generating summaries
+
+Duplicated UI code leads to:
+
+* Poor maintainability
+* Inconsistent UI updates
+
+### Solution
+
+Create a reusable skeleton component.
+
+---
+
+## 5. Creating `ReviewSkeleton` Component
+
+### File Location
+
+-------------------code----------------------
+client/src/components/reviews/review-skeleton.tsx
+-------------------code----------------------
+
+### Purpose
+
+This component encapsulates the skeleton UI used for:
+
+* Review loading
+* Summary loading
+
+### Implementation Notes
+
+* The skeleton layout includes:
+
+  * Author placeholder
+  * Rating placeholder
+  * Two content line placeholders
+* `Skeleton` is imported from `react-loading-skeleton`
+-------------------code----------------------
+import Skeleton from "react-loading-skeleton";
+
+const ReviewSkeleton = () => {
+  return (
+    <div className="flex flex-col gap-2">
+      <Skeleton width={150} />
+      <Skeleton width={100} />
+      <Skeleton count={2} />
+    </div>
+  );
+};
+
+export default ReviewSkeleton;
+-------------------code----------------------
+Once created, this component can be reused anywhere loading placeholders are needed.
+
+---
+
+## 6. Replacing Inline Skeletons with `ReviewSkeleton`
+
+### Review Loading
+
+* The previous inline skeleton markup is replaced with:
+
+-------------------code----------------------
+<ReviewSkeleton key={i} />
+-------------------code----------------------
+
+### Summary Loading
+
+* Below the **Summarize** button:
+
+  * Render `ReviewSkeleton` conditionally when `isSummaryLoading` is `true`
+
+---
+
+## 7. Layout Adjustment for Summary Skeleton
+
+### Problem
+
+The skeleton appears too close to the button, making the UI feel cramped.
+
+### Fix
+
+* Wrap the skeleton in a `div`
+* Apply vertical padding for spacing
+
+-------------------code----------------------
+<div>
+  <Button onClick={handleSummaries}>
+    <HiSparkles />
+    Summarize
+  </Button>
+  {isSummaryLoading && (
+    <div className="py-3">
+      <ReviewSkeleton />
+    </div>
+  )}
+</div>
+-------------------code----------------------
+
+This improves visual separation and readability.
+
+---
+
+## 8. UX Improvements for the Summarize Button
+
+### Issue 1: Button Does Not Look Clickable
+
+#### Cause
+
+The cursor does not change on hover.
+
+#### Fix
+
+Add:
+
+-------------------code----------------------
+cursor-pointer
+-------------------code----------------------
+
+This visually indicates that the button is interactive.
+
+---
+
+### Issue 2: Button Can Be Clicked Multiple Times
+
+#### Problem
+
+* Users can trigger multiple summary requests
+* This can overload the backend and cause inconsistent UI state
+
+#### Solution
+
+Disable the button while the summary is loading:
+
+-------------------code----------------------
+disabled={isSummaryLoading}
+-------------------code----------------------
+
+### Result
+
+* Button becomes disabled immediately after clicking
+* Prevents duplicate requests
+* Button disappears once the summary is available
+
+---
+
+## 9. Final Behavior Summary
+
+* User clicks **Summarize**
+* Button becomes disabled
+* Loading skeleton appears
+* Backend generates summary
+* Skeleton disappears
+* Summary text is displayed
+* Button is removed
+
+This creates a smooth, predictable, and professional user experience.
+
+---
+
+## Optional Further Study Suggestions
+
+* Add a dedicated summary-specific skeleton instead of reusing the review skeleton
+* Add animation or transition when switching from skeleton to summary
+* Introduce toast notifications for success or failure states
+* Handle summary generation errors separately from review fetching errors
+* Use React Query mutation hooks for summary generation instead of manual state handling
+
+If you want, I can also refactor this lesson into:
+
+* A clean final `ReviewList.tsx`
+* A mutation-based React Query implementation
+* A UX checklist for AI-powered frontend features
