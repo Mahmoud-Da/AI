@@ -324,3 +324,297 @@ The next lesson will focus on **how to find open source models**, building on th
 * If you want to go deeper, you may study cost modeling comparisons between hosted AI services and self-hosted open source models.
 * An optional improvement would be to explore criteria for choosing between small language models and large language models.
 * You may also study regulatory and compliance requirements that benefit from on-premise or offline AI execution.
+
+
+*** 3- Finding Open-Source Models ***
+**Title: Discovering and Evaluating Open Source Models with Hugging Face**
+
+---
+
+## 1. Purpose of This Lesson
+
+This lesson explains **how to find open source AI models** using **Hugging Face**, which is the primary platform for discovering, evaluating, and experimenting with open source machine learning models. The focus is on understanding the platform structure, model categories, evaluation signals, and initial ways to try models before integrating them into an application.
+
+---
+
+## 2. What Hugging Face Is and Why It Is Used
+
+### 2.1 What Hugging Face Provides
+
+* Hugging Face is the **go-to platform** for hosting and discovering open source models.
+* It serves a similar role to **GitHub for machine learning**.
+* Developers and researchers publish:
+
+  * Open source models
+  * Datasets
+  * Interactive demos (Spaces)
+
+### 2.2 Why Hugging Face Is Important
+
+* Centralized ecosystem for open source AI
+* Standardized model documentation
+* Built-in tools for testing and integration
+* Supports multiple programming languages and workflows
+
+---
+
+## 3. Navigating the Hugging Face Platform
+
+### 3.1 Main Sections
+
+On the Hugging Face website, the top navigation includes:
+
+* Models
+* Datasets
+* Spaces
+* Other supporting resources
+
+This lesson focuses specifically on the **Models** section.
+
+---
+
+## 4. Finding Models
+
+### 4.1 Searching by Model Name
+
+* If you already know the model name, you can search directly using the search bar.
+* Example: searching for a model such as *Mistral*.
+
+### 4.2 Browsing Using Filters
+
+If you do not know a specific model, filters on the left side allow discovery by task and category.
+
+---
+
+## 5. Model Categories and Tasks
+
+### 5.1 Task-Based Filtering
+
+Hugging Face organizes models by **tasks**, such as:
+
+* Text generation
+* Image-to-text
+* Image-to-image
+
+These tasks can be expanded to reveal more options.
+
+### 5.2 High-Level Categories
+
+Expanded categories include:
+
+#### Multimodal
+
+* Models that support multiple data types simultaneously
+* Examples: text and image together
+
+#### Computer Vision
+
+* Models focused on images and videos
+
+#### Natural Language Processing (NLP)
+
+* Models focused on text-based tasks
+* Includes tasks such as:
+
+  * Text classification
+  * Translation
+  * Summarization
+
+---
+
+## 6. Example: Selecting a Summarization Model
+
+### 6.1 Filtering by Task
+
+* The summarization task is selected under NLP.
+* Approximately **2400 models** are available for text summarization.
+
+### 6.2 Sorting Models
+
+Models can be sorted by:
+
+* Trending
+* Number of likes
+* Number of downloads
+* Other popularity signals
+
+The lesson demonstrates sorting by **number of downloads** to identify widely used models.
+
+---
+
+## 7. Understanding Model Listings
+
+Each model listing displays key evaluation information:
+
+* Publisher (for example, Facebook)
+* Model name (e.g., BART CNN)
+* Intended task (summarization)
+* Number of parameters
+
+  * Represents model size
+  * More parameters generally means a larger and more capable model
+  * Compared to a larger “brain”
+* Last updated date
+* Number of downloads
+* Number of likes
+
+These signals help determine model maturity, popularity, and maintenance status.
+
+---
+
+## 8. Exploring a Model in Detail
+
+### 8.1 Model Card
+
+The model card provides:
+
+* Description of what the model does
+* Model architecture
+* Training details
+* Intended use cases
+* Limitations and notes
+
+This is the primary documentation for understanding a model.
+
+### 8.2 Files Tab
+
+* Represents the underlying **Git repository**
+* Shows:
+
+  * Branches
+  * Commit history
+  * Model files and configuration
+* Confirms that the model is fully open source and version-controlled
+
+---
+
+## 9. Trying a Model in the Browser
+
+### 9.1 Playground
+
+* Hugging Face provides an in-browser playground directly on the model page.
+* Allows users to:
+
+  * Input custom text
+  * Use built-in examples
+  * See model output in real time
+
+### 9.2 Authentication Requirement
+
+* Using the playground requires:
+
+  * Signing up
+  * Logging in
+* This process is free and quick.
+
+### 9.3 Example Execution
+
+* Text is submitted for summarization.
+* The model processes the input.
+* The response is returned in approximately **2 seconds**.
+
+---
+
+## 10. Viewing Code Examples
+
+### 10.1 View Code Feature
+
+* Hugging Face provides example code for:
+
+  * Python
+  * JavaScript
+  * Curl (command-line)
+
+These examples show how to run the model programmatically.
+
+---
+
+## 11. Using Curl
+
+* Curl examples demonstrate:
+
+  * Sending an HTTP POST request
+  * Targeting the Hugging Face inference endpoint
+  * Passing input text
+  * Receiving summarized output
+
+This shows that the model can be accessed via a standard HTTP API.
+
+---
+
+## 12. Using JavaScript
+
+There are **two JavaScript integration approaches**.
+
+### 12.1 Direct HTTP Requests (Fetch or Axios)
+
+* Use `fetch` or `axios` to send a POST request
+* Request includes:
+
+  * Authorization header
+  * Hugging Face access token
+* The token must be obtained from Hugging Face (covered in the next lesson)
+* The response contains the summarized output
+
+This approach exposes the underlying HTTP communication directly.
+
+---
+
+### 12.2 Using `huggingface.js`
+
+* `huggingface.js` is a JavaScript library provided by Hugging Face
+* It abstracts away low-level HTTP requests
+
+#### How It Works
+
+* Import the inference client
+* Create an inference client instance
+* Call high-level utility methods (e.g., `summarization`)
+* Provide:
+
+  * Model name
+  * Input text
+  * Provider
+
+This approach works at a higher level of abstraction and simplifies usage.
+
+---
+
+## 13. Important Privacy Consideration
+
+Regardless of whether you use:
+
+* Curl
+* Fetch or Axios
+* `huggingface.js`
+
+**All prompts and responses are sent over the network** to Hugging Face servers.
+
+### Implication
+
+* This approach does **not** provide full privacy
+* Data leaves your environment
+
+### Conclusion
+
+* If privacy is critical, this is **not** the correct way to use open source models
+* An alternative approach will be covered later in this section
+
+---
+
+## 14. Transition to the Next Lesson
+
+The next lesson will demonstrate:
+
+* How to use `huggingface.js`
+* How to integrate an open source model into an application
+
+This builds on the discovery and evaluation steps covered here.
+
+---
+
+## Optional Further Study Suggestions
+
+* If you want to go deeper, you may study how to interpret model cards to assess risks, biases, and limitations.
+* An optional improvement would be to compare model parameter sizes against hardware constraints.
+* You may also study the trade-offs between hosted inference APIs and fully local execution of open source models.
