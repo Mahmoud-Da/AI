@@ -135,3 +135,192 @@ This creates an architecture where AI capabilities are fully embedded within the
 This section sets the foundation for building AI-powered applications that are self-hosted, controllable, and independent.
 
 ---
+
+*** 2- Why Use Open-Source Models ***
+## Optional Further Study Suggestions
+
+* If you want to go deeper, you may study how different open source models compare in terms of size, accuracy, and hardware requirements.
+* An optional improvement would be to explore deployment strategies for running local models in production environments.
+* You may also study security and resource isolation considerations when running AI models locally within an application stack.
+
+---
+
+*** 2- Why Use Open-Source Models ***
+**Title: Why Choose Open Source AI Models Over Hosted Services**
+
+---
+
+## 1. Purpose of This Lesson
+
+This lesson explains **why open source AI models are worth using** instead of relying exclusively on hosted providers such as OpenAI or Anthropic. It provides concrete, practical reasons grounded in cost, privacy, flexibility, deployment constraints, and transparency.
+
+The goal is to help developers make an informed architectural decision when choosing the AI layer of their application.
+
+---
+
+## 2. Problem Context: Hosted Models vs Open Source Models
+
+Hosted AI models (for example, OpenAI or Anthropic):
+
+* Are accessed via remote APIs
+* Require a continuous internet connection
+* Charge based on usage, typically per token
+* Operate as black-box systems with limited visibility into internals
+
+Open source models offer an alternative approach by allowing developers to **run models themselves**, either locally or on their own infrastructure.
+
+---
+
+## 3. Reason 1: Cost Control
+
+### Problem with Hosted Models
+
+* Hosted models charge **per token**
+* As application usage grows, costs can increase rapidly and unpredictably
+* High-volume or long-running applications can become expensive over time
+
+### How Open Source Solves This
+
+* Open source models can be run:
+
+  * Locally on a developer machine
+  * On a self-managed server
+* After the initial hardware setup:
+
+  * There is no per-token cost
+  * Usage does not directly increase billing
+* Developers have full control over infrastructure spending
+
+**Key Outcome:** Costs become predictable and controllable.
+
+---
+
+## 4. Reason 2: Privacy and Data Security
+
+### Problem with Hosted Models
+
+* Prompts and responses are sent outside the application environment
+* Sensitive data is transmitted to third-party servers
+
+### How Open Source Solves This
+
+* Models run entirely within the developer’s environment
+* No data leaves the local machine or private server
+* Prompts and outputs remain internal
+
+### Why This Matters
+
+This is critical for applications handling sensitive data, such as:
+
+* Healthcare systems
+* Financial applications
+* Government or regulated projects
+
+**Key Outcome:** Full data privacy and compliance control.
+
+---
+
+## 5. Reason 3: Flexibility and Model Choice
+
+### Limitations of Hosted Models
+
+* Developers are locked into a small set of provider-approved models
+* Switching models often requires API changes or vendor migration
+
+### How Open Source Solves This
+
+* Access to **hundreds or thousands of models**
+* Freedom to:
+
+  * Switch models easily
+  * Experiment with different architectures
+  * Choose models optimized for specific tasks
+
+### Small Language Models (SLMs)
+
+* Many open source models are **small language models**
+* These models are:
+
+  * Tuned for narrow or specific tasks
+  * More efficient than large general-purpose models
+* For certain use cases, they may:
+
+  * Perform better than large commercial LLMs
+  * Require fewer resources
+
+**Key Outcome:** Model selection is task-driven, not vendor-driven.
+
+---
+
+## 6. Reason 4: Offline Access
+
+### Problem with Hosted Models
+
+* Require a stable internet connection
+* Cannot function offline
+
+### How Open Source Solves This
+
+* Models can run completely offline
+* No network dependency once installed
+
+### Use Cases
+
+* Edge devices
+* Fieldwork environments
+* Remote or low-connectivity locations
+
+**Key Outcome:** AI functionality is available anywhere, regardless of connectivity.
+
+---
+
+## 7. Reason 5: Transparency
+
+### Limitations of Hosted Models
+
+* Internal implementation is hidden
+* Training data and model behavior are opaque
+* Biases are difficult to inspect or verify
+
+### How Open Source Solves This
+
+* Developers can:
+
+  * Inspect the model code
+  * Review architecture details
+  * Sometimes examine training data sources
+* This allows better understanding of:
+
+  * Model behavior
+  * Limitations
+  * Potential biases
+
+**Key Outcome:** Increased trust, auditability, and explainability.
+
+---
+
+## 8. Summary of Benefits
+
+Open source AI models provide:
+
+* Cost savings
+* Strong privacy guarantees
+* Flexibility in model selection
+* Offline execution capabilities
+* Transparency into how models work
+
+These advantages make open source models a strong choice for many production and research use cases.
+
+---
+
+## 9. Transition to the Next Lesson
+
+The next lesson will focus on **how to find open source models**, building on the motivation and benefits explained here.
+
+---
+
+## Optional Further Study Suggestions
+
+* If you want to go deeper, you may study cost modeling comparisons between hosted AI services and self-hosted open source models.
+* An optional improvement would be to explore criteria for choosing between small language models and large language models.
+* You may also study regulatory and compliance requirements that benefit from on-premise or offline AI execution.
