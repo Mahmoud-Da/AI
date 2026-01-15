@@ -1102,10 +1102,288 @@ Expected result:
 * **Just clear data safely** → `DELETE FROM summaries;`
 * **Full reset, fastest** → `TRUNCATE TABLE summaries;`
 
-If you want next:
+*** 5- Choosing the Right Model For the Job ***
 
-* Reset only **expired summaries**
-* Delete summaries for a **specific product**
-* Align this with **Prisma migrations**
+## Lecture Summary
 
-tell me what you want to do next.
+**Improving Review Summarization by Switching LLM Models and Refactoring Prompt Handling**
+
+---
+
+## Lesson Context
+
+Previously, the application used **BART**, a model fine-tuned on **CNN / Daily Mail**.
+While BART performs well for **news article summarization**, it performs poorly for **customer product reviews** because:
+
+* News summaries focus on factual compression
+* Review summaries require opinion aggregation, sentiment extraction, and theme detection
+
+As a result, summaries did not sound natural or useful for product reviews.
+
+---
+
+## 1. Available Solutions
+
+Two possible approaches are identified:
+
+### Option 1: Use a Review-Specific Model
+
+* Search Hugging Face for models fine-tuned on **review summarization**
+* Around **40 models** exist
+* Example model:
+
+  * ~1B parameters
+  * Very low usage (49 downloads)
+* Problem:
+
+  * No inference provider available
+  * Cannot be called directly via Hugging Face API
+  * Requires:
+
+    * Local deployment, or
+    * Dedicated hosted endpoint (paid)
+
+This option is not practical for the current setup.
+
+---
+
+### Option 2: Use a General-Purpose LLM
+
+* Choose a strong general model capable of instruction-following
+* Similar to GPT-style models
+* Open source and available via inference providers
+
+This approach is selected.
+
+---
+
+## 2. Selecting LLaMA
+
+* Model: **LLaMA (Meta)**
+* Size: **8 billion parameters**
+* Available through Hugging Face inference
+* Supports **chat-based completions**
+
+Key difference:
+
+* Instead of `summarization()`, the model uses **chatCompletion**
+
+---
+
+## 3. Switching to `chatCompletion`
+
+### Key API Change
+
+Old approach:
+
+* Call a summarize endpoint directly
+
+New approach:
+
+* Call `chatCompletion`
+* Provide:
+
+  * Provider
+  * Model
+  * Messages array
+
+Messages follow a role-based format:
+
+* `system`: instructions
+* `user`: input data (reviews)
+
+---
+
+## 4. Prompt Refactoring
+
+### Previous Design
+
+* Prompt was constructed in the **review service**
+* Prompt template included both:
+
+  * Instructions
+  * Reviews
+
+### New Design
+
+* Prompt logic moved into the **LLM client**
+* Prompt file now contains **instructions only**
+* Reviews are passed as user input
+
+This separation improves:
+
+* Clarity
+* Reusability
+* Responsibility boundaries
+
+-------------------code----------------------
+Summarize the following customer reviews into a short paragraph,
+highlighting key themes, both positive and negative.
+-------------------code----------------------
+
+---
+
+## 5. Using a System Prompt
+
+The first message in `messages` is:
+
+* Role: `system`
+* Content: summarize-reviews prompt template
+
+This prompt defines:
+
+* How the model should behave
+* What kind of summary to produce
+* Tone and structure
+
+The second message is:
+
+* Role: `user`
+* Content: actual customer reviews
+-------------------code----------------------
+import  summarizePrompt  from "../llm/prompts/summarize-reviews.txt";
+
+async summarizeReviews(text: string) {
+  const chatCompletion = await inferenceClient.chatCompletion({
+    model: "meta-llama/Llama-3.1-8B-Instruct:novita",
+    messages: [
+      {
+        role: "system",
+        content: summarizePrompt,
+      },
+      {
+        role: "user",
+        content: text,
+      },
+    ],
+  });
+  return chatCompletion.choices[0]?.message.content;
+},
+-------------------code----------------------
+---
+
+## 6. Method Renaming for Clarity
+
+Changes made:
+
+* `summarize(text)` → `summarizeReviews(reviews)`
+* This reflects the real intent of the function
+* Avoids misleading generic naming
+
+Clear naming improves:
+
+* Readability
+* Maintainability
+* API correctness
+
+---
+
+## 7. Extracting the Summary from the Response
+
+The `chatCompletion` response contains:
+
+* `choices` array
+* First choice contains:
+
+  * `message`
+  * `content`
+
+The summary is extracted from:
+
+-------------------code----------------------
+choices[0].message.content
+-------------------code----------------------
+
+If the content is missing:
+
+* Return an empty string as a safe fallback
+
+---
+
+## 8. Further Responsibility Cleanup
+
+Because the LLM client now:
+
+* Handles prompt templates
+* Handles LLM calls
+
+The review service no longer needs to:
+
+* Construct prompts
+* Import prompt templates
+
+This reduces duplication and tight coupling.
+
+
+---
+
+## 9. Project Structure Improvement
+
+Since prompts are now tightly coupled with LLM logic:
+
+* The `prompts` directory is moved **inside the LLM directory**
+
+This reflects a clear architectural rule:
+
+> Concepts that evolve together should live together
+
+---
+
+## 10. Fixing Broken Imports
+
+After moving the prompts directory:
+
+* Some imports were not automatically updated by the editor
+* Errors appeared:
+
+  * Missing prompt files
+  * Incorrect relative paths
+
+Fixes required:
+
+* Update imports in:
+
+  * Chat service
+  * LLM client module
+* Ensure correct path traversal after restructuring
+
+Once fixed, all runtime errors are resolved.
+-------------------code----------------------
+const parkInfoPath = path.join(
+  __dirname,
+  "..",
+  "llm",
+  "prompts",
+  "wonderworld.md"
+);
+-------------------code----------------------
+---
+
+## 11. Final Result
+
+After switching to LLaMA and refactoring:
+
+* Summaries sound natural and review-focused
+* Example output:
+
+  * Identifies key themes
+  * Reflects overall sentiment
+  * Reads like a real customer review summary
+* Architecture is cleaner:
+
+  * UI → Review Service → LLM Client → Prompt Templates
+* Responsibilities are clearly separated
+
+---
+
+## Key Takeaways
+
+* Model choice matters more than size alone
+* Fine-tuning domain mismatch leads to poor results
+* General-purpose LLMs can outperform specialized models with good prompts
+* Prompt logic belongs close to LLM invocation
+* Clear naming and structure dramatically improve code quality
+* Refactoring is not just cleanup, it enables better results
+
+---
+

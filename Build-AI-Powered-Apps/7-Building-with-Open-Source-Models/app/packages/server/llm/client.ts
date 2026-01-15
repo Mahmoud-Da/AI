@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import { InferenceClient } from "@huggingface/inference";
+import summarizePrompt from "../llm/prompts/summarize-reviews.txt";
 
 const inferenceClient = new InferenceClient(process.env.HF_TOKEN);
 
@@ -50,6 +51,7 @@ export const llmClient = {
     };
   },
 
+  // Using bart
   async summarize(text: string): Promise<string> {
     const output = await inferenceClient.summarization({
       model: "facebook/bart-large-cnn",
@@ -58,5 +60,23 @@ export const llmClient = {
     });
 
     return output.summary_text;
+  },
+
+  // Using Llama-3
+  async summarizeReviews(reviews: string) {
+    const chatCompletion = await inferenceClient.chatCompletion({
+      model: "meta-llama/Llama-3.1-8B-Instruct:novita",
+      messages: [
+        {
+          role: "system",
+          content: summarizePrompt,
+        },
+        {
+          role: "user",
+          content: reviews,
+        },
+      ],
+    });
+    return chatCompletion.choices[0]?.message.content || "";
   },
 };

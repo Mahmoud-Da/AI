@@ -1,10 +1,16 @@
 import fs from "fs";
 import path from "path";
 import { llmClient } from "../llm/client";
-import template from "../prompts/chatbot.txt";
+import template from "../llm/prompts/chatbot.txt";
 import { conversationRepository } from "../repositories/conversation.repository";
 
-const parkInfoPath = path.join(__dirname, "..", "prompts", "wonderworld.md");
+const parkInfoPath = path.join(
+  __dirname,
+  "..",
+  "llm",
+  "prompts",
+  "wonderworld.md"
+);
 const parkInfo = fs.readFileSync(parkInfoPath, "utf8");
 const instructions = template.replace("{{parkInfo}}", parkInfo);
 interface ChatResponse {
