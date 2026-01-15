@@ -1387,3 +1387,221 @@ After switching to LLaMA and refactoring:
 
 ---
 
+
+*** 6- Running Models Locally ***
+## Lecture Summary
+
+---
+
+## Lesson Motivation
+
+So far, you have learned how to call **Hugging Face models** using the **Inference Client**.
+While this approach is convenient, it has an important limitation:
+
+* Prompts and responses are sent **over the network**
+* This means:
+
+  * No full privacy
+  * External dependency on third-party APIs
+  * Potential compliance or data-sensitivity issues
+
+This lesson introduces a solution for **running LLMs locally** with **full privacy**.
+
+---
+
+## What Is Ollama?
+
+**Ollama** is a free, cross-platform tool that allows you to run large language models **locally** on your machine.
+
+Key characteristics:
+
+* Runs entirely on your local system
+* No network calls for inference
+* Very simple CLI interface
+* Conceptually similar to **Docker for LLMs**
+* Supports:
+
+  * Ollama’s own model registry
+  * Hugging Face models (locally)
+
+---
+
+## Installing Ollama
+
+1. Visit **ollama.com**
+2. Go to the **Downloads** page
+3. Download the installer for your operating system
+4. Install and run Ollama
+
+After installation:
+
+* Open a terminal
+* Run `ollama`
+* If you see a list of commands, the installation was successful
+
+---
+
+## Ollama Command Overview
+
+Once installed, Ollama provides several useful commands:
+
+* `ollama pull` – download a model
+* `ollama push` – upload a model
+* `ollama list` – list downloaded models
+* `ollama ps` – list running models
+* `ollama rm` – remove a model
+
+These commands make model lifecycle management straightforward.
+
+---
+
+## Running LLaMA Locally
+
+The **LLaMA** model used in previous lessons is also available in Ollama’s registry.
+
+Steps:
+
+1. Go to **Explore Models** on ollama.com
+2. Search for **llama**
+3. Copy the provided command
+4. Run it in the terminal
+
+If the model is not already on your machine:
+
+* Ollama will automatically pull it from the registry
+* Download time depends on your internet speed
+
+Once complete:
+
+* An interactive shell opens
+* You can directly interact with the model
+
+---
+
+## Interacting with the Model
+
+Inside the Ollama shell:
+
+* You can send prompts
+* Ask questions
+* Summarize text
+* Perform general reasoning tasks
+
+Example:
+
+* Ask: “What is the capital of France?”
+* Response: “The capital of France is Paris.”
+
+This confirms the model is running locally and responding correctly.
+
+---
+
+## Managing Local Models
+
+### Listing Installed Models
+
+Command:
+
+-------------------code----------------------
+ollama list
+-------------------code----------------------
+
+Displays:
+
+* Model name
+* Model ID
+* Size on disk
+* Last modified time
+
+Example:
+
+* `llama 3.1`
+* Shows how large the model is and when it was last updated
+
+---
+
+### Viewing Running Models
+
+Command:
+
+-------------------code----------------------
+ollama ps
+-------------------code----------------------
+
+Shows:
+
+* Which models are currently running
+* Memory usage
+* CPU usage
+
+Important note:
+
+* LLMs consume significant system resources
+* Monitoring usage is critical on local machines
+
+---
+
+### Removing Models
+
+Because models are large, you should remove them when no longer needed.
+
+Command:
+
+-------------------code----------------------
+ollama rm <model-name>
+-------------------code----------------------
+
+Example:
+
+-------------------code----------------------
+ollama rm llama:3.1
+-------------------code----------------------
+
+After removal:
+
+* The model is deleted from disk
+* `ollama list` will no longer show it
+
+This helps free up storage and system resources.
+
+---
+
+## Key Advantages of Ollama
+
+* Full data privacy
+* No API keys
+* No network latency
+* Offline usage
+* Easy model lifecycle management
+* Ideal for:
+
+  * Sensitive data
+  * Prototyping
+  * Local experimentation
+  * Compliance-restricted environments
+
+---
+
+## What Comes Next
+
+The next step is learning how to:
+
+* Run **Hugging Face models locally using Ollama**
+* Integrate Ollama into applications instead of remote inference APIs
+
+This bridges the gap between:
+
+* Cloud-based inference
+* Fully local AI systems
+
+---
+
+## Optional Follow-Up (If You Want)
+
+I can also:
+
+* Compare Ollama vs Hugging Face inference (architecture and trade-offs)
+* Show how to integrate Ollama into a Node.js or backend service
+* Explain GPU vs CPU considerations for local LLMs
+* Design a production-ready local-LLM setup
+* Discuss security and compliance benefits in detail
