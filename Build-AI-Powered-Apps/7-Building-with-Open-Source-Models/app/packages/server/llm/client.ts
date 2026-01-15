@@ -1,12 +1,16 @@
 import OpenAI from "openai";
 import { InferenceClient } from "@huggingface/inference";
 import summarizePrompt from "../llm/prompts/summarize-reviews.txt";
+import { Ollama } from "ollama";
+import { response } from "express";
 
 const inferenceClient = new InferenceClient(process.env.HF_TOKEN);
 
 const openAIClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
+
+const ollamaClient = new Ollama();
 
 export type GenerateTextOptions = {
   model?: string;
@@ -78,5 +82,23 @@ export const llmClient = {
       ],
     });
     return chatCompletion.choices[0]?.message.content || "";
+  },
+
+  // using ollama with tiny llama
+  async summarizeReviews2(reviews: string) {
+    const response = await ollamaClient.chat({
+      model: "tinyllama",
+      messages: [
+        {
+          role: "system",
+          content: summarizePrompt,
+        },
+        {
+          role: "user",
+          content: reviews,
+        },
+      ],
+    });
+    return response.message.content || "";
   },
 };
