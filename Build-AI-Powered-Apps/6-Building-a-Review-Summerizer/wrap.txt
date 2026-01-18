@@ -3261,3 +3261,379 @@ Store the generated review summary in the database for:
 * Caching
 * Reuse
 * Performance improvements
+
+*** 3.7- Storing the Summary ***
+
+---
+
+# Caching Review Summaries in the Database
+
+## Problem Statement
+
+Currently, the review summary is generated **every time** the API is called.
+
+This approach is:
+
+* **Slow** (LLM calls take time)
+* **Expensive** (each call consumes tokens)
+* **Unnecessary** (summaries do not change frequently)
+
+---
+
+## Goal of This Lesson
+
+* Store generated summaries in the database
+* Generate the summary **once**
+* Reuse the cached version on subsequent requests
+* Prepare for future expiration and regeneration logic
+
+---
+
+## High-Level Strategy
+
+1. Add a repository method to **store or update** a review summary
+2. Use Prisma’s `upsert` to handle insert/update
+3. Add expiration logic
+4. Store the summary after generating it
+5. Verify persistence in the database
+
+---
+
+## Step 1: Extend the Review Repository
+
+### File
+
+-------------------code----------------------
+repositories/review.repository.ts
+-------------------code----------------------
+
+### Existing State
+
+The repository currently only fetches reviews.
+
+We will add a new method:
+
+* `storeReviewSummary(productId: number, summary: string)`
+
+---
+
+## Step 2: Prepare Prisma Client for Reuse
+
+Move the Prisma client outside of the repository object so it can be reused by multiple methods.
+
+-------------------code----------------------
+import { prisma } from "../generated/prisma";
+import dayjs from "dayjs";
+-------------------code----------------------
+
+---
+
+## Step 3: Implement `storeReviewSummary`
+
+### Key Concepts
+
+* Use `upsert`
+
+  * Inserts if the record does not exist
+  * Updates if it already exists
+* This avoids duplicate logic
+* Ideal for caching scenarios
+
+---
+
+### Code
+
+-------------------code----------------------
+import { PrismaClient, type Review } from "@prisma/client";
+import dayjs from "dayjs";
+
+const prisma = new PrismaClient();
+
+export const reviewRepository = {
+  getReviews(productId: number, limit?: number): Promise<Review[]> {
+    return prisma.review.findMany({
+      where: { productId },
+      orderBy: { createdAt: "desc" },
+      take: limit,
+    });
+  },
+
+  async storeReviewSummary(productId: number, summary: string) {
+    const now = new Date();
+
+    const expiresAt = dayjs().add(7, "day").toDate();
+
+    const data = {
+      content: summary,
+      generatedAt: now,
+      expiresAt,
+      productId,
+    };
+
+    return prisma.summary.upsert({
+      where: {
+        productId,
+      },
+      create: data,
+      update: data,
+    });
+  },
+};
+-------------------code----------------------
+
+---
+
+## Notes on Expiration Logic
+
+* Expiration is set to **7 days**
+* This value is arbitrary
+* In a real system, it depends on business requirements
+* Future lessons will:
+
+  * Check expiration
+  * Regenerate only when necessary
+
+---
+
+## Step 4: Install `dayjs`
+
+Used for date manipulation.
+
+-------------------code----------------------bash
+bun add dayjs
+-------------------code----------------------
+
+---
+
+## Step 5: Update the Review Service
+
+### What Changes
+
+* After generating the summary:
+
+  * Store it in the database
+  * Then return it
+* Ensure async database writes are awaited
+
+---
+
+### File
+
+-------------------code----------------------
+services/review.service.ts
+-------------------code----------------------
+
+---
+
+### Updated Implementation
+
+-------------------code----------------------
+import type { Review } from "@prisma/client";
+import { llmClient } from "../llm/client";
+import { reviewRepository } from "../repositories/review.repository";
+import template from "../prompts/summarize-reviews.txt";
+
+export const reviewService = {
+  getReviews(productId: number): Promise<Review[]> {
+    return reviewRepository.getReviews(productId);
+  },
+
+  async summarizeReviews(productId: number): Promise<string> {
+    const reviews = await reviewRepository.getReviews(productId, 10);
+
+    const joinedReviews = reviews.map((r) => r.content).join("\n\n");
+    const prompt = template.replace("{{reviews}}", joinedReviews);
+
+    console.log(joinedReviews);
+    const { text: summary } = await llmClient.generateText({
+      model: "gpt-5-mini",
+      prompt,
+      maxTokens: 1000,
+    });
+
+    await reviewRepository.storeReviewSummary(productId, summary);
+
+    return summary;
+  },
+};
+-------------------code----------------------
+
+---
+
+## Important Bug Fix
+
+### Issue
+
+The summary was not being saved because:
+
+* The repository method was async
+* It was not being awaited
+
+### Fix
+
+-------------------code----------------------
+await reviewRepository.storeReviewSummary(productId, summary);
+-------------------code----------------------
+
+Without this, the database write may never complete.
+
+---
+
+## Step 6: Testing the Implementation
+
+### Initial State
+
+* `summaries` table is empty
+
+### Action
+
+* Call the summarize reviews endpoint
+
+### Result
+
+* Summary is generated
+* Record is inserted into the database
+
+---
+
+## Verifying Database Behavior
+
+### First Request
+
+* A new record is created
+* `generatedAt` is set
+* `expiresAt` is one week later
+
+### Second Request
+
+* The same record is updated
+* `generatedAt` timestamp changes
+* Confirms `upsert` works correctly
+
+---
+
+## Current Limitation
+
+Even though summaries are stored:
+
+* The summary is **still regenerated every time**
+
+This is intentional for now.
+
+---
+
+## What Comes Next
+
+In the next lesson, we will:
+
+* Check if a summary already exists
+* Verify whether it has expired
+* Regenerate **only if necessary**
+* Fully implement caching logic
+
+---
+
+## Key Takeaways
+
+* LLM outputs should be cached whenever possible
+* `upsert` is ideal for derived data
+* Expiration enables controlled regeneration
+* Async database writes must always be awaited
+* This is a foundational step toward scalable, cost-efficient AI features
+
+
+To check your data in the MySQL database, here are several useful commands:
+
+## 1. **First, connect to your database:**
+-------------------code----------------------
+mysql -u root -p review_summarizer
+-------------------code----------------------
+
+## 2. **Basic Commands Inside MySQL:**
+
+### **List all tables:**
+-------------------code----------------------
+SHOW TABLES;
+-------------------code----------------------
+
+### **View table structure:**
+-------------------code----------------------
+DESCRIBE table_name;
+-- or
+SHOW COLUMNS FROM table_name;
+-------------------code----------------------
+
+### **View all data in a table:**
+-------------------code----------------------
+SELECT * FROM table_name;
+-------------------code----------------------
+
+### **View limited rows:**
+-------------------code----------------------
+SELECT * FROM table_name LIMIT 10;
+-------------------code----------------------
+
+### **Count total rows:**
+-------------------code----------------------
+SELECT COUNT(*) FROM table_name;
+-------------------code----------------------
+
+## 3. **Common Examples:**
+
+### Check what tables exist first:
+-------------------code----------------------
+SHOW TABLES;
+-------------------code----------------------
+
+### Then explore a specific table:
+-------------------code----------------------
+-- See table structure
+DESCRIBE reviews;
+
+-- See first 20 rows
+SELECT * FROM reviews LIMIT 20;
+
+-- See specific columns
+SELECT id, rating, summary FROM reviews LIMIT 10;
+-------------------code----------------------
+
+## 4. **Useful Queries:**
+
+-------------------code----------------------
+-- Check distinct values in a column
+SELECT DISTINCT rating FROM reviews;
+
+-- Check data with conditions
+SELECT * FROM reviews WHERE rating >= 4;
+
+-- Order results
+SELECT * FROM reviews ORDER BY created_at DESC LIMIT 10;
+
+-- Count by category
+SELECT rating, COUNT(*) as count FROM reviews GROUP BY rating;
+-------------------code----------------------
+
+## 5. **Exit MySQL:**
+-------------------code----------------------
+EXIT;
+-- or
+QUIT;
+-------------------code----------------------
+
+## Tips:
+- Replace `table_name` with your actual table name (common tables might be: `reviews`, `summaries`, `users`, etc.)
+- If you're not sure about table names, always start with `SHOW TABLES;`
+- Use `Ctrl+C` to cancel a long-running query
+- Press up/down arrows to navigate command history
+
+
+we check the data if it saved:
+-------------------code----------------------
+mysql> SELECT * FROM summaries LIMIT 20;
++----+-----------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------+-------------------------+
+| id | productId | content                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | generatedAt             | expiresAt               |
++----+-----------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------+-------------------------+
+|  1 |         1 | Overall, reviewers praise the iPhone 15 Pro for strong performance (A17 Pro, smooth iOS 17, 120Hz ProMotion), a premium lightweight titanium build and improved camera system (48MP sensor, low‑light, portrait/focus control, 5x zoom) that often replaces a DSLR for casual use. Key conveniences cited are the new USB‑C port and useful features like Dynamic Island and satellite emergency connectivity. Common negatives include overheating during heavy use or charging, aggressive image processing/skewed skin tones for some shots, modest battery gains (solid but not game‑changing), limited Action Button options, and disappointment over minimal design changes, base storage size, and the high price. Overall sentiment is very positive—many are very satisfied—though several note it’s an evolutionary, not revolutionary, upgrade.             | 2026-01-08 04:49:06.857 | 2026-01-15 04:49:06.857 |
++----+-----------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------+-------------------------+
+1 row in set (0.000 sec)
+-------------------code----------------------
