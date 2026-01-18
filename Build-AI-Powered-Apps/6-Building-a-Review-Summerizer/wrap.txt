@@ -5398,7 +5398,7 @@ After checking the loading state in the component render logic:
 * If so, render a paragraph displaying the error message
 * Style the message using a red text color for visibility
 
--------------------code----------------------x
+-------------------code----------------------
 if (error) {
   return <p className="text-red-500">{error}</p>;
 }
@@ -6615,7 +6615,7 @@ const handleSummaries = async () => {
 
 ### Conditional Rendering Logic
 
--------------------code----------------------x
+-------------------code----------------------
 <div>
   <Button
     onClick={handleSummaries}
@@ -6676,5 +6676,288 @@ This completes the summary feature with both:
 
 * Strong UX
 * Professional error handling
+
+---
+
+*** 4.10- Refactoring with Mutations ***
+### Lecture Title
+
+**Refactoring Summary Logic Using React Query Mutation Hook**
+
+---
+
+## Lesson Objective
+
+In this lecture, we refactor the **summary generation feature** to use **React Query’s mutation hook** instead of manual state management.
+The goal is to:
+
+* Simplify the component code
+* Remove unnecessary state variables
+* Delegate loading, error handling, and retries to React Query
+* Make the code more maintainable and scalable
+
+This continues the transition from “manual React state” to **React Query–driven data flow**.
+
+---
+
+## 1. Recap: Query Hook vs Mutation Hook
+
+### Query Hook (`useQuery`)
+
+Used for:
+
+* Fetching (reading) data
+* Automatic caching
+* Automatic retries
+* Eliminating `useEffect` and related state logic
+
+### Mutation Hook (`useMutation`)
+
+Used for:
+
+* Creating or updating data
+* Actions triggered by user interaction (e.g. button clicks)
+* Automatic retries
+* Built-in loading and error states
+
+Key idea:
+
+> Queries are for *getting data*, mutations are for *changing data*.
+
+---
+
+## 2. Why Refactor Summary Logic to a Mutation
+
+Before refactoring, the summary feature used:
+
+* Multiple `useState` variables
+* Manual loading state management
+* Manual error handling
+* A `try–catch–finally` block
+
+With `useMutation`, React Query:
+
+* Manages loading state
+* Manages error state
+* Handles retries automatically
+
+This allows us to remove a large amount of boilerplate code.
+
+---
+
+## 3. Refactoring the Summary Function
+
+### Step 1: Remove UI State Logic
+
+Inside the old `handleSummarize` function, we remove:
+
+* State updates (`setSummary`, `setLoading`, etc.)
+* The `try–catch` block
+
+Why?
+
+* Error handling now lives inside `useMutation`
+* Loading state is also handled automatically
+
+---
+
+### Step 2: Convert the Function to a Pure API Call
+
+The function should:
+
+* Only call the backend
+* Return the response
+
+This matches how query functions are written.
+
+### Rename the Function
+
+From:
+
+-------------------code----------------------
+handleSummarize
+-------------------code----------------------
+
+To:
+
+-------------------code----------------------
+summarizeReviews
+-------------------code----------------------
+
+Reason:
+
+* It no longer handles a button click
+* It is now purely responsible for backend communication
+
+Conceptually, the function now does:
+
+-------------------code----------------------
+return responseFromBackend;
+-------------------code----------------------
+
+---
+
+## 4. Removing Manual State Variables
+
+Since React Query handles everything:
+
+* Remove summary state
+* Remove loading state
+* Remove error state
+
+All of these are replaced by the mutation hook.
+
+---
+
+## 5. Introducing the Mutation Hook
+
+### Calling `useMutation`
+
+We use the mutation hook and specify the response type:
+
+-------------------code----------------------
+useMutation<SummarizeResponse>(...)
+-------------------code----------------------
+
+This ensures:
+
+* Type safety
+* Clear expectations about the backend response
+
+---
+
+### Mutation Configuration
+
+We pass an object with a `mutationFn`:
+
+-------------------code----------------------
+mutationFn: () => summarizeReviews()
+-------------------code----------------------
+
+This tells React Query:
+
+* How to perform the mutation
+* What function actually talks to the backend
+
+This pattern mirrors `queryFn` in `useQuery`.
+
+---
+
+## 6. Destructuring Mutation State
+
+From the mutation hook, we destructure:
+
+### `mutate`
+
+* Renamed to `handleSummarize`
+* Used as the button click handler
+
+### `isPending`
+
+* Renamed to `isSummaryLoading`
+* Replaces the old loading state
+* Used for skeletons and disabled states
+
+### `isError`
+
+* Renamed to `isSummaryError`
+* Indicates whether the mutation failed
+
+### `data`
+
+* Renamed to `summarizeResponse`
+* Contains the backend response (including `summary`)
+
+This keeps naming consistent with the rest of the component.
+-------------------code----------------------
+const {
+  mutate: handleSummaries,
+  isPending: isSummaryLoading,
+  isError: isSummaryError,
+  data: summarizeResponse,
+} = useMutation<SummarizeResponse>({
+  mutationFn: () => summarizeReviews(),
+});
+-------------------code----------------------
+---
+
+## 7. Updating Derived Summary Logic
+
+Previously:
+
+* The summary came from local state
+
+Now:
+
+* The summary comes from `summarizeResponse?.summary`
+
+This reflects the shift from **state-driven** to **server-driven** UI.
+
+---
+
+## 8. Updating the Button Click Handler
+
+Since `mutate` is the trigger function:
+
+-------------------code----------------------
+onClick={() => handleSummarize()}
+-------------------code----------------------
+
+This:
+
+* Executes the mutation
+* Automatically updates loading and error states
+* Triggers retries if needed
+
+No manual logic is required.
+
+---
+
+## 9. Updating Error Rendering
+
+We no longer render `summaryError`.
+
+Instead:
+
+* Check `isSummaryError`
+* Display a fixed, user-friendly message
+
+Example behavior:
+
+* If the mutation fails → show error
+* If it succeeds → show summary
+
+This keeps UI logic simple and predictable.
+
+---
+
+## 10. Verifying the Refactor
+
+After refactoring:
+
+* Click **Summarize**
+* Skeleton appears while loading
+* Summary appears on success
+* Errors are handled automatically
+
+Result:
+
+* Less code
+* Cleaner component
+* Same behavior, better structure
+
+---
+
+## 11. Final Outcome
+
+After this refactor, the component:
+
+* Uses React Query idiomatically
+* Eliminates unnecessary local state
+* Delegates retries and errors to the library
+* Is easier to read and maintain
+* Is more scalable for future features
+
+This is the **recommended production approach** when using React Query.
 
 ---
