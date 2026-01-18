@@ -1050,7 +1050,7 @@ content String @db.Text
 3. Create a new migration:
 
 -------------------code----------------------
-npx prisma migrate dev
+bunx prisma migrate dev
 -------------------code----------------------
 
 4. When prompted, name the migration:
@@ -1566,7 +1566,7 @@ main()
 
 Then run it:
 -------------------code----------------------
-npx ts-node prisma/seed.ts
+bunx ts-node prisma/seed.ts
 # or if using bun
 bun prisma/seed.ts
 -------------------code----------------------
@@ -1662,3 +1662,363 @@ Then paste the entire INSERT statements and press Enter.
 * Add logic for summarizing reviews.
 
 ---
+
+*** 3.1- Creating the API to Fetch Reviews ***
+
+
+---
+
+## Building the First API Endpoint: Fetch Product Reviews
+
+### 1. Objective of This Lesson
+
+* Build the **first backend API endpoint**.
+* Fetch all reviews for a specific product.
+* Start with a simple implementation, then improve it through refactoring and modularization.
+
+---
+
+### 2. Development Strategy
+
+* Implement a **basic working version** first.
+* Validate functionality using real data.
+* Refactor after confirming correct behavior.
+
+---
+
+### 3. Route Definition
+
+#### File:
+
+* `routes.ts`
+
+#### Endpoint:
+
+-------------------code----------------------
+GET /api/products/:id/reviews
+-------------------code----------------------
+
+#### Notes:
+
+* `:id` is a **route parameter**.
+* Route parameters are defined using a colon followed by the parameter name.
+
+---
+
+### 4. Route Handler Setup
+
+#### Handler Signature:
+
+* Function with two parameters:
+
+  * `req` of type `Request`
+  * `res` of type `Response`
+
+---
+
+### 5. Prisma Client Initialization
+
+#### Import Location:
+
+* Import `PrismaClient` from the **generated Prisma client** directory:
+
+  -------------------code----------------------
+  ./generated/prisma
+  -------------------code----------------------
+
+#### Reason:
+
+* Prisma regenerates the client every time:
+
+  * The schema changes
+  * A new migration is created
+* Importing from the generated folder ensures the client always matches the schema.
+
+#### Initialization:
+
+* Create a new Prisma client instance inside the route module.
+
+---
+
+### 6. Reading and Parsing the Product ID
+
+#### Steps:
+
+1. Read the product ID from the URL:
+
+   -------------------code----------------------
+   req.params.id
+   -------------------code----------------------
+2. The type is `string | undefined`.
+3. Convert it to a number using:
+
+   -------------------code----------------------
+   Number(req.params.id)
+   -------------------code----------------------
+
+---
+
+### 7. Fetching Reviews (Happy Path)
+
+#### Prisma Query:
+
+* Use `prisma.review.findMany`
+
+#### Query Customization:
+
+* `where`:
+
+  * Filter reviews by `productId`
+* `orderBy`:
+
+  * Sort by `createdAt`
+  * Descending order (latest reviews first)
+
+#### Result:
+
+* Prisma generates a SQL query similar to:
+
+  -------------------code----------------------
+  SELECT * FROM reviews
+  WHERE productId = ?
+  ORDER BY createdAt DESC
+  -------------------code----------------------
+
+---
+
+### 8. ORM Benefits and Limitations
+
+#### Benefits:
+
+* No need to write raw SQL for simple queries.
+* Work with objects instead of SQL syntax.
+* Cleaner and more maintainable code.
+
+#### Limitations:
+
+* ORMs are not a replacement for SQL knowledge.
+* Complex queries may still require raw SQL.
+
+---
+
+### 9. Async Handling
+
+* `findMany` returns a **Promise**.
+* Use `await` to retrieve results.
+* Mark the route handler as `async`.
+
+---
+
+### 10. Sending the Response
+
+* The result is an array of review objects.
+* Each object includes:
+
+  * `id`
+  * `author`
+  * `rating`
+  * `content`
+  * `createdAt`
+* Return the data using:
+
+  -------------------code----------------------
+  res.json(reviews)
+  -------------------code----------------------
+
+---
+
+### 11. Testing with Postman
+
+#### Request:
+
+-------------------code----------------------
+GET http://localhost:3000/api/products/1/reviews
+-------------------code----------------------
+
+#### Expected Result:
+
+* JSON array of reviews for product ID `1`.
+
+#### Invalid Product ID (Non-existent but numeric):
+
+-------------------code----------------------
+/api/products/10/reviews
+-------------------code----------------------
+
+* Response: empty array
+* Acceptable behavior.
+
+---
+
+### 12. Handling Invalid Input
+
+#### Problem:
+
+* Non-numeric product IDs cause a `500 Internal Server Error`.
+* This indicates a server crash and must be avoided.
+
+---
+
+### 13. Input Validation
+
+#### Validation Logic:
+
+* Check if `productId` is `NaN`.
+
+#### Two Possible Responses:
+
+1. Return an empty list
+2. Return a `400 Bad Request` error
+
+---
+
+### 14. Choosing the Correct Error Strategy
+
+#### Reasoning:
+
+* Returning an empty list can hide frontend bugs.
+* A `400 Bad Request`:
+
+  * Clearly signals invalid input
+  * Helps detect frontend issues early
+
+#### Implementation:
+
+* If product ID is invalid:
+
+  * Return status `400`
+  * Send an error message:
+
+    -------------------code----------------------
+    { error: "Invalid product id" }
+    -------------------code----------------------
+  * Stop further execution using `return`.
+
+---
+
+### 15. Retesting After Validation
+
+#### Request:
+
+-------------------code----------------------
+GET /api/products/abc/reviews
+-------------------code----------------------
+
+#### Result:
+
+* Status code: `400`
+* Error message: `Invalid product id`
+
+---
+
+### 16. Final Outcome
+
+* The endpoint:
+
+  * Fetches reviews correctly
+  * Sorts them properly
+  * Handles invalid input safely
+* Backend stability is improved.
+* Frontend bugs become easier to detect.
+
+---
+
+### 17. Next Steps
+
+* Refactor the route code.
+* Improve structure and modularity.
+* Prepare for additional endpoints and features.
+
+---
+
+
+
+How to fix prisma if not initialized well:
+
+PrismaClientInitializationError: `PrismaClient` needs to be constructed with a non-empty, valid `PrismaClientOptions`:
+[server]
+
+to fix:
+return to prisma 6 and @prisma/client 6
+-------------------code----------------------
+{
+  "name": "server",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/express": "^5.0.5",
+    "prisma": "^6.2.0"
+  },
+  "scripts": {
+    "start": "bun run index.ts",
+    "dev": "bun --watch run index.ts"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.2.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "openai": "^6.9.1",
+    "zod": "^4.1.13"
+  }
+}
+-------------------code----------------------
+
+for the schema 
+-------------------code----------------------
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id          Int     @id @default(autoincrement())
+  name        String  @db.VarChar(255)
+  description String? @db.Text
+  price       Float
+
+  reviews Review[]
+  summary Summary?
+
+  @@map("products")
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  author    String   @db.VarChar(255)
+  rating    Int      @db.TinyInt
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@map("reviews")
+}
+
+model Summary {
+  id          Int      @id @default(autoincrement())
+  productId   Int      @unique
+  product     Product  @relation(fields: [productId], references: [id])
+  content     String   @db.Text
+  generatedAt DateTime @default(now())
+  expiresAt   DateTime
+
+  @@map("summaries")
+}
+-------------------code----------------------
