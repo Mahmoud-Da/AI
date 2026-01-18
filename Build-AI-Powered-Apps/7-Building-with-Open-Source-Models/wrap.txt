@@ -1804,3 +1804,209 @@ In the next lesson, you will learn how to:
 * Demonstrate a Node.js or backend integration with Ollama
 * Help you decide when to use Hugging Face API vs local Ollama
 
+*** 8- Calling Ollama Models ***
+
+---
+
+## Lecture Summary: Using Ollama with Hugging Face Models & JavaScript Client
+
+### 1. Running Hugging Face Models Locally with Ollama
+
+#### Enabling Ollama
+
+* Go to your **Hugging Face profile**
+* Open **Settings**
+* Navigate to **Local Apps and Hardware**
+* Enable **Ollama**
+
+This enables Hugging Face to integrate directly with Ollama for local model execution.
+
+---
+
+### 2. Selecting Compatible Models (GGUF Format)
+
+* Ollama **only supports models in GGUF format**
+* On the Hugging Face models page:
+
+  * Filter by **GGUF**
+  * Search for **LLaMA**
+  * Sort by **most downloads**
+
+A GGUF version of the LLaMA model is available under the **Bartoski** repository.
+
+---
+
+### 3. Running the Model with Ollama
+
+* Open the model page on Hugging Face
+* Under **Use this model**, a new option appears under **Local Apps** (because Ollama is enabled)
+* Copy the provided command and run it in the terminal
+
+Ollama will download and run the model locally.
+
+---
+
+### 4. Verifying the Model
+
+* Ask a simple question (e.g., `What is 2 + 2?`) to confirm it works
+* Open a new terminal and run:
+
+  * `ollama list` → shows installed models
+  * `ollama ps` → shows running models and RAM usage
+
+#### Observations
+
+* GGUF LLaMA model size: ~2 GB
+* RAM usage: ~3 GB
+* Previously used Ollama registry LLaMA model:
+
+  * Size: ~4 GB
+  * RAM usage: ~6 GB
+
+GGUF models are **smaller and more memory efficient**.
+
+---
+
+### 5. Removing a Model
+
+To remove a model:
+
+1. Copy the model name
+2. Run:
+
+   -------------------code----------------------
+   ollama rm <model-name>
+   -------------------code----------------------
+
+---
+
+### 6. Using the Ollama JavaScript Client
+
+#### Why Use the Client?
+
+* Ollama runs a **local web server**
+* You can send HTTP requests directly
+* The JavaScript client:
+
+  * Wraps the HTTP API
+  * Simplifies interaction
+  * Makes the code cleaner and safer
+
+---
+
+### 7. Choosing a Lightweight Model: TinyLLaMA
+
+* Visit **ollama.com**
+* Search for **tinyllama**
+* Run the provided command in the terminal
+
+#### Resource Usage
+
+* RAM usage: ~1.4 GB
+* Much lighter than full LLaMA models
+* Suitable for local applications
+
+---
+
+### 8. Installing the Ollama JavaScript Client
+
+Run:
+
+-------------------code----------------------
+bun add ollama
+-------------------code----------------------
+
+This is the **official Ollama JavaScript client**.
+
+---
+
+### 9. Integrating Ollama into the Application
+
+#### Setup
+
+* Import Ollama:
+
+  -------------------code----------------------
+  import { Ollama } from "ollama";
+  -------------------code----------------------
+* Create a client instance:
+
+  -------------------code----------------------
+  const ollamaClient = new Ollama();
+  -------------------code----------------------
+
+---
+
+### 10. Updating the Summarization Logic
+
+In the `summarizeReviews` method:
+
+#### Changes Made
+
+* Replace `inferenceClient` with `ollamaClient`
+* Replace `chatCompletion` with `chat`
+* Remove the `provider` field
+* Set the model to:
+
+  -------------------code----------------------
+  tinyllama
+  -------------------code----------------------
+* Keep messages unchanged:
+
+  * **System message**: instructions / prompt
+  * **User message**: product reviews
+
+---
+
+### 11. Handling the Response
+
+* The `chat` method returns a response object
+* Access:
+
+  -------------------code----------------------
+  response.message.content
+  -------------------code----------------------
+* This content contains the generated summary
+
+---
+
+### 12. Testing the Application
+
+* Run the app in the browser
+* Trigger review summarization
+* Example output:
+
+  * Reviews highlight excellent noise cancellation
+  * Strong bass performance
+  * Positive overall customer feedback
+
+---
+
+### 13. Key Takeaways
+
+* The summary is generated **entirely locally**
+* No network requests are made
+* No data is sent to:
+
+  * OpenAI
+  * Hugging Face APIs
+* This approach offers:
+
+  * Better privacy
+  * Lower cost
+  * Full control over the model
+
+---
+
+### 14. What’s Next
+
+* Next lesson will focus on **refactoring**
+* Specifically: **extracting the API / LLM layer** for better architecture and maintainability
+
+---
+
+* Rewrite this as **exam-ready notes**
+* Add **architecture diagrams (conceptual)**
+* Explain **why GGUF is more memory efficient**
+* Compare **local vs remote LLM inference**
+* Turn this into a **reusable study template**
