@@ -1,0 +1,137 @@
+*** 1- Introduction ***
+**Title: Using Open Source Models in Applications**
+
+---
+
+## 1. Overview of This Section
+
+This section introduces **open source AI models** and explains their role in modern software applications. The focus is on understanding why and when to choose open source models, how to find them, how to run them locally, and how to integrate them into an application to power AI features **without relying on hosted or third-party services**.
+
+---
+
+## 2. What Is Being Built
+
+* An application that uses **open source AI models** as its intelligence layer.
+* The AI features are powered **locally** rather than through cloud-based or hosted AI services.
+* The models will be:
+
+  * Discovered and selected from open source ecosystems
+  * Run locally using tooling such as **Ollama**
+  * Integrated directly into the application architecture
+
+---
+
+## 3. Why Open Source Models Are Used
+
+Open source models are introduced as an alternative to hosted AI services.
+
+Key reasons for choosing open source models include:
+
+* **Independence from hosted services**
+
+  * No reliance on third-party APIs or external providers
+  * Reduced risk of service outages or API changes
+* **Local execution**
+
+  * Models can run entirely on the developer’s machine or server
+  * Suitable for offline or restricted environments
+* **Control and flexibility**
+
+  * Full control over model versions, updates, and configuration
+  * Easier customization and experimentation
+* **Cost considerations**
+
+  * Avoids per-request or per-token pricing common with hosted AI services
+
+---
+
+## 4. Problems This Approach Solves
+
+Using open source models addresses several common issues:
+
+* Dependency on external AI providers
+* Network latency caused by remote API calls
+* Privacy concerns related to sending data to third-party services
+* Long-term cost scaling issues as AI usage increases
+
+By running models locally, the application can deliver AI functionality while remaining self-contained.
+
+---
+
+## 5. How Open Source Models Are Found
+
+This section indicates that developers will learn:
+
+* Where to **discover open source models**
+* How to evaluate which models are suitable for their use case
+
+While specific repositories or platforms are not yet detailed, the emphasis is on understanding that open source models are widely available and selectable based on application needs.
+
+---
+
+## 6. Running Models Locally
+
+### 6.1 Local Execution Concept
+
+* Open source models can be executed directly on a local machine.
+* This removes the need for cloud-based inference.
+
+### 6.2 Tooling: Ollama
+
+* **Ollama** is introduced as a tool used to run open source models locally.
+* It acts as a local model runtime and management layer.
+* It simplifies:
+
+  * Downloading models
+  * Running inference locally
+  * Managing model versions
+
+The use of Ollama enables developers to treat local models similarly to a service, but without external dependencies.
+
+---
+
+## 7. Application Integration
+
+After running models locally, the next step is integration.
+
+Key points of integration:
+
+* The locally running open source models will be connected to the application.
+* These models will **power AI features** inside the app.
+* The application will communicate with the local model runtime instead of a hosted AI API.
+
+This creates an architecture where AI capabilities are fully embedded within the application’s own infrastructure.
+
+---
+
+## 8. Architecture Implications
+
+### Backend Logic
+
+* The backend is responsible for interacting with the locally running model.
+* AI requests are processed internally rather than forwarded to external services.
+
+### API Interaction
+
+* The application communicates with the local model runtime (e.g., via a local API or process).
+* This replaces calls to remote hosted AI providers.
+
+### Performance and UX Considerations
+
+* Local execution can reduce latency.
+* Performance depends on local hardware resources.
+* The user experience benefits from faster, more predictable AI responses.
+
+---
+
+## 9. Summary of the Section Flow
+
+* Introduce open source AI models
+* Explain why they are a viable and often preferable choice
+* Show how to find appropriate models
+* Demonstrate how to run them locally using tools like Ollama
+* Integrate them into an application to enable AI features without hosted dependencies
+
+This section sets the foundation for building AI-powered applications that are self-hosted, controllable, and independent.
+
+---
