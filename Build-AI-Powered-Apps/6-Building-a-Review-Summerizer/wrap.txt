@@ -71,3 +71,52 @@
 
 ---
 
+
+*** 2- Setting Up the Database ***
+---
+
+## Lecture Overview: Database Setup for the Project
+
+### 1. Project Complexity
+
+* This project is more complex than the previously built chatbot project.
+* It is a **full-stack application**.
+* The application includes its **own database**, which is a core component of the system.
+
+### 2. Purpose of This Segment
+
+* The focus of this segment is on **setting up the database from scratch**.
+* The database will serve as the foundation for the rest of the application.
+
+### 3. Database Initialization
+
+* The database will be:
+
+  * Created from the ground up
+  * Properly structured to support application features
+
+### 4. Populating the Database
+
+* The database will be filled with **realistic sample data**.
+* This ensures:
+
+  * Meaningful testing
+  * More realistic development scenarios
+  * Better understanding of how the application behaves with real data
+
+### 5. Role of the Database in Development
+
+* Having realistic data allows developers to:
+
+  * Build features more effectively
+  * Test logic and edge cases
+  * Develop and debug the application with confidence
+
+### 6. Next Steps
+
+* With the database in place and populated:
+
+  * The rest of the application can be built on top of it
+  * Backend and frontend features can be developed incrementally
+
+---
