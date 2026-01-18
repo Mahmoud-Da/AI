@@ -921,3 +921,198 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY 'your_new_password_here';
 FLUSH PRIVILEGES;
 exit;
 -------------------code----------------------
+
+*** 2.5- Refining the Prisma Schema ***
+---
+
+## Refining the Prisma Schema (Best Practices)
+
+### 1. Purpose of This Cleanup
+
+* The goal of this lesson is to **refine and clean up the Prisma schema**.
+* These changes are **not required** for the application to function.
+* They reflect **real-world database best practices** and improve:
+
+  * Readability
+  * Maintainability
+  * Long-term scalability
+
+---
+
+### 2. Renaming Database Tables
+
+#### Problem:
+
+* Prisma uses **PascalCase** model names by default.
+* Many developers prefer:
+
+  * Lowercase table names
+  * Pluralized names
+
+#### Solution: `@@map`
+
+* Prisma allows overriding table names using the `@@map` attribute.
+
+#### Example:
+
+-------------------code----------------------
+model Product {
+  ...
+  @@map("products")
+}
+-------------------code----------------------
+
+#### Applied Changes:
+
+* `Product` → `products`
+* `Review` → `reviews`
+* `Summary` → `summaries`
+
+---
+
+### 3. Improving String Data Types
+
+#### Default Behavior:
+
+* Prisma maps `String` to:
+
+-------------------code----------------------
+VARCHAR(191)
+-------------------code----------------------
+
+* This is a MySQL-specific default.
+
+#### Best Practice:
+
+* Use more standardized lengths for strings.
+* Customize column types using the `@db` attribute.
+
+---
+
+### 4. Updated Data Types by Model
+
+#### Product Model
+
+* `name`
+
+  * Changed to `VARCHAR(255)`
+* `description`
+
+  * Changed to `TEXT` or alternatively `VARCHAR(1000)`
+  * `TEXT` chosen for greater flexibility
+
+-------------------code----------------------
+name        String @db.VarChar(255)
+description String @db.Text
+-------------------code----------------------
+
+---
+
+#### Review Model
+
+* `author`
+
+  * Changed to `VARCHAR(255)`
+* `rating`
+
+  * Changed from `Int` to `TINYINT`
+  * Reason:
+
+    * Ratings only range from 1 to 5
+    * `Int` is unnecessarily large (up to 2 billion)
+
+-------------------code----------------------
+author String @db.VarChar(255)
+rating Int    @db.TinyInt
+content String @db.Text
+-------------------code----------------------
+
+---
+
+#### Summary Model
+
+* `content`
+
+  * Changed to `TEXT`
+
+-------------------code----------------------
+content String @db.Text
+-------------------code----------------------
+
+---
+
+### 5. Applying the Changes
+
+#### Steps:
+
+1. Save the updated `schema.prisma`
+2. Prisma automatically reformats the file
+3. Create a new migration:
+
+-------------------code----------------------
+npx prisma migrate dev
+-------------------code----------------------
+
+4. When prompted, name the migration:
+
+-------------------code----------------------
+refine-schema
+-------------------code----------------------
+
+---
+
+### 6. Migration Results
+
+#### Migration Folder:
+
+* A new directory appears under:
+
+-------------------code----------------------
+prisma/migrations/
+-------------------code----------------------
+
+* It contains:
+
+  * Timestamp
+  * Migration name (`refine-schema`)
+  * SQL file with table update instructions
+
+---
+
+### 7. Verifying Changes in the Database
+
+#### In DataGrip:
+
+* Refresh the database view
+* Confirm:
+
+  * Table names are now lowercase and plural
+  * Column types are updated:
+
+    * `name` → `VARCHAR(255)`
+    * `description` → `TEXT`
+
+#### prisma_migrations Table:
+
+* Shows the second migration as applied
+* Confirms schema changes were successfully executed
+
+---
+
+### 8. Key Takeaways
+
+* Prisma allows full control over:
+
+  * Table names
+  * Column types
+* Using `@@map` and `@db` improves database design quality
+* Small refinements early prevent technical debt later
+* Every schema change must be followed by a migration
+
+---
+
+### 9. Next Lesson Preview
+
+* The next lesson will focus on **populating the database with sample data**.
+
+---
