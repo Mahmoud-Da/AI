@@ -120,3 +120,107 @@
   * Backend and frontend features can be developed incrementally
 
 ---
+
+
+*** 2.1- Setting Up MySQL ***
+---
+
+## Lecture Overview: Database Setup with MySQL
+
+### 1. Purpose of This Step
+
+* Before building the API, a database must be set up.
+* The database will store:
+
+  * Products
+  * Reviews
+  * Generated summaries
+* This database is a foundational part of the application.
+
+### 2. Database Technology Choice
+
+* The project uses **MySQL**.
+* MySQL is:
+
+  * Open source
+  * A relational database system
+  * Widely used in real-world production applications
+
+### 3. Installation Options
+
+* If MySQL is already installed locally:
+
+  * You can continue using the existing installation.
+* If MySQL is not installed:
+
+  * Download and install it from the official website.
+
+### 4. Downloading MySQL
+
+* Open a browser and go to **mysql.com**.
+* Navigate to the **Downloads** section.
+* Scroll to the bottom and select **MySQL Community Downloads**.
+* Click on **MySQL Community Server**.
+* Choose the latest version for your operating system.
+
+#### Mac-Specific Notes
+
+* Select the correct package based on CPU architecture:
+
+  * ARM (Apple Silicon)
+  * x86 (Intel CPUs)
+* On the download page:
+
+  * No login or signup is required.
+  * Click **“No thanks, just start my download”**.
+
+### 5. Installing MySQL
+
+* Open the installer once the download completes.
+* Follow the installation steps:
+
+  * Click **Continue**
+  * Agree to the license terms
+  * Proceed with installation
+* When prompted:
+
+  * Enter your computer’s login password.
+* Set a password for the **root (admin) MySQL user**.
+
+  * This password is important and will be used later in the application.
+  * Make sure to remember it.
+* Complete the installation.
+* Enter your computer password again if requested.
+* After installation, the installer file can be moved to trash.
+
+### 6. Verifying the Installation
+
+* Open a terminal window.
+* Run the following command:
+-------------------code----------------------
+mysql -u root -p
+-------------------code----------------------
+
+* Press Enter.
+* When prompted:
+
+  * Enter the MySQL root password you created during installation.
+* If the MySQL shell opens successfully:
+
+  * MySQL is installed correctly.
+
+### 7. Exiting the MySQL Shell
+
+* To exit the MySQL shell:
+
+  * Type `quit`
+  * Press Enter
+
+### 8. Next Step
+
+* With MySQL installed and verified:
+
+  * The next step is to set up **Prisma**
+  * Prisma will be used to interact with the database from the application
+
+---
