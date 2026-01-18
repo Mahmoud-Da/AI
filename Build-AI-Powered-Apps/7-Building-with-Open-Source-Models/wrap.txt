@@ -618,3 +618,494 @@ This builds on the discovery and evaluation steps covered here.
 * If you want to go deeper, you may study how to interpret model cards to assess risks, biases, and limitations.
 * An optional improvement would be to compare model parameter sizes against hardware constraints.
 * You may also study the trade-offs between hosted inference APIs and fully local execution of open source models.
+
+*** 4- Calling Hugging Face Models ***
+**Title: Calling Hugging Face Models Using Access Tokens and Integrating Them into the Backend**
+
+---
+
+## 1. Purpose of This Lesson
+
+This lesson explains **how to call Hugging Face open source models programmatically** and integrate them into an existing backend application. It covers:
+
+* Creating and managing Hugging Face access tokens
+* Installing and using the Hugging Face inference client
+* Extending an existing LLM abstraction without breaking existing functionality
+* Wiring a Hugging Face summarization model into the application
+* Testing the integration
+* Understanding why model choice matters based on training data
+
+---
+
+## 2. Creating a Hugging Face Access Token
+
+### 2.1 Why an Access Token Is Required
+
+* Hugging Face models hosted via inference require authentication
+* The access token authorizes API requests to Hugging Face services
+
+---
+
+### 2.2 Steps to Create an Access Token
+
+1. Go to the Hugging Face website
+2. Navigate to:
+
+   * Profile
+   * Settings
+   * Access Tokens
+3. Create a new access token
+
+---
+
+### 2.3 Token Management Best Practices
+
+* Always create **separate tokens** for:
+
+  * Development
+  * Testing
+  * Production
+* Reason:
+
+  * If a token is compromised, it limits the blast radius
+  * Prevents attackers from abusing all environments
+
+---
+
+### 2.4 Token Configuration
+
+* Give the token a **descriptive name**
+
+  * Example: `office-mac`
+  * Indicates it is used on a development machine in the office
+* Select permissions:
+
+  * Use the **Read** tab
+  * Grant read-only access to resources
+* Create the token
+* Copy the token immediately
+
+---
+
+## 3. Storing the Token in the Application
+
+### 3.1 Environment Configuration
+
+* Open the `.env` file
+* Add a new environment variable:
+
+  * Key: `HF_TOKEN`
+  * Value: the newly created Hugging Face access token
+-------------------code----------------------
+HF_TOKEN="your-huggingFace-token"
+-------------------code----------------------
+This keeps secrets out of source code and enables environment-specific configuration.
+
+---
+
+## 4. Installing the Hugging Face Inference Client
+
+### 4.1 Inference Service Overview
+
+* Hugging Face provides a hosted inference service
+* It includes:
+
+  * A **free tier** (used in this course)
+  * Usage limitations:
+
+    * Rate limiting
+    * Lower performance
+* Suitable for development, not ideal for production
+
+From the server directory, install the Hugging Face inference client:
+-------------------code----------------------
+bun add @huggingface/inference
+-------------------code----------------------
+
+---
+
+### 4.2 Production Considerations
+
+* For production use:
+
+  * Hugging Face offers **dedicated inference endpoints**
+* Pricing information:
+
+  * Available on the Hugging Face pricing page
+  * Includes different providers and hardware architectures
+* Dedicated endpoints provide:
+
+  * Better performance
+  * Fewer limitations
+* In this course:
+
+  * Only the free tier is used
+
+---
+
+### 4.3 Installing the Client Library
+
+* Open a terminal
+* Navigate to the server directory
+* Install the Hugging Face inference client package
+
+This library enables programmatic access to Hugging Face-hosted models.
+
+---
+
+## 5. Existing Architecture: LLM Client Abstraction
+
+### 5.1 Current State
+
+* Earlier in the course, an **LLM client abstraction** was introduced
+* This abstraction currently uses **OpenAI**
+* It centralizes language model calls
+
+---
+
+### 5.2 Design Decision
+
+* OpenAI integration is **not removed**
+* Hugging Face support is **added alongside it**
+* Reason:
+
+  * Avoid breaking existing features
+  * Preserve chatbot functionality
+  * Allow multiple LLM providers
+
+---
+
+## 6. Adding Hugging Face Support to the LLM Client
+
+### 6.1 Importing the Inference Client
+
+* Import the inference client from the Hugging Face library
+* Add the import at the top of the module
+-------------------code----------------------
+import { InferenceClient } from "@huggingface/inference";
+-------------------code----------------------
+---
+
+### 6.2 Creating the Hugging Face Client Instance
+
+* Create a new client object using the access token
+* Rename clients to avoid confusion:
+
+  * `openAIClient`
+  * `inferenceClient`
+
+This makes the codebase clearer and avoids naming collisions.
+-------------------code----------------------
+const inferenceClient = new InferenceClient(process.env.HF_TOKEN);
+-------------------code----------------------
+---
+
+## 7. Using the Hugging Face Summarization Model
+
+### 7.1 Reference Code from the Model Page
+
+* The model used is **BART CNN**
+* Hugging Face provides JavaScript examples using `huggingface.js`
+* The summarization example includes:
+
+  * Model
+  * Inputs
+  * Provider
+-------------------code----------------------
+async summarize(text: string): Promise<string> {
+  const output = await inferenceClient.summarization({
+    model: "facebook/bart-large-cnn",
+    inputs: text,
+    provider: "hf-inference",
+  });
+
+  return output.summary_text;
+},
+-------------------code----------------------
+---
+
+### 7.2 Avoiding Breaking Changes
+
+* The existing `generateText` method is **not modified**
+* Reason:
+
+  * It is used by the chatbot
+  * Modifying it could break existing functionality
+
+---
+
+### 7.3 Creating a New Method
+
+* Define a new method named `summarize`
+* Input:
+
+  * `text: string`
+* Purpose:
+
+  * Summarize review content only
+  * Keep responsibilities separated
+
+---
+
+### 7.4 Implementing the Summarize Method
+
+Implementation details:
+
+* Mark the method as `async`
+* Use `inferenceClient` instead of the OpenAI client
+* Call the `summarization` method
+* Provide:
+
+  * `model`: `facebook/bart-large-cnn`
+  * `inputs`: the input text
+  * `provider`: `hf-inference`
+
+---
+
+### 7.5 Handling the Response
+
+* The inference call returns an output object
+* The summary is located at:
+
+  * `output.summary_text`
+* The method returns this summary text
+
+---
+
+## 8. Integrating with the Review Service
+
+### 8.1 Updating the Review Summarization Logic
+
+* Navigate to the review service
+* In the `summarizeReviews` method:
+
+  * Replace the call to `llmClient.generateText`
+  * Use the new `summarize` method instead
+-------------------code----------------------
+console.log(joinedReviews);
+// const { text: summary } = await llmClient.generateText({
+//   model: "gpt-5-mini",
+//   prompt,
+//   maxTokens: 1000,
+// });
+const summary = await llmClient.summarize(joinedReviews);
+
+await reviewRepository.storeReviewSummary(productId, summary);
+
+return summary;
+-------------------code----------------------
+---
+
+### 8.2 Simplifying Method Usage
+
+* Previously:
+
+  * An object was passed to the LLM client
+  * The result required destructuring
+* Now:
+
+  * Pass the joined reviews string directly
+  * Receive the summary as a string
+  * Store it directly in the database
+
+---
+
+## 9. Testing the Application
+
+### 9.1 Running the Test
+
+* Open the application in the browser
+* Trigger the review summarization feature
+
+---
+
+### 9.2 Observed Output
+
+* Example output:
+
+  * “Noise cancellation is top notch and I can wear them during runs or work calls without discomfort.”
+* Observation:
+
+  * This does not look like a true summary
+  * It reads like a single user review
+
+---
+
+## 10. Understanding the Unexpected Result
+
+### 10.1 Root Cause Analysis
+
+* Reviewing the model card reveals:
+
+  * The model was pretrained on English
+  * Fine-tuned on **CNN / Daily Mail**
+* This dataset consists of **news-style articles**
+
+---
+
+### 10.2 Why This Matters
+
+* The model is optimized for:
+
+  * Summarizing news articles
+* It is not designed for:
+
+  * Aggregating multiple reviews
+  * Extracting key positive and negative themes
+  * Product review summarization
+
+---
+
+## 11. Key Lesson Learned
+
+* Not all summarization models are interchangeable
+* A model’s:
+
+  * Training data
+  * Fine-tuning objective
+* Directly affects its output quality for a given task
+
+---
+
+## 12. Transition to the Next Lesson
+
+The next lesson will focus on:
+
+* **How to choose the right model for the job**
+* Matching model training and capabilities to real application requirements
+
+---
+
+## Optional Further Study Suggestions
+
+* If you want to go deeper, you may study how training datasets influence model behavior and output style.
+* An optional improvement would be to evaluate review-specific or sentiment-aware summarization models.
+* You may also study strategies for benchmarking multiple models against the same task before selecting one for production.
+
+
+- clear the DB summaries
+1- check the tables
+-------------------code----------------------
+mysql> SHOW TABLES;
++-----------------------------+
+| Tables_in_review_summarizer |
++-----------------------------+
+| _prisma_migrations          |
+| products                    |
+| reviews                     |
+| summaries                   |
++-----------------------------+
+4 rows in set (0.002 sec)
+-------------------code----------------------
+
+2- check the data:
+-------------------code----------------------
+mysql> SELECT * FROM summaries;
++----+-----------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------+-------------------------+
+| id | productId | content                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | generatedAt             | expiresAt               |
++----+-----------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------+-------------------------+
+|  1 |         1 | Overall, reviewers praise the iPhone 15 Pro for strong performance (A17 Pro, smooth iOS 17, 120Hz ProMotion), a premium lightweight titanium build and improved camera system (48MP sensor, low‑light, portrait/focus control, 5x zoom) that often replaces a DSLR for casual use. Key conveniences cited are the new USB‑C port and useful features like Dynamic Island and satellite emergency connectivity. Common negatives include overheating during heavy use or charging, aggressive image processing/skewed skin tones for some shots, modest battery gains (solid but not game‑changing), limited Action Button options, and disappointment over minimal design changes, base storage size, and the high price. Overall sentiment is very positive—many are very satisfied—though several note it’s an evolutionary, not revolutionary, upgrade.                                                                    | 2026-01-08 04:49:06.857 | 2026-01-15 04:49:06.857 |
+|  2 |         2 | Users praise this 49" super-ultrawide as a highly immersive, productivity- and gaming-focused monitor — sharp 5120x1440 resolution, 240Hz/1ms performance, excellent color accuracy (≈95% DCI-P3 when calibrated), effective curve, thin bezels and premium build make multitasking and racing/flight sims spectacular. HDR and deep blacks look strong but aren’t as bright as dedicated HDR displays; G‑Sync and PBP/PiP features add to the experience. Common drawbacks include the need for a powerful GPU and a deep desk, a bulky stand (no height adjust) and no built-in KVM, plus occasional quality-control issues reported (dead pixels, backlight bleed, app-related flicker, and running hot). Overall it’s a great choice for serious users if you get a well-functioning panel.                                                                                                                               | 2026-01-12 09:34:32.920 | 2026-01-19 09:34:32.921 |
+|  3 |         3 | Customers consistently praise the Dyson V15 for powerful suction, effective automatic surface adjustment, and its laser dust-detection and real-time display—features that many say make cleaning more thorough (especially for pet hair) and reduce the need for professional cleaning. Reviewers also like the versatile attachments, hygienic bin emptying, HEPA filtration, lightweight design, and sturdy wall mount. Common negatives are the high price, long charge time and potential battery degradation (some recommend a spare battery for large homes), occasional top‑heaviness with certain attachments, a tiring trigger power button, and reports of debris scattering on some low‑pile carpets or fine dust sticking in crevices; some users also feel the laser novelty wears off. Overall, buyers find it highly effective and premium, but pricey and not without ergonomic or battery trade-offs.       | 2026-01-13 02:55:07.029 | 2026-01-20 02:55:07.029 |
+|  4 |         4 | Customers praise the Switch OLED for its stunning 7-inch OLED display, richer colors and contrast, improved speakers, premium build, sturdier adjustable stand, slightly better battery life, and larger 64GB storage (plus a dock with Ethernet), making it the best Switch for handheld and tabletop play. Common negatives: the internal hardware and performance are unchanged from the original Switch, so frame rates/resolutions don’t improve and the upgrade feels incremental for dock-focused owners; battery gains are modest, the white Joy‑Cons may show dirt, and some wish a screen protector had been included. Overall, highly recommended for new buyers and handheld players, less compelling for those already owning the original Switch.                                                                                                                                                               | 2026-01-13 03:19:58.067 | 2026-01-20 03:19:58.067 |
+|  5 |         5 | Reviewers consistently praise the Instant Pot Duo Plus for its versatility, time-saving performance and value—pressure cooking tenderizes meats, the sauté, sous-vide and sterilize/yogurt functions expand cooking options, beans and many dishes finish quickly, large sizes suit meal prep/families, and stainless-steel parts, safety features and easy cleanup earn high marks. Common negatives include a learning curve and limited manual, long heat-up/pressure-release times and loud beeps, occasional inconsistent rice results and inner-pot hot spots that can burn food, a large countertop footprint and a non-backlit display, plus a sealing ring that can retain odors and a keep-warm setting that may overcook delicate dishes. Overall, users find it an indispensable, space- and cost-saving multicooker despite some usability and consistency quirks.                                               | 2026-01-13 03:39:36.612 | 2026-01-20 03:39:36.612 |
++----+-----------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------+-------------------------+
+5 rows in set (0.004 sec)
+-------------------code----------------------
+3- to **remove all summaries from the database**.
+“samureis” = **summaries** 👍
+Your MySQL connection and table listing are correct.
+
+Below are the **correct and safe ways**, explained clearly.
+
+---
+
+## Option 1: Delete all rows (safe, reversible via backup)
+
+-------------------code----------------------
+DELETE FROM summaries;
+-------------------code----------------------
+
+### What this does
+
+* Removes **all rows** from `summaries`
+* Keeps the table structure
+* Resets nothing automatically (IDs continue incrementing)
+
+### When to use
+
+* You want to clear data but keep the table
+* You care about transactions or triggers
+* Safer for development/testing
+
+---
+
+## Option 2: Truncate the table (fast, destructive)
+
+-------------------code----------------------
+TRUNCATE TABLE summaries;
+-------------------code----------------------
+
+### What this does
+
+* Deletes **all rows instantly**
+* Resets `AUTO_INCREMENT` back to 1
+* Cannot be rolled back
+* Faster than `DELETE`
+
+### When to use
+
+* You want a **hard reset**
+* No need to keep IDs
+* Usually fine in local/dev environments
+
+---
+
+## Important: Foreign Key Consideration
+
+If `summaries.productId` has a **foreign key constraint**, `TRUNCATE` may fail.
+
+If that happens, use:
+
+-------------------code----------------------
+DELETE FROM summaries;
+-------------------code----------------------
+
+Or temporarily disable checks (advanced, use carefully):
+
+-------------------code----------------------
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE summaries;
+SET FOREIGN_KEY_CHECKS = 1;
+-------------------code----------------------
+
+---
+
+## Verify the Table Is Empty
+
+After deletion:
+
+-------------------code----------------------
+SELECT COUNT(*) FROM summaries;
+-------------------code----------------------
+
+Expected result:
+
+-------------------code----------------------
+0
+-------------------code----------------------
+
+---
+
+## Summary (Quick Choice)
+
+* **Just clear data safely** → `DELETE FROM summaries;`
+* **Full reset, fastest** → `TRUNCATE TABLE summaries;`
+
+If you want next:
+
+* Reset only **expired summaries**
+* Delete summaries for a **specific product**
+* Align this with **Prisma migrations**
+
+tell me what you want to do next.
