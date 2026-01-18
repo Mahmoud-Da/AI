@@ -1,5 +1,5 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
+import axios from "axios";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import StarRating from "./StarRating";
@@ -24,17 +24,22 @@ type ReviewListProps = {
 const ReviewList = ({ productId }: ReviewListProps) => {
   const [reviewData, setReviewData] = useState<GetReviewsResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchReviews = async () => {
       try {
         setIsLoading(true);
+        setError("");
 
         const { data } = await axios.get<GetReviewsResponse>(
           `/api/products/${productId}/reviews`
         );
 
         setReviewData(data);
+      } catch (err) {
+        console.error(err);
+        setError("Could not fetch the reviews. Try again.");
       } finally {
         setIsLoading(false);
       }
@@ -55,6 +60,10 @@ const ReviewList = ({ productId }: ReviewListProps) => {
         ))}
       </div>
     );
+  }
+
+  if (error) {
+    return <p className="text-red-500">{error}</p>;
   }
 
   if (!reviewData) return null;

@@ -5316,3 +5316,214 @@ const ReviewList = ({ productId }: ReviewListProps) => {
 
 export default ReviewList;
 -------------------code----------------------
+
+
+*** 4.4- Handling Errors ***
+---
+
+## Lecture Notes: Error Handling in Review List Component
+
+### 1. Problem Statement
+
+So far, the application only handles the happy path, assuming that all backend requests succeed. However, if the API call fails, the UI gets stuck in the loading state, which results in a poor user experience.
+
+To demonstrate this issue, an error is simulated by adding an extra character (e.g., `x`) to the API URL. When the page is refreshed, the application never exits the loading state.
+
+---
+
+### 2. Adding Error State
+
+To properly handle failures, we introduce a new state variable.
+
+* Declare a state variable called `error`
+* Initialize it as an empty string
+* This state will store user-facing error messages
+
+-------------------code----------------------
+const [error, setError] = useState("");
+-------------------code----------------------
+
+---
+
+### 3. Wrapping the API Call with Try–Catch
+
+The API request logic must be protected using a `try–catch–finally` block.
+
+Steps:
+
+1. Wrap the entire fetch logic inside a `try` block
+2. Move all existing request-related code into the `try`
+3. Add a `catch` block to handle failures
+4. Add a `finally` block to ensure cleanup logic always runs
+
+---
+
+### 4. Handling Errors
+
+Inside the `catch` block:
+
+* Log the error to the console using `console.error` or `console.log`
+* In real-world applications, errors should be reported to a logging service such as Sentry
+* For this course, console logging is sufficient
+* Set a user-friendly error message
+
+Example error message:
+
+-------------------code----------------------
+setError("Could not fetch the reviews. Try again.");
+-------------------code----------------------
+
+---
+
+### 5. Preventing Infinite Loading
+
+Whether the request succeeds or fails, the loading state must always be reset.
+
+* Move `setIsLoading(false)` into the `finally` block
+* This guarantees that the loading indicator is cleared in all scenarios
+
+-------------------code----------------------
+finally {
+  setIsLoading(false);
+}
+-------------------code----------------------
+
+---
+
+### 6. Rendering the Error Message
+
+After checking the loading state in the component render logic:
+
+* Check if an error exists
+* If so, render a paragraph displaying the error message
+* Style the message using a red text color for visibility
+
+-------------------code----------------------x
+if (error) {
+  return <p className="text-red-500">{error}</p>;
+}
+-------------------code----------------------
+
+---
+
+### 7. Verifying the Behavior
+
+1. Refresh the page with the broken URL
+
+   * The error message appears
+   * Loading state stops correctly
+2. Fix the API URL
+3. Refresh again
+
+   * The application works as expected
+
+---
+
+### 8. Result
+
+The component now:
+
+* Handles API failures gracefully
+* Avoids infinite loading states
+* Provides clear feedback to users
+* Is more robust and production-ready
+
+---
+
+### 9. Next Step
+
+With error handling in place, the application is ready to move on to the next lesson.
+
+-------------------code----------------------
+import { useEffect, useState } from "react";
+import axios from "axios";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import StarRating from "./StarRating";
+
+type Review = {
+  id: number;
+  author: string;
+  content: string;
+  rating: number;
+  createdAt: string;
+};
+
+type GetReviewsResponse = {
+  summary: string | null;
+  reviews: Review[];
+};
+
+type ReviewListProps = {
+  productId: number;
+};
+
+const ReviewList = ({ productId }: ReviewListProps) => {
+  const [reviewData, setReviewData] = useState<GetReviewsResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        setIsLoading(true);
+        setError("");
+
+        const { data } = await axios.get<GetReviewsResponse>(
+          `/api/products/${productId}/reviews`
+        );
+
+        setReviewData(data);
+      } catch (err) {
+        console.error(err);
+        setError("Could not fetch the reviews. Try again.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchReviews();
+  }, [productId]);
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-5">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="flex flex-col gap-2">
+            <Skeleton width={150} />
+            <Skeleton width={100} />
+            <Skeleton count={2} />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (error) {
+    return <p className="text-red-500">{error}</p>;
+  }
+
+  if (!reviewData) return null;
+
+  return (
+    <div className="flex flex-col gap-6">
+      {reviewData.summary && (
+        <div className="bg-gray-100 p-4 rounded-md">
+          <h2 className="font-semibold mb-2">Review Summary</h2>
+          <p>{reviewData.summary}</p>
+        </div>
+      )}
+
+      {reviewData.reviews.map((review) => (
+        <div key={review.id} className="border p-4 rounded-md">
+          <div className="font-semibold">{review.author}</div>
+          <StarRating value={review.rating} />
+          <p className="py-2">{review.content}</p>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default ReviewList;
+-------------------code----------------------
