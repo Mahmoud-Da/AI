@@ -650,3 +650,274 @@ model Summary {
   expiresAt   DateTime
 }
 -------------------code----------------------
+
+*** 2.4- Running Migrations ***
+
+---
+
+## Creating Database Tables with Prisma Migrations
+
+### 1. Purpose of Migrations
+
+* After defining the **Prisma schema**, the next step is to create the actual database tables.
+* This is done using **Prisma migrations**, which:
+
+  * Create or update database tables.
+  * Keep the database schema in sync with the codebase.
+* Think of migrations like **Git commits**, but for database changes.
+
+---
+
+### 2. Creating the First Migration
+
+#### Steps:
+
+1. Open a terminal pointing to the **server directory**.
+2. Run the Prisma CLI migration command:
+
+-------------------code----------------------
+bunx prisma migrate dev
+-------------------code----------------------
+
+3. Prisma automatically:
+
+   * Creates the database if it does not exist.
+   * Detects the schema.
+   * Prompts for a migration name.
+
+4. Since this is the first migration, name it:
+
+-------------------code----------------------
+init
+-------------------code----------------------
+
+#### Best Practice:
+
+* Every time you modify `schema.prisma`, create a **new migration**.
+* Use clear, descriptive migration names.
+
+---
+
+### 3. Migration Files Structure
+
+* A new directory is created:
+
+-------------------code----------------------
+prisma/
+ └── migrations/
+     └── 2025xxxxxx_init/
+         └── migration.sql
+-------------------code----------------------
+
+#### Contents:
+
+* Each migration folder contains:
+
+  * A **timestamp**
+  * The **migration name**
+  * A `migration.sql` file
+
+#### migration.sql:
+
+* Contains raw SQL instructions.
+* In this case:
+
+  * `CREATE TABLE product`
+  * `CREATE TABLE review`
+  * `CREATE TABLE summary`
+* These SQL statements are generated directly from the Prisma models.
+
+---
+
+### 4. Inspecting the Database Using DataGrip
+
+#### Why DataGrip:
+
+* A visual database client by JetBrains.
+* Allows you to:
+
+  * Browse tables
+  * View data
+  * Run SQL queries
+
+#### Notes:
+
+* Commercial software, but:
+
+  * Free trial is available.
+* Not affiliated with JetBrains.
+
+#### Download:
+
+* Visit: `jetbrains.com/datagrip`
+
+---
+
+### 5. Connecting DataGrip to MySQL
+
+#### Setup Steps:
+
+1. Open DataGrip and create a new project.
+2. Click **+ → Data Source → MySQL**.
+3. Enter connection details:
+
+   * Host: `localhost`
+   * Port: `3306`
+   * User: `root`
+   * Password: your MySQL password
+
+#### First-Time Setup:
+
+* You may see a warning about missing MySQL drivers.
+* Click the provided link to download them.
+* Click **Test Connection** to verify.
+
+---
+
+### 6. Viewing the Database and Tables
+
+* Select the application database (e.g., `review_summarizer`).
+* You will see:
+
+  * System databases (used internally by MySQL)
+  * Your application database
+
+#### Tables inside the database:
+
+1. `prisma_migrations`
+2. `product`
+3. `review`
+4. `summary`
+
+---
+
+### 7. The prisma_migrations Table
+
+* Used internally by Prisma.
+* Tracks:
+
+  * Migration name
+  * Timestamp
+  * Checksum (for validation)
+
+#### Important:
+
+* **Never modify this table manually**.
+* Prisma uses the checksum to detect changes.
+* Editing migration files after running them will cause Prisma to fail.
+
+---
+
+### 8. Product Table Structure
+
+#### Columns:
+
+* `id`
+* `name`
+* `description`
+* `price`
+
+#### Column Types:
+
+* `name` is defined as:
+
+-------------------code----------------------
+VARCHAR(191)
+-------------------code----------------------
+
+#### Explanation:
+
+* `VARCHAR` means variable-length string.
+* `191` is Prisma’s default for MySQL.
+* This value differs depending on the database engine:
+
+  * MySQL
+  * PostgreSQL
+  * Others
+
+---
+
+### 9. Naming Conventions in Databases
+
+* Common database practices:
+
+  * Use lowercase table names
+  * Use plural names (e.g., `products` instead of `product`)
+* Prisma defaults to model-based naming.
+* Customization is possible and will be covered later.
+
+---
+
+### 10. Upcoming Improvements
+
+* In modern applications:
+
+  * `VARCHAR(255)` is often preferred over `VARCHAR(191)`.
+* In the next lesson:
+
+  * The schema will be customized.
+  * A new migration will be created to apply these changes.
+
+---
+
+### Key Takeaways
+
+* Prisma migrations bridge schema definitions and real database tables.
+* Each schema change requires a new migration.
+* Prisma generates raw SQL automatically.
+* Database clients like DataGrip help visualize and verify changes.
+* Internal Prisma tables should never be edited manually.
+
+---
+
+
+Errors:
+bunx prisma migrate dev
+-------------------code----------------------
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.
+Datasource "db": MySQL database "review_summarizer" at "localhost:3306"
+
+Error: P1000: Authentication failed against database server, the provided database credentials for `root` are not valid.
+
+Please make sure to provide valid database credentials for the database server at the configured address.
+-------------------code----------------------
+
+- first check the sql uf running
+-------------------code----------------------
+$ brew services list
+Name              Status  User            File
+mongodb-community started mahmouddabbbagh ~/Library/LaunchAgents/homebrew.mxcl.mongodb-community.plist
+mysql             none
+php               none
+postgresql@14     started mahmouddabbbagh ~/Library/LaunchAgents/homebrew.mxcl.postgresql@14.plist
+unbound           none
+-------------------code----------------------
+
+- to run it 
+-------------------code----------------------
+$ brew services start mysql
+==> Successfully started `mysql` (label: homebrew.mxcl.mysql)
+-------------------code----------------------
+
+- check the connection by Connect to MySQL to check root password
+-------------------code----------------------
+$ mysql -u root
+
+# If you set a password before
+$ mysql -u root -p
+-------------------code----------------------
+
+- to change the password
+1- Connect to MySQL
+-------------------code----------------------
+mysql -u root -p
+-------------------code----------------------
+
+2- Once connected in MySQL shell:
+-------------------code----------------------
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'your_new_password_here';
+FLUSH PRIVILEGES;
+exit;
+-------------------code----------------------
