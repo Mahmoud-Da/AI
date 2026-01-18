@@ -1605,3 +1605,202 @@ I can also:
 * Explain GPU vs CPU considerations for local LLMs
 * Design a production-ready local-LLM setup
 * Discuss security and compliance benefits in detail
+
+*** 7- Using Hugging Face Models with Ollama ***
+## Lecture Summary
+
+**Running Hugging Face Models Locally with Ollama (GGUF Models)**
+
+---
+
+## Lesson Goal
+
+In this lesson, you learn how to **run Hugging Face models locally using Ollama**.
+This approach combines:
+
+* Hugging Face’s rich model ecosystem
+* Ollama’s simple local execution and privacy
+
+The key requirement is that the model **must support the GGUF format**, which Ollama expects.
+
+---
+
+## Step 1: Enable Ollama in Hugging Face Settings
+
+Before using Hugging Face models with Ollama, you must enable the integration.
+
+Steps:
+
+1. Go to your **Hugging Face profile**
+2. Open **Settings**
+3. Navigate to **Local Apps and Hardware**
+4. Enable **Ollama**
+
+Once enabled, Hugging Face will show Ollama-specific commands for supported models.
+
+---
+
+## Step 2: Filter Models by GGUF Format
+
+Ollama can **only run models that support the GGUF format**.
+
+Steps:
+
+1. Go to the **Models** page on Hugging Face
+2. Filter models by **GGUF**
+3. Search for **llama**
+4. Sort results by **most downloads**
+
+This ensures:
+
+* Compatibility with Ollama
+* Better performance and stability
+
+---
+
+## Step 3: Selecting a GGUF LLaMA Model
+
+You select a GGUF version of the LLaMA model hosted in the **Bartoski** repository.
+
+On the model page:
+
+* Scroll to **Use this model**
+* Because Ollama is enabled, a new option appears under **Local Apps**
+* Ollama provides a ready-to-use terminal command
+
+This command is tailored specifically for Ollama.
+
+---
+
+## Step 4: Running the Model Locally
+
+Steps:
+
+1. Copy the Ollama command shown on the Hugging Face model page
+2. Paste it into a terminal
+3. Run the command
+
+What happens:
+
+* Ollama pulls the model directly from Hugging Face
+* Download time depends on internet speed
+* Once complete, an interactive shell opens
+
+---
+
+## Step 5: Testing the Model
+
+Inside the Ollama shell:
+
+* You can ask questions
+* Perform reasoning
+* Test inference quality
+
+Example:
+
+* Prompt: “What is 2 plus 2?”
+* Response: “4”
+
+This confirms the Hugging Face GGUF model is running locally.
+
+---
+
+## Step 6: Inspecting Installed Models
+
+Run:
+
+-------------------code----------------------
+ollama list
+-------------------code----------------------
+
+This shows:
+
+* Model name
+* Disk size
+* Model source
+
+Observation:
+
+* The GGUF LLaMA model is **2 GB**
+* This is significantly smaller than the Ollama registry LLaMA model used earlier (around 4 GB)
+
+---
+
+## Step 7: Monitoring Resource Usage
+
+Run:
+
+-------------------code----------------------
+ollama ps
+-------------------code----------------------
+
+This displays:
+
+* Active models
+* RAM usage
+* CPU usage
+
+Key comparison:
+
+* GGUF LLaMA model uses ~3 GB RAM
+* Ollama registry LLaMA model used ~6 GB RAM
+
+Conclusion:
+
+* GGUF models are more **resource-efficient**
+* Better suited for local machines with limited memory
+
+---
+
+## Step 8: Removing the Model
+
+Since models take significant disk space, you should remove them when finished.
+
+Steps:
+
+1. Copy the model name from `ollama list`
+2. Run:
+
+-------------------code----------------------
+ollama rm <model-name>
+-------------------code----------------------
+
+Result:
+
+* Model is deleted from disk
+* Frees storage and memory
+
+---
+
+## Key Takeaways
+
+* Ollama can run **Hugging Face models locally**
+* Only **GGUF-formatted models** are supported
+* Hugging Face provides **direct Ollama commands** once enabled
+* GGUF models:
+
+  * Use less disk space
+  * Consume less RAM
+  * Are ideal for local development
+* Model lifecycle management (list, monitor, remove) is simple and CLI-based
+
+---
+
+## What’s Next
+
+In the next lesson, you will learn how to:
+
+* Use the **Ollama JavaScript client**
+* Communicate with locally running models programmatically
+* Integrate Ollama into real applications instead of using a terminal
+
+---
+
+## Optional Follow-Up (If You Want)
+
+* Compare GGUF vs non-GGUF models technically
+* Explain why GGUF models are more memory-efficient
+* Show how to benchmark local models
+* Demonstrate a Node.js or backend integration with Ollama
+* Help you decide when to use Hugging Face API vs local Ollama
+
