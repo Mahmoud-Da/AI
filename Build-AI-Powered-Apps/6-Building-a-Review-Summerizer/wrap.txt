@@ -5527,3 +5527,246 @@ const ReviewList = ({ productId }: ReviewListProps) => {
 
 export default ReviewList;
 -------------------code----------------------
+
+*** 4.5- Introducing Tanstack Query ***
+
+---
+
+## Lecture Notes: Refactoring Review Fetching with TanStack Query (React Query)
+
+### 1. Problems with Using `useState` and `useEffect`
+
+Currently, reviews are fetched using state and effect hooks. While this works, it introduces several issues:
+
+#### 1.1 No Automatic Retries
+
+* If the backend request fails, the error is shown immediately
+* Temporary network issues are not retried
+* Implementing retries manually requires extra code
+
+#### 1.2 No Built-in Caching
+
+* When the user navigates away and returns, reviews are fetched again
+* There is no memory of previously fetched data
+* Manual caching is possible but adds complexity
+
+---
+
+### 2. Introducing TanStack Query (React Query)
+
+TanStack Query solves these problems by providing:
+
+* Automatic retries
+* Built-in caching
+* Cleaner and more concise code
+* Better data synchronization logic
+
+It is one of the most powerful and commonly used data-fetching libraries in React.
+
+---
+
+### 3. Installing TanStack Query
+
+From the `client` directory, install the library:
+
+-------------------code----------------------
+bun add @tanstack/react-query
+-------------------code----------------------
+
+---
+
+### 4. Setting Up the Query Client
+
+In `main.tsx`, the application must be wrapped with a `QueryClientProvider`.
+
+#### 4.1 Import Required Objects
+
+-------------------code----------------------
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+-------------------code----------------------
+
+#### 4.2 Create a Query Client
+
+-------------------code----------------------
+const queryClient = new QueryClient();
+-------------------code----------------------
+
+#### 4.3 Wrap the Application
+
+-------------------code----------------------
+<QueryClientProvider client={queryClient}>
+  <App />
+</QueryClientProvider>
+-------------------code----------------------
+
+This enables React Query across the entire application.
+
+---
+
+### 5. Refactoring the Review List Component
+
+#### 5.1 Removing Local State
+
+With React Query, we no longer need:
+
+* `useState` for reviews
+* `useState` for loading
+* `useState` for error
+* `useEffect` for fetching
+
+All of this logic is handled by the query hook.
+
+---
+
+### 6. Using the `useQuery` Hook
+
+The `useQuery` hook is a generic function and must be given the response type.
+
+#### 6.1 Query Configuration
+
+-------------------code----------------------
+useQuery<GetReviewsResponse>({
+  queryKey: ["reviews", productId],
+  queryFn: () => fetchReviews(productId),
+});
+-------------------code----------------------
+
+#### 6.2 Query Key
+
+* Used for caching
+* Must uniquely identify the data
+* Includes `productId` so each product’s reviews are cached separately
+
+---
+
+### 7. Destructuring Query Results
+
+The query hook returns useful state automatically:
+
+-------------------code----------------------
+const {
+  data: reviewData,
+  isLoading,
+  error,
+} = useQuery(...);
+-------------------code----------------------
+
+This replaces all manually managed state variables.
+
+-------------------code----------------------
+import { useQuery } from "@tanstack/react-query";
+
+const {
+  data: reviewData,
+  isLoading,
+  error,
+} = useQuery<GetReviewsResponse>({
+  queryKey: ["reviews", productId],
+  queryFn: () => fetchReviews(),
+});
+-------------------code----------------------
+
+---
+
+### 8. Simplifying the Fetch Function
+
+The `fetchReviews` function no longer needs:
+
+* `try/catch`
+* Loading state handling
+* Error state handling
+
+It should simply fetch and return data:
+
+-------------------code----------------------
+const response = await axios.get(...);
+return response.data;
+-------------------code----------------------
+
+
+the full function after fixing 
+-------------------code----------------------
+const {
+    data: reviewData,
+    isLoading,
+    error,
+  } = useQuery<GetReviewsResponse>({
+    queryKey: ["reviews", productId],
+    queryFn: () => fetchReviews(),
+  });
+
+  const fetchReviews = async () => {
+    const { data } = await axios.get<GetReviewsResponse>(
+      `/api/products/${productId}/reviews`
+    );
+
+    return data;
+  };
+-------------------code----------------------
+---
+
+### 9. Removing `useEffect`
+
+The query hook automatically:
+
+* Executes the request
+* Tracks loading
+* Handles retries
+* Caches results
+
+Therefore, `useEffect` can be completely removed.
+
+---
+
+### 10. Handling Errors from React Query
+
+React Query returns an `Error` object, not a string.
+
+#### 10.1 Problem
+
+Rendering `error` directly causes a TypeScript error because it is not a React node.
+
+#### 10.2 Solution
+
+Use a friendly message instead of `error.message`:
+
+-------------------code----------------------
+if (error) {
+  return <p className="text-red-500">Could not fetch reviews. Try again.</p>;
+}
+-------------------code----------------------
+
+This avoids exposing technical details like HTTP status codes.
+
+---
+
+### 11. Verifying Behavior
+
+#### 11.1 Normal Case
+
+* Reviews load successfully
+* Skeleton loaders appear on slow connections
+
+#### 11.2 Error Case
+
+* API retries automatically (default: 3 times)
+* Error message appears only after retries fail
+* User sees a clean, understandable message
+
+---
+
+### 12. Benefits Achieved
+
+After refactoring:
+
+* Automatic retries are enabled
+* Reviews are cached
+* Code is cleaner and shorter
+* No manual loading or error state management
+* Better user experience
+
+---
+
+### 13. Next Step
+
+With review fetching complete, the next focus will be on **building and displaying the summary**.
