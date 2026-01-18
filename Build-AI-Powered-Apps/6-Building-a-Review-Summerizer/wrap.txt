@@ -4100,3 +4100,318 @@ This was a **bug**, not valid data.
 * Better expiration strategies
 * API rate limiting
 * Observability and logging
+
+
+*** 3.10- Fetching the Summary ***
+---
+
+# Including Review Summaries in the Reviews Endpoint
+
+## Goal of This Lesson
+
+Previously, we implemented:
+
+* An endpoint to fetch reviews for a product
+* A separate endpoint to fetch a review summary
+
+In this lesson, we **improve the reviews endpoint** so it returns:
+
+* The list of reviews
+* The review summary (if it exists and is valid)
+
+This allows the frontend to fetch everything it needs in **one request**, resulting in:
+
+* Cleaner client-side code
+* Fewer API calls
+* Better performance
+
+---
+
+## Step 1: Remove Unnecessary Service Layer
+
+### Problem
+
+The current `reviewService.getReviews` method:
+
+* Contains no business logic
+* Simply forwards the call to the repository
+
+This violates clean architecture principles.
+
+### Solution
+
+Remove the service and let the controller talk directly to the repository.
+
+### Actions
+
+* Delete `getReviews` method from `review.service.ts`
+* Remove the unused `Review` type import
+* Replace `reviewService` with `reviewRepository` in the controller
+
+---
+
+## Step 2: Fetch Reviews and Summary Together
+
+### Controller Logic
+
+After fetching reviews, fetch the summary and return both in a single response.
+
+-------------------code----------------------
+const reviews = await reviewRepository.getReviews(productId);
+const summary = await reviewRepository.getReviewSummary(productId);
+
+res.json({
+  summary,
+  reviews,
+});
+-------------------code----------------------
+
+---
+
+## Step 3: Handling Expired Summaries (Initial Idea)
+
+A possible approach:
+
+-------------------code----------------------
+const summary =
+  summaryRecord &&
+  summaryRecord.expiresAt > new Date()
+    ? summaryRecord.content
+    : null;
+-------------------code----------------------
+
+### Problem with This Approach
+
+* This expiration logic already exists elsewhere
+* Logic is duplicated
+* Every consumer must re-implement expiration checks
+
+This indicates **incorrect responsibility placement**.
+
+---
+
+## Architectural Insight
+
+When logic is duplicated across services and controllers:
+
+* Responsibilities are misplaced
+* The abstraction boundary is wrong
+
+### Correct Responsibility
+
+The **repository** should:
+
+* Decide whether a summary is valid
+* Hide expiration logic
+* Return only what the application needs
+
+---
+
+## Step 4: Move Expiration Logic Into Repository
+
+### Original Method (Problematic)
+
+-------------------code----------------------
+prisma.summary.findUnique({
+  where: {
+    productId,
+  },
+});
+-------------------code----------------------
+
+This cannot:
+
+* Filter by expiration date
+* Combine conditions
+
+---
+
+## Step 5: Use `findFirst` With Logical Filters
+
+### Updated Repository Method
+
+-------------------code----------------------
+async getReviewSummary(productId: number): Promise<string | null> {
+  const summary = await prisma.summary.findFirst({
+    where: {
+      AND: [
+        { productId },
+        {
+          expiresAt: {
+            gt: new Date(),
+          },
+        },
+      ],
+    },
+  });
+
+  return summary ? summary.content : null;
+}
+-------------------code----------------------
+
+### Key Concepts Used
+
+* `AND` logical operator
+* `gt` (greater than) for date comparison
+* `findFirst` instead of `findUnique`
+
+---
+
+## Why `findUnique` Does Not Work
+
+* `findUnique` only supports **unique constraints**
+* Cannot combine multiple conditions
+* Prisma enforces this at compile time
+
+---
+
+## Step 6: Hide Implementation Details
+
+### Summary Model Fields
+
+* id
+* productId
+* content
+* generatedAt
+* expiresAt
+
+Only **content** is relevant outside the repository.
+
+### Best Practice
+
+* Do not expose `expiresAt` or `generatedAt`
+* Return `string | null`
+* Keep expiration logic internal
+
+---
+
+## Step 7: Simplify Service Logic
+
+### Before
+
+-------------------code----------------------
+if (existingSummary && existingSummary.expiresAt > new Date()) {
+  return existingSummary.content;
+}
+-------------------code----------------------
+
+### After
+
+-------------------code----------------------
+const summary = await reviewRepository.getReviewSummary(productId);
+
+if (summary) {
+  return summary;
+}
+-------------------code----------------------
+
+Cleaner, shorter, and no duplication.
+
+---
+
+## Step 8: Simplify Controller Logic
+
+### No More Expiration Checks
+
+-------------------code----------------------
+const summary = await reviewRepository.getReviewSummary(productId);
+
+res.json({
+  summary,
+  reviews,
+});
+-------------------code----------------------
+
+The controller does not care **how** the summary is validated.
+
+---
+
+## Step 9: Validate Product Existence (RESTful Fix)
+
+### Problem
+
+Requesting reviews for a non-existent product returned:
+
+-------------------code----------------------json
+{
+  "summary": null,
+  "reviews": []
+}
+-------------------code----------------------
+
+This is misleading.
+
+### RESTful Solution
+
+Return `404 Not Found` if the product does not exist.
+
+---
+
+## Updated Controller Logic
+
+-------------------code----------------------
+const product = await productRepository.getProduct(productId);
+
+if (!product) {
+  return res.status(404).json({
+    error: "Product does not exist",
+  });
+}
+-------------------code----------------------
+
+---
+
+## Final Controller Flow
+
+-------------------code----------------------
+1. Validate product ID
+2. Check product existence
+3. Fetch reviews
+4. Fetch valid summary (if any)
+5. Return { summary, reviews }
+-------------------code----------------------
+
+---
+
+## Testing Scenarios
+
+### Valid Product With Summary
+
+* Summary returned
+* Reviews returned
+
+### Expired Summary
+
+* Summary is null
+* Reviews returned
+
+### Product With No Reviews
+
+* Summary: null
+* Reviews: []
+
+### Invalid Product ID
+
+* Status: 404
+* Error message returned
+
+---
+
+## Key Takeaways
+
+* Controllers should not contain business rules
+* Repositories must encapsulate filtering and validity logic
+* Avoid duplicating logic across layers
+* Hide implementation details behind abstractions
+* Use RESTful status codes consistently
+* Clean architecture leads to simpler code everywhere
+
+---
+
+## Result
+
+* Single efficient endpoint
+* No duplicated expiration logic
+* Clean separation of concerns
+* Predictable, RESTful responses
+* Easier future maintenance and extension
