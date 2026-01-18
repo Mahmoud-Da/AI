@@ -5770,3 +5770,187 @@ After refactoring:
 ### 13. Next Step
 
 With review fetching complete, the next focus will be on **building and displaying the summary**.
+
+
+*** 4.6- Displaying the Summary ***
+---
+
+## Lecture Notes: Displaying the Review Summary
+
+### 1. Goal of This Lesson
+
+The objective is to display a review summary on the reviews page:
+
+* If a summary already exists, display it above the reviews
+* If no summary exists, display a **Summarize** button instead
+* If there are no reviews, do not display anything related to summaries
+
+---
+
+### 2. Wrapping the Reviews in a Parent Container
+
+To organize the layout:
+
+1. Select the existing reviews container
+2. Use the command palette and choose **Wrap with abbreviation**
+3. Wrap it with a `div`
+
+This creates a parent container that can hold both:
+
+* The summary section
+* The reviews list
+
+---
+
+### 3. Creating the Summary Section
+
+Inside the new parent container:
+
+1. Add a new `div` at the top for the summary section
+2. Apply a bottom margin to separate it visually from the reviews
+
+-------------------code----------------------
+className="mb-5"
+-------------------code----------------------
+
+---
+
+### 4. Conditional Rendering of the Summary
+
+#### 4.1 If a Summary Exists
+
+* Check if `reviewData.summary` exists
+* Render it inside a paragraph element
+
+-------------------code----------------------
+<p>{reviewData.summary}</p>
+-------------------code----------------------
+
+#### 4.2 If No Summary Exists
+
+* Render a button instead
+* Label the button **Summarize**
+
+-------------------code----------------------
+<Button>Summarize</Button>
+-------------------code----------------------
+-------------------code----------------------
+<div className="mb-5">
+  {reviewData?.summary ? (
+    <p>{reviewData.summary}</p>
+  ) : (
+    <Button>Summarize</Button>
+  )}
+</div>
+-------------------code----------------------
+---
+
+### 5. Adding an AI Sparkles Icon
+
+Modern applications often use a sparkles icon for AI-powered features.
+
+Steps:
+
+1. Search for a sparkles icon in `react-icons`
+2. Import the chosen sparkles icon at the top of the file
+3. Render the icon inside the button, next to the label
+
+This visually communicates that the feature is AI-related.
+
+---
+-------------------code----------------------
+import { HiSparkles } from "react-icons/hi";
+
+<div className="mb-5">
+  {reviewData?.summary ? (
+    <p>{reviewData.summary}</p>
+  ) : (
+    <Button>
+      <HiSparkles />
+      Summarize
+    </Button>
+  )}
+</div>
+-------------------code----------------------
+### 6. Testing with Different Products
+
+#### 6.1 Product with an Existing Summary
+
+* The summary is displayed above the reviews
+* No summarize button is shown
+
+-------------------code----------------------
+<ReviewList productId={2} />
+-------------------code----------------------
+#### 6.2 Product Without a Summary
+
+* The summarize button is displayed
+* Reviews are still shown normally
+
+#### 6.3 Product Without Any Reviews
+
+* A summary does not make sense without reviews
+* Neither the summary nor the summarize button should be shown
+
+---
+
+### 7. Handling Products Without Reviews
+
+Before rendering the summary section:
+
+-------------------code----------------------ts
+if (!reviewData?.reviews.length) return null;
+-------------------code----------------------
+
+This ensures:
+
+* No summary UI is rendered
+* No summarize button appears
+* The component exits early when there are zero reviews
+
+---
+
+### 8. Final Behavior Summary
+
+* Summary exists → display summary
+* Summary missing + reviews exist → display summarize button
+* No reviews → render nothing
+
+---
+
+### 9. Next Step
+
+In the next lesson, the summarize button will be wired up to **trigger summary generation** through the backend API.
+
+the full code 
+-------------------code----------------------
+return (
+    <div>
+      <div className="mb-5">
+        {reviewData?.summary ? (
+          <p>{reviewData.summary}</p>
+        ) : (
+          <Button>
+            <HiSparkles />
+            Summarize
+          </Button>
+        )}
+      </div>
+      <div className="flex flex-col gap-6">
+        {reviewData.summary && (
+          <div className="bg-gray-100 p-4 rounded-md">
+            <h2 className="font-semibold mb-2">Review Summary</h2>
+            <p>{reviewData.summary}</p>
+          </div>
+        )}
+        {reviewData.reviews.map((review) => (
+          <div key={review.id} className="border p-4 rounded-md">
+            <div className="font-semibold">{review.author}</div>
+            <StarRating value={review.rating} />
+            <p className="py-2">{review.content}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+-------------------code----------------------
