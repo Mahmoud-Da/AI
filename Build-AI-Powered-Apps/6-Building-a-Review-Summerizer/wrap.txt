@@ -1,0 +1,73 @@
+*** 1- Introduction ***
+---
+
+## Lecture Overview: Product Review Summarizer Project
+
+### 1. Project Introduction
+
+* This section introduces a more advanced and engaging project.
+* The goal is to build a **product review summarizer**.
+* Users can generate a concise summary instead of reading all individual reviews.
+
+### 2. User Experience Flow
+
+* A product page displays:
+
+  * A list of user reviews for a product.
+  * A button to summarize the reviews.
+* When the user clicks the **Summarize Reviews** button:
+
+  * A summary is generated automatically.
+  * The summary helps users quickly understand overall feedback.
+
+### 3. Summary Persistence
+
+* Once the summary is generated:
+
+  * It is stored in the database.
+  * When the user revisits the page, the summary is retrieved from the database.
+  * The summary does **not** need to be regenerated each time.
+* This improves:
+
+  * Performance
+  * Cost efficiency
+  * User experience
+
+### 4. Common Industry Pattern
+
+* This “generate once, reuse later” pattern is increasingly common in modern applications.
+* Especially relevant for:
+
+  * AI-powered features
+  * Content summarization
+  * Recommendation systems
+
+### 5. Project Complexity
+
+* This project is more complex than the previous chatbot project.
+* It is a **full-stack application**, involving:
+
+  * Frontend (user interface)
+  * Backend (business logic)
+  * Database (data storage)
+
+### 6. Database Introduction
+
+* The project uses a database to store summaries.
+* Prior database knowledge is **not required**.
+* The instructor will cover:
+
+  * Essential database concepts
+  * Only what is necessary for this project
+
+### 7. Learning Mindset
+
+* The project is meant to be built step by step.
+* Learners are encouraged to:
+
+  * Take their time
+  * Follow along carefully
+  * Treat this as a hands-on learning experience
+
+---
+
