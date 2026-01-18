@@ -3637,3 +3637,197 @@ mysql> SELECT * FROM summaries LIMIT 20;
 +----+-----------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------+-------------------------+
 1 row in set (0.000 sec)
 -------------------code----------------------
+
+
+*** 3.8- Handling Regeneration ***
+
+---
+
+# Regenerating Review Summaries Only When Necessary
+
+## Problem Recap
+
+In the previous lesson:
+
+* Review summaries were stored in the database
+* However, the summary was **still regenerated on every API call**
+
+This defeats the purpose of caching.
+
+---
+
+## Goal of This Lesson
+
+Generate a review summary **only if**:
+
+* No summary exists for the product, or
+* The existing summary has **expired**
+
+Otherwise:
+
+* Return the cached summary immediately
+* Avoid unnecessary LLM calls
+
+---
+
+## High-Level Flow
+
+1. Check if a summary exists for the product
+2. If it exists and is still valid:
+
+   * Return it immediately
+3. If it does not exist or is expired:
+
+   * Generate a new summary
+   * Store it in the database
+   * Return it
+
+---
+
+## Step 1: Add a Method to Fetch an Existing Summary
+
+### File
+
+-------------------code----------------------
+repositories/review.repository.ts
+-------------------code----------------------
+
+### New Method
+
+-------------------code----------------------
+async getReviewSummary(productId: number) {
+  return prisma.summary.findUnique({
+    where: {
+      productId,
+    },
+  });
+}
+-------------------code----------------------
+
+* `findUnique` is used because there is only one summary per product
+* Returns a promise of the summary record or `null`
+
+---
+
+## Step 2: Update the Review Service Logic
+
+### File
+
+-------------------code----------------------
+services/review.service.ts
+-------------------code----------------------
+
+### New Logic Order
+
+1. Check for an existing summary
+2. Validate expiration
+3. Return cached summary if valid
+4. Otherwise regenerate
+
+---
+
+## Updated `summarizeReviews` Implementation
+
+-------------------code----------------------
+import type { Review } from "@prisma/client";
+import { llmClient } from "../llm/client";
+import { reviewRepository } from "../repositories/review.repository";
+import template from "../prompts/summarize-reviews.txt";
+
+export const reviewService = {
+  getReviews(productId: number): Promise<Review[]> {
+    return reviewRepository.getReviews(productId);
+  },
+
+  async summarizeReviews(productId: number): Promise<string> {
+    const existingSummary = await reviewRepository.getReviewSummary(productId);
+
+    if (existingSummary && existingSummary.expiresAt > new Date()) {
+      return existingSummary.content;
+    }
+
+    const reviews = await reviewRepository.getReviews(productId, 10);
+
+    const joinedReviews = reviews.map((r) => r.content).join("\n\n");
+    const prompt = template.replace("{{reviews}}", joinedReviews);
+
+    console.log(joinedReviews);
+    const { text: summary } = await llmClient.generateText({
+      model: "gpt-5-mini",
+      prompt,
+      maxTokens: 1000,
+    });
+
+    await reviewRepository.storeReviewSummary(productId, summary);
+
+    return summary;
+  },
+};
+-------------------code----------------------
+
+---
+
+## Step 3: Testing Cached Behavior
+
+### Case 1: Summary Exists and Is Valid
+
+* API response is returned immediately
+* No delay
+* No LLM call
+* Database timestamps remain unchanged
+
+---
+
+## Step 4: Testing Expiration and Regeneration
+
+### Manual Expiration Test
+
+* Manually update `expiresAt` in the database to a past timestamp
+
+### Result
+
+* API regenerates the summary
+* New LLM call is made
+* Database record is updated with:
+
+  * New `generatedAt`
+  * New `expiresAt`
+
+---
+
+## Observed Results
+
+* Cached summaries return instantly
+* Expired summaries trigger regeneration
+* Database confirms updates via timestamps
+
+---
+
+## Final Summary Flow
+
+-------------------code----------------------
+API Call
+   ↓
+Check Existing Summary
+   ↓
+Is Valid?
+  ├─ Yes → Return Cached Summary
+  └─ No  → Generate New Summary → Store → Return
+-------------------code----------------------
+
+---
+
+## Key Takeaways
+
+* Caching LLM output is essential for performance and cost control
+* Expiration logic prevents stale summaries
+* Database-backed caching provides durability
+* LLM calls should only happen when strictly necessary
+
+---
+
+## What’s Next
+
+* Improve expiration strategy
+* Add background regeneration
+* Optimize summary length and prompt quality
