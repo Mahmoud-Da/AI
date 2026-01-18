@@ -2756,3 +2756,341 @@ A limit of `100` is too low for reasoning models because they need budget for **
       max_output_tokens: 1000, // Give it space to think and write
     });
 -------------------code----------------------
+
+*** 3.5- Refactoring- Extracting the LLM Logic ***
+---
+
+# Refactoring LLM Integration with an Abstraction Layer
+
+## Problem Statement
+
+Currently, the application has **multiple direct references to OpenAI**:
+
+* One in the **review service**
+* Another in the **chat service**
+
+This creates several problems:
+
+* If we switch to another LLM provider (Gemini, Claude, etc.), we must update many files
+* OpenAI-specific APIs, arguments, and response structures are tightly coupled to services
+* The codebase becomes harder to maintain and evolve
+
+---
+
+## Solution Overview
+
+Introduce a **single LLM client module** that:
+
+* Encapsulates all LLM-specific logic
+* Exposes a clean, platform-agnostic interface
+* Acts as the only place that knows how to talk to an LLM provider
+
+Services will depend on **our own types**, not OpenAI’s API.
+
+---
+
+## Step 1: Create the LLM Client Module
+
+### Directory Structure
+
+-------------------code----------------------
+server/
+  llm/
+    client.ts
+-------------------code----------------------
+
+---
+
+## Step 2: Move OpenAI Initialization into the LLM Client
+
+### File
+
+-------------------code----------------------
+llm/client.ts
+-------------------code----------------------
+
+### Code
+
+-------------------code----------------------
+import OpenAI from "openai";
+
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+-------------------code----------------------
+
+---
+
+## Step 3: Define Application-Level Types
+
+These types are **platform-agnostic** and belong to our application, not OpenAI.
+
+### Generate Text Options
+
+-------------------code----------------------
+export type GenerateTextOptions = {
+  model?: string;
+  prompt: string;
+  instructions?: string;
+  temperature?: number;
+  maxTokens?: number;
+  previousResponseId?: string;
+};
+-------------------code----------------------
+
+### Generate Text Result
+
+-------------------code----------------------
+export type GenerateTextResult = {
+  id: string;
+  text: string;
+};
+-------------------code----------------------
+
+---
+
+## Step 4: Implement the LLM Client Interface
+
+### Public API
+
+* A single method: `generateText`
+* Hides all OpenAI-specific complexity
+
+### Code
+
+-------------------code----------------------
+import OpenAI from "openai";
+
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+export type GenerateTextOptions = {
+  model?: string;
+  prompt: string;
+  instructions?: string;
+  // NOTE GPT5-mini doesn`t have this attribute
+  // temperature?: number;
+  maxTokens?: number;
+  previousResponseId?: string;
+};
+
+export type GenerateTextResult = {
+  id: string;
+  text: string;
+};
+
+export const llmClient = {
+  async generateText(
+    options: GenerateTextOptions
+  ): Promise<GenerateTextResult> {
+    const {
+      model = "gpt-4.1",
+      prompt,
+      instructions,
+      // temperature = 0.2,
+      maxTokens = 300,
+      previousResponseId,
+    } = options;
+
+    const response = await client.responses.create({
+      model,
+      input: prompt,
+      instructions,
+      // temperature,
+      max_output_tokens: maxTokens,
+      previous_response_id: previousResponseId,
+    });
+
+    return {
+      id: response.id,
+      text: response.output_text,
+    };
+  },
+};
+
+-------------------code----------------------
+
+---
+
+## Key Design Benefits
+
+* Only this module depends on OpenAI
+* Services use application-defined types
+* Switching to another provider requires changes in **one file only**
+
+---
+
+## Step 5: Refactor the Review Service
+
+### Before
+
+* Direct dependency on OpenAI
+* OpenAI-specific arguments
+
+### After
+
+* Uses `llmClient.generateText`
+* Clean, minimal logic
+
+### File
+
+-------------------code----------------------
+services/review.service.ts
+-------------------code----------------------
+
+### Code
+
+-------------------code----------------------
+import type { Review } from "@prisma/client";
+import { llmClient } from "../llm/client";
+import { reviewRepository } from "../repositories/review.repository";
+
+export const reviewService = {
+  getReviews(productId: number): Promise<Review[]> {
+    return reviewRepository.getReviews(productId);
+  },
+
+  async summarizeReviews(productId: number): Promise<string> {
+    const reviews = await reviewRepository.getReviews(productId, 10);
+
+    const joinedReviews = reviews.map((r) => r.content).join("\n\n");
+    const prompt = `
+      Summarize the following customer reviews into a short paragraph,
+      highlighting key themes, both positive and negative:
+
+      ${joinedReviews}
+          `;
+    console.log(joinedReviews);
+    const response = await llmClient.generateText({
+      model: "gpt-5-mini",
+      prompt,
+      maxTokens: 1000,
+    });
+
+    console.log(response);
+    return response.text;
+  },
+};
+-------------------code----------------------
+
+---
+
+## Step 6: Refactor the Chat Service
+
+### Changes
+
+* Remove OpenAI imports and client creation
+* Use `llmClient.generateText`
+* Handle conversation history via `previousResponseId`
+* Work with application-level response shape
+
+### Example Update
+
+-------------------code----------------------
+import fs from "fs";
+import path from "path";
+import { llmClient } from "../llm/client";
+import template from "../prompts/chatbot.txt";
+import { conversationRepository } from "../repositories/conversation.repository";
+
+const parkInfoPath = path.join(__dirname, "..", "prompts", "wonderworld.md");
+const parkInfo = fs.readFileSync(parkInfoPath, "utf8");
+const instructions = template.replace("{{parkInfo}}", parkInfo);
+interface ChatResponse {
+  id: string;
+  message: string;
+}
+
+export const chatService = {
+  async sendMessage(
+    prompt: string,
+    conversationId: string
+  ): Promise<ChatResponse> {
+    const response = await llmClient.generateText({
+      model: "gpt-5-mini",
+      prompt,
+      instructions,
+      maxTokens: 1000,
+      previousResponseId:
+        conversationRepository.getLastResponseId(conversationId),
+    });
+    console.log(response);
+
+    conversationRepository.setLastResponseId(conversationId, response.id);
+    return {
+      id: response.id,
+      message: response.text,
+    };
+  },
+};
+-------------------code----------------------
+
+---
+
+## Important Adjustment
+
+Because chat requires both:
+
+* The generated text
+* The response ID (for conversation history)
+
+The LLM client now returns:
+
+-------------------code----------------------
+{
+  id: string;
+  text: string;
+}
+-------------------code----------------------
+
+This ensures:
+
+* No service depends on OpenAI’s response structure
+* Conversation state remains provider-agnostic
+
+---
+
+## Step 7: Verify the Refactor
+
+### Test
+
+* Send a POST request to summarize reviews
+* Confirm the response is still correct
+
+### Result
+
+* The endpoint works as before
+* The summary is generated successfully
+* The architecture is cleaner and more flexible
+
+---
+
+## Final Architecture
+
+-------------------code----------------------
+Service Layer
+   ↓
+LLM Client (Application Interface)
+   ↓
+LLM Provider (OpenAI / Gemini / Claude)
+-------------------code----------------------
+
+---
+
+## Key Takeaways
+
+* LLM access should be centralized
+* Services should never depend on vendor-specific APIs
+* Application-defined types protect against future provider changes
+* This refactor significantly improves maintainability
+
+---
+
+## Next Lesson
+
+Extract prompts into dedicated modules to:
+
+* Improve readability
+* Enable reuse
+* Make prompt iteration easier
