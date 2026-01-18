@@ -1590,3 +1590,75 @@ Then paste the entire INSERT statements and press Enter.
 5. Click "Execute" or "Run"
 
 **Recommendation:** Use **Method 1** (SQL file import) - it's the simplest and most reliable. Just save the SQL script and run one command.
+
+*** 3- Building the Backend ***
+---
+
+## Transition to Backend Development
+
+### 1. Current Project Status
+
+* The database schema is finalized.
+* Migrations have been applied successfully.
+* Tables are populated with realistic sample data.
+* The project is now ready for backend development.
+
+---
+
+### 2. Goal of This Phase
+
+* Build the **backend layer** of the application.
+* Expose functionality through API endpoints.
+* Prepare the codebase for future refactoring and scalability.
+
+---
+
+### 3. Planned Backend Features
+
+#### API Endpoints
+
+* Create endpoints for:
+
+  * Fetching product reviews
+  * Generating summaries from reviews
+
+#### Responsibilities of the Backend
+
+* Retrieve review data from the database.
+* Process and summarize reviews.
+* Return structured responses to the client.
+
+---
+
+### 4. Development Approach
+
+#### Step 1: Implement Core Functionality
+
+* Focus on making the backend work end-to-end.
+* Prioritize correctness over code cleanliness at this stage.
+
+#### Step 2: Refactor
+
+* Once functionality is complete:
+
+  * Clean up the code
+  * Improve structure and readability
+  * Make the code easier to maintain and extend
+
+---
+
+### 5. Key Takeaways
+
+* Backend development begins only after data and schema are stable.
+* Building first, then refactoring, leads to faster progress.
+* Clear separation between functionality and optimization improves development flow.
+
+---
+
+### 6. Next Steps
+
+* Start implementing backend endpoints.
+* Connect endpoints to the database.
+* Add logic for summarizing reviews.
+
+---
