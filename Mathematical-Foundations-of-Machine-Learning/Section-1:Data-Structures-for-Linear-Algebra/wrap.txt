@@ -327,3 +327,310 @@ Less directly related:
 
 ---
 
+
+*** 3. Plotting a System of Linear Equations ***
+
+---
+
+# Machine Learning Foundations
+
+## Subject 1: Linear Algebra
+
+### Lecture: Interactive Exercise with Python (Graphing Linear Equations)
+
+---
+
+# 1. Purpose of This Lecture
+
+This lecture introduces an **interactive way to understand linear algebra** using Python.
+
+### Key Idea
+
+* Instead of solving equations only on paper, we **visualize them using code**
+* This improves intuition about:
+
+  * Linear equations
+  * Slopes
+  * Intersection points (solutions)
+
+---
+
+# 2. Problem Recap (Step-by-Step)
+
+We model a real-world system:
+
+### Given
+
+* Bank robber speed = 2.5 km/min
+* Sheriff speed = 3 km/min
+* Sheriff starts 5 minutes later
+
+### Step 1: Define Equations
+
+* Robber:
+  D = 2.5t
+
+* Sheriff:
+  D = 3(t - 5)
+
+### Step 2: Goal
+
+Find:
+
+* Time when both distances are equal
+* Distance at that time
+
+This corresponds to the **intersection point of two lines**
+
+---
+
+# 3. Why Use Python?
+
+Manual graphing:
+
+* Approximate
+* Requires tools (graph paper, ruler)
+
+Python graphing:
+
+* Precise
+* Fast
+* Scalable
+
+---
+
+# 4. Environment Setup (pipenv)
+
+### Step 1: Create project
+
+-------------------code----------------------
+mkdir app
+cd app
+pipenv --python 3.10
+-------------------code----------------------
+
+### Step 2: Install dependencies
+
+-------------------code----------------------
+pipenv install numpy matplotlib
+-------------------code----------------------
+
+### Step 3: Activate environment
+
+-------------------code----------------------
+pipenv shell
+-------------------code----------------------
+
+---
+
+# 5. Step-by-Step Python Implementation
+
+---
+
+## Step 1: Import Libraries
+
+-------------------code----------------------
+import numpy as np
+import matplotlib.pyplot as plt
+-------------------code----------------------
+
+### Explanation
+
+* numpy: numerical computations
+* matplotlib: plotting graphs
+
+---
+
+## Step 2: Create Time Variable
+
+-------------------code----------------------
+t = np.linspace(0, 40, 1000)
+-------------------code----------------------
+
+### Explanation
+
+* Start: 0 minutes
+* End: 40 minutes
+* 1000 points for smooth curve
+
+### Best Practice
+
+* Use many points for smooth plots
+* Choose a reasonable range slightly beyond expected solution
+
+---
+
+## Step 3: Define Equations
+
+-------------------code----------------------
+d_robber = 2.5 * t
+d_sheriff = 3 * (t - 5)
+-------------------code----------------------
+
+### Explanation
+
+* Direct translation from math to code
+* Vectorized operations using NumPy
+
+---
+
+## Step 4: Create Plot
+
+-------------------code----------------------
+plt.figure()
+plt.title("Bank Robber Caught")
+plt.xlabel("Time (minutes)")
+plt.ylabel("Distance (km)")
+-------------------code----------------------
+
+---
+
+## Step 5: Set Axis Limits
+
+-------------------code----------------------
+plt.xlim(0, 40)
+plt.ylim(0, 100)
+-------------------code----------------------
+
+### Explanation
+
+* Focus on relevant region
+* Avoid unnecessary empty space
+
+---
+
+## Step 6: Plot the Lines
+
+-------------------code----------------------
+plt.plot(t, d_robber, label="Robber (2.5 km/min)")
+plt.plot(t, d_sheriff, label="Sheriff (3 km/min, 5 min delay)")
+-------------------code----------------------
+
+---
+
+## Step 7: Mark Intersection Point
+
+-------------------code----------------------
+plt.axvline(x=30, linestyle="--")
+plt.axhline(y=75, linestyle="--")
+-------------------code----------------------
+
+### Explanation
+
+* Vertical line → time = 30
+* Horizontal line → distance = 75
+
+---
+
+## Step 8: Add Legend and Show Plot
+
+-------------------code----------------------
+plt.legend()
+plt.show()
+-------------------code----------------------
+
+---
+
+# 6. Full Final Script (Ready to Run)
+
+Save as: `plot_linear_system.py`
+
+-------------------code----------------------
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+def main():
+    # Step 1: Create time values
+    t = np.linspace(0, 40, 1000)
+
+    # Step 2: Define distance equations
+    d_robber = 2.5 * t
+    d_sheriff = 3 * (t - 5)
+
+    # Step 3: Create plot
+    plt.figure()
+    plt.title("Bank Robber Caught")
+    plt.xlabel("Time (minutes)")
+    plt.ylabel("Distance (km)")
+
+    # Step 4: Set axis limits
+    plt.xlim(0, 40)
+    plt.ylim(0, 100)
+
+    # Step 5: Plot lines
+    plt.plot(t, d_robber, label="Robber (2.5 km/min)")
+    plt.plot(t, d_sheriff, label="Sheriff (3 km/min, delayed start)")
+
+    # Step 6: Mark intersection
+    plt.axvline(x=30, linestyle="--")
+    plt.axhline(y=75, linestyle="--")
+
+    # Step 7: Show legend and plot
+    plt.legend()
+    plt.show()
+
+
+if __name__ == "__main__":
+    main()
+-------------------code----------------------
+
+
+Run the App
+-------------------code----------------------
+pipenv run python plot_linear_system.py
+-------------------code----------------------
+
+---
+
+# 7. Important Notes and Best Practices
+
+### 1. Translate Math Directly to Code
+
+* Keep equations readable and simple
+* Avoid unnecessary transformations
+
+### 2. Use Vectorized Operations
+
+* NumPy allows operations on arrays directly
+* Avoid loops for performance
+
+### 3. Choose Good Plot Ranges
+
+* Slightly larger than expected solution
+* Helps visualize clearly
+
+### 4. Label Everything
+
+* Title, axes, legend
+* Makes graphs understandable
+
+### 5. Separate Logic into Functions
+
+* Improves readability
+* Easier to reuse and debug
+
+---
+
+# 8. Conceptual Takeaways
+
+* Linear equations can be visualized as straight lines
+* The solution is the **intersection point**
+* Python allows precise and scalable visualization
+* This is foundational for:
+
+  * Machine learning models
+  * Optimization problems
+  * Data visualization
+
+---
+
+# 9. Summary
+
+* Converted a real-world problem into linear equations
+* Represented equations in Python using NumPy
+* Visualized the system using Matplotlib
+* Identified the solution graphically
+* Built a reusable Python script using pipenv
+
+---
