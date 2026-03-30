@@ -958,8 +958,332 @@ if __name__ == "__main__":
 
 ---
 
-If you want next, I can upgrade this into:
+*** 5. Tensors ***
+---
 
-* Automatic solver using NumPy (no hardcoding)
-* Turning it into a reusable function for any two linear equations
-* Or connecting this directly to linear regression in ML (very important next step)
+# Machine Learning Foundations
+
+## Subject 1: Linear Algebra
+
+### Lecture: Introduction to Tensors
+
+---
+
+# 1. Purpose of This Lecture
+
+This lecture introduces **tensors**, the most fundamental data structure in linear algebra and machine learning.
+
+### Key Idea
+
+* Tensors generalize:
+
+  * Scalars
+  * Vectors
+  * Matrices
+* They are used everywhere in machine learning (e.g., TensorFlow, PyTorch)
+
+---
+
+# 2. What is a Tensor?
+
+### Definition
+
+A **tensor** is a generalization of numerical data structures to **any number of dimensions**.
+
+### Intuition
+
+Think of tensors as containers of numbers:
+
+* Single number → scalar
+* List → vector
+* Table → matrix
+* Higher dimensions → tensors
+
+---
+
+# 3. Tensor Dimensions (Step-by-Step)
+
+---
+
+## 3.1 Zero-Dimensional Tensor (Scalar)
+
+### Definition
+
+* A single number
+* Has **magnitude only**
+
+### Example
+
+-------------------code----------------------
+scalar = 5
+-------------------code----------------------
+
+### Key Point
+
+* No direction
+* Just a value
+
+---
+
+## 3.2 One-Dimensional Tensor (Vector)
+
+### Definition
+
+* A list of numbers
+* One dimension (length)
+
+### Example
+
+-------------------code----------------------
+import numpy as np
+
+vector = np.array([1, 2, 3])
+-------------------code----------------------
+
+### Shape
+
+-------------------code----------------------
+print(vector.shape)  # (3,)
+-------------------code----------------------
+
+---
+
+## 3.3 Two-Dimensional Tensor (Matrix)
+
+### Definition
+
+* A table of numbers
+* Rows and columns
+
+### Example
+
+-------------------code----------------------
+matrix = np.array([
+    [1, 2, 3],
+    [4, 5, 6]
+])
+-------------------code----------------------
+
+### Shape
+
+-------------------code----------------------
+print(matrix.shape)  # (2, 3)
+-------------------code----------------------
+
+---
+
+## 3.4 Three-Dimensional Tensor
+
+### Definition
+
+* A stack of matrices
+* Like a cube of data
+
+### Example
+
+-------------------code----------------------
+tensor_3d = np.array([
+    [[1, 2], [3, 4]],
+    [[5, 6], [7, 8]]
+])
+-------------------code----------------------
+
+### Shape
+
+-------------------code----------------------
+print(tensor_3d.shape)  # (2, 2, 2)
+-------------------code----------------------
+
+---
+
+## 3.5 N-Dimensional Tensor
+
+### Definition
+
+* Any number of dimensions (4D, 5D, etc.)
+* Used in deep learning
+
+### Example
+
+-------------------code----------------------
+tensor_nd = np.random.rand(2, 3, 4, 5)
+-------------------code----------------------
+
+---
+
+# 4. Summary of Tensor Types
+
+| Dimension | Name   | Example Structure       |
+| --------- | ------ | ----------------------- |
+| 0D        | Scalar | 5                       |
+| 1D        | Vector | [1, 2, 3]               |
+| 2D        | Matrix | [[1,2],[3,4]]           |
+| 3D        | Tensor | Cube-like structure     |
+| nD        | Tensor | Higher-dimensional data |
+
+---
+
+# 5. Why Tensors Matter in Machine Learning
+
+Tensors are used to represent:
+
+* Input data (images, text, signals)
+* Model parameters (weights, biases)
+* Intermediate computations
+
+### Examples
+
+* Image → 3D tensor (height, width, channels)
+* Batch of images → 4D tensor
+* Neural network weights → matrices (2D tensors)
+
+---
+
+# 6. Step-by-Step Python Script
+
+---
+
+## Step 1: Import Library
+
+-------------------code----------------------
+import numpy as np
+-------------------code----------------------
+
+---
+
+## Step 2: Create Different Tensors
+
+-------------------code----------------------
+# Scalar (0D)
+scalar = np.array(5)
+
+# Vector (1D)
+vector = np.array([1, 2, 3])
+
+# Matrix (2D)
+matrix = np.array([
+    [1, 2, 3],
+    [4, 5, 6]
+])
+
+# 3D Tensor
+tensor_3d = np.array([
+    [[1, 2], [3, 4]],
+    [[5, 6], [7, 8]]
+])
+
+# N-D Tensor (4D example)
+tensor_4d = np.random.rand(2, 3, 4, 5)
+-------------------code----------------------
+
+---
+
+## Step 3: Print Shapes
+
+-------------------code----------------------
+print("Scalar shape:", scalar.shape)
+print("Vector shape:", vector.shape)
+print("Matrix shape:", matrix.shape)
+print("3D Tensor shape:", tensor_3d.shape)
+print("4D Tensor shape:", tensor_4d.shape)
+-------------------code----------------------
+
+---
+
+# 7. Full Final Script
+
+Save as: `tensors_intro.py`
+
+-------------------code----------------------
+import numpy as np
+
+
+def main():
+    # Scalar (0D)
+    scalar = np.array(5)
+
+    # Vector (1D)
+    vector = np.array([1, 2, 3])
+
+    # Matrix (2D)
+    matrix = np.array([
+        [1, 2, 3],
+        [4, 5, 6]
+    ])
+
+    # 3D Tensor
+    tensor_3d = np.array([
+        [[1, 2], [3, 4]],
+        [[5, 6], [7, 8]]
+    ])
+
+    # 4D Tensor
+    tensor_4d = np.random.rand(2, 3, 4, 5)
+
+    # Print shapes
+    print("Scalar shape:", scalar.shape)
+    print("Vector shape:", vector.shape)
+    print("Matrix shape:", matrix.shape)
+    print("3D Tensor shape:", tensor_3d.shape)
+    print("4D Tensor shape:", tensor_4d.shape)
+
+
+if __name__ == "__main__":
+    main()
+-------------------code----------------------
+
+---
+
+# 8. Important Notes and Best Practices
+
+### 1. Always Check Shape
+
+* `.shape` is critical in ML
+* Prevents bugs in matrix operations
+
+---
+
+### 2. Think in Dimensions
+
+* 1D → sequence
+* 2D → table
+* 3D+ → structured data
+
+---
+
+### 3. Use NumPy for Prototyping
+
+* Fast and simple
+* Same concepts apply to:
+
+  * TensorFlow
+  * PyTorch
+
+---
+
+### 4. Naming Convention
+
+* scalar → single value
+* vector → 1D
+* matrix → 2D
+* tensor → 3D+
+
+---
+
+# 9. Conceptual Takeaways
+
+* Tensors unify all data structures in linear algebra
+* Everything in machine learning is built on tensors
+* Higher dimensions allow modeling complex data
+* Understanding tensors is foundational for deep learning
+
+---
+
+# 10. Summary
+
+* A tensor is a generalization of scalars, vectors, and matrices
+* Dimensions define the structure of data
+* NumPy allows easy creation and manipulation of tensors
+* Tensors are essential for machine learning systems
+
+---
