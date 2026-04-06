@@ -2179,3 +2179,447 @@ If you want next, I can organize the next lecture about:
 
 * Vector magnitude and direction
 * Or vector operations (dot product, norms) which are very important for ML.
+
+*** 8. Norms and Unit Vectors ***
+---
+
+# Machine Learning Foundations
+
+## Subject 1: Linear Algebra
+
+### Lecture: Vector Magnitude, Direction, and Norms
+
+---
+
+# 1. Purpose of This Lecture
+
+This lecture expands the understanding of vectors by introducing:
+
+* Vectors as **magnitude and direction**
+* **Norms** (functions to measure vector length)
+* Common norms used in machine learning:
+
+  * L2 norm (Euclidean distance)
+  * L1 norm
+  * Squared L2 norm
+  * Max norm
+
+---
+
+# 2. Vectors as Magnitude and Direction
+
+---
+
+## 2.1 Two Interpretations of a Vector
+
+A vector can represent:
+
+### 1. A Point in Space
+
+Example:
+
+-------------------code----------------------
+x = [12, 4]
+-------------------code----------------------
+
+Represents point (12, 4)
+
+---
+
+### 2. A Direction from the Origin
+
+Same vector:
+
+* Starts at (0, 0)
+* Ends at (12, 4)
+
+This represents:
+
+* Direction
+* Magnitude (length)
+
+---
+
+## 2.2 Origin
+
+* Always a **zero vector**
+
+-------------------code----------------------
+[0, 0, 0, ...]
+-------------------code----------------------
+
+---
+
+# 3. Norms (Vector Length)
+
+---
+
+## 3.1 What is a Norm?
+
+A **norm** is a function that measures the **length (magnitude)** of a vector.
+
+---
+
+# 4. L2 Norm (Euclidean Distance)
+
+---
+
+## 4.1 Definition
+
+L2 norm is the most important and commonly used norm.
+
+It measures **straight-line distance from origin**.
+
+---
+
+## 4.2 Formula
+
+[
+||x||_2 = \sqrt{x_1^2 + x_2^2 + ... + x_n^2}
+]
+
+---
+
+## 4.3 Step-by-Step Calculation
+
+Example vector:
+
+-------------------code----------------------
+x = [25, 2, 5]
+-------------------code----------------------
+
+Steps:
+
+1. Square elements → [625, 4, 25]
+2. Sum → 654
+3. Square root → ~25.57
+
+---
+
+## 4.4 Code Implementation
+
+### Step 1: Manual Calculation
+
+-------------------code----------------------
+import numpy as np
+
+x = np.array([25, 2, 5])
+
+l2_manual = np.sqrt(np.sum(x**2))
+print(l2_manual)
+-------------------code----------------------
+
+---
+
+### Step 2: Using NumPy Built-in
+
+-------------------code----------------------
+l2_numpy = np.linalg.norm(x)
+print(l2_numpy)
+-------------------code----------------------
+
+---
+
+## 4.5 Interpretation
+
+* Represents real-world distance
+* Also called **Euclidean distance**
+
+---
+
+# 5. Unit Vectors
+
+---
+
+## 5.1 Definition
+
+A **unit vector** has:
+
+[
+||x|| = 1
+]
+
+---
+
+## 5.2 Meaning
+
+* Same direction
+* Length = 1
+
+---
+
+## 5.3 Code Example
+
+-------------------code----------------------
+unit_x = x / np.linalg.norm(x)
+print(unit_x)
+print(np.linalg.norm(unit_x))
+-------------------code----------------------
+
+---
+
+# 6. L1 Norm
+
+---
+
+## 6.1 Definition
+
+Sum of absolute values
+
+---
+
+## 6.2 Formula
+
+[
+||x||_1 = |x_1| + |x_2| + ... + |x_n|
+]
+
+---
+
+## 6.3 Step-by-Step
+
+-------------------code----------------------
+l1 = np.sum(np.abs(x))
+print(l1)
+-------------------code----------------------
+
+---
+
+## 6.4 Key Idea
+
+* Linear growth
+* Good for detecting **zero vs non-zero differences**
+
+---
+
+# 7. Squared L2 Norm
+
+---
+
+## 7.1 Definition
+
+Same as L2, but **without square root**
+
+---
+
+## 7.2 Formula
+
+[
+||x||_2^2 = x^T x
+]
+
+---
+
+## 7.3 Code Implementation
+
+-------------------code----------------------
+l2_squared = np.sum(x**2)
+print(l2_squared)
+-------------------code----------------------
+
+---
+
+## 7.4 Using Dot Product
+
+-------------------code----------------------
+l2_squared_dot = x.T @ x
+print(l2_squared_dot)
+-------------------code----------------------
+
+---
+
+## 7.5 Why Important
+
+* Computationally cheaper
+* Used in optimization (machine learning training)
+
+---
+
+# 8. Max Norm (L∞ Norm)
+
+---
+
+## 8.1 Definition
+
+Maximum absolute value
+
+---
+
+## 8.2 Formula
+
+[
+||x||_\infty = \max(|x_i|)
+]
+
+---
+
+## 8.3 Code Example
+
+-------------------code----------------------
+l_inf = np.max(np.abs(x))
+print(l_inf)
+-------------------code----------------------
+
+---
+
+# 9. Generalized LP Norm
+
+---
+
+## 9.1 Formula
+
+[
+||x||_p = \left( \sum |x_i|^p \right)^{1/p}
+]
+
+---
+
+## 9.2 Special Cases
+
+| p value | Norm Type |
+| ------- | --------- |
+| p = 1   | L1 norm   |
+| p = 2   | L2 norm   |
+| p → ∞   | Max norm  |
+
+---
+
+## 9.3 Constraints
+
+* p ≥ 1
+* p is a real number
+
+---
+
+# 10. Full Final Script
+
+Save as: `vector_norms.py`
+
+-------------------code----------------------
+import numpy as np
+
+
+def main():
+    # --------------------
+    # Vector
+    # --------------------
+    x = np.array([25, 2, 5])
+    print("Vector:", x)
+
+    # --------------------
+    # L2 Norm
+    # --------------------
+    l2_manual = np.sqrt(np.sum(x**2))
+    print("L2 norm (manual):", l2_manual)
+
+    l2_numpy = np.linalg.norm(x)
+    print("L2 norm (numpy):", l2_numpy)
+
+    # --------------------
+    # Unit Vector
+    # --------------------
+    unit_x = x / np.linalg.norm(x)
+    print("Unit vector:", unit_x)
+    print("Unit vector norm:", np.linalg.norm(unit_x))
+
+    # --------------------
+    # L1 Norm
+    # --------------------
+    l1 = np.sum(np.abs(x))
+    print("L1 norm:", l1)
+
+    # --------------------
+    # Squared L2 Norm
+    # --------------------
+    l2_squared = np.sum(x**2)
+    print("Squared L2 norm:", l2_squared)
+
+    l2_squared_dot = x.T @ x
+    print("Squared L2 (dot product):", l2_squared_dot)
+
+    # --------------------
+    # Max Norm
+    # --------------------
+    l_inf = np.max(np.abs(x))
+    print("Max norm:", l_inf)
+
+
+if __name__ == "__main__":
+    main()
+-------------------code----------------------
+
+---
+
+# 11. Important Notes and Best Practices
+
+---
+
+## 11.1 Use Built-in Functions
+
+* Prefer:
+
+-------------------code----------------------
+np.linalg.norm(x)
+-------------------code----------------------
+
+instead of manual computation
+
+---
+
+## 11.2 Choose the Right Norm
+
+* L2 → general distance
+* L1 → sparsity / zero detection
+* Squared L2 → optimization efficiency
+* Max norm → largest deviation
+
+---
+
+## 11.3 Avoid Unnecessary Square Roots
+
+* Use squared L2 in ML training for speed
+
+---
+
+## 11.4 Normalize When Needed
+
+* Convert to unit vectors when comparing directions
+
+---
+
+## 11.5 Understand Meaning, Not Just Formula
+
+* Norms define **geometry of your model**
+
+---
+
+# 12. Conceptual Takeaways
+
+* Vectors represent:
+
+  * Position
+  * Direction + magnitude
+
+* Norms measure vector length
+
+* Different norms give different interpretations
+
+* L2 norm is the most commonly used
+
+---
+
+# 13. Summary
+
+* A vector can be seen as a direction from the origin
+* Norms measure the magnitude of vectors
+* L2 norm represents real-world distance
+* Unit vectors have length 1
+* L1, L2, squared L2, and max norms are widely used in machine learning
+* Choosing the right norm depends on the problem
+
+---
+
+If you want next, I can organize:
+
+* Dot product and cosine similarity (very important for ML)
+* Or matrices (next major topic in your course)
