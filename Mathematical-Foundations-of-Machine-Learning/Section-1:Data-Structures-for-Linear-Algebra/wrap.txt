@@ -2977,3 +2977,351 @@ np.dot(x, y)
 
 ---
 
+*** 10. Matrix Tensors ***
+## 1. Introduction to Matrices (2D Tensors)
+
+### 1.1 What is a Matrix?
+
+* A **matrix** is a **two-dimensional tensor** (rank = 2).
+* It is a grid (table) of numbers arranged in:
+
+  * **Rows**
+  * **Columns**
+
+Example:
+
+[
+X =
+\begin{bmatrix}
+1 & 2 \
+5 & 26 \
+3 & 7
+\end{bmatrix}
+]
+
+---
+
+## 2. Matrix Notation
+
+### 2.1 Naming Convention
+
+* Matrices are written as:
+
+  * **Uppercase**
+  * **Bold**
+  * **Italic**
+
+Example:
+
+* Matrix: **X**
+* Element: ( x_{i,j} )
+
+---
+
+### 2.2 Shape of a Matrix
+
+* Shape is written as:
+
+[
+(\text{rows}, \text{columns})
+]
+
+Example:
+
+* Matrix above → **(3, 2)**
+  (3 rows, 2 columns)
+
+---
+
+### 2.3 Accessing Elements
+
+* Element at row *i*, column *j*:
+
+[
+x_{i,j}
+]
+
+Example:
+
+* Top-right element → ( x_{1,2} = 2 )
+
+---
+
+### 2.4 Selecting Rows and Columns
+
+| Operation | Meaning             |
+| --------- | ------------------- |
+| `:`       | all rows or columns |
+| `[:, 0]`  | first column        |
+| `[1, :]`  | second row          |
+
+---
+
+## 3. Creating Matrices in Python (NumPy)
+
+### 3.1 Step 1: Import Library
+
+-------------------code----------------------
+import numpy as np
+-------------------code----------------------
+
+---
+
+### 3.2 Step 2: Create a Matrix
+
+-------------------code----------------------
+X = np.array([
+    [1, 2],
+    [5, 26],
+    [3, 7]
+])
+-------------------code----------------------
+
+Explanation:
+
+* Outer list → rows
+* Inner lists → columns
+
+---
+
+### 3.3 Step 3: Check Shape and Size
+
+-------------------code----------------------
+print("Shape:", X.shape)
+print("Size:", X.size)
+-------------------code----------------------
+
+Output:
+
+* Shape → (3, 2)
+* Size → 6
+
+---
+
+### 3.4 Step 4: Access Columns
+
+-------------------code----------------------
+first_column = X[:, 0]
+print(first_column)
+-------------------code----------------------
+
+---
+
+### 3.5 Step 5: Access Rows
+
+-------------------code----------------------
+second_row = X[1, :]
+print(second_row)
+-------------------code----------------------
+
+---
+
+### 3.6 Step 6: Slice Submatrix
+
+-------------------code----------------------
+submatrix = X[0:2, 0:2]
+print(submatrix)
+-------------------code----------------------
+
+Explanation:
+
+* Rows 0 → 1
+* Columns 0 → 1
+
+---
+
+## 4. Creating Matrices in PyTorch
+
+### 4.1 Step 1: Import Library
+
+-------------------code----------------------
+import torch
+-------------------code----------------------
+
+---
+
+### 4.2 Step 2: Create Matrix
+
+-------------------code----------------------
+X_torch = torch.tensor([
+    [1, 2],
+    [5, 26],
+    [3, 7]
+])
+-------------------code----------------------
+
+---
+
+### 4.3 Step 3: Get Shape
+
+-------------------code----------------------
+print(X_torch.shape)
+-------------------code----------------------
+
+---
+
+### 4.4 Step 4: Access Row
+
+-------------------code----------------------
+print(X_torch[1, :])
+-------------------code----------------------
+
+---
+
+## 5. Creating Matrices in TensorFlow
+
+### 5.1 Step 1: Import Library
+
+-------------------code----------------------
+import tensorflow as tf
+-------------------code----------------------
+
+---
+
+### 5.2 Step 2: Create Matrix
+
+-------------------code----------------------
+X_tf = tf.Variable([
+    [1, 2],
+    [5, 26],
+    [3, 7]
+])
+-------------------code----------------------
+
+---
+
+### 5.3 Step 3: Check Properties
+
+-------------------code----------------------
+print("Rank:", tf.rank(X_tf))
+print("Shape:", X_tf.shape)
+-------------------code----------------------
+
+---
+
+### 5.4 Step 4: Access Row
+
+-------------------code----------------------
+print(X_tf[1, :])
+-------------------code----------------------
+
+---
+
+## 6. Important Notes and Best Practices
+
+### 6.1 Indexing Differences
+
+* Math notation starts at **1**
+* Python starts at **0**
+
+Example:
+
+* First column → `[:, 0]` (not 1)
+
+---
+
+### 6.2 Choosing a Library
+
+| Library    | Use Case               |
+| ---------- | ---------------------- |
+| NumPy      | General numerical work |
+| PyTorch    | Machine learning, GPU  |
+| TensorFlow | Production ML systems  |
+
+---
+
+### 6.3 Shape Awareness
+
+* Always check `.shape`
+* Prevents bugs in matrix operations
+
+---
+
+### 6.4 Use Slicing Efficiently
+
+* Avoid loops when possible
+* Use vectorized operations (`X[:, 0]` instead of loops)
+
+---
+
+## 7. Full Final Python Script
+
+-------------------code----------------------
+import numpy as np
+import torch
+import tensorflow as tf
+
+
+def numpy_demo():
+    print("=== NumPy Demo ===")
+
+    X = np.array([
+        [1, 2],
+        [5, 26],
+        [3, 7]
+    ])
+
+    print("Matrix:\n", X)
+    print("Shape:", X.shape)
+    print("Size:", X.size)
+
+    print("First column:", X[:, 0])
+    print("Second row:", X[1, :])
+    print("Submatrix:\n", X[0:2, 0:2])
+
+
+def pytorch_demo():
+    print("\n=== PyTorch Demo ===")
+
+    X = torch.tensor([
+        [1, 2],
+        [5, 26],
+        [3, 7]
+    ])
+
+    print("Matrix:\n", X)
+    print("Shape:", X.shape)
+    print("Second row:", X[1, :])
+
+
+def tensorflow_demo():
+    print("\n=== TensorFlow Demo ===")
+
+    X = tf.Variable([
+        [1, 2],
+        [5, 26],
+        [3, 7]
+    ])
+
+    print("Matrix:\n", X)
+    print("Rank:", tf.rank(X))
+    print("Shape:", X.shape)
+    print("Second row:", X[1, :])
+
+
+def main():
+    numpy_demo()
+    pytorch_demo()
+    tensorflow_demo()
+
+
+if __name__ == "__main__":
+    main()
+-------------------code----------------------
+
+---
+
+## 8. Summary
+
+* Matrices are **2D tensors** (rank 2).
+* Shape is always **(rows, columns)**.
+* Elements are accessed using **row, column indexing**.
+* NumPy, PyTorch, and TensorFlow all support matrices with similar syntax.
+* Slicing is powerful and essential for working efficiently with data.
+* Understanding matrices is critical before moving to:
+
+  * Matrix operations
+  * Deep learning
+  * Linear algebra in ML
+
+---
