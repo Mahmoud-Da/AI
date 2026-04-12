@@ -677,3 +677,333 @@ if __name__ == "__main__":
 
 ---
 
+
+*** 16. Basic Tensor Arithmetic, incl. the Hadamard Product ***
+# 1. Introduction to Tensor Arithmetic
+
+In this lecture, we learn how to perform **basic arithmetic operations on tensors** using:
+
+* NumPy
+* PyTorch
+* TensorFlow
+
+We focus on:
+
+1. Scalar operations
+2. Element-wise operations (Hadamard product)
+
+---
+
+# 2. Scalar Operations on Tensors
+
+## 2.1 Concept
+
+A **scalar operation** applies a single number to every element in a tensor.
+
+### Examples:
+
+* Multiply all elements by a number
+* Add a constant to all elements
+
+### Key Idea:
+
+* The **shape of the tensor does not change**
+* Operation is applied **element-wise with a scalar**
+
+---
+
+## 2.2 Step-by-Step Example (NumPy)
+
+### Step 1: Create a Matrix
+
+-------------------code----------------------
+import numpy as np
+
+X = np.array([
+    [25, 2],
+    [5, 26],
+    [3, 7]
+])
+-------------------code----------------------
+
+---
+
+### Step 2: Multiply by Scalar
+
+-------------------code----------------------
+X_mul = X * 2
+-------------------code----------------------
+
+Result:
+
+* Each element is multiplied by 2
+
+---
+
+### Step 3: Add Scalar
+
+-------------------code----------------------
+X_add = X + 2
+-------------------code----------------------
+
+Result:
+
+* Each element increases by 2
+
+---
+
+### Step 4: Combine Operations
+
+-------------------code----------------------
+X_combined = X * 2 + 2
+-------------------code----------------------
+
+Important:
+
+* Follows **order of operations** (multiply first, then add)
+
+---
+
+# 3. Scalar Operations in PyTorch and TensorFlow
+
+## 3.1 PyTorch
+
+-------------------code----------------------
+import torch
+
+X_torch = torch.tensor([
+    [25, 2],
+    [5, 26],
+    [3, 7]
+])
+
+X_torch_result = X_torch * 2 + 2
+-------------------code----------------------
+
+---
+
+## 3.2 TensorFlow
+
+-------------------code----------------------
+import tensorflow as tf
+
+X_tf = tf.constant([
+    [25, 2],
+    [5, 26],
+    [3, 7]
+])
+
+X_tf_result = X_tf * 2 + 2
+-------------------code----------------------
+
+---
+
+## Important Note
+
+* Operators like `+`, `*` are **overloaded**
+* Internally:
+
+  * PyTorch → `torch.add()`, `torch.mul()`
+  * TensorFlow → `tf.add()`, `tf.multiply()`
+
+---
+
+# 4. Element-wise Operations (Hadamard Product)
+
+## 4.1 Concept
+
+The **Hadamard product** is element-wise multiplication between two tensors of the same shape.
+
+### Requirements:
+
+* Both tensors must have **same dimensions**
+
+---
+
+## 4.2 Step-by-Step Example (NumPy)
+
+### Step 1: Create Two Matrices
+
+-------------------code----------------------
+A = X + 2
+-------------------code----------------------
+
+Now:
+
+* `X` and `A` have the same shape
+
+---
+
+### Step 2: Element-wise Addition
+
+-------------------code----------------------
+add_result = X + A
+-------------------code----------------------
+
+Each element:
+
+-------------------code----------------------
+X[i][j] + A[i][j]
+-------------------code----------------------
+
+---
+
+### Step 3: Hadamard Product (Element-wise Multiplication)
+
+-------------------code----------------------
+hadamard_result = X * A
+-------------------code----------------------
+
+Each element:
+
+-------------------code----------------------
+X[i][j] * A[i][j]
+-------------------code----------------------
+
+---
+
+## 4.3 PyTorch Example
+
+-------------------code----------------------
+A_torch = X_torch + 2
+
+add_torch = X_torch + A_torch
+hadamard_torch = X_torch * A_torch
+-------------------code----------------------
+
+---
+
+## 4.4 TensorFlow Example
+
+-------------------code----------------------
+A_tf = X_tf + 2
+
+add_tf = X_tf + A_tf
+hadamard_tf = X_tf * A_tf
+-------------------code----------------------
+
+---
+
+# 5. Key Differences
+
+| Operation Type          | Description                                    | Shape Change |
+| ----------------------- | ---------------------------------------------- | ------------ |
+| Scalar Operation        | Apply single number to all elements            | No           |
+| Element-wise (Hadamard) | Operate between two tensors element-by-element | No           |
+
+---
+
+# 6. Important Notes & Best Practices
+
+## 6.1 Shape Compatibility
+
+* Element-wise operations require **same shape**
+* Otherwise → error
+
+## 6.2 Do Not Confuse with Matrix Multiplication
+
+* `*` → Hadamard (element-wise)
+* Matrix multiplication uses:
+
+  * NumPy: `@` or `np.dot()`
+  * PyTorch: `torch.matmul()`
+  * TensorFlow: `tf.matmul()`
+
+## 6.3 Use Vectorization
+
+* Avoid loops
+* Always prefer:
+
+-------------------code----------------------
+X * 2
+-------------------code----------------------
+
+instead of looping manually
+
+## 6.4 Consistency Across Libraries
+
+* NumPy, PyTorch, TensorFlow behave similarly
+* Learn once → apply everywhere
+
+---
+
+# 7. Full Final Code
+
+-------------------code----------------------
+import numpy as np
+import torch
+import tensorflow as tf
+
+
+def numpy_demo():
+    print("=== NumPy ===")
+    X = np.array([
+        [25, 2],
+        [5, 26],
+        [3, 7]
+    ])
+
+    # Scalar operations
+    print("Multiply by 2:\n", X * 2)
+    print("Add 2:\n", X + 2)
+    print("Combined:\n", X * 2 + 2)
+
+    # Element-wise operations
+    A = X + 2
+    print("Element-wise addition:\n", X + A)
+    print("Hadamard product:\n", X * A)
+
+
+def pytorch_demo():
+    print("\n=== PyTorch ===")
+    X = torch.tensor([
+        [25, 2],
+        [5, 26],
+        [3, 7]
+    ])
+
+    print("Multiply by 2:\n", X * 2)
+    print("Add 2:\n", X + 2)
+    print("Combined:\n", X * 2 + 2)
+
+    A = X + 2
+    print("Element-wise addition:\n", X + A)
+    print("Hadamard product:\n", X * A)
+
+
+def tensorflow_demo():
+    print("\n=== TensorFlow ===")
+    X = tf.constant([
+        [25, 2],
+        [5, 26],
+        [3, 7]
+    ])
+
+    print("Multiply by 2:\n", X * 2)
+    print("Add 2:\n", X + 2)
+    print("Combined:\n", X * 2 + 2)
+
+    A = X + 2
+    print("Element-wise addition:\n", X + A)
+    print("Hadamard product:\n", X * A)
+
+
+if __name__ == "__main__":
+    numpy_demo()
+    pytorch_demo()
+    tensorflow_demo()
+-------------------code----------------------
+
+---
+
+# 8. Summary
+
+* Scalar operations apply a number to every element
+* Shape remains unchanged
+* Element-wise operations require equal shapes
+* Hadamard product = element-wise multiplication
+* Python operators (`+`, `*`) are overloaded in ML libraries
+* Do not confuse Hadamard with matrix multiplication
+* Same concepts apply across NumPy, PyTorch, and TensorFlow
+
+---
