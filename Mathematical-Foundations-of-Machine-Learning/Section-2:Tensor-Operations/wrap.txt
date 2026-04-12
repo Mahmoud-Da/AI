@@ -1,0 +1,291 @@
+*** 14. Segment Intro ***
+## 1. Overview of the Lecture
+
+### 1.1 Where We Are in the Course
+
+* The course has **8 subjects** in total.
+* Current subject: **Introduction to Linear Algebra**
+* This subject is divided into **3 segments**:
+
+| Segment | Topic                       |
+| ------- | --------------------------- |
+| 1       | Data Structures (Completed) |
+| 2       | Tensor Operations (Next)    |
+| 3       | Solving Linear Systems      |
+
+---
+
+## 2. Segment 1 Recap: Data Structures for Algebra
+
+### 2.1 What Was Covered
+
+You learned the **core building blocks of machine learning**:
+
+#### Step-by-step progression:
+
+1. **Scalars (0D)**
+
+   * Single value
+
+2. **Vectors (1D)**
+
+   * Ordered list of values
+
+3. **Matrices (2D)**
+
+   * Table of values (rows × columns)
+
+4. **Tensors (nD)**
+
+   * Generalization to any number of dimensions
+
+---
+
+### 2.2 Why This Matters
+
+* All machine learning data is represented as **tensors**
+* Understanding their structure is required before:
+
+  * Performing operations
+  * Building models
+  * Debugging errors
+
+---
+
+## 3. Transition to Segment 2: Tensor Operations
+
+### 3.1 What Changes Now?
+
+* Move from **static understanding** → **active computation**
+* Instead of just creating tensors, we will:
+
+  * Manipulate them
+  * Perform mathematical operations
+
+---
+
+## 4. Key Topics in Segment 2
+
+### 4.1 Transposing Tensors
+
+#### Concept:
+
+* Swap rows and columns
+
+#### Example Code:
+
+-------------------code----------------------
+import numpy as np
+
+x = np.array([[1, 2, 3]])
+x_T = x.T
+
+print(x_T)
+-------------------code----------------------
+
+---
+
+### 4.2 Basic Arithmetic Operations
+
+#### Concept:
+
+* Element-wise operations:
+
+  * Addition
+  * Subtraction
+  * Multiplication
+
+#### Example Code:
+
+-------------------code----------------------
+a = np.array([1, 2, 3])
+b = np.array([4, 5, 6])
+
+print(a + b)
+print(a * b)
+-------------------code----------------------
+
+---
+
+### 4.3 Reducing Tensors to Scalars
+
+#### Concept:
+
+* Reduce multiple values → single value
+
+Examples:
+
+* Sum
+* Mean
+
+#### Example Code:
+
+-------------------code----------------------
+x = np.array([1, 2, 3, 4])
+
+print(np.sum(x))
+print(np.mean(x))
+-------------------code----------------------
+
+---
+
+### 4.4 Dot Product (Very Important)
+
+#### Concept:
+
+* Combines two vectors into a scalar
+* Core operation in:
+
+  * Neural networks
+  * Linear algebra
+
+#### Formula:
+
+[
+x \cdot y = \sum x_i y_i
+]
+
+#### Example Code:
+
+-------------------code----------------------
+x = np.array([1, 2, 3])
+y = np.array([4, 5, 6])
+
+dot = np.dot(x, y)
+print(dot)
+-------------------code----------------------
+
+---
+
+### 4.5 Solving Linear Systems (Manually)
+
+#### Concept:
+
+* Solve equations like:
+
+[
+ax + by = c
+]
+
+* First step: understand manually before automation
+
+---
+
+## 5. Step-by-Step Learning Flow
+
+### Step 1:
+
+Understand tensor structure (completed)
+
+### Step 2:
+
+Learn tensor operations (current focus)
+
+### Step 3:
+
+Automate solving equations (next segment)
+
+---
+
+## 6. Important Notes and Best Practices
+
+### 6.1 Build Strong Foundations
+
+* Do not skip basics
+* Everything in ML depends on tensors
+
+---
+
+### 6.2 Practice Code Alongside Theory
+
+* Always implement concepts in Python
+* Helps solidify understanding
+
+---
+
+### 6.3 Focus on Core Operations
+
+Especially:
+
+* Dot product
+* Matrix operations
+* Reductions
+
+---
+
+### 6.4 Understand Before Optimizing
+
+* First: understand math
+* Later: optimize with libraries (NumPy, PyTorch)
+
+---
+
+## 7. Full Final Python Script (Segment 2 Preview)
+
+-------------------code----------------------
+import numpy as np
+
+
+def transpose_example():
+    x = np.array([[1, 2, 3]])
+    print("Transpose:\n", x.T)
+
+
+def arithmetic_example():
+    a = np.array([1, 2, 3])
+    b = np.array([4, 5, 6])
+
+    print("Addition:", a + b)
+    print("Multiplication:", a * b)
+
+
+def reduction_example():
+    x = np.array([1, 2, 3, 4])
+
+    print("Sum:", np.sum(x))
+    print("Mean:", np.mean(x))
+
+
+def dot_product_example():
+    x = np.array([1, 2, 3])
+    y = np.array([4, 5, 6])
+
+    print("Dot Product:", np.dot(x, y))
+
+
+def main():
+    transpose_example()
+    arithmetic_example()
+    reduction_example()
+    dot_product_example()
+
+
+if __name__ == "__main__":
+    main()
+-------------------code----------------------
+
+---
+
+## 8. Summary
+
+* You completed **Segment 1: Tensor Data Structures**
+* You now understand:
+
+  * Scalars, vectors, matrices, tensors
+* Next step:
+
+  * Perform **operations on tensors**
+* Segment 2 will focus on:
+
+  * Transpose
+  * Arithmetic operations
+  * Reduction
+  * Dot product
+  * Manual equation solving
+
+This transition is critical because:
+
+* Data structure understanding → enables computation
+* Computation → enables machine learning
+
+---
