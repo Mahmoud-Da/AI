@@ -1344,3 +1344,277 @@ if __name__ == "__main__":
 * Built-in functions are efficient and preferred
 
 ---
+
+
+*** 18. The Dot Product ***
+# 1. Introduction to Dot Product
+
+The **dot product** is one of the most important operations in linear algebra and machine learning.
+
+It is used:
+
+* In neural networks (every neuron uses it)
+* In similarity calculations
+* In projections and geometry
+
+---
+
+# 2. Definition of Dot Product
+
+## 2.1 Requirements
+
+To compute the dot product:
+
+* Two vectors must have the **same length**
+
+---
+
+## 2.2 Mathematical Definition
+
+Given two vectors:
+
+[
+x = [x_1, x_2, ..., x_n]
+]
+[
+y = [y_1, y_2, ..., y_n]
+]
+
+The dot product is:
+
+[
+x \cdot y = x_1y_1 + x_2y_2 + ... + x_ny_n
+]
+
+---
+
+## 2.3 Notation
+
+Common notations:
+
+* ( x \cdot y )
+* ( x^T y )
+* ( \langle x, y \rangle )
+
+All represent the same operation.
+
+---
+
+# 3. Step-by-Step Calculation
+
+## 3.1 Example Vectors
+
+-------------------code----------------------
+import numpy as np
+
+x = np.array([25, 2, 5])
+y = np.array([0, 1, 2])
+-------------------code----------------------
+
+---
+
+## 3.2 Step 1: Element-wise Multiplication
+
+-------------------code----------------------
+products = x * y
+print(products)  # [0, 2, 10]
+-------------------code----------------------
+
+---
+
+## 3.3 Step 2: Sum the Results (Reduction)
+
+-------------------code----------------------
+dot_product = products.sum()
+print(dot_product)  # 12
+-------------------code----------------------
+
+---
+
+## 3.4 Combined Result
+
+-------------------code----------------------
+dot_product = np.sum(x * y)
+-------------------code----------------------
+
+---
+
+# 4. Using Built-in Functions
+
+## 4.1 NumPy
+
+-------------------code----------------------
+dot_product = np.dot(x, y)
+print(dot_product)  # 12
+-------------------code----------------------
+
+---
+
+## 4.2 PyTorch
+
+-------------------code----------------------
+import torch
+
+x_torch = torch.tensor([25., 2., 5.])  # must be float
+y_torch = torch.tensor([0., 1., 2.])
+
+dot_product = torch.dot(x_torch, y_torch)
+print(dot_product)  # 12.0
+-------------------code----------------------
+
+---
+
+## 4.3 TensorFlow
+
+-------------------code----------------------
+import tensorflow as tf
+
+x_tf = tf.constant([25, 2, 5], dtype=tf.float32)
+y_tf = tf.constant([0, 1, 2], dtype=tf.float32)
+
+# Step 1: element-wise multiply
+products = tf.multiply(x_tf, y_tf)
+
+# Step 2: sum
+dot_product = tf.reduce_sum(products)
+
+print(dot_product)  # 12.0
+-------------------code----------------------
+
+---
+
+# 5. Key Intuition
+
+The dot product is:
+
+1. Multiply matching elements
+2. Add everything together
+3. Result is a **single scalar value**
+
+---
+
+# 6. Important Notes & Best Practices
+
+## 6.1 Same Length is Required
+
+* Vectors must have identical size
+* Otherwise → error
+
+---
+
+## 6.2 Dot Product is a Reduction
+
+* Final result is a **single number**
+* Combines multiplication + summation
+
+---
+
+## 6.3 Data Types Matter (PyTorch / TensorFlow)
+
+* Prefer using **float tensors**
+* Some functions require floats (e.g., `torch.dot`)
+
+---
+
+## 6.4 Use Built-in Functions
+
+Avoid manual implementation:
+
+-------------------code----------------------
+# Bad
+sum(x[i] * y[i] for i in range(len(x)))
+
+# Good
+np.dot(x, y)
+-------------------code----------------------
+
+---
+
+## 6.5 Widely Used in Machine Learning
+
+* Neural networks compute:
+
+-------------------code----------------------
+output = weights · inputs
+-------------------code----------------------
+
+* Happens millions/billions of times during training
+
+---
+
+## 6.6 Relation to Previous Concepts
+
+* Uses **element-wise multiplication**
+* Followed by **reduction (sum)**
+
+---
+
+# 7. Full Final Code
+
+-------------------code----------------------
+import numpy as np
+import torch
+import tensorflow as tf
+
+
+def numpy_demo():
+    print("=== NumPy ===")
+    x = np.array([25, 2, 5])
+    y = np.array([0, 1, 2])
+
+    # Manual computation
+    products = x * y
+    print("Element-wise product:", products)
+
+    dot_manual = products.sum()
+    print("Dot product (manual):", dot_manual)
+
+    # Built-in
+    dot_builtin = np.dot(x, y)
+    print("Dot product (numpy):", dot_builtin)
+
+
+def pytorch_demo():
+    print("\n=== PyTorch ===")
+    x = torch.tensor([25., 2., 5.])
+    y = torch.tensor([0., 1., 2.])
+
+    dot_product = torch.dot(x, y)
+    print("Dot product (torch):", dot_product)
+
+
+def tensorflow_demo():
+    print("\n=== TensorFlow ===")
+    x = tf.constant([25, 2, 5], dtype=tf.float32)
+    y = tf.constant([0, 1, 2], dtype=tf.float32)
+
+    # Step 1: multiply
+    products = tf.multiply(x, y)
+
+    # Step 2: reduce sum
+    dot_product = tf.reduce_sum(products)
+
+    print("Dot product (tensorflow):", dot_product)
+
+
+if __name__ == "__main__":
+    numpy_demo()
+    pytorch_demo()
+    tensorflow_demo()
+-------------------code----------------------
+
+---
+
+# 8. Summary
+
+* Dot product = multiply elements + sum results
+* Requires vectors of the same length
+* Output is a scalar
+* Implemented easily in NumPy, PyTorch, TensorFlow
+* Core operation in machine learning (especially deep learning)
+* Combines two key operations:
+
+  * Element-wise multiplication
+  * Reduction (sum)
+
+---
