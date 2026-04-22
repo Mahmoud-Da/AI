@@ -1618,3 +1618,327 @@ if __name__ == "__main__":
   * Reduction (sum)
 
 ---
+
+*** 19. Exercises on Tensor Operations ***
+# 1. Overview of the Lecture
+
+This lecture reviews key **tensor operations** through exercises:
+
+* Transpose
+* Hadamard (element-wise) product
+* Dot product
+
+Each operation is solved step-by-step to reinforce understanding.
+
+---
+
+# 2. Transpose of a Matrix
+
+## 2.1 Concept
+
+* Transpose flips a matrix over its **main diagonal** (top-left → bottom-right).
+* Rows become columns, columns become rows.
+* Element positions change:
+
+  * Original: ( X_{i,j} )
+  * Transposed: ( X_{j,i} )
+
+## 2.2 Step-by-Step Example
+
+Given matrix ( Y ):
+
+-------------------code----------------------
+Y =
+[ a  b
+  c  d ]
+-------------------code----------------------
+
+### Transpose:
+
+-------------------code----------------------
+Yᵀ =
+[ a  c
+  b  d ]
+-------------------code----------------------
+
+### Explanation:
+
+1. First row → first column
+2. Second row → second column
+3. Order of elements stays the same
+
+---
+
+## 2.3 Code Example
+
+### NumPy
+
+-------------------code----------------------
+import numpy as np
+
+Y = np.array([[1, 2],
+              [3, 4]])
+
+Y_T = Y.T
+print(Y_T)
+-------------------code----------------------
+
+---
+
+# 3. Hadamard Product (Element-wise Multiplication)
+
+## 3.1 Concept
+
+* Multiply two tensors **element by element**
+* Requires **same shape**
+* Not the same as matrix multiplication
+
+## 3.2 Step-by-Step Example
+
+Given:
+
+-------------------code----------------------
+A = [25   10
+     -2    5]
+
+B = [-1    7
+     10    3]
+-------------------code----------------------
+
+### Calculation:
+
+-------------------code----------------------
+A ⊙ B =
+[25×(-1)   10×7
+ -2×10      5×3]
+
+=
+[-25   70
+ -20   15]
+-------------------code----------------------
+
+---
+
+## 3.3 Code Example
+
+### NumPy
+
+-------------------code----------------------
+A = np.array([[25, 10],
+              [-2, 5]])
+
+B = np.array([[-1, 7],
+              [10, 3]])
+
+hadamard = A * B
+print(hadamard)
+-------------------code----------------------
+
+### PyTorch
+
+-------------------code----------------------
+import torch
+
+A = torch.tensor([[25, 10],
+                  [-2, 5]])
+
+B = torch.tensor([[-1, 7],
+                  [10, 3]])
+
+hadamard = A * B
+print(hadamard)
+-------------------code----------------------
+
+### TensorFlow
+
+-------------------code----------------------
+import tensorflow as tf
+
+A = tf.constant([[25, 10],
+                 [-2, 5]])
+
+B = tf.constant([[-1, 7],
+                 [10, 3]])
+
+hadamard = tf.multiply(A, B)
+print(hadamard)
+-------------------code----------------------
+
+---
+
+# 4. Dot Product of Vectors
+
+## 4.1 Concept
+
+* Works only on **vectors of same length**
+* Steps:
+
+  1. Multiply elements pairwise
+  2. Sum the results
+
+## 4.2 Step-by-Step Example
+
+Given:
+
+-------------------code----------------------
+W = [-1, 4, 0]
+X = [5, 5, 2]
+-------------------code----------------------
+
+### Step 1: Element-wise multiplication
+
+-------------------code----------------------
+(-1×5) = -5
+(4×5)  = 20
+(0×2)  = 0
+-------------------code----------------------
+
+### Step 2: Sum
+
+-------------------code----------------------
+-5 + 20 + 0 = 15
+-------------------code----------------------
+
+### Final Result:
+
+-------------------code----------------------
+W · X = 15
+-------------------code----------------------
+
+---
+
+## 4.3 Code Example
+
+### NumPy
+
+-------------------code----------------------
+W = np.array([-1, 4, 0])
+X = np.array([5, 5, 2])
+
+dot = np.dot(W, X)
+print(dot)
+-------------------code----------------------
+
+### PyTorch
+
+-------------------code----------------------
+W = torch.tensor([-1.0, 4.0, 0.0])
+X = torch.tensor([5.0, 5.0, 2.0])
+
+dot = torch.dot(W, X)
+print(dot)
+-------------------code----------------------
+
+### TensorFlow
+
+-------------------code----------------------
+W = tf.constant([-1.0, 4.0, 0.0])
+X = tf.constant([5.0, 5.0, 2.0])
+
+dot = tf.reduce_sum(tf.multiply(W, X))
+print(dot)
+-------------------code----------------------
+
+---
+
+# 5. Full Final Code (All Operations)
+
+-------------------code----------------------
+import numpy as np
+import torch
+import tensorflow as tf
+
+# -----------------------
+# 1. Transpose
+# -----------------------
+Y = np.array([[1, 2],
+              [3, 4]])
+
+print("NumPy Transpose:\n", Y.T)
+
+# -----------------------
+# 2. Hadamard Product
+# -----------------------
+A = np.array([[25, 10],
+              [-2, 5]])
+
+B = np.array([[-1, 7],
+              [10, 3]])
+
+print("NumPy Hadamard:\n", A * B)
+
+# PyTorch
+A_t = torch.tensor([[25, 10], [-2, 5]])
+B_t = torch.tensor([[-1, 7], [10, 3]])
+print("PyTorch Hadamard:\n", A_t * B_t)
+
+# TensorFlow
+A_tf = tf.constant([[25, 10], [-2, 5]])
+B_tf = tf.constant([[-1, 7], [10, 3]])
+print("TensorFlow Hadamard:\n", tf.multiply(A_tf, B_tf))
+
+# -----------------------
+# 3. Dot Product
+# -----------------------
+W = np.array([-1, 4, 0])
+X = np.array([5, 5, 2])
+
+print("NumPy Dot:", np.dot(W, X))
+
+# PyTorch
+W_t = torch.tensor([-1.0, 4.0, 0.0])
+X_t = torch.tensor([5.0, 5.0, 2.0])
+print("PyTorch Dot:", torch.dot(W_t, X_t))
+
+# TensorFlow
+W_tf = tf.constant([-1.0, 4.0, 0.0])
+X_tf = tf.constant([5.0, 5.0, 2.0])
+print("TensorFlow Dot:", tf.reduce_sum(tf.multiply(W_tf, X_tf)))
+-------------------code----------------------
+
+---
+
+# 6. Important Notes and Best Practices
+
+## Transpose
+
+* Scalars: unchanged
+* Vectors: row ↔ column
+* Matrices: flip across diagonal
+
+## Hadamard Product
+
+* Requires identical shapes
+* Uses `*` operator in most libraries
+* Not matrix multiplication
+
+## Dot Product
+
+* Vectors must have same length
+* Result is always a **scalar**
+* Widely used in machine learning (e.g., neural networks)
+
+## General Tips
+
+* Always check tensor **shape** before operations
+* Understand difference between:
+
+  * Element-wise operations
+  * Matrix operations
+* Use built-in functions (`dot`, `sum`, etc.) instead of manual loops
+
+---
+
+# 7. Summary
+
+* **Transpose** flips tensor dimensions (rows ↔ columns)
+* **Hadamard product** multiplies elements position-wise
+* **Dot product** multiplies vectors element-wise then sums
+
+These operations are fundamental in machine learning:
+
+* Dot product → used in neural networks
+* Hadamard → used in element-wise transformations
+* Transpose → used in matrix algebra and optimization
+
+Mastering these operations is essential before moving to advanced topics like matrix multiplication and linear systems.
