@@ -430,3 +430,408 @@ print("TensorFlow:", fro_tf)
   * Matrix analysis
 
 This concept is fundamental for understanding matrix behavior in upcoming topics like matrix multiplication and regularization.
+
+*** 25. Matrix Multiplication ***
+
+# 1. Frobenius Norm (Matrix Size)
+
+## 1.1 Definition
+
+The **Frobenius norm** measures the size (magnitude) of a matrix.
+
+It is similar to the L2 norm for vectors.
+
+|X|*F = \sqrt{\sum*{i,j} x_{ij}^2}
+
+### Step-by-step:
+
+1. Square each element in the matrix
+2. Sum all squared values
+3. Take the square root of the result
+
+---
+
+## 1.2 Manual Example
+
+Matrix:
+
+-------------------code----------------------
+X = [[1, 2],
+     [3, 4]]
+-------------------code----------------------
+
+### Step-by-step:
+
+-------------------code----------------------
+# Square each element
+1**2 + 2**2 + 3**2 + 4**2  # = 1 + 4 + 9 + 16 = 30
+
+# Square root
+import math
+math.sqrt(30)  # ≈ 5.477
+-------------------code----------------------
+
+---
+
+## 1.3 Using Libraries
+
+### NumPy
+
+-------------------code----------------------
+import numpy as np
+
+X = np.array([[1, 2],
+              [3, 4]])
+
+np.linalg.norm(X)
+-------------------code----------------------
+
+### PyTorch
+
+-------------------code----------------------
+import torch
+
+X = torch.tensor([[1., 2.],
+                  [3., 4.]])
+
+torch.norm(X)
+-------------------code----------------------
+
+### TensorFlow
+
+-------------------code----------------------
+import tensorflow as tf
+
+X = tf.constant([[1., 2.],
+                 [3., 4.]])
+
+tf.norm(X)
+-------------------code----------------------
+
+---
+
+## 1.4 Important Notes
+
+* Measures matrix magnitude (Euclidean distance)
+* Equivalent to flattening matrix → applying vector L2 norm
+* PyTorch/TensorFlow require float tensors
+
+---
+
+# 2. Matrix Multiplication
+
+## 2.1 When Is It Valid?
+
+Matrix multiplication is only valid if:
+
+* Columns of A = Rows of B
+
+If:
+
+* A is (M × N)
+* B is (N × P)
+
+Then:
+
+* Result C is (M × P)
+
+---
+
+## 2.2 How It Works
+
+Each element is computed as:
+
+C_{ik} = \sum_j A_{ij} B_{jk}
+
+### Step-by-step:
+
+1. Take row from A
+2. Take column from B
+3. Multiply element-wise
+4. Sum results
+
+---
+
+## 2.3 Example: Matrix × Vector
+
+-------------------code----------------------
+A = [[3, 4],
+     [5, 6],
+     [7, 8]]
+
+B = [[1],
+     [2]]
+-------------------code----------------------
+
+### Manual Calculation:
+
+-------------------code----------------------
+Row 1: (3×1 + 4×2) = 11
+Row 2: (5×1 + 6×2) = 17
+Row 3: (7×1 + 8×2) = 23
+-------------------code----------------------
+
+---
+
+## 2.4 NumPy Implementation
+
+-------------------code----------------------
+import numpy as np
+
+A = np.array([[3, 4],
+              [5, 6],
+              [7, 8]])
+
+B = np.array([[1],
+              [2]])
+
+np.dot(A, B)
+-------------------code----------------------
+
+---
+
+## 2.5 PyTorch Implementation
+
+-------------------code----------------------
+import torch
+
+A = torch.tensor([[3, 4],
+                  [5, 6],
+                  [7, 8]])
+
+B = torch.tensor([[1],
+                  [2]])
+
+torch.matmul(A, B)
+-------------------code----------------------
+
+---
+
+## 2.6 TensorFlow Implementation
+
+-------------------code----------------------
+import tensorflow as tf
+
+A = tf.constant([[3, 4],
+                 [5, 6],
+                 [7, 8]])
+
+B = tf.constant([[1],
+                 [2]])
+
+tf.linalg.matmul(A, B)
+-------------------code----------------------
+
+---
+
+# 3. Matrix × Matrix Multiplication
+
+## 3.1 Example
+
+-------------------code----------------------
+A = [[3, 4],
+     [5, 6],
+     [7, 8]]
+
+B = [[1, 9],
+     [2, 0]]
+-------------------code----------------------
+
+### Result:
+
+-------------------code----------------------
+[11, 27]
+[17, 45]
+[23, 63]
+-------------------code----------------------
+
+### Explanation:
+
+* First column = same as vector example
+* Second column computed separately
+
+---
+
+## 3.2 Code Example
+
+### NumPy
+
+-------------------code----------------------
+np.dot(A, B)
+-------------------code----------------------
+
+### PyTorch
+
+-------------------code----------------------
+torch.matmul(A, B)
+-------------------code----------------------
+
+### TensorFlow
+
+-------------------code----------------------
+tf.linalg.matmul(A, B)
+-------------------code----------------------
+
+---
+
+## 3.3 Important Properties
+
+### Not Commutative
+
+-------------------code----------------------
+A × B ≠ B × A
+-------------------code----------------------
+
+### Shape Rule
+
+-------------------code----------------------
+(M × N) × (N × P) → (M × P)
+-------------------code----------------------
+
+### Interpretation
+
+* Matrix multiplication = multiple dot products
+* Each output column = multiplication with one column of B
+
+---
+
+# 4. Machine Learning Application
+
+## 4.1 Linear Regression
+
+Instead of writing equations manually:
+
+-------------------code----------------------
+y = ax1 + bx2 + c
+-------------------code----------------------
+
+We write:
+
+-------------------code----------------------
+Y = XW
+-------------------code----------------------
+
+Where:
+
+* X = input features matrix
+* W = weights (parameters)
+* Y = predictions
+
+---
+
+## 4.2 Neural Networks
+
+Matrix multiplication is used in every layer:
+
+-------------------code----------------------
+output = X @ W + b
+-------------------code----------------------
+
+Where:
+
+* X = input
+* W = weights
+* b = bias
+
+This happens millions of times in deep learning.
+
+---
+
+# 5. Full Final Code
+
+-------------------code----------------------
+# =========================
+# 1. Frobenius Norm
+# =========================
+import numpy as np
+import torch
+import tensorflow as tf
+
+X_np = np.array([[1, 2],
+                 [3, 4]])
+
+print("NumPy Frobenius:", np.linalg.norm(X_np))
+
+X_torch = torch.tensor([[1., 2.],
+                        [3., 4.]])
+print("PyTorch Frobenius:", torch.norm(X_torch))
+
+X_tf = tf.constant([[1., 2.],
+                    [3., 4.]])
+print("TensorFlow Frobenius:", tf.norm(X_tf))
+
+# =========================
+# 2. Matrix × Vector
+# =========================
+A = np.array([[3, 4],
+              [5, 6],
+              [7, 8]])
+
+B = np.array([[1],
+              [2]])
+
+print("NumPy mat-vec:", np.dot(A, B))
+
+A_t = torch.tensor(A)
+B_t = torch.tensor(B)
+print("PyTorch mat-vec:", torch.matmul(A_t, B_t))
+
+A_tf = tf.constant(A)
+B_tf = tf.constant(B)
+print("TensorFlow mat-vec:", tf.linalg.matmul(A_tf, B_tf))
+
+# =========================
+# 3. Matrix × Matrix
+# =========================
+B2 = np.array([[1, 9],
+               [2, 0]])
+
+print("NumPy mat-mat:", np.dot(A, B2))
+
+B2_t = torch.tensor(B2)
+print("PyTorch mat-mat:", torch.matmul(A_t, B2_t))
+
+B2_tf = tf.constant(B2)
+print("TensorFlow mat-mat:", tf.linalg.matmul(A_tf, B2_tf))
+
+# =========================
+# 4. ML Example
+# =========================
+# Linear regression style
+X = np.array([[1, 2],
+              [3, 4]])
+
+W = np.array([[0.5],
+              [1.0]])
+
+b = np.array([[1]])
+
+Y = np.dot(X, W) + b
+print("Predictions:", Y)
+-------------------code----------------------
+
+---
+
+# 6. Best Practices
+
+* Always check matrix dimensions before multiplication
+* Use `matmul` for clarity (especially in PyTorch/TensorFlow)
+* Convert tensors to float when required
+* Prefer vectorized operations over loops
+* Understand shape transformations (very important in ML)
+
+---
+
+# 7. Summary
+
+* Frobenius norm measures matrix size using squared sum + square root
+* Matrix multiplication combines rows and columns via dot products
+* Shape compatibility is critical
+* Matrix multiplication is not commutative
+* Core operation in machine learning:
+
+  * Linear regression
+  * Neural networks
+* Libraries (NumPy, PyTorch, TensorFlow) make implementation simple
+
+These concepts form the backbone of almost all machine learning computations.
