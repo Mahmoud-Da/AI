@@ -835,3 +835,364 @@ print("Predictions:", Y)
 * Libraries (NumPy, PyTorch, TensorFlow) make implementation simple
 
 These concepts form the backbone of almost all machine learning computations.
+
+*** 26. Symmetric and Identity Matrices ***
+# 1. Symmetric Matrices
+
+## 1.1 Definition
+
+A **symmetric matrix** is a special type of matrix with two important properties:
+
+### Property 1: The matrix must be square
+
+* Number of rows = number of columns
+
+### Property 2: The transpose equals the original matrix
+
+A^T = A
+
+This means:
+
+* Values mirror each other across the main diagonal
+* The main diagonal runs from top-left to bottom-right
+
+---
+
+# 2. Structure of a Symmetric Matrix
+
+## 2.1 Example
+
+-------------------code----------------------
+A = [[1, 7, 3],
+     [7, 4, -5],
+     [3, -5, 6]]
+-------------------code----------------------
+
+### Observations
+
+* The matrix is 3×3
+* Values above and below the diagonal are mirrored:
+
+  * `A[0][1] = 7`
+
+  * `A[1][0] = 7`
+
+  * `A[0][2] = 3`
+
+  * `A[2][0] = 3`
+
+So the matrix remains unchanged after transpose.
+
+---
+
+# 3. Matrix Transpose Review
+
+## 3.1 What Is a Transpose?
+
+Transpose flips rows and columns.
+
+### Example
+
+Original:
+
+-------------------code----------------------
+[[1, 2],
+ [3, 4]]
+-------------------code----------------------
+
+Transpose:
+
+-------------------code----------------------
+[[1, 3],
+ [2, 4]]
+-------------------code----------------------
+
+For symmetric matrices, transpose produces the same matrix.
+
+---
+
+# 4. Checking Symmetry in NumPy
+
+## 4.1 Create the Matrix
+
+-------------------code----------------------
+import numpy as np
+
+A = np.array([
+    [1, 7, 3],
+    [7, 4, -5],
+    [3, -5, 6]
+])
+
+print(A)
+-------------------code----------------------
+
+---
+
+## 4.2 Compute the Transpose
+
+-------------------code----------------------
+print(A.T)
+-------------------code----------------------
+
+### Result
+
+The transpose is identical to the original matrix.
+
+---
+
+## 4.3 Verify Equality
+
+-------------------code----------------------
+print(A == A.T)
+-------------------code----------------------
+
+### Result
+
+-------------------code----------------------
+[[ True  True  True]
+ [ True  True  True]
+ [ True  True  True]]
+-------------------code----------------------
+
+This confirms:
+
+-------------------code----------------------
+A == A.T
+-------------------code----------------------
+
+---
+
+# 5. Identity Matrix
+
+## 5.1 Definition
+
+The **identity matrix** is a special symmetric matrix.
+
+Properties:
+
+* Ones on the main diagonal
+* Zeros everywhere else
+
+Example:
+
+-------------------code----------------------
+I = [[1, 0, 0],
+     [0, 1, 0],
+     [0, 0, 1]]
+-------------------code----------------------
+
+---
+
+## 5.2 Identity Matrix Notation
+
+Identity matrices are written as:
+
+-------------------code----------------------text
+Iₙ
+-------------------code----------------------
+
+Where:
+
+* `n` = number of rows/columns
+
+Examples:
+
+* `I₂` → 2×2 identity matrix
+* `I₄` → 4×4 identity matrix
+
+---
+
+# 6. Special Property of Identity Matrices
+
+## 6.1 Multiplying by Identity Matrix
+
+Multiplying a vector or matrix by the identity matrix leaves it unchanged.
+
+Ix = x
+
+This behaves similarly to multiplying a number by 1.
+
+---
+
+# 7. Identity Matrix in PyTorch
+
+## 7.1 Create an Identity Matrix
+
+-------------------code----------------------
+import torch
+
+I = torch.eye(3)
+
+print(I)
+-------------------code----------------------
+
+### Output
+
+-------------------code----------------------
+tensor([[1., 0., 0.],
+        [0., 1., 0.],
+        [0., 0., 1.]])
+-------------------code----------------------
+
+---
+
+# 8. Matrix Multiplication with Identity Matrix
+
+## 8.1 Create a Vector
+
+-------------------code----------------------
+x = torch.tensor([25., 2., 5.])
+
+print(x)
+-------------------code----------------------
+
+---
+
+## 8.2 Multiply by Identity Matrix
+
+-------------------code----------------------
+result = torch.matmul(I, x)
+
+print(result)
+-------------------code----------------------
+
+### Output
+
+-------------------code----------------------
+tensor([25., 2., 5.])
+-------------------code----------------------
+
+The vector stays exactly the same.
+
+---
+
+# 9. Why Identity Matrices Matter
+
+Identity matrices are extremely important in linear algebra and machine learning because they are used in:
+
+* Matrix inversion
+* Solving systems of equations
+* Neural network calculations
+* Transformations in linear algebra
+
+They are one of the foundational matrix types.
+
+---
+
+# 10. Important Notes and Best Practices
+
+## Symmetric Matrix Rules
+
+* Must always be square
+* Must satisfy:
+
+  -------------------code----------------------
+  A == A.T
+  -------------------code----------------------
+
+## Identity Matrix Rules
+
+* Diagonal = 1
+* All other values = 0
+
+## Practical Tip
+
+When checking symmetry:
+
+-------------------code----------------------
+np.array_equal(A, A.T)
+-------------------code----------------------
+
+This is safer than visually inspecting large matrices.
+
+---
+
+# 11. Full Final Code
+
+-------------------code----------------------
+# =========================
+# Symmetric Matrix Example
+# =========================
+
+import numpy as np
+import torch
+
+# Create symmetric matrix
+A = np.array([
+    [1, 7, 3],
+    [7, 4, -5],
+    [3, -5, 6]
+])
+
+print("Original Matrix:")
+print(A)
+
+# Transpose
+print("\nTranspose:")
+print(A.T)
+
+# Check symmetry
+print("\nIs Symmetric?")
+print(np.array_equal(A, A.T))
+
+# =========================
+# Identity Matrix Example
+# =========================
+
+# Create identity matrix
+I = torch.eye(3)
+
+print("\nIdentity Matrix:")
+print(I)
+
+# Create vector
+x = torch.tensor([25., 2., 5.])
+
+print("\nOriginal Vector:")
+print(x)
+
+# Multiply identity matrix by vector
+result = torch.matmul(I, x)
+
+print("\nResult After Multiplication:")
+print(result)
+-------------------code----------------------
+
+---
+
+# 12. Summary
+
+## Symmetric Matrix
+
+A symmetric matrix:
+
+* Is square
+* Equals its transpose
+
+A^T = A
+
+---
+
+## Identity Matrix
+
+An identity matrix:
+
+* Has ones on the diagonal
+* Has zeros elsewhere
+* Leaves vectors unchanged during multiplication
+
+Ix = x
+
+---
+
+## Key Takeaways
+
+* Symmetry is determined by transpose equality
+* Identity matrices act like the number 1 in matrix multiplication
+* These concepts are essential for:
+
+  * Matrix inversion
+  * Linear systems
+  * Machine learning mathematics
+  * Deep learning operations
