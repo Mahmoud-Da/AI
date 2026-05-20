@@ -1,0 +1,818 @@
+*** 32. Segment Intro ***
+# Linear Algebra 2 — Introduction and Review Notes
+
+## 1. Overview of Subject 2: Matrix Operations
+
+This subject builds on the first subject:
+
+* Intro to Linear Algebra
+
+The goal now is to:
+
+* Solve systems of linear equations
+* Analyze matrices
+* Discover meaningful patterns in data
+* Apply linear algebra to machine learning problems
+
+Topics include:
+
+1. Eigenvectors and Eigenvalues
+2. Matrix Determinants
+3. Singular Value Decomposition (SVD)
+4. Moore-Penrose Pseudoinverse
+5. Dimensionality Reduction
+6. Machine Learning Applications
+
+---
+
+# 2. Structure of Subject 2
+
+The subject is divided into 3 main segments.
+
+---
+
+## 2.1 Segment 1 — Review of Introductory Linear Algebra
+
+Quick review of important foundational concepts:
+
+* Tensors
+* Vectors
+* Matrices
+* Matrix multiplication
+* Matrix inversion
+* Orthogonal matrices
+* Identity matrices
+
+---
+
+## 2.2 Segment 2 — Eigen Decomposition
+
+Main topics:
+
+* Applying matrices
+* Affine transformations
+* Eigenvectors
+* Eigenvalues
+* Matrix determinants
+* Matrix decomposition
+
+These concepts are extremely important in machine learning and data science.
+
+---
+
+## 2.3 Segment 3 — Matrix Operations for Machine Learning
+
+Machine learning applications include:
+
+* Singular Value Decomposition (SVD)
+* Principal Component Analysis (PCA)
+* Moore-Penrose Pseudoinverse
+* Dimensionality reduction
+* Solving overdetermined systems
+
+---
+
+# 3. What is Linear Algebra?
+
+Linear algebra is:
+
+> A mathematical framework for solving systems of linear equations.
+
+---
+
+## 3.1 Example: Sheriff and Bank Robber
+
+Imagine:
+
+* Sheriff car = one line
+* Bank robber car = another line
+
+Where the lines intersect:
+
+* Gives the solution
+* Represents matching time and distance
+
+---
+
+## 3.2 Possible Outcomes in Linear Algebra
+
+There are only 3 possibilities:
+
+| Situation        | Meaning            |
+| ---------------- | ------------------ |
+| One intersection | One solution       |
+| Parallel lines   | No solution        |
+| Same line        | Infinite solutions |
+
+Important:
+
+* Linear equations cannot intersect multiple times
+* Therefore, systems cannot have exactly 2 or 3 solutions
+
+---
+
+# 4. Linear Algebra in Machine Learning
+
+Linear algebra is everywhere in ML.
+
+---
+
+## 4.1 Regression Models
+
+Used to predict values like:
+
+* House prices
+* Stock prices
+* Sales forecasts
+
+Example features:
+
+* Bedrooms
+* Distance to school
+* House size
+
+---
+
+## 4.2 Deep Learning
+
+Matrix multiplication powers:
+
+* Neural networks
+* Transformers
+* Computer vision models
+* LLMs
+
+---
+
+## 4.3 Recommendation Systems
+
+Used in:
+
+* Netflix recommendations
+* Spotify recommendations
+* YouTube suggestions
+
+Techniques:
+
+* Singular Value Decomposition (SVD)
+* Matrix factorization
+
+---
+
+## 4.4 Natural Language Processing (NLP)
+
+Linear algebra is heavily used in:
+
+* Semantic analysis
+* Topic modeling
+* Word embeddings
+
+---
+
+# 5. Important Introductory Topics to Know
+
+Before continuing into advanced matrix operations, these concepts must be understood.
+
+---
+
+# 6. Tensors
+
+Tensors are the fundamental data structures in machine learning.
+
+Types:
+
+| Tensor Type         | Dimensions |
+| ------------------- | ---------- |
+| Scalar              | 0D         |
+| Vector              | 1D         |
+| Matrix              | 2D         |
+| Higher-order tensor | 3D+        |
+
+---
+
+## NumPy Example
+
+-------------------code----------------------
+import numpy as np
+
+scalar = np.array(5)
+
+vector = np.array([1, 2, 3])
+
+matrix = np.array([
+    [1, 2],
+    [3, 4]
+])
+
+tensor_3d = np.array([
+    [[1, 2], [3, 4]],
+    [[5, 6], [7, 8]]
+])
+-------------------code----------------------
+
+---
+
+# 7. Vector Transpose
+
+Vectors can be transposed:
+
+* Row vector ↔ Column vector
+
+---
+
+## NumPy Example
+
+-------------------code----------------------
+import numpy as np
+
+x = np.array([[1, 2, 3]])
+
+x_transpose = x.T
+
+print(x_transpose)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+[[1]
+ [2]
+ [3]]
+-------------------code----------------------
+
+---
+
+# 8. Norms
+
+Norms measure vector size (magnitude).
+
+Most important:
+
+* L2 Norm (Euclidean norm)
+
+---
+
+## Formula
+
+|x|_2 = \sqrt{x_1^2 + x_2^2 + \cdots + x_n^2}
+
+---
+
+## NumPy Example
+
+-------------------code----------------------
+import numpy as np
+
+x = np.array([3, 4])
+
+norm = np.linalg.norm(x)
+
+print(norm)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+5.0
+-------------------code----------------------
+
+---
+
+# 9. Unit Vectors
+
+A unit vector has:
+
+* Magnitude = 1
+
+---
+
+## Example
+
+-------------------code----------------------
+import numpy as np
+
+x = np.array([3, 4])
+
+unit_vector = x / np.linalg.norm(x)
+
+print(unit_vector)
+-------------------code----------------------
+
+---
+
+# 10. Orthogonal and Orthonormal Vectors
+
+## Orthogonal Vectors
+
+Two vectors are orthogonal if:
+
+* Their dot product equals zero
+
+---
+
+## Formula
+
+x \cdot y = 0
+
+---
+
+## Example
+
+-------------------code----------------------
+import numpy as np
+
+x = np.array([1, 0])
+y = np.array([0, 1])
+
+print(np.dot(x, y))
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+0
+-------------------code----------------------
+
+---
+
+## Orthonormal Vectors
+
+Vectors are orthonormal if:
+
+1. They are orthogonal
+2. Each has unit norm
+
+---
+
+# 11. Matrix Transpose
+
+Transpose swaps:
+
+* Rows ↔ Columns
+
+---
+
+## NumPy Example
+
+-------------------code----------------------
+import numpy as np
+
+A = np.array([
+    [1, 2],
+    [3, 4]
+])
+
+print(A.T)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+[[1 3]
+ [2 4]]
+-------------------code----------------------
+
+---
+
+# 12. Symmetric Matrices
+
+A matrix is symmetric if:
+
+* It is square
+* Transpose equals itself
+
+---
+
+## Formula
+
+A^T = A
+
+---
+
+## Example
+
+-------------------code----------------------
+import numpy as np
+
+A = np.array([
+    [1, 2],
+    [2, 3]
+])
+
+print(np.array_equal(A, A.T))
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+True
+-------------------code----------------------
+
+---
+
+# 13. Matrix Multiplication
+
+One of the most important operations in ML.
+
+Condition:
+
+* Columns of first matrix
+* Must equal rows of second matrix
+
+---
+
+## Formula
+
+C = AB
+
+---
+
+## NumPy Example
+
+-------------------code----------------------
+import numpy as np
+
+A = np.array([
+    [1, 2],
+    [3, 4]
+])
+
+B = np.array([
+    [5],
+    [6]
+])
+
+C = np.dot(A, B)
+
+print(C)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+[[17]
+ [39]]
+-------------------code----------------------
+
+---
+
+# 14. Identity Matrix
+
+Special matrix:
+
+* Ones on main diagonal
+* Zeros everywhere else
+
+---
+
+## Formula
+
+I_n
+
+---
+
+## Example
+
+-------------------code----------------------
+import numpy as np
+
+I = np.eye(3)
+
+print(I)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+[[1. 0. 0.]
+ [0. 1. 0.]
+ [0. 0. 1.]]
+-------------------code----------------------
+
+---
+
+# 15. Matrix Inversion
+
+Matrix inversion solves systems of equations.
+
+---
+
+## Key Property
+
+A^{-1}A = I
+
+---
+
+## Solving Linear Systems
+
+Given:
+
+genui{"math_block_widget_always_prefetch_v2":{"content":"y = Xw"}}
+
+Solve for weights:
+
+w = X^{-1}y
+
+---
+
+## NumPy Example
+
+-------------------code----------------------
+import numpy as np
+
+X = np.array([
+    [4, 2],
+    [-5, -3]
+])
+
+y = np.array([4, -7])
+
+X_inv = np.linalg.inv(X)
+
+w = np.dot(X_inv, y)
+
+print(w)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+[-1.  4.]
+-------------------code----------------------
+
+---
+
+# 16. Matrix Inversion Limitations
+
+Matrix inversion only works if:
+
+1. Matrix is square
+2. Matrix is non-singular
+3. Columns are linearly independent
+
+---
+
+## Singular Matrix Example
+
+-------------------code----------------------
+import numpy as np
+
+X = np.array([
+    [1, 2],
+    [2, 4]
+])
+
+np.linalg.inv(X)
+-------------------code----------------------
+
+This produces:
+
+-------------------code----------------------
+LinAlgError: Singular matrix
+-------------------code----------------------
+
+Because:
+
+* Second row is a multiple of first row
+
+---
+
+# 17. Diagonal Matrices
+
+Diagonal matrices contain:
+
+* Values only on main diagonal
+* Zeros elsewhere
+
+---
+
+## Example
+
+-------------------code----------------------
+import numpy as np
+
+D = np.diag([1, 2, 3])
+
+print(D)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+[[1 0 0]
+ [0 2 0]
+ [0 0 3]]
+-------------------code----------------------
+
+---
+
+# 18. Orthogonal Matrices
+
+Orthogonal matrices contain:
+
+* Orthonormal rows
+* Orthonormal columns
+
+---
+
+## Important Property
+
+A^TA = I
+
+---
+
+## Another Important Property
+
+For orthogonal matrices:
+
+A^{-1} = A^T
+
+This is extremely useful computationally.
+
+---
+
+# 19. Why Matrix Operations Matter
+
+The upcoming topics are critical because they enable:
+
+| Operation           | Purpose                    |
+| ------------------- | -------------------------- |
+| Eigen decomposition | Understand matrix behavior |
+| SVD                 | Compress data              |
+| PCA                 | Reduce dimensionality      |
+| Pseudoinverse       | Solve difficult systems    |
+| Determinants        | Analyze transformations    |
+
+---
+
+# 20. Important Notes and Best Practices
+
+## Matrix Multiplication
+
+Always verify dimensions:
+
+-------------------code----------------------
+(m × n) · (n × p)
+-------------------code----------------------
+
+Result:
+
+-------------------code----------------------
+(m × p)
+-------------------code----------------------
+
+---
+
+## Matrix Inversion
+
+Avoid direct inversion in real ML systems when possible.
+
+Instead use:
+
+* Pseudoinverse
+* Numerical solvers
+* Factorization methods
+
+They are:
+
+* Faster
+* More stable
+* More memory efficient
+
+---
+
+## Orthogonal Matrices
+
+Orthogonal matrices are valuable because:
+
+* Preserve lengths
+* Preserve angles
+* Inversion is computationally cheap
+
+Widely used in:
+
+* PCA
+* Computer graphics
+* Deep learning
+* Signal processing
+
+---
+
+# 21. Full Final Code
+
+-------------------code----------------------
+import numpy as np
+
+# Scalars, vectors, matrices
+scalar = np.array(5)
+
+vector = np.array([1, 2, 3])
+
+matrix = np.array([
+    [1, 2],
+    [3, 4]
+])
+
+# Vector transpose
+x = np.array([[1, 2, 3]])
+print(x.T)
+
+# L2 norm
+v = np.array([3, 4])
+print(np.linalg.norm(v))
+
+# Unit vector
+unit_v = v / np.linalg.norm(v)
+print(unit_v)
+
+# Dot product
+a = np.array([1, 0])
+b = np.array([0, 1])
+
+print(np.dot(a, b))
+
+# Symmetric matrix
+S = np.array([
+    [1, 2],
+    [2, 3]
+])
+
+print(np.array_equal(S, S.T))
+
+# Matrix multiplication
+A = np.array([
+    [1, 2],
+    [3, 4]
+])
+
+B = np.array([
+    [5],
+    [6]
+])
+
+print(np.dot(A, B))
+
+# Identity matrix
+I = np.eye(3)
+print(I)
+
+# Matrix inversion
+X = np.array([
+    [4, 2],
+    [-5, -3]
+])
+
+y = np.array([4, -7])
+
+X_inv = np.linalg.inv(X)
+
+w = np.dot(X_inv, y)
+
+print(w)
+
+# Diagonal matrix
+D = np.diag([1, 2, 3])
+print(D)
+
+# Orthogonal matrix check
+Q = np.array([
+    [1, 0],
+    [0, 1]
+])
+
+print(np.dot(Q.T, Q))
+-------------------code----------------------
+
+---
+
+# 22. Summary
+
+This lecture introduced the transition from:
+
+* Basic linear algebra
+  to
+* Advanced matrix operations
+
+Key concepts reviewed:
+
+* Tensors
+* Vector norms
+* Orthogonality
+* Matrix multiplication
+* Matrix inversion
+* Identity matrices
+* Diagonal matrices
+* Orthogonal matrices
+
+The next major topics will focus on:
+
+1. Applying matrices
+2. Eigenvectors
+3. Eigenvalues
+4. Determinants
+5. Matrix decomposition
+6. Singular Value Decomposition (SVD)
+7. Moore-Penrose Pseudoinverse
+8. Principal Component Analysis (PCA)
+
+These concepts form the mathematical foundation of modern machine learning systems.
