@@ -816,3 +816,624 @@ The next major topics will focus on:
 8. Principal Component Analysis (PCA)
 
 These concepts form the mathematical foundation of modern machine learning systems.
+
+
+*** 33. Applying Matrices ***
+# Matrix Application and Matrix Multiplication Notes
+
+## 1. Introduction
+
+Before learning about eigenvectors, eigenvalues, and eigen decomposition, it is important to understand what it means to *apply a matrix* to another tensor.
+
+Applying a matrix simply means:
+
+* Performing matrix multiplication
+* Transforming vectors or matrices using another matrix
+
+This concept is foundational in machine learning and linear algebra.
+
+---
+
+# 2. Key Idea: Applying a Matrix
+
+If:
+
+[
+B =
+\begin{bmatrix}
+1 & 2 & 3 \
+4 & 5 & 6 \
+7 & 8 & 9
+\end{bmatrix}
+]
+
+and
+
+[
+u =
+\begin{bmatrix}
+1 \
+2 \
+3
+\end{bmatrix}
+]
+
+then applying matrix (B) to vector (u) means:
+
+[
+Bu
+]
+
+which is simply matrix multiplication.
+
+---
+
+# 3. Exercise 1 — Apply the Identity Matrix
+
+## Problem
+
+Apply the identity matrix (I_3) to vector (u).
+
+### Identity Matrix
+
+[
+I_3 =
+\begin{bmatrix}
+1 & 0 & 0 \
+0 & 1 & 0 \
+0 & 0 & 1
+\end{bmatrix}
+]
+
+### Vector
+
+[
+u =
+\begin{bmatrix}
+1 \
+2 \
+3
+\end{bmatrix}
+]
+
+---
+
+## Step-by-Step Solution
+
+Matrix multiplication:
+
+[
+I_3u
+]
+
+Because identity matrices leave vectors unchanged:
+
+[
+I_3u =
+\begin{bmatrix}
+1 \
+2 \
+3
+\end{bmatrix}
+]
+
+---
+
+## Important Concept
+
+Identity matrices act like the number 1 in regular multiplication.
+
+Just as:
+
+[
+1 \times x = x
+]
+
+Similarly:
+
+[
+Ix = x
+]
+
+---
+
+# 4. Exercise 2 — Apply Matrix B to Vector u
+
+## Problem
+
+Apply matrix (B) to vector (u).
+
+### Matrix B
+
+[
+B =
+\begin{bmatrix}
+1 & 2 & 0 \
+0 & 1 & 2 \
+3 & 4 & 5
+\end{bmatrix}
+]
+
+### Vector u
+
+[
+u =
+\begin{bmatrix}
+1 \
+2 \
+3
+\end{bmatrix}
+]
+
+---
+
+# 5. Step-by-Step Matrix Multiplication
+
+## Row 1
+
+[
+(1)(1) + (2)(2) + (0)(3)
+]
+
+[
+= 1 + 4 + 0
+]
+
+[
+= 5
+]
+
+---
+
+## Row 2
+
+[
+(0)(1) + (1)(2) + (2)(3)
+]
+
+[
+= 0 + 2 + 6
+]
+
+[
+= 8
+]
+
+---
+
+## Row 3
+
+[
+(3)(1) + (4)(2) + (5)(3)
+]
+
+[
+= 3 + 8 + 15
+]
+
+[
+= 26
+]
+
+---
+
+## Final Result
+
+[
+Bu =
+\begin{bmatrix}
+5 \
+8 \
+26
+\end{bmatrix}
+]
+
+---
+
+# 6. Exercise 3 — Apply Matrix B to Matrix U
+
+## Step 1: Create Matrix U
+
+We concatenate vectors (u) and (u_2).
+
+Suppose:
+
+[
+u_2 =
+\begin{bmatrix}
+4 \
+5 \
+6
+\end{bmatrix}
+]
+
+Then:
+
+[
+U =
+\begin{bmatrix}
+1 & 4 \
+2 & 5 \
+3 & 6
+\end{bmatrix}
+]
+
+---
+
+# 7. Important Matrix Multiplication Insight
+
+Applying a matrix to another matrix works column-by-column.
+
+Meaning:
+
+[
+BU =
+\begin{bmatrix}
+Bu & Bu_2
+\end{bmatrix}
+]
+
+Each column is transformed independently.
+
+This is a very important idea in linear algebra and machine learning.
+
+---
+
+# 8. Calculate (Bu_2)
+
+## Row 1
+
+[
+(1)(4) + (2)(5) + (0)(6)
+]
+
+[
+= 4 + 10 + 0 = 14
+]
+
+---
+
+## Row 2
+
+[
+(0)(4) + (1)(5) + (2)(6)
+]
+
+[
+= 0 + 5 + 12 = 17
+]
+
+---
+
+## Row 3
+
+[
+(3)(4) + (4)(5) + (5)(6)
+]
+
+[
+= 12 + 20 + 30 = 62
+]
+
+---
+
+## Final Result
+
+[
+BU =
+\begin{bmatrix}
+5 & 14 \
+8 & 17 \
+26 & 62
+\end{bmatrix}
+]
+
+---
+
+# 9. Understanding What Matrix Application Means
+
+Applying a matrix transforms data.
+
+Examples:
+
+* Rotating vectors
+* Scaling vectors
+* Shearing vectors
+* Changing coordinate systems
+* Transforming datasets
+
+This idea becomes extremely important for:
+
+* Eigenvectors
+* Eigenvalues
+* Neural networks
+* PCA
+* Deep learning
+* Computer graphics
+
+---
+
+# 10. NumPy Code Example
+
+## Step 1 — Import NumPy
+
+-------------------code----------------------
+import numpy as np
+-------------------code----------------------
+
+---
+
+## Step 2 — Create Identity Matrix and Vector
+
+-------------------code----------------------
+I3 = np.eye(3)
+
+u = np.array([
+    [1],
+    [2],
+    [3]
+])
+-------------------code----------------------
+
+---
+
+## Step 3 — Apply Identity Matrix
+
+-------------------code----------------------
+result1 = np.dot(I3, u)
+
+print(result1)
+-------------------code----------------------
+
+### Output
+
+-------------------code----------------------
+[[1]
+ [2]
+ [3]]
+-------------------code----------------------
+
+---
+
+# 11. Matrix B Example
+
+## Step 1 — Create Matrix B
+
+-------------------code----------------------
+B = np.array([
+    [1, 2, 0],
+    [0, 1, 2],
+    [3, 4, 5]
+])
+-------------------code----------------------
+
+---
+
+## Step 2 — Apply B to u
+
+-------------------code----------------------
+result2 = np.dot(B, u)
+
+print(result2)
+-------------------code----------------------
+
+### Output
+
+-------------------code----------------------
+[[ 5]
+ [ 8]
+ [26]]
+-------------------code----------------------
+
+---
+
+# 12. Matrix-to-Matrix Multiplication
+
+## Step 1 — Create Second Vector
+
+-------------------code----------------------
+u2 = np.array([
+    [4],
+    [5],
+    [6]
+])
+-------------------code----------------------
+
+---
+
+## Step 2 — Concatenate Vectors
+
+-------------------code----------------------
+U = np.concatenate((u, u2), axis=1)
+
+print(U)
+-------------------code----------------------
+
+### Output
+
+-------------------code----------------------
+[[1 4]
+ [2 5]
+ [3 6]]
+-------------------code----------------------
+
+---
+
+## Step 3 — Apply Matrix B to Matrix U
+
+-------------------code----------------------
+result3 = np.dot(B, U)
+
+print(result3)
+-------------------code----------------------
+
+### Output
+
+-------------------code----------------------
+[[ 5 14]
+ [ 8 17]
+ [26 62]]
+-------------------code----------------------
+
+---
+
+# 13. Best Practices
+
+## Understand Matrix Shapes
+
+Before multiplying matrices:
+
+* Columns of first matrix must equal rows of second matrix
+
+Example:
+
+[
+(3 \times 3)(3 \times 1)
+]
+
+works because inner dimensions match.
+
+---
+
+## Think Column-by-Column
+
+When multiplying matrices:
+
+* Each output column comes from multiplying the matrix by one input column vector.
+
+This mental model makes matrix multiplication easier.
+
+---
+
+## Use Identity Matrices for Debugging
+
+Identity matrices are useful for:
+
+* Testing code
+* Verifying transformations
+* Understanding matrix behavior
+
+---
+
+## Matrix Application = Transformation
+
+Always think of matrix multiplication as:
+
+* Transforming data
+* Changing vectors
+* Applying operations to information
+
+This intuition is extremely important later.
+
+---
+
+# 14. Full Final Code
+
+-------------------code----------------------
+import numpy as np
+
+# Identity matrix
+I3 = np.eye(3)
+
+# Vector u
+u = np.array([
+    [1],
+    [2],
+    [3]
+])
+
+# Apply identity matrix
+result1 = np.dot(I3, u)
+
+print("I3 * u:")
+print(result1)
+
+# Matrix B
+B = np.array([
+    [1, 2, 0],
+    [0, 1, 2],
+    [3, 4, 5]
+])
+
+# Apply B to u
+result2 = np.dot(B, u)
+
+print("\nB * u:")
+print(result2)
+
+# Second vector
+u2 = np.array([
+    [4],
+    [5],
+    [6]
+])
+
+# Concatenate vectors
+U = np.concatenate((u, u2), axis=1)
+
+print("\nMatrix U:")
+print(U)
+
+# Apply B to U
+result3 = np.dot(B, U)
+
+print("\nB * U:")
+print(result3)
+-------------------code----------------------
+
+---
+
+# 15. Summary
+
+## Main Concepts Learned
+
+### Applying a Matrix
+
+Applying a matrix means performing matrix multiplication.
+
+---
+
+### Identity Matrix
+
+Identity matrices leave vectors unchanged.
+
+[
+Ix = x
+]
+
+---
+
+### Matrix-by-Vector Multiplication
+
+Each output value is:
+
+* A dot product
+* Row-by-column multiplication
+
+---
+
+### Matrix-by-Matrix Multiplication
+
+Matrices are transformed column-by-column.
+
+[
+BU =
+\begin{bmatrix}
+Bu_1 & Bu_2 & ...
+\end{bmatrix}
+]
+
+---
+
+### Why This Matters
+
+Matrix application is foundational for:
+
+* Eigen decomposition
+* PCA
+* Neural networks
+* Deep learning
+* Computer graphics
+* Data transformations
+
+These concepts become central throughout machine learning and advanced linear algebra.
