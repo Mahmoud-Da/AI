@@ -3606,3 +3606,649 @@ Both provide built-in tools for:
 * Norms
 * Matrix multiplication
 * Orthogonality checks
+
+*** 37. Determinants of Larger Matrices ***
+# Generalizing Matrix Determinants with Recursion
+
+# 1. Introduction
+
+In previous lessons, determinants were calculated only for:
+
+[
+2 \times 2
+]
+
+matrices.
+
+This lecture extends that idea to larger matrices such as:
+
+* (3 \times 3)
+* (4 \times 4)
+* (5 \times 5)
+
+using a technique called recursion.
+
+---
+
+# 2. What Is a Matrix Determinant?
+
+A determinant is a special scalar value computed from a square matrix.
+
+It helps determine:
+
+* Whether a matrix is invertible
+* Whether columns are linearly independent
+* Important properties related to eigenvalues
+
+A determinant exists only for square matrices.
+
+---
+
+# 3. Key Property of Determinants
+
+If:
+
+[
+\det(X) = 0
+]
+
+then:
+
+* The matrix is singular
+* The matrix cannot be inverted
+* Some columns are linearly dependent
+
+If:
+
+[
+\det(X) \neq 0
+]
+
+then:
+
+* The matrix is invertible
+
+---
+
+# 4. Review: Determinant of a 2×2 Matrix
+
+For matrix:
+
+[
+X =
+\begin{bmatrix}
+a & b \
+c & d
+\end{bmatrix}
+]
+
+the determinant is:
+
+\det(X)=ad-bc
+
+---
+
+## Example
+
+[
+X =
+\begin{bmatrix}
+4 & 2 \
+-5 & -3
+\end{bmatrix}
+]
+
+Calculation:
+
+[
+(4)(-3) - (2)(-5)
+]
+
+[
+= -12 + 10
+]
+
+[
+= -2
+]
+
+So:
+
+[
+\det(X) = -2
+]
+
+Since the determinant is not zero:
+
+* The matrix is invertible.
+
+---
+
+# 5. Determinants of Larger Matrices
+
+For larger matrices, determinants are computed recursively.
+
+The idea:
+
+1. Break a large matrix into smaller matrices
+2. Compute smaller determinants first
+3. Use those results to compute larger determinants
+
+---
+
+# 6. Recursive Expansion Formula
+
+For a matrix:
+
+[
+X
+]
+
+the determinant is expanded across the first row.
+
+For a (3 \times 3) matrix:
+
+\det(X)=x_{11}\det(X_{11})-x_{12}\det(X_{12})+x_{13}\det(X_{13})
+
+Where:
+
+* (x_{11}, x_{12}, x_{13}) are elements from the first row
+* (X_{11}, X_{12}, X_{13}) are smaller matrices formed by removing:
+
+  * the row
+  * and column
+    of the chosen element
+
+---
+
+# 7. Understanding Minor Matrices
+
+Suppose:
+
+[
+X =
+\begin{bmatrix}
+1 & 2 & 4 \
+5 & 2 & 0 \
+3 & -1 & 1
+\end{bmatrix}
+]
+
+---
+
+## Minor Matrix (X_{11})
+
+Remove:
+
+* Row 1
+* Column 1
+
+Result:
+
+[
+X_{11} =
+\begin{bmatrix}
+2 & 0 \
+-1 & 1
+\end{bmatrix}
+]
+
+---
+
+## Minor Matrix (X_{12})
+
+Remove:
+
+* Row 1
+* Column 2
+
+Result:
+
+[
+X_{12} =
+\begin{bmatrix}
+5 & 0 \
+3 & 1
+\end{bmatrix}
+]
+
+---
+
+## Minor Matrix (X_{13})
+
+Remove:
+
+* Row 1
+* Column 3
+
+Result:
+
+[
+X_{13} =
+\begin{bmatrix}
+5 & 2 \
+3 & -1
+\end{bmatrix}
+]
+
+---
+
+# 8. Step-by-Step Determinant Calculation
+
+We now calculate:
+
+\det(X)=1\det(X_{11})-2\det(X_{12})+4\det(X_{13})
+
+---
+
+# 9. Compute Each 2×2 Determinant
+
+## First Determinant
+
+[
+\det(X_{11})
+============
+
+(2)(1) - (0)(-1)
+]
+
+[
+= 2
+]
+
+---
+
+## Second Determinant
+
+[
+\det(X_{12})
+============
+
+(5)(1) - (0)(3)
+]
+
+[
+= 5
+]
+
+---
+
+## Third Determinant
+
+[
+\det(X_{13})
+============
+
+(5)(-1) - (2)(3)
+]
+
+[
+= -5 - 6
+]
+
+[
+= -11
+]
+
+---
+
+# 10. Final Calculation
+
+Substitute all values:
+
+[
+\det(X)
+=======
+
+1(2) - 2(5) + 4(-11)
+]
+
+# [
+
+2 - 10 - 44
+]
+
+# [
+
+-52
+]
+
+So:
+
+[
+\det(X) = -52
+]
+
+Because the determinant is not zero:
+
+* The matrix is invertible.
+
+---
+
+# 11. Why Signs Alternate
+
+Notice the pattern:
+
+[
+
+* \quad - \quad +
+  ]
+
+This alternating sign pattern continues for larger matrices:
+
+[
+
+* \quad - \quad + \quad - \quad + \dots
+  ]
+
+This is part of cofactor expansion.
+
+---
+
+# 12. Determinant Calculation Using NumPy
+
+## Step 1: Import NumPy
+
+-------------------code----------------------
+import numpy as np
+-------------------code----------------------
+
+---
+
+## Step 2: Create Matrix
+
+-------------------code----------------------
+X = np.array([
+    [1, 2, 4],
+    [5, 2, 0],
+    [3, -1, 1]
+])
+-------------------code----------------------
+
+---
+
+## Step 3: Compute Determinant
+
+-------------------code----------------------
+det_X = np.linalg.det(X)
+
+print(det_X)
+-------------------code----------------------
+
+---
+
+## Output
+
+-------------------code----------------------
+-52.0
+-------------------code----------------------
+
+---
+
+# 13. Example of a Singular Matrix
+
+Consider:
+
+[
+N =
+\begin{bmatrix}
+-4 & 1 \
+8 & -2
+\end{bmatrix}
+]
+
+Second column is a multiple of the first.
+
+This means:
+
+* Columns are linearly dependent
+* Determinant equals zero
+* Matrix is not invertible
+
+---
+
+## NumPy Example
+
+-------------------code----------------------
+N = np.array([
+    [-4, 1],
+    [8, -2]
+])
+
+print(np.linalg.det(N))
+-------------------code----------------------
+
+---
+
+## Output
+
+-------------------code----------------------
+0.0
+-------------------code----------------------
+
+---
+
+# 14. Matrix Inversion Failure
+
+Trying to invert a singular matrix causes an error.
+
+-------------------code----------------------
+np.linalg.inv(N)
+-------------------code----------------------
+
+---
+
+## Error
+
+-------------------code----------------------
+LinAlgError: Singular matrix
+-------------------code----------------------
+
+---
+
+# 15. Determinants in PyTorch
+
+PyTorch also supports determinant calculation.
+
+---
+
+## Step 1: Import PyTorch
+
+-------------------code----------------------
+import torch
+-------------------code----------------------
+
+---
+
+## Step 2: Create Tensor
+
+-------------------code----------------------
+X_torch = torch.tensor([
+    [1., 2., 4.],
+    [5., 2., 0.],
+    [3., -1., 1.]
+])
+-------------------code----------------------
+
+---
+
+## Step 3: Compute Determinant
+
+-------------------code----------------------
+print(torch.det(X_torch))
+-------------------code----------------------
+
+---
+
+## Output
+
+-------------------code----------------------
+tensor(-52.)
+-------------------code----------------------
+
+---
+
+# 16. Important Notes
+
+## Determinants Only Work for Square Matrices
+
+You cannot compute a determinant for:
+
+* (2 \times 3)
+* (4 \times 2)
+
+matrices.
+
+---
+
+## Determinant Zero Means No Inverse
+
+If:
+
+[
+\det(X)=0
+]
+
+then:
+
+* The matrix is singular
+* Matrix inversion fails
+
+---
+
+## Recursive Expansion Gets Expensive
+
+Manual determinant calculation becomes difficult for large matrices.
+
+Libraries like:
+
+* NumPy
+* PyTorch
+
+should be used in practice.
+
+---
+
+## Alternating Signs Matter
+
+A common mistake is forgetting the alternating:
+
+[
+
+* * * * +
+        ]
+
+pattern.
+
+---
+
+# 17. Full Final Code
+
+## NumPy Version
+
+-------------------code----------------------
+import numpy as np
+
+# 3x3 matrix
+X = np.array([
+    [1, 2, 4],
+    [5, 2, 0],
+    [3, -1, 1]
+])
+
+# Determinant
+det_X = np.linalg.det(X)
+
+print("Determinant of X:")
+print(det_X)
+
+# Singular matrix example
+N = np.array([
+    [-4, 1],
+    [8, -2]
+])
+
+print("\nDeterminant of N:")
+print(np.linalg.det(N))
+
+# Attempt inversion
+try:
+    print("\nInverse of N:")
+    print(np.linalg.inv(N))
+except np.linalg.LinAlgError as e:
+    print("\nError:")
+    print(e)
+-------------------code----------------------
+
+---
+
+## PyTorch Version
+
+-------------------code----------------------
+import torch
+
+X_torch = torch.tensor([
+    [1., 2., 4.],
+    [5., 2., 0.],
+    [3., -1., 1.]
+])
+
+print("Determinant of X:")
+print(torch.det(X_torch))
+-------------------code----------------------
+
+---
+
+# 18. Summary
+
+## What You Learned
+
+### Determinants
+
+A determinant is a scalar value computed from a square matrix.
+
+---
+
+### Recursive Expansion
+
+Large determinants are computed recursively by:
+
+1. Removing rows and columns
+2. Computing smaller determinants
+3. Combining results
+
+---
+
+### Key Formula
+
+For a (3 \times 3) matrix:
+
+\det(X)=x_{11}\det(X_{11})-x_{12}\det(X_{12})+x_{13}\det(X_{13})
+
+---
+
+### Singular Matrices
+
+If:
+
+[
+\det(X)=0
+]
+
+then:
+
+* Matrix is singular
+* Matrix cannot be inverted
+
+---
+
+### Python Tools
+
+Both NumPy and PyTorch provide built-in determinant functions:
+
+-------------------code----------------------
+np.linalg.det(X)
+torch.det(X)
+-------------------code----------------------
+
+These should be preferred for real applications.
