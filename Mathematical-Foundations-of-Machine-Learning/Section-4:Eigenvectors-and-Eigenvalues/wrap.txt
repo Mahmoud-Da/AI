@@ -4808,3 +4808,764 @@ print(torch.det(C_torch))
 | Exercise 3 (lecture example) | -26         | Yes         |
 
 The key takeaway is that determinants provide a quick way to determine whether a matrix has an inverse and whether a linear system has a unique solution.
+
+*** 39. Determinants and Eigenvalues ***
+# Linear Algebra 2 – Relationship Between Determinants and Eigenvalues
+
+## 1. Lesson Overview
+
+This lecture explains one of the most important relationships in linear algebra:
+
+[
+\det(X) = \prod_{i=1}^{n} \lambda_i
+]
+
+In words:
+
+> The determinant of a matrix equals the product of all its eigenvalues.
+
+The lecture then builds geometric intuition by showing how determinants measure volume changes caused by matrix transformations.
+
+---
+
+# 2. Core Relationship
+
+For any square matrix (X):
+
+[
+\det(X)=\lambda_1\lambda_2\lambda_3\dots\lambda_n
+]
+
+where:
+
+* (\det(X)) = determinant of matrix (X)
+* (\lambda_i) = eigenvalues of (X)
+
+This means:
+
+1. Compute all eigenvalues.
+2. Multiply them together.
+3. The result equals the determinant.
+
+---
+
+## Example
+
+Suppose a matrix has eigenvalues:
+
+[
+\lambda_1=-3
+]
+
+[
+\lambda_2=-1
+]
+
+[
+\lambda_3=6.67
+]
+
+Then:
+
+[
+(-3)(-1)(6.67)\approx20
+]
+
+Therefore:
+
+[
+\det(X)=20
+]
+
+---
+
+# 3. Verifying in NumPy
+
+## Step 1: Create Matrix
+
+-------------------code----------------------
+import numpy as np
+
+X = np.array([
+    [1, 2, 4],
+    [5, 2, 0],
+    [3, -1, 1]
+])
+-------------------code----------------------
+
+---
+
+## Step 2: Calculate Determinant
+
+-------------------code----------------------
+det_x = np.linalg.det(X)
+print(det_x)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+20.0
+-------------------code----------------------
+
+---
+
+## Step 3: Compute Eigenvalues
+
+-------------------code----------------------
+lambdas, V = np.linalg.eig(X)
+
+print(lambdas)
+-------------------code----------------------
+
+Example output:
+
+-------------------code----------------------
+[-3.0, -1.0, 6.67]
+-------------------code----------------------
+
+---
+
+## Step 4: Multiply Eigenvalues
+
+-------------------code----------------------
+np.prod(lambdas)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+20.0
+-------------------code----------------------
+
+Result:
+
+[
+\det(X)=\lambda_1\lambda_2\lambda_3
+]
+
+Verified.
+
+---
+
+# 4. Geometric Meaning of Determinants
+
+Determinants do more than determine invertibility.
+
+The absolute value of a determinant tells us:
+
+> How much a matrix expands or contracts volume.
+
+---
+
+## Volume Scaling Rule
+
+[
+|\det(X)|
+]
+
+represents the factor by which volume changes after applying matrix (X).
+
+---
+
+# 5. Case 1: Determinant = 0
+
+If:
+
+[
+|\det(X)|=0
+]
+
+then:
+
+* Space collapses in at least one dimension.
+* Volume becomes zero.
+* Matrix is singular.
+* Matrix cannot be inverted.
+
+---
+
+## Why?
+
+At least one eigenvalue must be zero:
+
+[
+\lambda_1\lambda_2\dots\lambda_n=0
+]
+
+If one eigenvalue equals zero:
+
+[
+\det(X)=0
+]
+
+---
+
+# 6. Example: Singular Matrix N
+
+## Matrix
+
+-------------------code----------------------
+N = np.array([
+    [-4, 1],
+    [-8, 2]
+])
+-------------------code----------------------
+
+Notice:
+
+[
+\text{Column 1}=-4\times\text{Column 2}
+]
+
+Columns are linearly dependent.
+
+---
+
+## Determinant
+
+-------------------code----------------------
+np.linalg.det(N)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+0
+-------------------code----------------------
+
+---
+
+## Eigenvalues
+
+-------------------code----------------------
+lambdas, _ = np.linalg.eig(N)
+
+print(lambdas)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+[0, -2]
+-------------------code----------------------
+
+One eigenvalue is zero.
+
+Therefore:
+
+[
+0 \times (-2)=0
+]
+
+which matches the determinant.
+
+---
+
+## Geometric Interpretation
+
+The transformation squashes a square into a line.
+
+Before:
+
+-------------------code----------------------
+Area = 1
+-------------------code----------------------
+
+After:
+
+-------------------code----------------------
+Area = 0
+-------------------code----------------------
+
+Volume disappears completely.
+
+---
+
+# 7. Case 2: Determinant Between 0 and 1
+
+If:
+
+[
+0 < |\det(X)| < 1
+]
+
+then:
+
+* Volume shrinks.
+* Matrix contracts space.
+
+---
+
+## Example
+
+[
+|\det(X)|=0.5
+]
+
+A square with area:
+
+[
+10
+]
+
+becomes:
+
+[
+10 \times 0.5=5
+]
+
+---
+
+# 8. Case 3: Determinant = 1
+
+If:
+
+[
+|\det(X)|=1
+]
+
+then:
+
+* Volume is preserved.
+* Shape may change.
+* Area remains identical.
+
+---
+
+# 9. Example: Identity Matrix
+
+## Matrix
+
+[
+I=
+\begin{bmatrix}
+1&0\
+0&1
+\end{bmatrix}
+]
+
+---
+
+## Determinant
+
+-------------------code----------------------
+I = np.eye(2)
+
+np.linalg.det(I)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+1
+-------------------code----------------------
+
+---
+
+## Eigenvalues
+
+-------------------code----------------------
+[1, 1]
+-------------------code----------------------
+
+Product:
+
+[
+1\times1=1
+]
+
+---
+
+## Effect
+
+Nothing changes.
+
+A square of area:
+
+[
+1
+]
+
+remains:
+
+[
+1
+]
+
+---
+
+# 10. Example: Matrix J
+
+## Matrix
+
+[
+J=
+\begin{bmatrix}
+-0.5 & 0\
+0 & 2
+\end{bmatrix}
+]
+
+---
+
+## Determinant
+
+-------------------code----------------------
+J = np.array([
+    [-0.5, 0],
+    [0, 2]
+])
+
+np.linalg.det(J)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+-1
+-------------------code----------------------
+
+Absolute value:
+
+[
+|-1|=1
+]
+
+---
+
+## Eigenvalues
+
+Because J is diagonal:
+
+[
+\lambda_1=-0.5
+]
+
+[
+\lambda_2=2
+]
+
+Product:
+
+[
+(-0.5)(2)=-1
+]
+
+Matches determinant.
+
+---
+
+## Geometric Effect
+
+Transformation:
+
+* X-direction shrinks by 50%
+* Y-direction doubles
+* Shape changes
+* Area remains unchanged
+
+Because:
+
+[
+0.5\times2=1
+]
+
+Volume preservation.
+
+---
+
+# 11. Case 4: Determinant Greater Than 1
+
+If:
+
+[
+|\det(X)|>1
+]
+
+then:
+
+* Space expands.
+* Volume increases.
+
+---
+
+# 12. Example: Matrix D
+
+## Matrix
+
+[
+D=
+\begin{bmatrix}
+2&0\
+0&2
+\end{bmatrix}
+]
+
+This doubles both axes.
+
+---
+
+## Determinant
+
+-------------------code----------------------
+D = np.array([
+    [2, 0],
+    [0, 2]
+])
+
+np.linalg.det(D)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+4
+-------------------code----------------------
+
+---
+
+## Eigenvalues
+
+-------------------code----------------------
+[2, 2]
+-------------------code----------------------
+
+Product:
+
+[
+2\times2=4
+]
+
+Matches determinant.
+
+---
+
+## Geometric Effect
+
+Original square:
+
+[
+1 \times 1 = 1
+]
+
+After transformation:
+
+[
+2 \times 2 = 4
+]
+
+Area becomes:
+
+[
+4
+]
+
+The determinant correctly measures volume expansion.
+
+---
+
+# 13. Relationship Between Eigenvalues and Volume
+
+Each eigenvalue scales one eigenvector direction.
+
+For example:
+
+Eigenvalues:
+
+[
+\lambda_1=2
+]
+
+[
+\lambda_2=3
+]
+
+Scaling:
+
+* First direction doubles
+* Second direction triples
+
+Overall area change:
+
+[
+2\times3=6
+]
+
+Thus:
+
+[
+\det(X)=6
+]
+
+This is why determinants equal the product of eigenvalues.
+
+---
+
+# 14. Practical Interpretation
+
+| Determinant     | Effect              |
+| --------------- | ------------------- |
+| 0               | Space collapses     |
+| Between 0 and 1 | Volume shrinks      |
+| 1               | Volume preserved    |
+| Greater than 1  | Volume expands      |
+| Negative        | Reflection occurred |
+| Positive        | No reflection       |
+
+---
+
+# 15. Important Notes
+
+### Determinant Measures Volume Scaling
+
+Not individual vector scaling.
+
+It measures total scaling across all dimensions.
+
+---
+
+### Zero Eigenvalue Means Trouble
+
+If any eigenvalue is zero:
+
+[
+\det(X)=0
+]
+
+The matrix:
+
+* Is singular
+* Cannot be inverted
+* Loses dimensionality
+
+---
+
+### Absolute Value Matters for Volume
+
+Volume uses:
+
+[
+|\det(X)|
+]
+
+because negative determinants indicate reflection, not negative volume.
+
+---
+
+### Eigenvectors Explain the Geometry
+
+Eigenvectors show:
+
+* Directions that stay on their span.
+
+Eigenvalues show:
+
+* How much those directions are stretched or compressed.
+
+Determinants combine all those scalings into one number.
+
+---
+
+# 16. Full Final Code
+
+-------------------code----------------------
+import numpy as np
+
+# Matrix X
+X = np.array([
+    [1, 2, 4],
+    [5, 2, 0],
+    [3, -1, 1]
+])
+
+# Determinant
+det_x = np.linalg.det(X)
+print("Determinant:", det_x)
+
+# Eigenvalues and Eigenvectors
+lambdas, V = np.linalg.eig(X)
+
+print("\nEigenvalues:")
+print(lambdas)
+
+print("\nProduct of Eigenvalues:")
+print(np.prod(lambdas))
+
+# Identity Matrix
+I = np.eye(2)
+
+print("\nIdentity determinant:")
+print(np.linalg.det(I))
+
+# Matrix J
+J = np.array([
+    [-0.5, 0],
+    [0, 2]
+])
+
+print("\nDeterminant of J:")
+print(np.linalg.det(J))
+
+# Matrix D
+D = np.array([
+    [2, 0],
+    [0, 2]
+])
+
+print("\nDeterminant of D:")
+print(np.linalg.det(D))
+
+# Singular Matrix N
+N = np.array([
+    [-4, 1],
+    [-8, 2]
+])
+
+print("\nDeterminant of N:")
+print(np.linalg.det(N))
+
+print("\nEigenvalues of N:")
+print(np.linalg.eig(N)[0])
+-------------------code----------------------
+
+# 17. Summary
+
+### Main Formula
+
+[
+\det(X)=\prod_{i=1}^{n}\lambda_i
+]
+
+The determinant of a matrix equals the product of its eigenvalues.
+
+---
+
+### Geometric Meaning
+
+[
+|\det(X)|
+]
+
+measures how much volume changes after applying a matrix.
+
+---
+
+### Volume Interpretation
+
+| Value of (|\det(X)|) | Meaning |
+|------------------------|---------|
+| 0 | Volume collapses |
+| Between 0 and 1 | Volume shrinks |
+| 1 | Volume preserved |
+| Greater than 1 | Volume expands |
+
+---
+
+### Key Insight
+
+* Eigenvectors describe directions that remain unchanged in direction.
+* Eigenvalues describe how much those directions scale.
+* The determinant combines all eigenvalue scalings into a single number that measures overall volume change.
+
+This connection between eigenvalues, determinants, geometry, and volume is one of the most important concepts in linear algebra and forms the foundation for later topics such as eigendecomposition, PCA, and dimensionality reduction in machine learning.
