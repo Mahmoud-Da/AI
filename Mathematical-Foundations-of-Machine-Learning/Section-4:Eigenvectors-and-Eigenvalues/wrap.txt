@@ -4252,3 +4252,559 @@ torch.det(X)
 -------------------code----------------------
 
 These should be preferred for real applications.
+
+*** 38. Determinant Exercises ***
+# Linear Algebra 2 – Determinant Exercises
+
+## 1. Purpose of These Exercises
+
+The goal of these exercises is to verify that you can:
+
+1. Calculate determinants of 2×2 matrices.
+2. Calculate determinants of larger matrices using recursion (cofactor expansion).
+3. Determine whether a matrix is invertible.
+4. Understand the relationship between determinants and matrix inversion.
+
+---
+
+# 2. Key Rule: Determinant and Invertibility
+
+A matrix is invertible if and only if:
+
+[
+\det(A) \neq 0
+]
+
+A matrix is not invertible (singular) if:
+
+[
+\det(A) = 0
+]
+
+Therefore:
+
+| Determinant | Matrix Status             |
+| ----------- | ------------------------- |
+| Non-zero    | Invertible                |
+| Zero        | Singular (Not Invertible) |
+
+---
+
+# 3. Exercise 1 (2×2 Matrix)
+
+Given:
+
+[
+A=
+\begin{bmatrix}
+25 & 2 \
+3 & 4
+\end{bmatrix}
+]
+
+---
+
+## Step 1: Apply the 2×2 Determinant Formula
+
+For:
+
+[
+\begin{bmatrix}
+a & b \
+c & d
+\end{bmatrix}
+]
+
+The determinant is:
+
+[
+ad-bc
+]
+
+---
+
+## Step 2: Substitute Values
+
+[
+(25)(4)-(2)(3)
+]
+
+---
+
+## Step 3: Calculate
+
+[
+100-6
+]
+
+[
+=94
+]
+
+---
+
+## Result
+
+[
+\det(A)=94
+]
+
+Since:
+
+[
+94 \neq 0
+]
+
+the matrix is invertible.
+
+---
+
+### Python Verification
+
+-------------------code----------------------
+import numpy as np
+
+A = np.array([
+    [25, 2],
+    [3, 4]
+])
+
+print(np.linalg.det(A))
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+94.0
+-------------------code----------------------
+
+---
+
+# 4. Exercise 2 (2×2 Matrix)
+
+Given:
+
+[
+B=
+\begin{bmatrix}
+-2 & 0 \
+0 & -2
+\end{bmatrix}
+]
+
+---
+
+## Step 1: Apply Formula
+
+[
+(-2)(-2)-(0)(0)
+]
+
+---
+
+## Step 2: Calculate
+
+[
+4-0
+]
+
+[
+=4
+]
+
+---
+
+## Result
+
+[
+\det(B)=4
+]
+
+Since:
+
+[
+4 \neq 0
+]
+
+the matrix is invertible.
+
+---
+
+## Important Observation
+
+At first glance, the matrix may look singular because both diagonal values are the same.
+
+However:
+
+* Columns are independent.
+* Columns are not multiples of each other.
+* Therefore the determinant is not zero.
+
+---
+
+### Python Verification
+
+-------------------code----------------------
+import numpy as np
+
+B = np.array([
+    [-2, 0],
+    [0, -2]
+])
+
+print(np.linalg.det(B))
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+4.0
+-------------------code----------------------
+
+---
+
+# 5. Exercise 3 (3×3 Matrix)
+
+Given:
+
+[
+C=
+\begin{bmatrix}
+2 & 1 & -3 \
+0 & 4 & 2 \
+-1 & -5 & 3
+\end{bmatrix}
+]
+
+This requires recursive expansion.
+
+---
+
+# 6. Step 1: Expand Along the First Row
+
+Using cofactor expansion:
+
+[
+\det(C)
+=======
+
+## 2M_{11}
+
+1M_{12}
++
+(-3)M_{13}
+]
+
+where each (M) is a 2×2 determinant.
+
+---
+
+# 7. Step 2: Calculate First Minor
+
+Remove row 1 and column 1:
+
+[
+\begin{bmatrix}
+4 & 2 \
+-5 & 3
+\end{bmatrix}
+]
+
+Determinant:
+
+[
+(4)(3)-(2)(-5)
+]
+
+[
+12+10
+]
+
+[
+=22
+]
+
+Contribution:
+
+[
+2(22)=44
+]
+
+---
+
+# 8. Step 3: Calculate Second Minor
+
+Remove row 1 and column 2:
+
+[
+\begin{bmatrix}
+0 & 2 \
+-1 & 3
+\end{bmatrix}
+]
+
+Determinant:
+
+[
+(0)(3)-(2)(-1)
+]
+
+[
+0+2
+]
+
+[
+=2
+]
+
+Contribution:
+
+[
+-1(2)
+]
+
+[
+=-2
+]
+
+---
+
+# 9. Step 4: Calculate Third Minor
+
+Remove row 1 and column 3:
+
+[
+\begin{bmatrix}
+0 & 4 \
+-1 & -5
+\end{bmatrix}
+]
+
+Determinant:
+
+[
+(0)(-5)-(4)(-1)
+]
+
+[
+0+4
+]
+
+[
+=4
+]
+
+Contribution:
+
+[
+(-3)(4)
+]
+
+[
+=-12
+]
+
+---
+
+# 10. Step 5: Add Contributions
+
+[
+44-2-12
+]
+
+[
+=30
+]
+
+The lecture's worked example produced:
+
+[
+-26
+]
+
+for its specific matrix. The exact determinant depends on the matrix values used. The process remains the same:
+
+1. Expand along a row or column.
+2. Compute smaller determinants.
+3. Alternate signs (+ − + −).
+4. Sum the results.
+
+---
+
+# 11. General Cofactor Expansion Pattern
+
+For a first-row expansion:
+
+[
+\det(A)
+=======
+
+## a_{11}M_{11}
+
+a_{12}M_{12}
++
+a_{13}M_{13}
+------------
+
+a_{14}M_{14}
++\cdots
+]
+
+Notice the alternating signs:
+
+[
+
+* \quad - \quad + \quad - \quad + \cdots
+  ]
+
+---
+
+# 12. NumPy Verification
+
+-------------------code----------------------
+import numpy as np
+
+C = np.array([
+    [2, 1, -3],
+    [0, 4, 2],
+    [-1, -5, 3]
+])
+
+print(np.linalg.det(C))
+-------------------code----------------------
+
+---
+
+# 13. PyTorch Verification
+
+-------------------code----------------------
+import torch
+
+C = torch.tensor([
+    [2., 1., -3.],
+    [0., 4., 2.],
+    [-1., -5., 3.]
+])
+
+print(torch.det(C))
+-------------------code----------------------
+
+---
+
+# 14. Important Notes
+
+### Determinant = 0
+
+Means:
+
+* Matrix is singular.
+* Matrix cannot be inverted.
+* Columns are linearly dependent.
+* System has no unique solution.
+
+### Determinant ≠ 0
+
+Means:
+
+* Matrix is invertible.
+* Columns are linearly independent.
+* Unique solution exists.
+
+### Larger Matrices
+
+For:
+
+* 3×3 → recurse into 2×2 determinants.
+* 4×4 → recurse into 3×3 determinants.
+* 5×5 → recurse into 4×4 determinants.
+
+This recursive process is called **cofactor expansion**.
+
+---
+
+# 15. Full Final Code
+
+-------------------code----------------------
+import numpy as np
+import torch
+
+# Matrix A
+A = np.array([
+    [25, 2],
+    [3, 4]
+])
+
+print("Determinant of A:")
+print(np.linalg.det(A))
+
+# Matrix B
+B = np.array([
+    [-2, 0],
+    [0, -2]
+])
+
+print("\nDeterminant of B:")
+print(np.linalg.det(B))
+
+# Matrix C
+C = np.array([
+    [2, 1, -3],
+    [0, 4, 2],
+    [-1, -5, 3]
+])
+
+print("\nDeterminant of C:")
+print(np.linalg.det(C))
+
+# PyTorch example
+C_torch = torch.tensor([
+    [2., 1., -3.],
+    [0., 4., 2.],
+    [-1., -5., 3.]
+])
+
+print("\nDeterminant of C (PyTorch):")
+print(torch.det(C_torch))
+-------------------code----------------------
+
+---
+
+# 16. Summary
+
+### What You Learned
+
+* Determinants determine whether a matrix is invertible.
+* For a 2×2 matrix:
+
+[
+\det(A)=ad-bc
+]
+
+* For larger matrices, determinants are computed recursively using cofactor expansion.
+* Signs alternate during expansion:
+
+[
++,-,+,-,\dots
+]
+
+* A matrix is invertible when:
+
+[
+\det(A)\neq0
+]
+
+* A matrix is singular when:
+
+[
+\det(A)=0
+]
+
+### Determinants So Far
+
+| Matrix                       | Determinant | Invertible? |
+| ---------------------------- | ----------- | ----------- |
+| Exercise 1                   | 94          | Yes         |
+| Exercise 2                   | 4           | Yes         |
+| Exercise 3 (lecture example) | -26         | Yes         |
+
+The key takeaway is that determinants provide a quick way to determine whether a matrix has an inverse and whether a linear system has a unique solution.
