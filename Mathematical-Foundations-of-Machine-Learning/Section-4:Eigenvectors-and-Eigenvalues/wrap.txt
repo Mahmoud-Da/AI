@@ -5569,3 +5569,687 @@ measures how much volume changes after applying a matrix.
 * The determinant combines all eigenvalue scalings into a single number that measures overall volume change.
 
 This connection between eigenvalues, determinants, geometry, and volume is one of the most important concepts in linear algebra and forms the foundation for later topics such as eigendecomposition, PCA, and dimensionality reduction in machine learning.
+
+
+*** 40. Eigendecomposition ***
+# Eigen Decomposition (Eigendecomposition) - Structured Notes
+
+## 1. What is Eigen Decomposition?
+
+Eigen Decomposition is a way to break a matrix into its fundamental components:
+
+* Eigenvectors
+* Eigenvalues
+
+It reveals important characteristics of a matrix and is widely used in:
+
+* Machine Learning
+* Data Compression
+* Principal Component Analysis (PCA)
+* Optimization
+* Signal Processing
+
+The decomposition formula is:
+
+[
+A = V \Lambda V^{-1}
+]
+
+Where:
+
+* (A) = original matrix
+* (V) = matrix of eigenvectors
+* (\Lambda) = diagonal matrix of eigenvalues
+* (V^{-1}) = inverse of eigenvector matrix
+
+---
+
+# 2. Why Eigen Decomposition Matters
+
+Eigen decomposition helps us understand matrix behavior.
+
+### Example Insights
+
+#### A Matrix is Singular if an Eigenvalue is Zero
+
+If any eigenvalue equals 0:
+
+[
+\lambda_i = 0
+]
+
+Then:
+
+* Determinant = 0
+* Matrix is singular
+* Matrix cannot be inverted
+
+This directly connects eigenvalues and determinants.
+
+---
+
+### Optimization Applications
+
+Under common conditions:
+
+* Largest eigenvalue → maximum value of a quadratic function
+* Smallest eigenvalue → minimum value of a quadratic function
+
+This becomes important later in optimization and machine learning.
+
+---
+
+# 3. Components of Eigen Decomposition
+
+## Step 1: Matrix of Eigenvectors (V)
+
+Suppose matrix (A) has two eigenvectors:
+
+[
+v_1,; v_2
+]
+
+They are combined into a matrix:
+
+[
+V=
+\begin{bmatrix}
+| & | \
+v_1 & v_2 \
+| & |
+\end{bmatrix}
+]
+
+Each column is an eigenvector.
+
+---
+
+## Step 2: Diagonal Matrix of Eigenvalues (Λ)
+
+If eigenvalues are:
+
+[
+\lambda_1,\lambda_2
+]
+
+Then:
+
+[
+\Lambda=
+\begin{bmatrix}
+\lambda_1 & 0 \
+0 & \lambda_2
+\end{bmatrix}
+]
+
+Only the diagonal contains values.
+
+All other entries are zero.
+
+---
+
+## Step 3: Inverse of Eigenvector Matrix
+
+Compute:
+
+[
+V^{-1}
+]
+
+This allows reconstruction of the original matrix.
+
+---
+
+# 4. Example Matrix
+
+The lecture uses:
+
+-------------------code----------------------
+import numpy as np
+
+A = np.array([
+    [1, 2],
+    [4, 3]
+])
+-------------------code----------------------
+
+---
+
+# 5. Find Eigenvalues and Eigenvectors
+
+Use NumPy:
+
+-------------------code----------------------
+lambdas, V = np.linalg.eig(A)
+-------------------code----------------------
+
+---
+
+## View Eigenvectors
+
+-------------------code----------------------
+print(V)
+-------------------code----------------------
+
+Example output:
+
+-------------------code----------------------
+[[... ...]
+ [... ...]]
+-------------------code----------------------
+
+Each column is an eigenvector.
+
+---
+
+## View Eigenvalues
+
+-------------------code----------------------
+print(lambdas)
+-------------------code----------------------
+
+Example:
+
+-------------------code----------------------
+[ 2. -1.]
+-------------------code----------------------
+
+---
+
+# 6. Compute the Inverse of V
+
+-------------------code----------------------
+V_inv = np.linalg.inv(V)
+
+print(V_inv)
+-------------------code----------------------
+
+---
+
+# 7. Create the Diagonal Eigenvalue Matrix
+
+Convert eigenvalues into a diagonal matrix:
+
+-------------------code----------------------
+Lambda = np.diag(lambdas)
+
+print(Lambda)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+[[ 2.  0.]
+ [ 0. -1.]]
+-------------------code----------------------
+
+---
+
+# 8. Reconstruct the Original Matrix
+
+Apply the decomposition formula:
+
+[
+A = V\Lambda V^{-1}
+]
+
+Code:
+
+-------------------code----------------------
+A_reconstructed = V @ Lambda @ V_inv
+
+print(A_reconstructed)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+[[1. 2.]
+ [4. 3.]]
+-------------------code----------------------
+
+The original matrix is recovered.
+
+---
+
+# 9. Verifying the Formula Step-by-Step
+
+Instead of one line:
+
+-------------------code----------------------
+temp = Lambda @ V_inv
+
+A_reconstructed = V @ temp
+-------------------code----------------------
+
+Result:
+
+-------------------code----------------------
+A_reconstructed == A
+-------------------code----------------------
+
+This confirms:
+
+[
+A = V\Lambda V^{-1}
+]
+
+---
+
+# 10. Real Symmetric Matrices
+
+A very important special case.
+
+A matrix is symmetric if:
+
+[
+A^T = A
+]
+
+Example:
+
+-------------------code----------------------
+A = np.array([
+    [1, 2],
+    [2, 1]
+])
+-------------------code----------------------
+
+Notice:
+
+-------------------code----------------------
+A.T
+-------------------code----------------------
+
+is identical to:
+
+-------------------code----------------------
+A
+-------------------code----------------------
+
+---
+
+# 11. Simpler Eigen Decomposition for Symmetric Matrices
+
+For symmetric matrices:
+
+[
+A = Q\Lambda Q^T
+]
+
+Instead of:
+
+[
+A = V\Lambda V^{-1}
+]
+
+Why?
+
+Because eigenvectors form an orthogonal matrix.
+
+For orthogonal matrices:
+
+[
+Q^{-1}=Q^T
+]
+
+Transpose is much cheaper than inversion.
+
+---
+
+# 12. Find Eigenvalues and Eigenvectors
+
+-------------------code----------------------
+lambdas, Q = np.linalg.eig(A)
+-------------------code----------------------
+
+---
+
+## Build Diagonal Matrix
+
+-------------------code----------------------
+Lambda = np.diag(lambdas)
+-------------------code----------------------
+
+---
+
+## Reconstruct Matrix
+
+-------------------code----------------------
+A_reconstructed = Q @ Lambda @ Q.T
+
+print(A_reconstructed)
+-------------------code----------------------
+
+Result:
+
+-------------------code----------------------
+[[1. 2.]
+ [2. 1.]]
+-------------------code----------------------
+
+Perfect reconstruction.
+
+---
+
+# 13. Orthogonal Matrix Property
+
+Orthogonal matrices satisfy:
+
+[
+Q^TQ = I
+]
+
+and
+
+[
+QQ^T = I
+]
+
+---
+
+### Verify in NumPy
+
+-------------------code----------------------
+print(Q.T @ Q)
+
+print(Q @ Q.T)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+[[1. 0.]
+ [0. 1.]]
+-------------------code----------------------
+
+Small numerical values such as:
+
+-------------------code----------------------
+2.2e-17
+-------------------code----------------------
+
+should be treated as zero.
+
+They are floating-point rounding errors.
+
+---
+
+# 14. Why Symmetric Matrices are Important in Machine Learning
+
+Many machine learning matrices are symmetric:
+
+Examples:
+
+* Covariance matrices
+* Correlation matrices
+* Hessian matrices (optimization)
+
+Advantages:
+
+* Real eigenvalues
+* Real eigenvectors
+* Easier computations
+* Faster decomposition
+
+This is why symmetric matrices appear frequently in ML.
+
+---
+
+# 15. NumPy Workflow Summary
+
+### Step 1
+
+Create matrix:
+
+-------------------code----------------------
+A = np.array([
+    [1, 2],
+    [4, 3]
+])
+-------------------code----------------------
+
+### Step 2
+
+Compute eigenvalues and eigenvectors:
+
+-------------------code----------------------
+lambdas, V = np.linalg.eig(A)
+-------------------code----------------------
+
+### Step 3
+
+Compute inverse:
+
+-------------------code----------------------
+V_inv = np.linalg.inv(V)
+-------------------code----------------------
+
+### Step 4
+
+Create diagonal matrix:
+
+-------------------code----------------------
+Lambda = np.diag(lambdas)
+-------------------code----------------------
+
+### Step 5
+
+Reconstruct matrix:
+
+-------------------code----------------------
+A_reconstructed = V @ Lambda @ V_inv
+-------------------code----------------------
+
+---
+
+# 16. Symmetric Matrix Workflow
+
+### Step 1
+
+Create symmetric matrix:
+
+-------------------code----------------------
+A = np.array([
+    [1, 2],
+    [2, 1]
+])
+-------------------code----------------------
+
+### Step 2
+
+Compute eigenvalues/eigenvectors:
+
+-------------------code----------------------
+lambdas, Q = np.linalg.eig(A)
+-------------------code----------------------
+
+### Step 3
+
+Create diagonal matrix:
+
+-------------------code----------------------
+Lambda = np.diag(lambdas)
+-------------------code----------------------
+
+### Step 4
+
+Reconstruct:
+
+-------------------code----------------------
+A_reconstructed = Q @ Lambda @ Q.T
+-------------------code----------------------
+
+---
+
+# Important Notes and Best Practices
+
+### 1. Every Eigenvector Has a Corresponding Eigenvalue
+
+If a matrix has:
+
+* n eigenvectors
+
+then it also has:
+
+* n eigenvalues
+
+(one for each eigenvector)
+
+---
+
+### 2. Diagonal Matrix Convention
+
+Eigenvalues are usually arranged:
+
+[
+\lambda_1 \ge \lambda_2 \ge \lambda_3 \ge ...
+]
+
+Largest first.
+
+---
+
+### 3. Symmetric Matrices are Preferred
+
+For machine learning:
+
+* More stable
+* Easier to compute
+* Produce real eigenvalues
+
+---
+
+### 4. Expect Tiny Numerical Errors
+
+Values like:
+
+-------------------code----------------------
+1e-16
+-------------------code----------------------
+
+or
+
+-------------------code----------------------
+2.2e-17
+-------------------code----------------------
+
+are effectively zero.
+
+They result from floating-point arithmetic.
+
+---
+
+### 5. Not Every Matrix Can Be Diagonalized
+
+Some matrices:
+
+* Cannot be eigendecomposed
+* Require complex eigenvalues
+* Require more advanced decompositions
+
+The course focuses on real matrices commonly used in machine learning.
+
+---
+
+# Full Final Code
+
+-------------------code----------------------
+import numpy as np
+
+# ----------------------------
+# General Eigen Decomposition
+# ----------------------------
+
+A = np.array([
+    [1, 2],
+    [4, 3]
+])
+
+# Eigenvalues and eigenvectors
+lambdas, V = np.linalg.eig(A)
+
+# Inverse of eigenvector matrix
+V_inv = np.linalg.inv(V)
+
+# Diagonal matrix of eigenvalues
+Lambda = np.diag(lambdas)
+
+# Reconstruct original matrix
+A_reconstructed = V @ Lambda @ V_inv
+
+print("Original Matrix:")
+print(A)
+
+print("\nEigenvectors (V):")
+print(V)
+
+print("\nEigenvalues:")
+print(lambdas)
+
+print("\nDiagonal Matrix (Lambda):")
+print(Lambda)
+
+print("\nInverse of V:")
+print(V_inv)
+
+print("\nReconstructed Matrix:")
+print(A_reconstructed)
+
+# ----------------------------
+# Symmetric Matrix Example
+# ----------------------------
+
+S = np.array([
+    [1, 2],
+    [2, 1]
+])
+
+lambdas_s, Q = np.linalg.eig(S)
+
+Lambda_s = np.diag(lambdas_s)
+
+S_reconstructed = Q @ Lambda_s @ Q.T
+
+print("\nSymmetric Matrix:")
+print(S)
+
+print("\nEigenvectors (Q):")
+print(Q)
+
+print("\nEigenvalues:")
+print(lambdas_s)
+
+print("\nQ^T Q:")
+print(Q.T @ Q)
+
+print("\nQ Q^T:")
+print(Q @ Q.T)
+
+print("\nReconstructed Symmetric Matrix:")
+print(S_reconstructed)
+-------------------code----------------------
+
+# Summary
+
+* Eigen Decomposition breaks a matrix into eigenvectors and eigenvalues.
+* General form:
+
+[
+A = V\Lambda V^{-1}
+]
+
+* (V) contains eigenvectors as columns.
+* (\Lambda) is a diagonal matrix containing eigenvalues.
+* (V^{-1}) is the inverse of the eigenvector matrix.
+* For symmetric matrices:
+
+[
+A = Q\Lambda Q^T
+]
+
+which is computationally cheaper.
+
+* Symmetric matrices are extremely important in machine learning.
+* Eigen decomposition reveals important matrix properties, including singularity and optimization behavior.
+* A matrix can be reconstructed perfectly from its eigenvectors and eigenvalues when eigendecomposition exists.
