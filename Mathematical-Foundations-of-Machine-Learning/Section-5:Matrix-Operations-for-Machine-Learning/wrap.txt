@@ -612,3 +612,643 @@ The upcoming topics are:
    * Extract useful features
 
 Together, these techniques bridge the gap between linear algebra theory and practical machine learning applications, preparing you for future topics in calculus, statistics, optimization, and advanced machine learning.
+
+*** 43. Singular Value Decomposition ***
+# Singular Value Decomposition (SVD) — Structured Notes
+
+## 1. Introduction to Singular Value Decomposition (SVD)
+
+### What is SVD?
+
+**Singular Value Decomposition (SVD)** is a matrix decomposition technique widely used in:
+
+* Machine Learning
+* Data Science
+* Computer Vision
+* Recommendation Systems
+* Data Compression
+
+Unlike **Eigen Decomposition**, which only works on **square matrices**, SVD works on **any real-valued matrix**, including rectangular matrices.
+
+### Key Advantage
+
+| Eigen Decomposition           | Singular Value Decomposition          |
+| ----------------------------- | ------------------------------------- |
+| Only square matrices          | Any real-valued matrix                |
+| Uses eigenvectors/eigenvalues | Uses singular vectors/singular values |
+| More restrictive              | More general                          |
+
+---
+
+# 2. SVD Formula
+
+For a matrix:
+
+[
+A
+]
+
+Its Singular Value Decomposition is:
+
+[
+A = UDV^T
+]
+
+Where:
+
+### U Matrix
+
+[
+U \in \mathbb{R}^{m \times m}
+]
+
+* Orthogonal matrix
+* Columns are **Left Singular Vectors**
+* Number of columns equals number of rows in A
+
+---
+
+### D Matrix
+
+[
+D \in \mathbb{R}^{m \times n}
+]
+
+* Diagonal matrix
+* Contains singular values on the main diagonal
+* All other entries are zero
+
+---
+
+### Vᵀ Matrix
+
+[
+V^T \in \mathbb{R}^{n \times n}
+]
+
+* Orthogonal matrix
+* Rows are **Right Singular Vectors**
+* Number of columns equals number of columns in A
+
+---
+
+# 3. Example Matrix
+
+The lecture uses a non-square matrix:
+
+[
+A=
+\begin{bmatrix}
+1 & 2\
+3 & 4\
+5 & 6
+\end{bmatrix}
+]
+
+Dimensions:
+
+* Rows = 3
+* Columns = 2
+
+Therefore:
+
+### U
+
+[
+3 \times 3
+]
+
+### D
+
+[
+3 \times 2
+]
+
+### V^T
+
+[
+2 \times 2
+]
+
+---
+
+# 4. Computing SVD in NumPy
+
+## Step 1: Create Matrix A
+
+-------------------code----------------------
+import numpy as np
+
+A = np.array([
+    [1, 2],
+    [3, 4],
+    [5, 6]
+])
+-------------------code----------------------
+
+---
+
+## Step 2: Compute SVD
+
+-------------------code----------------------
+U, d, VT = np.linalg.svd(A)
+-------------------code----------------------
+
+### Returned Objects
+
+#### U
+
+-------------------code----------------------
+print(U)
+-------------------code----------------------
+
+Contains:
+
+* Left Singular Vector 1
+* Left Singular Vector 2
+* Left Singular Vector 3
+
+(each column is a singular vector)
+
+---
+
+#### Singular Values
+
+-------------------code----------------------
+print(d)
+-------------------code----------------------
+
+Example output:
+
+-------------------code----------------------
+[9.5255 0.5143]
+-------------------code----------------------
+
+These are the singular values.
+
+---
+
+#### Vᵀ
+
+-------------------code----------------------
+print(VT)
+-------------------code----------------------
+
+Contains right singular vectors as rows.
+
+---
+
+# 5. Building the Diagonal Matrix D
+
+The SVD function returns singular values as a vector.
+
+We must place them along the diagonal.
+
+## Step 1: Create Diagonal Matrix
+
+-------------------code----------------------
+D = np.diag(d)
+-------------------code----------------------
+
+Result:
+
+-------------------code----------------------
+[
+ [9.52, 0],
+ [0, 0.51]
+]
+-------------------code----------------------
+
+But dimensions are:
+
+[
+2 \times 2
+]
+
+We need:
+
+[
+3 \times 2
+]
+
+---
+
+## Step 2: Expand D
+
+-------------------code----------------------
+D = np.vstack([
+    D,
+    [0, 0]
+])
+-------------------code----------------------
+
+Result:
+
+-------------------code----------------------
+[
+ [9.52, 0],
+ [0, 0.51],
+ [0, 0]
+]
+-------------------code----------------------
+
+Dimensions:
+
+[
+3 \times 2
+]
+
+Now matrix multiplication is possible.
+
+---
+
+# 6. Reconstructing the Original Matrix
+
+After decomposition:
+
+[
+A = UDV^T
+]
+
+We can verify this.
+
+## Step 1: Multiply D and Vᵀ
+
+-------------------code----------------------
+DV = np.dot(D, VT)
+-------------------code----------------------
+
+---
+
+## Step 2: Multiply U and (DV)
+
+-------------------code----------------------
+A_reconstructed = np.dot(U, DV)
+-------------------code----------------------
+
+---
+
+## Step 3: Display Result
+
+-------------------code----------------------
+print(A_reconstructed)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+[
+ [1. 2.]
+ [3. 4.]
+ [5. 6.]
+]
+-------------------code----------------------
+
+The original matrix is recovered.
+
+---
+
+# 7. Understanding the Components
+
+## Left Singular Vectors (U)
+
+Columns of U.
+
+Example:
+
+-------------------code----------------------text
+u1
+u2
+u3
+-------------------code----------------------
+
+Represent important directions in row space.
+
+---
+
+## Right Singular Vectors (V)
+
+Columns of V.
+
+Represent important directions in column space.
+
+Since NumPy returns:
+
+-------------------code----------------------
+VT
+-------------------code----------------------
+
+the singular vectors appear as rows.
+
+---
+
+## Singular Values (D)
+
+Diagonal entries:
+
+-------------------code----------------------text
+σ1
+σ2
+...
+-------------------code----------------------
+
+Measure the importance of each singular vector.
+
+Larger singular values:
+
+* Carry more information
+* Capture more structure in the data
+
+Smaller singular values:
+
+* Carry less information
+* Often removed during compression
+
+---
+
+# 8. Relationship Between SVD and Eigen Decomposition
+
+SVD and Eigen Decomposition are closely related.
+
+---
+
+## Left Singular Vectors
+
+The left singular vectors of A are the eigenvectors of:
+
+[
+AA^T
+]
+
+[
+\text{Left Singular Vectors}
+============================
+
+\text{Eigenvectors}(AA^T)
+]
+
+---
+
+## Right Singular Vectors
+
+The right singular vectors of A are the eigenvectors of:
+
+[
+A^TA
+]
+
+[
+\text{Right Singular Vectors}
+=============================
+
+\text{Eigenvectors}(A^TA)
+]
+
+---
+
+## Singular Values
+
+Non-zero singular values are:
+
+[
+\sigma_i
+========
+
+\sqrt{\lambda_i}
+]
+
+where:
+
+[
+\lambda_i
+]
+
+are eigenvalues of:
+
+[
+A^TA
+]
+
+or
+
+[
+AA^T
+]
+
+---
+
+# 9. Why SVD Is Important
+
+### Handles Rectangular Matrices
+
+Most real-world datasets are not square.
+
+Examples:
+
+| Data Type     | Rows      | Columns   |
+| ------------- | --------- | --------- |
+| Images        | Pixels    | Features  |
+| Customer data | Customers | Variables |
+| NLP data      | Documents | Words     |
+
+SVD works naturally on these matrices.
+
+---
+
+### Foundation for Machine Learning
+
+SVD is used in:
+
+1. Principal Component Analysis (PCA)
+2. Recommendation Systems
+3. Latent Semantic Analysis (LSA)
+4. Dimensionality Reduction
+5. Image Compression
+6. Noise Reduction
+7. Matrix Completion
+
+---
+
+# 10. Important Notes
+
+### Orthogonal Matrices
+
+Both U and V are orthogonal:
+
+[
+U^TU = I
+]
+
+[
+V^TV = I
+]
+
+---
+
+### Singular Values Are Non-Negative
+
+Unlike eigenvalues:
+
+* Eigenvalues can be negative.
+* Singular values are always ≥ 0.
+
+---
+
+### SVD Always Exists
+
+For any real-valued matrix:
+
+[
+A
+]
+
+an SVD decomposition exists.
+
+This makes SVD one of the most powerful decomposition techniques.
+
+---
+
+# 11. Best Practices
+
+### Use NumPy's Built-in SVD
+
+-------------------code----------------------
+np.linalg.svd()
+-------------------code----------------------
+
+instead of implementing SVD manually.
+
+---
+
+### Verify Reconstruction
+
+Always check:
+
+-------------------code----------------------
+U @ D @ VT
+-------------------code----------------------
+
+matches the original matrix.
+
+---
+
+### Understand Dimensions
+
+For:
+
+[
+A_{m \times n}
+]
+
+Dimensions are:
+
+| Matrix | Size  |
+| ------ | ----- |
+| U      | m × m |
+| D      | m × n |
+| Vᵀ     | n × n |
+
+Dimension mismatches are a common source of errors.
+
+---
+
+### Keep Largest Singular Values
+
+For compression and dimensionality reduction:
+
+* Keep largest singular values.
+* Discard small singular values.
+
+This preserves most information while reducing storage.
+
+---
+
+# 12. Full Final Code
+
+-------------------code----------------------
+import numpy as np
+
+# Create matrix
+A = np.array([
+    [1, 2],
+    [3, 4],
+    [5, 6]
+])
+
+# Compute SVD
+U, d, VT = np.linalg.svd(A)
+
+print("U:")
+print(U)
+
+print("\nSingular Values:")
+print(d)
+
+print("\nVT:")
+print(VT)
+
+# Create diagonal matrix
+D = np.diag(d)
+
+# Expand to match dimensions (3x2)
+D = np.vstack([
+    D,
+    [0, 0]
+])
+
+print("\nD:")
+print(D)
+
+# Reconstruct matrix
+A_reconstructed = U @ D @ VT
+
+print("\nReconstructed A:")
+print(A_reconstructed)
+
+# Verify equality
+print("\nOriginal A:")
+print(A)
+-------------------code----------------------
+
+---
+
+# 13. Summary
+
+### SVD Definition
+
+[
+A = UDV^T
+]
+
+where:
+
+* **U** = Left Singular Vectors
+* **D** = Singular Values
+* **Vᵀ** = Right Singular Vectors
+
+### Key Concepts
+
+* Works on any real-valued matrix.
+* Generalizes Eigen Decomposition.
+* U and V are orthogonal matrices.
+* Singular values measure importance of directions in the data.
+* Original matrix can be perfectly reconstructed from U, D, and Vᵀ.
+
+### Relationship to Eigen Decomposition
+
+* Left singular vectors = eigenvectors of (AA^T)
+* Right singular vectors = eigenvectors of (A^TA)
+* Singular values = square roots of eigenvalues
+
+### Machine Learning Importance
+
+SVD is foundational for:
+
+* PCA
+* Dimensionality Reduction
+* Recommendation Systems
+* Image Compression
+* Noise Filtering
+* Latent Semantic Analysis
+
+The next topic builds on SVD by showing how it can be used for practical tasks such as dramatic data and image compression.
