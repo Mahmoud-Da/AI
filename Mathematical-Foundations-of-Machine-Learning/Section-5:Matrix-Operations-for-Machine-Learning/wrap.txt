@@ -2009,3 +2009,559 @@ Most image information is contained in the largest singular values.
 * Compression achieved: ~96.3%
 
 This is one of the most practical and intuitive demonstrations of how linear algebra directly powers real-world machine learning and data compression systems.
+
+
+*** 45. The Moore-Penrose Pseudoinverse ***
+# Moore-Penrose Pseudoinverse
+
+## 1. Overview
+
+The **Moore-Penrose Pseudoinverse** is a linear algebra technique that allows us to work with matrices that cannot be inverted using ordinary matrix inversion.
+
+It is especially important in **machine learning**, where systems of equations often involve:
+
+* Non-square matrices
+* Overdetermined systems
+* Underdetermined systems
+* Singular matrices
+
+The pseudoinverse provides a way to solve these problems even when a regular inverse does not exist.
+
+---
+
+# 2. Why Regular Matrix Inversion Fails
+
+A matrix can only be inverted when:
+
+1. It is square
+
+   * Number of rows = number of columns
+
+2. It is non-singular
+
+   * Columns are linearly independent
+   * Determinant is not zero
+
+If either condition fails, a regular inverse does not exist.
+
+---
+
+## 2.1 Overdetermined Systems
+
+More equations than unknowns.
+
+Example:
+
+-------------------code----------------------
+3 equations
+2 unknowns
+-------------------code----------------------
+
+Matrix shape:
+
+-------------------code----------------------
+3 × 2
+-------------------code----------------------
+
+Problem:
+
+* No single intersection point exists.
+* Standard matrix inversion cannot be used.
+
+---
+
+## 2.2 Underdetermined Systems
+
+Fewer equations than unknowns.
+
+Example:
+
+-------------------code----------------------
+1 equation
+2 unknowns
+-------------------code----------------------
+
+Matrix shape:
+
+-------------------code----------------------
+1 × 2
+-------------------code----------------------
+
+Problem:
+
+* Infinite possible solutions.
+* Standard inversion is impossible.
+
+---
+
+## 2.3 Singular Matrices
+
+A square matrix can still fail to be invertible if its columns are linearly dependent.
+
+Example:
+
+-------------------code----------------------
+Column 1 = [1, 2]
+Column 2 = [2, 4]
+-------------------code----------------------
+
+Column 2 is simply:
+
+-------------------code----------------------
+2 × Column 1
+-------------------code----------------------
+
+This creates linear dependence.
+
+Result:
+
+-------------------code----------------------
+det(A) = 0
+-------------------code----------------------
+
+The matrix is singular and cannot be inverted.
+
+---
+
+# 3. The Moore-Penrose Pseudoinverse
+
+For a matrix:
+
+-------------------code----------------------
+A
+-------------------code----------------------
+
+The pseudoinverse is written as:
+
+-------------------code----------------------
+A⁺
+-------------------code----------------------
+
+Unlike the ordinary inverse:
+
+-------------------code----------------------
+A⁻¹
+-------------------code----------------------
+
+the pseudoinverse can be computed even when A is not square.
+
+---
+
+# 4. Pseudoinverse Formula
+
+Using Singular Value Decomposition (SVD):
+
+-------------------code----------------------
+A = UDVᵀ
+-------------------code----------------------
+
+The pseudoinverse is:
+
+-------------------code----------------------
+A⁺ = V D⁺ Uᵀ
+-------------------code----------------------
+
+Where:
+
+* U = left singular vectors
+* V = right singular vectors
+* D = diagonal matrix of singular values
+* D⁺ = modified diagonal matrix
+
+---
+
+# 5. Step-by-Step Construction of the Pseudoinverse
+
+Assume:
+
+-------------------code----------------------
+import numpy as np
+
+A = np.array([
+    [1, 2],
+    [3, 4],
+    [5, 6]
+])
+-------------------code----------------------
+
+This matrix is:
+
+-------------------code----------------------
+3 × 2
+-------------------code----------------------
+
+and therefore not invertible.
+
+---
+
+## Step 1: Compute the SVD
+
+-------------------code----------------------
+U, d, VT = np.linalg.svd(A)
+-------------------code----------------------
+
+Results:
+
+-------------------code----------------------
+print(U)
+print(d)
+print(VT)
+-------------------code----------------------
+
+Outputs:
+
+* U → left singular vectors
+* d → singular values
+* VT → right singular vectors (transposed)
+
+---
+
+## Step 2: Create Uᵀ
+
+Transpose U:
+
+-------------------code----------------------
+UT = U.T
+-------------------code----------------------
+
+---
+
+## Step 3: Create V
+
+NumPy gives us:
+
+-------------------code----------------------
+VT
+-------------------code----------------------
+
+We need:
+
+-------------------code----------------------
+V
+-------------------code----------------------
+
+Transpose it:
+
+-------------------code----------------------
+V = VT.T
+-------------------code----------------------
+
+---
+
+## Step 4: Create D⁺
+
+The singular values are stored as a vector:
+
+-------------------code----------------------
+print(d)
+-------------------code----------------------
+
+Example:
+
+-------------------code----------------------
+[8.669 0.488]
+-------------------code----------------------
+
+Take the reciprocal of every non-zero singular value:
+
+-------------------code----------------------
+1 / 8.669
+1 / 0.488
+-------------------code----------------------
+
+NumPy can do this automatically:
+
+-------------------code----------------------
+D_plus = np.linalg.inv(np.diag(d))
+-------------------code----------------------
+
+Result:
+
+-------------------code----------------------
+print(D_plus)
+-------------------code----------------------
+
+Example:
+
+-------------------code----------------------
+[[0.115 0.   ]
+ [0.    2.048]]
+-------------------code----------------------
+
+---
+
+## Step 5: Adjust Dimensions
+
+To make matrix multiplication possible, we must match dimensions.
+
+Add a column of zeros:
+
+-------------------code----------------------
+zeros = np.zeros((2, 1))
+
+D_plus = np.concatenate(
+    (D_plus, zeros),
+    axis=1
+)
+-------------------code----------------------
+
+Now D⁺ has the correct shape.
+
+---
+
+## Step 6: Calculate the Pseudoinverse
+
+Apply the formula:
+
+-------------------code----------------------
+A_plus = V @ D_plus @ UT
+-------------------code----------------------
+
+Result:
+
+-------------------code----------------------
+print(A_plus)
+-------------------code----------------------
+
+This is the Moore-Penrose pseudoinverse.
+
+---
+
+# 6. Using NumPy's Built-In Method
+
+NumPy already provides a direct implementation:
+
+-------------------code----------------------
+A_plus_builtin = np.linalg.pinv(A)
+-------------------code----------------------
+
+Display result:
+
+-------------------code----------------------
+print(A_plus_builtin)
+-------------------code----------------------
+
+The output matches the manually computed pseudoinverse.
+
+---
+
+# 7. Verifying the Result
+
+Compare the two methods:
+
+-------------------code----------------------
+np.allclose(A_plus, A_plus_builtin)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+True
+-------------------code----------------------
+
+This confirms:
+
+-------------------code----------------------
+Manual SVD approach = NumPy pinv()
+-------------------code----------------------
+
+---
+
+# 8. Why the Pseudoinverse Matters in Machine Learning
+
+The pseudoinverse is widely used because machine learning datasets often produce matrices that are:
+
+* Non-square
+* Overdetermined
+* Underdetermined
+* Not invertible
+
+Applications include:
+
+### Linear Regression
+
+Finding the best-fit line.
+
+### Least Squares Solutions
+
+Solving systems with more equations than unknowns.
+
+### Data Modeling
+
+Estimating unknown parameters.
+
+### Machine Learning Algorithms
+
+Many optimization and fitting procedures rely on pseudoinverse calculations.
+
+---
+
+# 9. Relationship to SVD
+
+Recall:
+
+-------------------code----------------------
+A = UDVᵀ
+-------------------code----------------------
+
+The pseudoinverse simply reuses the SVD components:
+
+-------------------code----------------------
+A⁺ = V D⁺ Uᵀ
+-------------------code----------------------
+
+Key difference:
+
+| Matrix | Purpose                    |
+| ------ | -------------------------- |
+| D      | Original singular values   |
+| D⁺     | Reciprocal singular values |
+
+This shows why understanding **SVD** is essential before learning pseudoinverse.
+
+---
+
+# 10. Important Notes
+
+### Always Use `pinv()` in Real Projects
+
+Although it is useful to understand the mathematics:
+
+-------------------code----------------------
+np.linalg.pinv(A)
+-------------------code----------------------
+
+is preferred in production code.
+
+---
+
+### Not Every Matrix Has an Inverse
+
+But every real matrix has a pseudoinverse.
+
+This is what makes pseudoinverse so powerful.
+
+---
+
+### SVD Is the Foundation
+
+Understanding:
+
+-------------------code----------------------
+A = UDVᵀ
+-------------------code----------------------
+
+makes the pseudoinverse formula much easier to understand.
+
+---
+
+### Pseudoinverse Is Not the Same as Inverse
+
+Regular inverse:
+
+-------------------code----------------------
+A⁻¹
+-------------------code----------------------
+
+Requires:
+
+* Square matrix
+* Non-singular matrix
+
+Pseudoinverse:
+
+-------------------code----------------------
+A⁺
+-------------------code----------------------
+
+Works for:
+
+* Square matrices
+* Rectangular matrices
+* Many non-invertible situations
+
+---
+
+# Full Final Code
+
+-------------------code----------------------
+import numpy as np
+
+# Non-square matrix
+A = np.array([
+    [1, 2],
+    [3, 4],
+    [5, 6]
+])
+
+# Step 1: SVD
+U, d, VT = np.linalg.svd(A)
+
+# Step 2: U transpose
+UT = U.T
+
+# Step 3: V
+V = VT.T
+
+# Step 4: D+
+D_plus = np.linalg.inv(np.diag(d))
+
+# Step 5: Match dimensions
+zeros = np.zeros((2, 1))
+
+D_plus = np.concatenate(
+    (D_plus, zeros),
+    axis=1
+)
+
+# Step 6: Calculate pseudoinverse
+A_plus = V @ D_plus @ UT
+
+print("Manual pseudoinverse:")
+print(A_plus)
+
+# NumPy built-in method
+A_plus_builtin = np.linalg.pinv(A)
+
+print("\nNumPy pinv():")
+print(A_plus_builtin)
+
+# Verification
+print("\nResults match:")
+print(np.allclose(A_plus, A_plus_builtin))
+-------------------code----------------------
+
+---
+
+# Summary
+
+* Regular matrix inversion requires a square, non-singular matrix.
+* Many machine learning problems involve matrices that do not satisfy these conditions.
+* The **Moore-Penrose Pseudoinverse** solves this issue.
+* It is computed using the **Singular Value Decomposition (SVD)**:
+
+-------------------code----------------------
+A = UDVᵀ
+-------------------code----------------------
+
+* The pseudoinverse formula is:
+
+-------------------code----------------------
+A⁺ = V D⁺ Uᵀ
+-------------------code----------------------
+
+* D⁺ is created by taking the reciprocal of the non-zero singular values.
+* NumPy provides a built-in implementation:
+
+-------------------code----------------------
+np.linalg.pinv(A)
+-------------------code----------------------
+
+* The pseudoinverse is widely used in:
+
+  * Linear regression
+  * Least-squares problems
+  * Parameter estimation
+  * Machine learning optimization
+
+Understanding the pseudoinverse is important because it allows us to solve systems of equations even when ordinary matrix inversion is impossible.
