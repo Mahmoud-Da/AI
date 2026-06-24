@@ -3261,3 +3261,552 @@ W = X^{+}Y
 * This allows fitting a regression line entirely through linear algebra without iterative optimization.
 
 This is one of the most important practical applications of the pseudoinverse and forms the mathematical foundation of least-squares linear regression.
+
+*** 47. The Trace Operator ***
+# Trace Operator
+
+## 1. Overview
+
+The **Trace Operator** is a simple but very useful concept in linear algebra.
+
+It is commonly used to:
+
+* Simplify matrix equations
+* Rearrange mathematical expressions
+* Work with matrix norms
+* Derive machine learning algorithms such as PCA (Principal Component Analysis)
+
+Notation:
+
+[
+\text{tr}(A)
+]
+
+where (A) is a matrix.
+
+---
+
+# 2. Definition of the Trace
+
+The trace of a matrix is the **sum of the elements on the main diagonal**.
+
+For a matrix:
+
+[
+A=
+\begin{bmatrix}
+25 & 2\
+5 & 4
+\end{bmatrix}
+]
+
+The diagonal elements are:
+
+[
+25,;4
+]
+
+Therefore:
+
+[
+\text{tr}(A)=25+4=29
+]
+
+---
+
+# 3. Computing Trace in NumPy
+
+## Step 1: Create a Matrix
+
+-------------------code----------------------
+import numpy as np
+
+A = np.array([
+    [25, 2],
+    [5, 4]
+])
+-------------------code----------------------
+
+---
+
+## Step 2: Compute the Trace
+
+### Manual Calculation
+
+-------------------code----------------------
+trace_manual = A[0,0] + A[1,1]
+print(trace_manual)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+29
+-------------------code----------------------
+
+---
+
+### Using NumPy
+
+-------------------code----------------------
+trace_numpy = np.trace(A)
+print(trace_numpy)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+29
+-------------------code----------------------
+
+---
+
+# 4. Trace Property #1
+
+## Trace of a Matrix Equals Trace of Its Transpose
+
+Property:
+
+[
+\text{tr}(A)=\text{tr}(A^T)
+]
+
+### Why?
+
+Transposing a matrix swaps rows and columns.
+
+However, the main diagonal remains unchanged.
+
+Example:
+
+[
+A=
+\begin{bmatrix}
+25 & 2\
+5 & 4
+\end{bmatrix}
+]
+
+Transpose:
+
+[
+A^T=
+\begin{bmatrix}
+25 & 5\
+2 & 4
+\end{bmatrix}
+]
+
+The diagonal remains:
+
+[
+25,;4
+]
+
+So:
+
+[
+\text{tr}(A)=29
+]
+
+and
+
+[
+\text{tr}(A^T)=29
+]
+
+---
+
+## Code Example
+
+-------------------code----------------------
+print(np.trace(A))
+print(np.trace(A.T))
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+29
+29
+-------------------code----------------------
+
+---
+
+# 5. Trace Property #2
+
+## Cyclic Property of Matrix Multiplication
+
+Given three matrices:
+
+[
+A,;B,;C
+]
+
+The following traces are equal:
+
+[
+\text{tr}(ABC)
+==============
+
+# \text{tr}(CAB)
+
+\text{tr}(BCA)
+]
+
+This property is called the **cyclic property of trace**.
+
+---
+
+## Why Is It Useful?
+
+It allows us to rearrange matrix expressions into forms that are easier to analyze or differentiate.
+
+This is extremely common in:
+
+* Machine Learning
+* Statistics
+* Optimization
+* Deep Learning derivations
+
+---
+
+## Example
+
+-------------------code----------------------
+A = np.random.randn(3, 3)
+B = np.random.randn(3, 3)
+C = np.random.randn(3, 3)
+
+tr1 = np.trace(A @ B @ C)
+tr2 = np.trace(C @ A @ B)
+tr3 = np.trace(B @ C @ A)
+
+print(tr1)
+print(tr2)
+print(tr3)
+-------------------code----------------------
+
+All values should be nearly identical.
+
+---
+
+# 6. Trace Property #3
+
+## Frobenius Norm Using Trace
+
+The **Frobenius Norm** is the matrix version of the vector L2 norm.
+
+Formula:
+
+[
+||A||_F
+=======
+
+\sqrt{\text{tr}(A^T A)}
+]
+
+---
+
+## Interpretation
+
+1. Multiply:
+
+[
+A^T A
+]
+
+2. Take the trace
+
+3. Take the square root
+
+The result is the Frobenius norm.
+
+---
+
+# 7. Example Calculation
+
+Given:
+
+[
+A=
+\begin{bmatrix}
+25 & 2\
+5 & 4
+\end{bmatrix}
+]
+
+### Compute
+
+[
+A^T A
+]
+
+-------------------code----------------------
+AtA = A.T @ A
+print(AtA)
+-------------------code----------------------
+
+---
+
+### Take the Trace
+
+-------------------code----------------------
+trace_val = np.trace(AtA)
+print(trace_val)
+-------------------code----------------------
+
+---
+
+### Take the Square Root
+
+-------------------code----------------------
+fro_norm = np.sqrt(trace_val)
+print(fro_norm)
+-------------------code----------------------
+
+---
+
+# 8. Verify with NumPy
+
+NumPy already provides the Frobenius norm.
+
+-------------------code----------------------
+fro_numpy = np.linalg.norm(A, 'fro')
+
+print(fro_numpy)
+-------------------code----------------------
+
+Both methods should produce the same result.
+
+---
+
+# 9. PyTorch Exercise
+
+The lecture suggests implementing the same concepts in PyTorch.
+
+## Compute Trace
+
+-------------------code----------------------
+import torch
+
+A = torch.tensor([
+    [25., 2.],
+    [5., 4.]
+])
+
+trace_val = torch.trace(A)
+
+print(trace_val)
+-------------------code----------------------
+
+---
+
+## Compute Frobenius Norm
+
+-------------------code----------------------
+fro_norm = torch.norm(A, p='fro')
+
+print(fro_norm)
+-------------------code----------------------
+
+---
+
+## Verify the Formula
+
+-------------------code----------------------
+left_side = torch.norm(A, p='fro')
+
+right_side = torch.sqrt(
+    torch.trace(A.T @ A)
+)
+
+print(left_side)
+print(right_side)
+-------------------code----------------------
+
+Both values should match.
+
+---
+
+# 10. Important Notes
+
+### Trace Only Uses Diagonal Elements
+
+Everything outside the main diagonal is ignored.
+
+---
+
+### Transpose Does Not Change Trace
+
+Always true:
+
+[
+\text{tr}(A)=\text{tr}(A^T)
+]
+
+---
+
+### Cyclic Rearrangement Is Allowed
+
+Valid:
+
+[
+\text{tr}(ABC)
+==============
+
+# \text{tr}(BCA)
+
+\text{tr}(CAB)
+]
+
+But arbitrary reordering is **not** allowed.
+
+For example:
+
+[
+\text{tr}(ABC)
+\neq
+\text{tr}(ACB)
+]
+
+in general.
+
+---
+
+### Frobenius Norm Connection
+
+Remember:
+
+[
+||A||_F
+=======
+
+\sqrt{\text{tr}(A^T A)}
+]
+
+This relationship appears frequently in:
+
+* PCA
+* Linear Regression
+* Matrix Optimization
+* Machine Learning loss functions
+
+---
+
+# 11. Full Final Code
+
+-------------------code----------------------
+import numpy as np
+import torch
+
+# --------------------------
+# NumPy Example
+# --------------------------
+
+A = np.array([
+    [25, 2],
+    [5, 4]
+])
+
+# Trace
+print("Trace:")
+print(np.trace(A))
+
+# Trace of transpose
+print("\nTrace of A^T:")
+print(np.trace(A.T))
+
+# Frobenius norm via trace
+fro_trace = np.sqrt(
+    np.trace(A.T @ A)
+)
+
+print("\nFrobenius norm via trace:")
+print(fro_trace)
+
+# Frobenius norm via NumPy
+fro_numpy = np.linalg.norm(A, 'fro')
+
+print("\nFrobenius norm via NumPy:")
+print(fro_numpy)
+
+# --------------------------
+# Cyclic Property Example
+# --------------------------
+
+A_rand = np.random.randn(3, 3)
+B_rand = np.random.randn(3, 3)
+C_rand = np.random.randn(3, 3)
+
+tr1 = np.trace(A_rand @ B_rand @ C_rand)
+tr2 = np.trace(C_rand @ A_rand @ B_rand)
+tr3 = np.trace(B_rand @ C_rand @ A_rand)
+
+print("\nCyclic Property:")
+print(tr1)
+print(tr2)
+print(tr3)
+
+# --------------------------
+# PyTorch Example
+# --------------------------
+
+A_torch = torch.tensor([
+    [25., 2.],
+    [5., 4.]
+])
+
+trace_torch = torch.trace(A_torch)
+
+print("\nPyTorch Trace:")
+print(trace_torch)
+
+fro_torch = torch.norm(
+    A_torch,
+    p='fro'
+)
+
+print("\nPyTorch Frobenius Norm:")
+print(fro_torch)
+
+fro_trace_torch = torch.sqrt(
+    torch.trace(
+        A_torch.T @ A_torch
+    )
+)
+
+print("\nFrobenius via Trace:")
+print(fro_trace_torch)
+-------------------code----------------------
+
+# 12. Summary
+
+The Trace Operator is defined as:
+
+[
+\text{tr}(A)=\sum_i A_{ii}
+]
+
+Key properties:
+
+1. Trace is the sum of diagonal elements.
+2. (\text{tr}(A)=\text{tr}(A^T))
+3. (\text{tr}(ABC)=\text{tr}(BCA)=\text{tr}(CAB))
+4. Frobenius norm can be computed using:
+
+[
+||A||_F
+=======
+
+\sqrt{\text{tr}(A^T A)}
+]
+
+Why it matters in Machine Learning:
+
+* Simplifies matrix derivations
+* Appears in optimization formulas
+* Used in PCA and many matrix-based algorithms
+* Provides a compact way to express matrix norms and objectives
+
+The trace operator is simple to compute, but it becomes extremely powerful when working with advanced machine learning mathematics.
