@@ -579,3 +579,577 @@ Machine learning models learn by following derivatives.
 -------------------code----------------------
 
 Everything that follows in Calculus I builds toward understanding that process.
+
+*** 51. Intro to Differential Calculus ***
+# Calculus 1: Differential Calculus (Rates of Change)
+
+## 1. What Is Calculus?
+
+### Definition
+
+Calculus is the mathematical study of **continuous change**.
+
+It has two major branches:
+
+1. **Differential Calculus**
+
+   * Studies rates of change.
+   * Focus of this subject.
+
+2. **Integral Calculus**
+
+   * Studies accumulation and total quantities.
+   * Covered later in Calculus 2.
+
+---
+
+## 2. What Is Differential Calculus?
+
+### Core Idea
+
+Differential calculus studies:
+
+> How quickly something changes.
+
+Examples:
+
+* Speed changing over time
+* Temperature changing during the day
+* Stock prices changing
+* Machine learning model loss changing during training
+
+The main tool is the **derivative**.
+
+A derivative measures the slope of a curve at a specific point.
+
+---
+
+# 3. Vehicle Journey Example
+
+Imagine a vehicle traveling.
+
+We measure:
+
+* Distance traveled (D)
+* Time elapsed (t)
+
+The graph looks like:
+
+### Phase 1: Accelerating
+
+The vehicle leaves home and speeds up.
+
+Distance increases faster and faster.
+
+The curve becomes steeper.
+
+---
+
+### Phase 2: Stopped at Store
+
+The vehicle stops.
+
+Distance no longer changes.
+
+The graph becomes flat.
+
+---
+
+### Phase 3: Highway Cruise Control
+
+The vehicle moves at constant speed.
+
+Distance increases steadily.
+
+The graph becomes a straight line.
+
+---
+
+# 4. Understanding Tangent Lines
+
+At any point on a curve we can draw a:
+
+### Tangent Line
+
+A line that touches the curve at one point and follows its direction.
+
+The slope of this tangent line tells us:
+
+> How fast the quantity is changing at that exact moment.
+
+This slope is the derivative.
+
+---
+
+## Example Slopes
+
+| Situation         | Slope |
+| ----------------- | ----- |
+| Slow movement     | 0.5   |
+| Moderate movement | 1     |
+| Fast movement     | 2     |
+| Stopped           | 0     |
+
+---
+
+# 5. Derivative = Instantaneous Rate of Change
+
+For distance over time:
+
+[
+\text{Slope} = \frac{\text{Distance Change}}{\text{Time Change}}
+]
+
+This is simply:
+
+[
+\text{Speed}
+]
+
+Therefore:
+
+[
+\text{Derivative of Distance} = \text{Speed}
+]
+
+---
+
+## Visual Interpretation
+
+### Distance-Time Graph
+
+-------------------code----------------------
+Distance
+ ^
+ |
+ |      /
+ |    /
+ |  /
+ |/
+ +------------> Time
+-------------------code----------------------
+
+Steeper curve = higher speed.
+
+---
+
+# 6. First Derivative: Speed
+
+Suppose:
+
+[
+D(t)
+]
+
+represents distance over time.
+
+Taking the derivative:
+
+[
+D'(t)
+]
+
+gives:
+
+[
+\text{Speed}
+]
+
+---
+
+## Relationship
+
+| Original Function | Derivative |
+| ----------------- | ---------- |
+| Distance          | Speed      |
+
+---
+
+# 7. Speed-Time Graph
+
+Instead of plotting distance:
+
+Plot speed.
+
+Now we can see:
+
+* Acceleration
+* Deceleration
+* Constant velocity
+
+directly.
+
+---
+
+Example:
+
+| Time    | Speed |
+| ------- | ----- |
+| Start   | 0.5   |
+| Later   | 1     |
+| Faster  | 2     |
+| Stopped | 0     |
+| Highway | 1     |
+
+---
+
+# 8. Second Derivative: Acceleration
+
+Now take the derivative again.
+
+We start with:
+
+[
+D(t)
+]
+
+First derivative:
+
+[
+D'(t)=Speed
+]
+
+Second derivative:
+
+[
+D''(t)=Acceleration
+]
+
+---
+
+## Relationship
+
+| Quantity          | Meaning      |
+| ----------------- | ------------ |
+| Distance          | Position     |
+| First Derivative  | Speed        |
+| Second Derivative | Acceleration |
+
+---
+
+# 9. Understanding Acceleration
+
+Acceleration measures:
+
+[
+\frac{\text{Change in Speed}}{\text{Change in Time}}
+]
+
+---
+
+### Positive Acceleration
+
+Speed increasing.
+
+Examples:
+
+* Pressing the gas pedal.
+* Entering a highway.
+
+---
+
+### Negative Acceleration
+
+Speed decreasing.
+
+Examples:
+
+* Braking.
+* Approaching a stop sign.
+
+---
+
+### Zero Acceleration
+
+Speed stays constant.
+
+Examples:
+
+* Cruise control.
+* Vehicle parked.
+
+---
+
+# 10. Derivative Chain
+
+Differentiation can be applied repeatedly.
+
+### First Derivative
+
+[
+Distance \rightarrow Speed
+]
+
+### Second Derivative
+
+[
+Speed \rightarrow Acceleration
+]
+
+### Third Derivative
+
+Possible mathematically, but rarely needed in machine learning.
+
+---
+
+## Machine Learning Focus
+
+In machine learning we usually care about:
+
+### First Derivative
+
+Used for:
+
+* Gradient Descent
+* Optimization
+* Backpropagation
+
+### Second Derivative
+
+Used for:
+
+* Curvature analysis
+* Newton's Method
+* Advanced optimization
+
+Higher derivatives are uncommon.
+
+---
+
+# 11. Hands-On Python Example
+
+## Step 1: Import Libraries
+
+-------------------code----------------------
+import numpy as np
+import matplotlib.pyplot as plt
+-------------------code----------------------
+
+---
+
+## Step 2: Create Time Values
+
+-------------------code----------------------
+t = np.linspace(0, 10, 100)
+-------------------code----------------------
+
+---
+
+## Step 3: Create Distance Function
+
+Example:
+
+[
+D=t^2
+]
+
+-------------------code----------------------
+distance = t**2
+-------------------code----------------------
+
+---
+
+## Step 4: Compute Speed (First Derivative)
+
+-------------------code----------------------
+speed = np.gradient(distance, t)
+-------------------code----------------------
+
+---
+
+## Step 5: Compute Acceleration (Second Derivative)
+
+-------------------code----------------------
+acceleration = np.gradient(speed, t)
+-------------------code----------------------
+
+---
+
+## Step 6: Plot Distance
+
+-------------------code----------------------
+plt.figure(figsize=(8,4))
+plt.plot(t, distance)
+plt.title("Distance vs Time")
+plt.xlabel("Time")
+plt.ylabel("Distance")
+plt.show()
+-------------------code----------------------
+
+---
+
+## Step 7: Plot Speed
+
+-------------------code----------------------
+plt.figure(figsize=(8,4))
+plt.plot(t, speed)
+plt.title("Speed vs Time")
+plt.xlabel("Time")
+plt.ylabel("Speed")
+plt.show()
+-------------------code----------------------
+
+---
+
+## Step 8: Plot Acceleration
+
+-------------------code----------------------
+plt.figure(figsize=(8,4))
+plt.plot(t, acceleration)
+plt.title("Acceleration vs Time")
+plt.xlabel("Time")
+plt.ylabel("Acceleration")
+plt.show()
+-------------------code----------------------
+
+---
+
+# 12. Why This Matters for Machine Learning
+
+Machine learning is fundamentally an optimization problem.
+
+We want to:
+
+1. Measure model error.
+2. Compute how error changes.
+3. Adjust parameters.
+4. Reduce error.
+
+Derivatives tell us:
+
+> Which direction should we move to improve the model?
+
+This idea powers:
+
+* Gradient Descent
+* Backpropagation
+* Neural Networks
+* Deep Learning
+
+Without differential calculus, modern machine learning would not exist.
+
+---
+
+# Important Notes
+
+### Derivative = Slope
+
+Always remember:
+
+[
+\text{Derivative} = \text{Slope}
+]
+
+---
+
+### Slope Means Rate of Change
+
+Examples:
+
+| Function      | Derivative Meaning |
+| ------------- | ------------------ |
+| Distance      | Speed              |
+| Speed         | Acceleration       |
+| Cost Function | Learning Direction |
+
+---
+
+### Steeper Curve = Larger Derivative
+
+* Positive slope → increasing.
+* Negative slope → decreasing.
+* Zero slope → flat.
+
+---
+
+### Derivatives Can Be Applied Repeatedly
+
+[
+D(t)
+]
+
+↓
+
+[
+D'(t)
+]
+
+↓
+
+[
+D''(t)
+]
+
+This creates increasingly detailed information about change.
+
+---
+
+# Full Final Code
+
+-------------------code----------------------
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Time values
+t = np.linspace(0, 10, 100)
+
+# Distance function
+distance = t**2
+
+# First derivative (speed)
+speed = np.gradient(distance, t)
+
+# Second derivative (acceleration)
+acceleration = np.gradient(speed, t)
+
+# Distance plot
+plt.figure(figsize=(8,4))
+plt.plot(t, distance)
+plt.title("Distance vs Time")
+plt.xlabel("Time")
+plt.ylabel("Distance")
+plt.show()
+
+# Speed plot
+plt.figure(figsize=(8,4))
+plt.plot(t, speed)
+plt.title("Speed vs Time")
+plt.xlabel("Time")
+plt.ylabel("Speed")
+plt.show()
+
+# Acceleration plot
+plt.figure(figsize=(8,4))
+plt.plot(t, acceleration)
+plt.title("Acceleration vs Time")
+plt.xlabel("Time")
+plt.ylabel("Acceleration")
+plt.show()
+-------------------code----------------------
+
+# Summary
+
+## Key Concepts
+
+* Calculus studies continuous change.
+* Differential calculus studies rates of change.
+* A derivative is the slope of a curve at a point.
+* Distance differentiated becomes speed.
+* Speed differentiated becomes acceleration.
+* First derivatives are heavily used in machine learning optimization.
+* Second derivatives provide information about curvature.
+* Derivatives allow algorithms like gradient descent and backpropagation to learn from data.
+
+## Core Relationship
+
+[
+Distance \rightarrow Speed \rightarrow Acceleration
+]
+
+or
+
+[
+D(t) \rightarrow D'(t) \rightarrow D''(t)
+]
+
+This chain of derivatives is one of the most important foundations of machine learning and optimization.
