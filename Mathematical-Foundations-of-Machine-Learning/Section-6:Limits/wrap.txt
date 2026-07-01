@@ -1153,3 +1153,589 @@ D(t) \rightarrow D'(t) \rightarrow D''(t)
 ]
 
 This chain of derivatives is one of the most important foundations of machine learning and optimization.
+
+*** 52. Intro to Integral Calculus ***
+# Calculus 1: Introduction to Integral Calculus
+
+## 1. What Is Integral Calculus?
+
+### Definition
+
+Integral calculus is the branch of calculus that studies:
+
+* Areas under curves
+* Accumulation of quantities
+* Total change over an interval
+
+While differential calculus asks:
+
+> "How fast is something changing?"
+
+Integral calculus asks:
+
+> "How much has accumulated over time?"
+
+---
+
+## 2. Differential Calculus vs Integral Calculus
+
+Calculus has two major branches:
+
+### Differential Calculus
+
+Studies rates of change.
+
+It answers questions like:
+
+* How fast is a car moving?
+* How quickly is temperature changing?
+* How does model error change during training?
+
+Output:
+
+* Derivatives
+* Slopes
+* Rates of change
+
+---
+
+### Integral Calculus
+
+Studies accumulated quantities.
+
+It answers questions like:
+
+* How far did a car travel?
+* How much water flowed through a pipe?
+* How much probability exists within a range?
+
+Output:
+
+* Areas
+* Totals
+* Accumulated values
+
+---
+
+# 3. Relationship Between the Two
+
+A key idea:
+
+### Differentiation and Integration are Opposites
+
+Differentiation:
+
+[
+\text{Distance} \rightarrow \text{Speed}
+]
+
+Integration:
+
+[
+\text{Speed} \rightarrow \text{Distance}
+]
+
+Think of them as reverse operations.
+
+---
+
+# 4. Vehicle Example
+
+The lecture continues using the vehicle example from the previous lesson.
+
+---
+
+## Step 1: Distance Over Time
+
+Suppose we have:
+
+[
+Distance(t)
+]
+
+This graph shows:
+
+* How far the vehicle has traveled
+* At each moment in time
+
+---
+
+## Step 2: Differentiate Distance
+
+Taking the derivative gives:
+
+[
+Speed(t)
+]
+
+Now we know:
+
+* The vehicle's speed at every moment
+
+This is differential calculus.
+
+---
+
+## Step 3: Integrate Speed
+
+Suppose we only have:
+
+[
+Speed(t)
+]
+
+How do we recover total distance traveled?
+
+Answer:
+
+Calculate the area under the speed curve.
+
+---
+
+# 5. Area Under the Curve
+
+Consider a speed-time graph.
+
+-------------------code----------------------
+Speed
+ ^
+ |
+ |        /\
+ |      /   \
+ |    /      \
+ |___/________\____> Time
+-------------------code----------------------
+
+The shaded area below the curve represents:
+
+[
+\text{Distance Traveled}
+]
+
+This is the central idea of integral calculus.
+
+---
+
+## Why Does This Work?
+
+Speed measures:
+
+[
+\frac{\text{Distance}}{\text{Time}}
+]
+
+Multiplying speed by time gives:
+
+[
+\text{Distance}
+]
+
+When speed changes continuously, we add up many tiny pieces:
+
+[
+\text{Speed} \times \text{Tiny Time Interval}
+]
+
+Adding all these tiny pieces together produces:
+
+[
+\text{Total Distance}
+]
+
+That addition process is integration.
+
+---
+
+# 6. Mathematical View
+
+### Differentiation
+
+Transforms:
+
+[
+Distance(t)
+]
+
+into
+
+[
+Speed(t)
+]
+
+---
+
+### Integration
+
+Transforms:
+
+[
+Speed(t)
+]
+
+back into
+
+[
+Distance(t)
+]
+
+---
+
+## Simple Example
+
+Distance:
+
+[
+D(t)=t^2
+]
+
+Differentiate:
+
+[
+D'(t)=2t
+]
+
+This gives speed.
+
+---
+
+Integrate speed:
+
+[
+\int 2t,dt
+]
+
+Result:
+
+[
+t^2 + C
+]
+
+which recovers the original distance function.
+
+---
+
+# 7. Visual Interpretation
+
+## Differential Calculus
+
+Measures slope.
+
+-------------------code----------------------
+Distance
+ ^
+ |      /
+ |    /
+ |  /
+ |/
+ +------------> Time
+-------------------code----------------------
+
+Question:
+
+> How steep is the curve?
+
+Answer:
+
+Derivative.
+
+---
+
+## Integral Calculus
+
+Measures area.
+
+-------------------code----------------------
+Speed
+ ^
+ |     /\
+ |    /  \
+ |___/____\____> Time
+-------------------code----------------------
+
+Question:
+
+> How much area is under the curve?
+
+Answer:
+
+Integral.
+
+---
+
+# 8. Hands-On Python Example
+
+## Step 1: Import Libraries
+
+-------------------code----------------------
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.integrate import cumulative_trapezoid
+-------------------code----------------------
+
+---
+
+## Step 2: Create Time Values
+
+-------------------code----------------------
+t = np.linspace(0, 10, 100)
+-------------------code----------------------
+
+---
+
+## Step 3: Create a Speed Function
+
+Suppose speed increases linearly:
+
+[
+Speed=t
+]
+
+-------------------code----------------------
+speed = t
+-------------------code----------------------
+
+---
+
+## Step 4: Compute Distance Using Integration
+
+-------------------code----------------------
+distance = cumulative_trapezoid(speed, t, initial=0)
+-------------------code----------------------
+
+This computes the accumulated area under the speed curve.
+
+---
+
+## Step 5: Plot Speed
+
+-------------------code----------------------
+plt.figure(figsize=(8,4))
+plt.plot(t, speed)
+plt.title("Speed vs Time")
+plt.xlabel("Time")
+plt.ylabel("Speed")
+plt.show()
+-------------------code----------------------
+
+---
+
+## Step 6: Plot Distance
+
+-------------------code----------------------
+plt.figure(figsize=(8,4))
+plt.plot(t, distance)
+plt.title("Distance vs Time")
+plt.xlabel("Time")
+plt.ylabel("Distance")
+plt.show()
+-------------------code----------------------
+
+---
+
+# 9. Numerical Integration Example
+
+Suppose speed values are measured experimentally.
+
+-------------------code----------------------
+speed = np.array([0, 2, 4, 6, 8])
+time = np.array([0, 1, 2, 3, 4])
+-------------------code----------------------
+
+Compute total distance:
+
+-------------------code----------------------
+distance = np.trapz(speed, time)
+print(distance)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+16.0
+-------------------code----------------------
+
+This value represents the area under the speed curve.
+
+---
+
+# 10. Why Integration Matters in Machine Learning
+
+Although this lecture is only a high-level introduction, integration becomes important in:
+
+### Probability
+
+Probability distributions must integrate to 1.
+
+---
+
+### Statistics
+
+Expected values are often computed using integrals.
+
+---
+
+### Optimization
+
+Many optimization methods rely on concepts from both derivatives and integrals.
+
+---
+
+### Deep Learning Theory
+
+Advanced topics involving:
+
+* Continuous functions
+* Probability densities
+* Loss landscapes
+
+frequently use integration.
+
+---
+
+# Important Notes
+
+## Differential Calculus
+
+Focuses on:
+
+[
+\text{Rate of Change}
+]
+
+Questions:
+
+* How fast?
+* How steep?
+* How quickly?
+
+---
+
+## Integral Calculus
+
+Focuses on:
+
+[
+\text{Accumulation}
+]
+
+Questions:
+
+* How much?
+* What total amount?
+* What area?
+
+---
+
+## Key Relationship
+
+Differentiation and integration are inverse operations.
+
+[
+Distance \rightarrow Speed
+]
+
+via differentiation
+
+and
+
+[
+Speed \rightarrow Distance
+]
+
+via integration.
+
+---
+
+## Machine Learning Focus
+
+In this Calculus 1 course:
+
+* Differential calculus is the primary focus.
+* Derivatives are essential for optimization.
+* Integration will be explored more deeply in Calculus 2.
+
+---
+
+# Full Final Code
+
+-------------------code----------------------
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.integrate import cumulative_trapezoid
+
+# Time values
+t = np.linspace(0, 10, 100)
+
+# Speed function
+speed = t
+
+# Integrate speed to get distance
+distance = cumulative_trapezoid(speed, t, initial=0)
+
+# Plot speed
+plt.figure(figsize=(8,4))
+plt.plot(t, speed)
+plt.title("Speed vs Time")
+plt.xlabel("Time")
+plt.ylabel("Speed")
+plt.show()
+
+# Plot distance
+plt.figure(figsize=(8,4))
+plt.plot(t, distance)
+plt.title("Distance vs Time")
+plt.xlabel("Time")
+plt.ylabel("Distance")
+plt.show()
+
+# Numerical integration example
+speed_samples = np.array([0, 2, 4, 6, 8])
+time_samples = np.array([0, 1, 2, 3, 4])
+
+total_distance = np.trapz(speed_samples, time_samples)
+
+print("Total Distance:", total_distance)
+-------------------code----------------------
+
+# Summary
+
+## Main Ideas
+
+* Integral calculus studies accumulation and area under curves.
+
+* It is the inverse of differential calculus.
+
+* Differential calculus transforms:
+
+  [
+  Distance \rightarrow Speed
+  ]
+
+* Integral calculus transforms:
+
+  [
+  Speed \rightarrow Distance
+  ]
+
+* The area under a speed-time curve equals total distance traveled.
+
+* Integration adds together many tiny contributions over time.
+
+* Integration plays an important role in probability, statistics, optimization, and advanced machine learning.
+
+## Core Concept to Remember
+
+Differential Calculus:
+
+[
+\text{How fast is something changing?}
+]
+
+Integral Calculus:
+
+[
+\text{How much has accumulated?}
+]
+
+These two ideas form the foundation of all calculus and many machine learning algorithms.
+
