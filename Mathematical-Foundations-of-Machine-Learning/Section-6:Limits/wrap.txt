@@ -3242,3 +3242,550 @@ Error
 | How do we use the slope? | Move opposite to the slope (Gradient Descent) |
 | What happens at slope = 0? | We found the best weights (minimum error) |
 | What is this process called? | Gradient Descent |
+
+*** 55. Calculus Applications ***
+# Calculus 1 - Real-World Applications of Calculus (Especially in Machine Learning)
+
+---
+
+# 1. Overview
+
+This lecture explains **why calculus is important** by showing its real-world applications, with a strong emphasis on **machine learning**.
+
+The lecture covers both branches of calculus:
+
+* **Differential Calculus** – used to optimize functions by finding minimums and maximums.
+* **Integral Calculus** – used to calculate areas under curves and evaluate machine learning models.
+
+The main takeaway is that **calculus is one of the mathematical foundations of modern machine learning and deep learning.**
+
+---
+
+# 2. Differential Calculus in the Real World
+
+## What does Differential Calculus do?
+
+Differential calculus studies **rates of change** by computing **derivatives**.
+
+A derivative tells us:
+
+* The slope of a curve.
+* Whether a function is increasing or decreasing.
+* Where minimum and maximum values occur.
+
+These properties allow us to **optimize** functions.
+
+---
+
+# 3. What is Optimization?
+
+Optimization means finding the:
+
+* Minimum value
+* Maximum value
+
+Examples:
+
+* Minimize cost
+* Maximize profit
+* Maximize accuracy
+* Maximize reward
+
+Optimization is one of the most important applications of calculus.
+
+---
+
+# 4. Real-World Applications of Differential Calculus
+
+## Engineering
+
+Engineers use derivatives to:
+
+* Find the strongest design.
+* Maximize structural strength.
+* Optimize material usage.
+
+Example:
+
+Finding the safest bridge design while minimizing material costs.
+
+---
+
+## Finance
+
+Finance uses derivatives to:
+
+* Minimize costs
+* Maximize profits
+* Optimize investment strategies
+
+Example:
+
+Choosing the investment strategy with the highest return.
+
+---
+
+## Machine Learning
+
+Machine learning uses derivatives to optimize model parameters.
+
+The objective is usually to:
+
+* Minimize prediction error.
+* Improve model accuracy.
+
+---
+
+# 5. Cost Function
+
+A machine learning model measures its error using a **cost (loss) function**.
+
+-------------------code----------------------
+High Cost
+    *
+   *
+  *
+ *
+*
+-----------------> Training
+-------------------code----------------------
+
+As training continues:
+
+* Cost decreases.
+* Accuracy increases.
+
+The goal is to find the **lowest possible cost**.
+
+---
+
+# 6. Gradient Descent
+
+Gradient Descent is the most common optimization algorithm in machine learning.
+
+Its purpose is:
+
+* Move toward the minimum cost.
+* Update model parameters (weights).
+
+The model repeatedly performs:
+
+1. Compute derivatives.
+2. Determine the slope.
+3. Move downhill.
+4. Repeat until reaching the minimum.
+
+---
+
+## Step-by-Step
+
+### Step 1
+
+Start with random model weights.
+
+-------------------code----------------------
+Random Weights
+-------------------code----------------------
+
+---
+
+### Step 2
+
+Compute prediction error.
+
+-------------------code----------------------
+Cost = Large
+-------------------code----------------------
+
+---
+
+### Step 3
+
+Compute the derivative.
+
+The derivative tells us:
+
+* Which direction reduces the error.
+
+---
+
+### Step 4
+
+Update the weights.
+
+-------------------code----------------------
+Old Weights
+      ↓
+
+New Weights
+-------------------code----------------------
+
+---
+
+### Step 5
+
+Repeat many times.
+
+Eventually:
+
+-------------------code----------------------
+High Cost
+   *
+  *
+ *
+*
+_____*________
+      Minimum
+-------------------code----------------------
+
+The model converges to the minimum.
+
+---
+
+# 7. Why Does Gradient Descent Work?
+
+Because derivatives tell us:
+
+* Which direction is downhill.
+* How steep the hill is.
+
+Without derivatives, the model would not know how to improve itself.
+
+---
+
+# 8. Example: Handwritten Digit Recognition
+
+The lecture mentions a neural network trained to recognize handwritten digits.
+
+Examples:
+
+-------------------code----------------------
+0
+1
+2
+3
+...
+9
+-------------------code----------------------
+
+Initially:
+
+* High error
+* Poor predictions
+
+After training:
+
+* Lower error
+* Better predictions
+* Higher accuracy
+
+As cost decreases:
+
+-------------------code----------------------
+Accuracy ↑
+
+Cost ↓
+-------------------code----------------------
+
+---
+
+# 9. Relationship Between Cost and Accuracy
+
+Generally:
+
+-------------------code----------------------
+Cost ↓
+
+↓
+
+Accuracy ↑
+-------------------code----------------------
+
+The lower the cost, the better the model performs.
+
+---
+
+# 10. Gradient Ascent
+
+Gradient Ascent is the opposite of Gradient Descent.
+
+Instead of minimizing something, it maximizes something.
+
+Goal:
+
+-------------------code----------------------
+Maximum Reward
+-------------------code----------------------
+
+instead of
+
+-------------------code----------------------
+Minimum Cost
+-------------------code----------------------
+
+---
+
+# 11. Reinforcement Learning
+
+The lecture introduces **Deep Q-Learning Networks (DQN)**.
+
+Instead of predicting labels, the model learns by receiving rewards.
+
+Example:
+
+A video game.
+
+Objective:
+
+-------------------code----------------------
+Highest Score
+-------------------code----------------------
+
+The model repeatedly:
+
+1. Plays the game.
+2. Receives a reward.
+3. Learns better actions.
+4. Improves over time.
+
+Eventually it reaches the maximum possible score.
+
+---
+
+# 12. Gradient Ascent vs Gradient Descent
+
+| Gradient Descent              | Gradient Ascent                  |
+| ----------------------------- | -------------------------------- |
+| Minimize cost                 | Maximize reward                  |
+| Move downhill                 | Move uphill                      |
+| Common in supervised learning | Common in reinforcement learning |
+
+---
+
+# 13. Higher-Order Derivatives
+
+The lecture also introduces **second derivatives**.
+
+Recall:
+
+First derivative:
+
+-------------------code----------------------
+Distance
+
+↓
+
+Speed
+-------------------code----------------------
+
+Second derivative:
+
+-------------------code----------------------
+Speed
+
+↓
+
+Acceleration
+-------------------code----------------------
+
+Machine learning also uses higher-order derivatives.
+
+These help advanced optimization algorithms learn more efficiently.
+
+---
+
+# 14. Advanced Optimizers
+
+Some optimizers use:
+
+* First derivative
+* Second derivative
+
+Benefits:
+
+* Faster learning
+* Better convergence
+* More efficient optimization
+
+These topics will be covered later in the Optimization section of the course.
+
+---
+
+# 15. Integral Calculus Applications
+
+Integral calculus computes:
+
+* Area under a curve.
+
+This also has many machine learning applications.
+
+---
+
+# 16. ROC Curve (Receiver Operating Characteristic)
+
+Binary classification models often use the **ROC Curve**.
+
+Examples:
+
+* Spam / Not Spam
+* Cat / Dog
+* Hot Dog / Not Hot Dog
+
+The ROC curve evaluates how well a classifier performs.
+
+---
+
+# 17. Area Under the Curve (AUC)
+
+The important metric is:
+
+-------------------code----------------------
+Area Under ROC Curve
+-------------------code----------------------
+
+called
+
+-------------------code----------------------
+AUC
+-------------------code----------------------
+
+A larger area generally indicates better model performance.
+
+Integral calculus is used to compute this area.
+
+---
+
+# 18. Probability Theory
+
+Integral calculus is also used in probability.
+
+One major application is calculating the:
+
+-------------------code----------------------
+Expected Value
+-------------------code----------------------
+
+or
+
+-------------------code----------------------
+Expectation of a Random Variable
+-------------------code----------------------
+
+Expectation is used throughout:
+
+* Statistics
+* Machine Learning
+* Deep Learning
+
+---
+
+# 19. Why Calculus Matters in Machine Learning
+
+Calculus enables machines to:
+
+* Learn from data.
+* Improve predictions.
+* Minimize errors.
+* Maximize rewards.
+* Evaluate model performance.
+* Compute probability expectations.
+
+Without calculus, modern deep learning would not exist.
+
+---
+
+# 20. Code Example: Simple Gradient Descent
+
+-------------------code----------------------
+import numpy as np
+
+# Function
+def f(x):
+    return x**2
+
+# Derivative
+def df(x):
+    return 2*x
+
+# Initial point
+x = 5
+
+learning_rate = 0.1
+
+for i in range(20):
+    x = x - learning_rate * df(x)
+
+print("Minimum found near:", x)
+-------------------code----------------------
+
+This demonstrates the basic idea of gradient descent:
+
+1. Compute derivative.
+2. Move downhill.
+3. Repeat.
+
+---
+
+# 21. Important Notes
+
+* Differential calculus is primarily used for optimization.
+* Derivatives guide machine learning models toward better solutions.
+* Gradient Descent minimizes cost.
+* Gradient Ascent maximizes reward.
+* Higher-order derivatives improve optimization efficiency.
+* Integral calculus computes areas under curves.
+* ROC-AUC is one of the most common evaluation metrics for binary classification.
+
+---
+
+# 22. Best Practices
+
+* Always understand the objective function before optimizing.
+* Remember that derivatives provide the direction for optimization.
+* Gradient Descent is fundamental to nearly every deep learning algorithm.
+* Higher-order optimization methods are faster but more mathematically complex.
+* Recognize that calculus appears throughout machine learning, from optimization to evaluation and probability.
+
+---
+
+# 23. Full Final Code
+
+-------------------code----------------------
+import numpy as np
+
+# Function to minimize
+def f(x):
+    return x**2
+
+# Derivative of the function
+def df(x):
+    return 2*x
+
+# Initial parameter
+x = 5
+
+learning_rate = 0.1
+iterations = 20
+
+print("Starting x:", x)
+
+for i in range(iterations):
+    gradient = df(x)
+    x = x - learning_rate * gradient
+    print(f"Iteration {i+1}: x = {x:.6f}, f(x) = {f(x):.6f}")
+
+print("\nApproximate minimum:")
+print("x =", x)
+print("f(x) =", f(x))
+-------------------code----------------------
+
+---
+
+# 24. Summary
+
+* **Differential Calculus** is used to optimize functions by finding minimum and maximum values.
+* **Gradient Descent** minimizes cost and is the foundation of training neural networks.
+* **Gradient Ascent** maximizes rewards and is commonly used in reinforcement learning.
+* **Higher-order derivatives** enable more advanced optimization techniques.
+* **Integral Calculus** computes areas under curves and is used for metrics like **ROC-AUC** and for calculating **expected values** in probability.
+* Together, differential and integral calculus provide the mathematical tools that power modern machine learning and deep learning systems.
