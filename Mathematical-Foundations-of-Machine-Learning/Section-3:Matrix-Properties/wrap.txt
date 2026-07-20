@@ -216,3 +216,217 @@ print(result)
   * Prepares you for **advanced matrix operations**
 
 This is the transition point from understanding tensors to **using matrices as powerful computational tools in machine learning**.
+
+*** 24. The Frobenius Norm ***
+# 1. Overview
+
+This lecture introduces the **Frobenius Norm**, a method used to measure the **size (magnitude) of a matrix**.
+
+It is:
+
+* A natural extension of the **L2 norm (Euclidean norm)** for vectors
+* Widely used in machine learning and linear algebra
+
+---
+
+# 2. Frobenius Norm Definition
+
+## 2.1 Mathematical Formula
+
+|X|*F = \sqrt{\sum*{i,j} x_{ij}^2}
+
+## 2.2 Explanation Step-by-Step
+
+To compute the Frobenius norm:
+
+1. Take each element in the matrix
+2. Square each element
+3. Sum all squared values
+4. Take the square root of the result
+
+---
+
+# 3. Intuition
+
+## 3.1 Relation to L2 Norm
+
+* Frobenius norm = **L2 norm for matrices**
+* Measures **Euclidean distance**
+
+## 3.2 Another Perspective
+
+* Treat each column (or row) as a vector
+* Frobenius norm = combined magnitude of all vectors
+
+---
+
+# 4. Manual Calculation Example
+
+## 4.1 Matrix
+
+[
+X =
+\begin{bmatrix}
+1 & 2 \
+3 & 4
+\end{bmatrix}
+]
+
+## 4.2 Step-by-Step Calculation
+
+-------------------code----------------------
+import numpy as np
+
+X = np.array([[1, 2],
+              [3, 4]])
+
+# Step 1: Square elements
+squared = X ** 2
+
+# Step 2: Sum all values
+sum_squared = np.sum(squared)
+
+# Step 3: Square root
+fro_norm = np.sqrt(sum_squared)
+
+print(fro_norm)
+-------------------code----------------------
+
+---
+
+# 5. Using Built-in Functions
+
+## 5.1 NumPy
+
+-------------------code----------------------
+import numpy as np
+
+X = np.array([[1, 2],
+              [3, 4]])
+
+fro_norm = np.linalg.norm(X)
+
+print(fro_norm)
+-------------------code----------------------
+
+---
+
+## 5.2 PyTorch
+
+-------------------code----------------------
+import torch
+
+X = torch.tensor([[1., 2.],
+                  [3., 4.]])
+
+fro_norm = torch.norm(X)
+
+print(fro_norm)
+-------------------code----------------------
+
+---
+
+## 5.3 TensorFlow
+
+-------------------code----------------------
+import tensorflow as tf
+
+X = tf.constant([[1., 2.],
+                 [3., 4.]])
+
+fro_norm = tf.norm(X)
+
+print(fro_norm)
+-------------------code----------------------
+
+---
+
+# 6. Important Notes & Best Practices
+
+## 6.1 Data Types Matter
+
+* NumPy: works with integers or floats
+* PyTorch / TensorFlow: **must use float tensors**
+
+## 6.2 Use Built-in Functions
+
+* Prefer `norm()` instead of manual computation
+* More efficient and less error-prone
+
+## 6.3 Interpretation
+
+* Larger Frobenius norm → larger matrix magnitude
+* Sensitive to large values (due to squaring)
+
+## 6.4 When It’s Used
+
+* Regularization in machine learning
+* Measuring matrix size or error
+* Optimization problems
+
+---
+
+# 7. Full Final Code
+
+-------------------code----------------------
+# NumPy Example
+import numpy as np
+
+X_np = np.array([[1, 2],
+                 [3, 4]])
+
+# Manual computation
+fro_manual = np.sqrt(np.sum(X_np ** 2))
+
+# Built-in
+fro_numpy = np.linalg.norm(X_np)
+
+print("NumPy Manual:", fro_manual)
+print("NumPy Built-in:", fro_numpy)
+
+
+# PyTorch Example
+import torch
+
+X_torch = torch.tensor([[1., 2.],
+                        [3., 4.]])
+
+fro_torch = torch.norm(X_torch)
+
+print("PyTorch:", fro_torch)
+
+
+# TensorFlow Example
+import tensorflow as tf
+
+X_tf = tf.constant([[1., 2.],
+                    [3., 4.]])
+
+fro_tf = tf.norm(X_tf)
+
+print("TensorFlow:", fro_tf)
+-------------------code----------------------
+
+---
+
+# 8. Summary
+
+* Frobenius norm measures the **size of a matrix**
+* Formula:
+
+  * Square all elements → sum → square root
+* It is:
+
+  * Equivalent to **L2 norm for matrices**
+  * Based on **Euclidean distance**
+* Can be computed:
+
+  * Manually
+  * Using built-in functions (`norm`)
+* Important in:
+
+  * Machine learning
+  * Optimization
+  * Matrix analysis
+
+This concept is fundamental for understanding matrix behavior in upcoming topics like matrix multiplication and regularization.
