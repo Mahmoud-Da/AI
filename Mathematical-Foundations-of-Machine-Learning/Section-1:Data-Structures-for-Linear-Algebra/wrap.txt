@@ -3325,3 +3325,284 @@ if __name__ == "__main__":
   * Linear algebra in ML
 
 ---
+
+*** 11. Generic Tensor Notation ***
+## 1. Introduction to Higher-Dimensional Tensors
+
+### 1.1 What Problem Are We Solving?
+
+So far we studied:
+
+* **Scalars (0D)** → single value
+* **Vectors (1D)** → list of values
+* **Matrices (2D)** → table of values
+
+Now we generalize to:
+
+* **Tensors (n-dimensional)** → data with any number of dimensions
+
+---
+
+### 1.2 Definition of a Tensor
+
+A **tensor** is:
+
+* A generalization of scalars, vectors, and matrices
+* Can have **any number of dimensions (rank)**
+
+Examples:
+
+* Rank 0 → scalar
+* Rank 1 → vector
+* Rank 2 → matrix
+* Rank 3+ → higher-dimensional tensors
+
+---
+
+## 2. Tensor Notation
+
+### 2.1 General Notation
+
+* Tensors are written as:
+
+  * **Uppercase**
+  * **Bold**
+  * **Italic**
+  * **Sans-serif**
+
+Example:
+[
+\mathbf{X}
+]
+
+---
+
+### 2.2 Accessing Elements
+
+For a 4D tensor:
+
+[
+X_{i,j,k,l}
+]
+
+Each index represents a dimension:
+
+* i → first dimension
+* j → second
+* k → third
+* l → fourth
+
+---
+
+## 3. Real-World Example (Deep Learning)
+
+### 3.1 4D Tensor for Images
+
+A very common structure in machine learning:
+
+[
+(\text{batch size}, \text{height}, \text{width}, \text{channels})
+]
+
+---
+
+### 3.2 Example Breakdown
+
+| Dimension | Meaning              |
+| --------- | -------------------- |
+| 32        | number of images     |
+| 28        | height (pixels)      |
+| 28        | width (pixels)       |
+| 3         | color channels (RGB) |
+
+So shape becomes:
+
+-------------------code----------------------
+(32, 28, 28, 3)
+-------------------code----------------------
+
+---
+
+### 3.3 Special Case (MNIST)
+
+* Shape: `(batch, 28, 28, 1)`
+* Only **1 channel** (grayscale)
+
+---
+
+## 4. Creating High-Dimensional Tensors in Python
+
+---
+
+## 4.1 PyTorch Example
+
+### Step 1: Import Library
+
+-------------------code----------------------
+import torch
+-------------------code----------------------
+
+---
+
+### Step 2: Create a 4D Tensor
+
+-------------------code----------------------
+tensor_torch = torch.zeros((32, 28, 28, 3))
+-------------------code----------------------
+
+Explanation:
+
+* Creates a tensor filled with zeros
+* Shape = (batch, height, width, channels)
+
+---
+
+### Step 3: Check Shape
+
+-------------------code----------------------
+print(tensor_torch.shape)
+-------------------code----------------------
+
+---
+
+## 4.2 TensorFlow Example
+
+### Step 1: Import Library
+
+-------------------code----------------------
+import tensorflow as tf
+-------------------code----------------------
+
+---
+
+### Step 2: Create a 4D Tensor
+
+-------------------code----------------------
+tensor_tf = tf.zeros((32, 28, 28, 3))
+-------------------code----------------------
+
+---
+
+### Step 3: Check Shape
+
+-------------------code----------------------
+print(tensor_tf.shape)
+-------------------code----------------------
+
+---
+
+## 5. Understanding Tensor Structure
+
+### 5.1 Nested Representation
+
+* Each dimension adds another layer of brackets
+* Example:
+
+  * Vector → `[x1, x2]`
+  * Matrix → `[[...], [...]]`
+  * 4D tensor → `[[[[...]]]]`
+
+---
+
+### 5.2 Why High Dimensions Matter
+
+Used heavily in:
+
+* Computer vision
+* Deep learning
+* Neural networks
+
+Examples:
+
+* Images → 4D tensors
+* Videos → 5D tensors
+* NLP embeddings → 3D tensors
+
+---
+
+## 6. Important Notes and Best Practices
+
+### 6.1 Always Track Shape
+
+* Most ML bugs come from wrong shapes
+* Always print `.shape`
+
+---
+
+### 6.2 Use Zeros for Initialization
+
+* `zeros()` is useful for:
+
+  * Testing
+  * Debugging
+  * Placeholder data
+
+---
+
+### 6.3 Understand Dimension Meaning
+
+Do not just memorize shapes:
+
+* Know what each dimension represents
+
+---
+
+### 6.4 PyTorch vs TensorFlow
+
+* PyTorch → more intuitive, pythonic
+* TensorFlow → more production tools
+
+---
+
+## 7. Full Final Python Script
+
+-------------------code----------------------
+import torch
+import tensorflow as tf
+
+
+def pytorch_demo():
+    print("=== PyTorch 4D Tensor ===")
+
+    tensor = torch.zeros((32, 28, 28, 3))
+
+    print("Shape:", tensor.shape)
+
+
+def tensorflow_demo():
+    print("\n=== TensorFlow 4D Tensor ===")
+
+    tensor = tf.zeros((32, 28, 28, 3))
+
+    print("Shape:", tensor.shape)
+
+
+def main():
+    pytorch_demo()
+    tensorflow_demo()
+
+
+if __name__ == "__main__":
+    main()
+-------------------code----------------------
+
+---
+
+## 8. Summary
+
+* Tensors generalize:
+
+  * Scalars → vectors → matrices → higher dimensions
+* A tensor’s **rank = number of dimensions**
+* Real-world ML uses high-dimensional tensors extensively
+* Common example:
+
+  * Images → 4D tensors `(batch, height, width, channels)`
+* Libraries like **PyTorch** and **TensorFlow** make tensor creation easy
+* Understanding tensor shapes is critical for:
+
+  * Debugging
+  * Building ML models
+  * Avoiding errors
+
+---
