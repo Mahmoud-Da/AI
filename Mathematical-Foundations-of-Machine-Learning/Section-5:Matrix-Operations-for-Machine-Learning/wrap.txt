@@ -2565,3 +2565,699 @@ np.linalg.pinv(A)
   * Machine learning optimization
 
 Understanding the pseudoinverse is important because it allows us to solve systems of equations even when ordinary matrix inversion is impossible.
+
+*** 46. Regression with the Pseudoinverse ***
+# Moore–Penrose Pseudoinverse for Solving Unknowns and Linear Regression
+
+## 1. Lecture Overview
+
+This lecture demonstrates one of the most practical applications of the **Moore–Penrose Pseudoinverse**:
+
+* Solving for unknown variables
+* Fitting a regression line to data
+* Performing linear regression using only linear algebra
+* Handling non-square matrices that cannot be inverted normally
+
+This is a foundational idea behind many machine learning algorithms.
+
+---
+
+# 2. The Real Machine Learning Problem
+
+Consider predicting house prices.
+
+### Inputs (Features)
+
+Examples:
+
+* Number of bedrooms
+* Distance to school
+* House size
+* Age of property
+
+Represented as:
+
+[
+x_1, x_2, x_3, ..., x_m
+]
+
+### Output
+
+House price:
+
+[
+y
+]
+
+### Unknowns
+
+Weights the model must learn:
+
+[
+a,b,c,...,m
+]
+
+Where:
+
+* (a) = intercept (bias)
+* (b,c,\ldots) = feature weights
+
+---
+
+# 3. Regression Equation
+
+Traditional regression:
+
+[
+y = a + bx_1 + cx_2 + \cdots + mx_m
+]
+
+Instead of writing long equations, linear algebra allows us to write:
+
+[
+Y = XW
+]
+
+Where:
+
+### Y
+
+Output vector
+
+[
+Y=
+\begin{bmatrix}
+y_1\
+y_2\
+\vdots\
+y_n
+\end{bmatrix}
+]
+
+---
+
+### X
+
+Feature matrix
+
+[
+X=
+\begin{bmatrix}
+1 & x_{11} & x_{12} \
+1 & x_{21} & x_{22} \
+\vdots & \vdots & \vdots
+\end{bmatrix}
+]
+
+First column of ones = intercept term.
+
+---
+
+### W
+
+Unknown weights
+
+[
+W=
+\begin{bmatrix}
+a\
+b\
+c
+\end{bmatrix}
+]
+
+---
+
+# 4. Why Normal Matrix Inversion Fails
+
+If (X) were square:
+
+[
+W = X^{-1}Y
+]
+
+would work.
+
+However, real datasets usually have:
+
+* Thousands of rows (examples)
+* Few columns (features)
+
+Example:
+
+| Houses | Features |
+| ------ | -------- |
+| 10,000 | 12       |
+
+Matrix shape:
+
+-------------------code----------------------
+(10000, 12)
+-------------------code----------------------
+
+Not square.
+
+Cannot compute:
+
+[
+X^{-1}
+]
+
+---
+
+# 5. Moore–Penrose Pseudoinverse Solution
+
+Replace inverse with pseudoinverse:
+
+[
+W = X^{+}Y
+]
+
+Where:
+
+[
+X^{+}
+]
+
+is the Moore–Penrose Pseudoinverse.
+
+This allows solving for weights even when:
+
+* Matrix is non-square
+* Matrix is overdetermined
+* Matrix is underdetermined
+
+---
+
+# 6. Overdetermined vs Underdetermined Systems
+
+## Overdetermined
+
+More equations than unknowns.
+
+Example:
+
+-------------------code----------------------
+8 rows
+2 columns
+-------------------code----------------------
+
+Shape:
+
+-------------------code----------------------
+(8, 2)
+-------------------code----------------------
+
+Common in regression.
+
+---
+
+## Underdetermined
+
+More unknowns than equations.
+
+Example:
+
+-------------------code----------------------
+100 rows
+1,000,000 features
+-------------------code----------------------
+
+Common in deep learning.
+
+---
+
+# 7. Example Dataset
+
+The lecture uses a simple clinical trial.
+
+## Feature
+
+Drug dosage:
+
+-------------------code----------------------
+x1 = [0,1,2,3,4,5,6,7]
+-------------------code----------------------
+
+---
+
+## Output
+
+Forgetfulness score:
+
+-------------------code----------------------
+y = [1.86,1.31,0.62,0.57,0.27,0.12,-0.40,-0.32]
+-------------------code----------------------
+
+Higher dosage → less forgetfulness.
+
+---
+
+# 8. Step 1 — Import Libraries
+
+-------------------code----------------------
+import numpy as np
+import matplotlib.pyplot as plt
+-------------------code----------------------
+
+---
+
+# 9. Step 2 — Create Data
+
+-------------------code----------------------
+x1 = np.array([0,1,2,3,4,5,6,7])
+
+y = np.array([
+    1.86,
+    1.31,
+    0.62,
+    0.57,
+    0.27,
+    0.12,
+   -0.40,
+   -0.32
+])
+-------------------code----------------------
+
+---
+
+# 10. Step 3 — Visualize Data
+
+-------------------code----------------------
+plt.scatter(x1, y)
+plt.title("Clinical Trial")
+plt.xlabel("Drug Dosage")
+plt.ylabel("Forgetfulness")
+plt.show()
+-------------------code----------------------
+
+The points show a clear downward trend.
+
+---
+
+# 11. Step 4 — Create Intercept Column
+
+A regression line usually needs an intercept.
+
+Create:
+
+[
+x_0 = 1
+]
+
+for every row.
+
+-------------------code----------------------
+x0 = np.ones(len(x1))
+-------------------code----------------------
+
+Result:
+
+-------------------code----------------------
+[1,1,1,1,1,1,1,1]
+-------------------code----------------------
+
+---
+
+# 12. Step 5 — Build Feature Matrix X
+
+Combine intercept and dosage.
+
+-------------------code----------------------
+X = np.column_stack((x0, x1))
+-------------------code----------------------
+
+Result:
+
+-------------------code----------------------
+[
+ [1,0],
+ [1,1],
+ [1,2],
+ [1,3],
+ [1,4],
+ [1,5],
+ [1,6],
+ [1,7]
+]
+-------------------code----------------------
+
+Shape:
+
+-------------------code----------------------
+(8,2)
+-------------------code----------------------
+
+---
+
+# 13. Step 6 — Compute Weights Using Pseudoinverse
+
+Apply:
+
+[
+W = X^{+}Y
+]
+
+Code:
+
+-------------------code----------------------
+w = np.linalg.pinv(X) @ y
+-------------------code----------------------
+
+Result:
+
+-------------------code----------------------
+[
+ 1.76,
+ -0.50
+]
+-------------------code----------------------
+
+---
+
+# 14. Understanding the Weights
+
+## Weight 1
+
+-------------------code----------------------
+1.76
+-------------------code----------------------
+
+Intercept:
+
+[
+b = 1.76
+]
+
+---
+
+## Weight 2
+
+-------------------code----------------------
+-0.50
+-------------------code----------------------
+
+Slope:
+
+[
+m = -0.50
+]
+
+---
+
+# 15. Regression Equation
+
+The fitted line becomes:
+
+[
+y = -0.50x + 1.76
+]
+
+Interpretation:
+
+Every additional unit of dosage decreases forgetfulness by approximately 0.5 units.
+
+---
+
+# 16. Extract Slope and Intercept
+
+-------------------code----------------------
+b = w[0]
+m = w[1]
+-------------------code----------------------
+
+---
+
+# 17. Step 7 — Plot Regression Line
+
+Generate endpoints.
+
+-------------------code----------------------
+xmin = np.min(x1)
+xmax = np.max(x1)
+-------------------code----------------------
+
+Compute line values:
+
+-------------------code----------------------
+ymin = m * xmin + b
+ymax = m * xmax + b
+-------------------code----------------------
+
+Plot:
+
+-------------------code----------------------
+plt.scatter(x1, y)
+
+plt.plot(
+    [xmin, xmax],
+    [ymin, ymax]
+)
+
+plt.show()
+-------------------code----------------------
+
+The fitted line passes through the data trend.
+
+---
+
+# 18. Why This Is Powerful
+
+Without:
+
+* Gradient descent
+* Optimization algorithms
+* Neural networks
+
+We directly solved for the best-fitting line using linear algebra.
+
+Just:
+
+[
+W = X^{+}Y
+]
+
+---
+
+# 19. What the Pseudoinverse Does
+
+### Overdetermined System
+
+Many rows, few columns.
+
+Pseudoinverse finds:
+
+The solution with the smallest prediction error.
+
+---
+
+### Underdetermined System
+
+Few rows, many columns.
+
+Pseudoinverse finds:
+
+The solution with the smallest Euclidean norm.
+
+---
+
+# 20. Important Notes
+
+## Always Include an Intercept
+
+Create a column of ones:
+
+-------------------code----------------------
+x0 = np.ones(...)
+-------------------code----------------------
+
+Without it:
+
+* Line is forced through zero.
+* Model often performs worse.
+
+---
+
+## Pseudoinverse Works on Non-Square Matrices
+
+Unlike:
+
+-------------------code----------------------
+np.linalg.inv()
+-------------------code----------------------
+
+which requires a square matrix.
+
+---
+
+## Used Throughout Machine Learning
+
+The pseudoinverse appears in:
+
+* Linear Regression
+* Least Squares
+* Optimization
+* Signal Processing
+* Statistics
+
+---
+
+## NumPy Shortcut
+
+Instead of manually computing:
+
+[
+X^{+}
+]
+
+use:
+
+-------------------code----------------------
+np.linalg.pinv(X)
+-------------------code----------------------
+
+---
+
+# Best Practices
+
+### Use Matrix Form
+
+Prefer:
+
+-------------------code----------------------
+Y = XW
+-------------------code----------------------
+
+instead of long equations.
+
+---
+
+### Always Check Dimensions
+
+Verify:
+
+-------------------code----------------------
+X.shape
+Y.shape
+-------------------code----------------------
+
+before matrix multiplication.
+
+---
+
+### Add Bias Explicitly
+
+Include:
+
+-------------------code----------------------
+np.ones(...)
+-------------------code----------------------
+
+for the intercept term.
+
+---
+
+### Use `pinv()` for Real Data
+
+-------------------code----------------------
+np.linalg.pinv(X)
+-------------------code----------------------
+
+is numerically stable and production-ready.
+
+---
+
+# Full Final Code
+
+-------------------code----------------------
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Drug dosage feature
+x1 = np.array([0, 1, 2, 3, 4, 5, 6, 7])
+
+# Forgetfulness scores
+y = np.array([
+    1.86,
+    1.31,
+    0.62,
+    0.57,
+    0.27,
+    0.12,
+   -0.40,
+   -0.32
+])
+
+# Scatter plot
+plt.scatter(x1, y)
+plt.title("Clinical Trial")
+plt.xlabel("Drug Dosage")
+plt.ylabel("Forgetfulness")
+plt.show()
+
+# Intercept column
+x0 = np.ones(len(x1))
+
+# Feature matrix
+X = np.column_stack((x0, x1))
+
+# Solve for weights
+w = np.linalg.pinv(X) @ y
+
+print("Weights:")
+print(w)
+
+# Extract intercept and slope
+b = w[0]
+m = w[1]
+
+print("Intercept:", b)
+print("Slope:", m)
+
+# Create regression line
+xmin = np.min(x1)
+xmax = np.max(x1)
+
+ymin = m * xmin + b
+ymax = m * xmax + b
+
+# Plot data and fitted line
+plt.scatter(x1, y)
+
+plt.plot(
+    [xmin, xmax],
+    [ymin, ymax]
+)
+
+plt.title("Clinical Trial")
+plt.xlabel("Drug Dosage")
+plt.ylabel("Forgetfulness")
+
+plt.show()
+-------------------code----------------------
+
+# Summary
+
+* Real machine learning datasets usually produce non-square matrices.
+* Normal matrix inversion cannot solve these systems.
+* The Moore–Penrose Pseudoinverse extends inversion to non-square matrices.
+* Linear regression can be written as:
+
+[
+Y = XW
+]
+
+* The weights are solved directly using:
+
+[
+W = X^{+}Y
+]
+
+* In the lecture example, the pseudoinverse finds:
+
+  * Intercept ≈ 1.76
+  * Slope ≈ -0.50
+
+* This allows fitting a regression line entirely through linear algebra without iterative optimization.
+
+This is one of the most important practical applications of the pseudoinverse and forms the mathematical foundation of least-squares linear regression.
