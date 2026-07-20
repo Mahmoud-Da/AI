@@ -1737,3 +1737,689 @@ print(result3)
 ## Core Takeaway
 
 Matrix multiplication is one of the most fundamental operations in machine learning and deep learning. Understanding how rows, columns, and element-wise products combine is critical for understanding neural networks and tensor operations later on.
+
+
+*** 28. Matrix Inversion ***
+# Matrix Inversion
+
+# 1. Overview
+
+Matrix inversion is one of the most important operations in linear algebra and machine learning.
+
+It is commonly used to:
+
+* Solve systems of linear equations
+* Solve regression problems
+* Compute unknown variables
+* Perform advanced machine learning operations
+
+Matrix inversion allows us to solve equations computationally instead of manually using:
+
+* Substitution
+* Elimination
+* Paper-and-pencil algebra
+
+---
+
+# 2. What Is Matrix Inversion?
+
+For a matrix:
+
+[
+X
+]
+
+Its inverse is written as:
+
+[
+X^{-1}
+]
+
+The inverse satisfies this important rule:
+
+[
+X^{-1}X = I
+]
+
+Where:
+
+[
+I
+]
+
+is the identity matrix.
+
+---
+
+# 3. Identity Matrix Refresher
+
+An identity matrix contains:
+
+* 1s on the main diagonal
+* 0s everywhere else
+
+Example:
+
+[
+I_2 =
+\begin{bmatrix}
+1 & 0 \
+0 & 1
+\end{bmatrix}
+]
+
+Identity matrices behave like the number 1 in normal multiplication.
+
+---
+
+# 4. Why Matrix Inversion Matters
+
+Matrix inversion helps solve equations like:
+
+[
+Y = XW
+]
+
+Where:
+
+* (Y) = outputs/targets
+* (X) = input features
+* (W) = unknown weights/parameters
+
+This form appears constantly in:
+
+* Regression
+* Deep learning
+* Neural networks
+* Machine learning models
+
+---
+
+# 5. Solving for Unknown Weights
+
+We want to solve for:
+
+[
+W
+]
+
+Starting with:
+
+[
+XW = Y
+]
+
+---
+
+## Step 1 — Multiply Both Sides by the Inverse of X
+
+[
+X^{-1}XW = X^{-1}Y
+]
+
+---
+
+## Step 2 — Use Identity Matrix Property
+
+Because:
+
+[
+X^{-1}X = I
+]
+
+We get:
+
+[
+IW = X^{-1}Y
+]
+
+---
+
+## Step 3 — Identity Matrix Leaves W Unchanged
+
+[
+W = X^{-1}Y
+]
+
+This is the key matrix inversion equation.
+
+---
+
+# 6. Example Regression Problem
+
+## 6.1 Given Equations
+
+[
+4B + 2C = 4
+]
+
+[
+-5B -3C = -7
+]
+
+We want to solve for:
+
+[
+B \text{ and } C
+]
+
+---
+
+# 7. Convert Equations into Matrices
+
+## Feature Matrix
+
+[
+X =
+\begin{bmatrix}
+4 & 2 \
+-5 & -3
+\end{bmatrix}
+]
+
+---
+
+## Output Vector
+
+[
+Y =
+\begin{bmatrix}
+4 \
+-7
+\end{bmatrix}
+]
+
+---
+
+## Unknown Weights
+
+[
+W =
+\begin{bmatrix}
+B \
+C
+\end{bmatrix}
+]
+
+---
+
+# 8. Solve Using Matrix Inversion
+
+We use:
+
+[
+W = X^{-1}Y
+]
+
+---
+
+# 9. NumPy Implementation
+
+## Step 1 — Import NumPy
+
+-------------------code----------------------
+import numpy as np
+-------------------code----------------------
+
+---
+
+## Step 2 — Create Matrix X
+
+-------------------code----------------------
+X = np.array([
+    [4, 2],
+    [-5, -3]
+])
+-------------------code----------------------
+
+---
+
+## Step 3 — Create Output Vector Y
+
+-------------------code----------------------
+Y = np.array([
+    [4],
+    [-7]
+])
+-------------------code----------------------
+
+---
+
+## Step 4 — Calculate Matrix Inverse
+
+-------------------code----------------------
+X_inv = np.linalg.inv(X)
+
+print(X_inv)
+-------------------code----------------------
+
+Expected result:
+
+-------------------code----------------------
+[[ 1.5  1. ]
+ [-2.5 -2. ]]
+-------------------code----------------------
+
+---
+
+## Step 5 — Solve for W
+
+-------------------code----------------------
+W = np.dot(X_inv, Y)
+
+print(W)
+-------------------code----------------------
+
+Result:
+
+-------------------code----------------------
+[[-1.]
+ [ 4.]]
+-------------------code----------------------
+
+Meaning:
+
+[
+B = -1
+]
+
+[
+C = 4
+]
+
+---
+
+# 10. Verify the Solution
+
+We can verify using:
+
+[
+Y = XW
+]
+
+-------------------code----------------------
+Y_check = np.dot(X, W)
+
+print(Y_check)
+-------------------code----------------------
+
+Result:
+
+-------------------code----------------------
+[[ 4.]
+ [-7.]]
+-------------------code----------------------
+
+The predicted values match the original outputs.
+
+---
+
+# 11. PyTorch Example
+
+## Step 1 — Import PyTorch
+
+-------------------code----------------------
+import torch
+-------------------code----------------------
+
+---
+
+## Step 2 — Create Float Tensor
+
+-------------------code----------------------
+X_torch = torch.tensor([
+    [4., 2.],
+    [-5., -3.]
+])
+-------------------code----------------------
+
+---
+
+## Step 3 — Compute Inverse
+
+-------------------code----------------------
+torch_inverse = torch.inverse(X_torch)
+
+print(torch_inverse)
+-------------------code----------------------
+
+---
+
+# 12. TensorFlow Example
+
+## Step 1 — Import TensorFlow
+
+-------------------code----------------------
+import tensorflow as tf
+-------------------code----------------------
+
+---
+
+## Step 2 — Create Tensor
+
+-------------------code----------------------
+X_tf = tf.constant([
+    [4., 2.],
+    [-5., -3.]
+])
+-------------------code----------------------
+
+---
+
+## Step 3 — Compute Inverse
+
+-------------------code----------------------
+tf_inverse = tf.linalg.inv(X_tf)
+
+print(tf_inverse)
+-------------------code----------------------
+
+---
+
+# 13. Limitations of Matrix Inversion
+
+Matrix inversion cannot always be performed.
+
+---
+
+# 14. Limitation 1 — Matrix Must Be Square
+
+The matrix must have:
+
+[
+\text{rows} = \text{columns}
+]
+
+Valid example:
+
+[
+2 \times 2
+]
+
+Invalid example:
+
+[
+3 \times 2
+]
+
+---
+
+# 15. Limitation 2 — Matrix Must Be Non-Singular
+
+A matrix is singular if columns are linearly dependent.
+
+Example:
+
+[
+\begin{bmatrix}
+1 & 2 \
+2 & 4
+\end{bmatrix}
+]
+
+The second column is a multiple of the first.
+
+This means:
+
+* Lines are parallel
+* No unique solution exists
+* Matrix inversion fails
+
+---
+
+# 16. Example of Singular Matrix Error
+
+## Step 1 — Create Singular Matrix
+
+-------------------code----------------------
+X_singular = np.array([
+    [1, 2],
+    [2, 4]
+])
+-------------------code----------------------
+
+---
+
+## Step 2 — Attempt Inversion
+
+-------------------code----------------------
+np.linalg.inv(X_singular)
+-------------------code----------------------
+
+Result:
+
+-------------------code----------------------
+LinAlgError: Singular matrix
+-------------------code----------------------
+
+---
+
+# 17. Overdetermined Systems
+
+An overdetermined system has:
+
+[
+\text{rows} > \text{columns}
+]
+
+Example:
+
+* 3 equations
+* 2 unknowns
+
+Usually no exact solution exists.
+
+---
+
+# 18. Underdetermined Systems
+
+An underdetermined system has:
+
+[
+\text{rows} < \text{columns}
+]
+
+Example:
+
+* 1 equation
+* 2 unknowns
+
+Infinite solutions may exist.
+
+---
+
+# 19. Important Notes and Best Practices
+
+## Always Check Matrix Shape
+
+Before inversion:
+
+-------------------code----------------------
+print(X.shape)
+-------------------code----------------------
+
+Make sure the matrix is square.
+
+---
+
+## Watch for Singular Matrices
+
+Dependent columns cause inversion failure.
+
+---
+
+## Use Float Types in PyTorch/TensorFlow
+
+PyTorch and TensorFlow require float tensors for inversion.
+
+Example:
+
+-------------------code----------------------
+4.
+-------------------code----------------------
+
+instead of:
+
+-------------------code----------------------
+4
+-------------------code----------------------
+
+---
+
+## Matrix Inversion Is Expensive
+
+For large machine learning systems:
+
+* Direct inversion can be slow
+* Numerical methods are often preferred
+
+---
+
+## Verify Solutions
+
+Always check:
+
+[
+XW = Y
+]
+
+after solving.
+
+---
+
+# 20. Full Final Code
+
+-------------------code----------------------
+import numpy as np
+import torch
+import tensorflow as tf
+
+# ==========================================
+# NumPy Example
+# ==========================================
+
+X = np.array([
+    [4, 2],
+    [-5, -3]
+])
+
+Y = np.array([
+    [4],
+    [-7]
+])
+
+# Matrix inverse
+X_inv = np.linalg.inv(X)
+
+print("Inverse of X:")
+print(X_inv)
+
+# Solve for W
+W = np.dot(X_inv, Y)
+
+print("\nWeights W:")
+print(W)
+
+# Verify solution
+Y_check = np.dot(X, W)
+
+print("\nVerification:")
+print(Y_check)
+
+# ==========================================
+# Singular Matrix Example
+# ==========================================
+
+X_singular = np.array([
+    [1, 2],
+    [2, 4]
+])
+
+# Uncomment to test singular matrix error
+# np.linalg.inv(X_singular)
+
+# ==========================================
+# PyTorch Example
+# ==========================================
+
+X_torch = torch.tensor([
+    [4., 2.],
+    [-5., -3.]
+])
+
+torch_inverse = torch.inverse(X_torch)
+
+print("\nPyTorch Inverse:")
+print(torch_inverse)
+
+# ==========================================
+# TensorFlow Example
+# ==========================================
+
+X_tf = tf.constant([
+    [4., 2.],
+    [-5., -3.]
+])
+
+tf_inverse = tf.linalg.inv(X_tf)
+
+print("\nTensorFlow Inverse:")
+print(tf_inverse)
+-------------------code----------------------
+
+---
+
+# 21. Summary
+
+## Key Concepts Learned
+
+### Matrix Inversion
+
+The inverse of a matrix satisfies:
+
+[
+X^{-1}X = I
+]
+
+---
+
+### Solving Linear Systems
+
+Matrix inversion allows solving:
+
+[
+W = X^{-1}Y
+]
+
+---
+
+### Regression Interpretation
+
+* (X) = input features
+* (Y) = outputs
+* (W) = learnable weights
+
+---
+
+### Requirements for Inversion
+
+A matrix must be:
+
+1. Square
+2. Non-singular
+3. Linearly independent
+
+---
+
+### Common Failure Cases
+
+* Parallel lines
+* Duplicate equations
+* Overdetermined systems
+* Underdetermined systems
+
+---
+
+## Core Takeaway
+
+Matrix inversion is one of the foundational operations behind regression and many machine learning algorithms. It provides a powerful computational way to solve systems of equations and estimate unknown model parameters.
