@@ -2259,3 +2259,701 @@ Affine transformations are foundational for:
 * Deep learning
 
 Understanding these geometric transformations is essential for advanced machine learning topics.
+
+
+*** 35. Eigenvectors and Eigenvalues ***
+# 1. Introduction to Eigenvectors and Eigenvalues
+
+Eigenvectors and eigenvalues are fundamental concepts in linear algebra and machine learning.
+
+They help describe how a matrix transforms vectors.
+
+Applications include:
+
+* Principal Component Analysis (PCA)
+* PageRank
+* Computer vision
+* Data compression
+* Physics simulations
+* Deep learning
+
+This lecture explains:
+
+1. What eigenvectors are
+2. What eigenvalues are
+3. How to compute them using NumPy and PyTorch
+4. How to visualize matrix transformations
+
+---
+
+# 2. What Is an Eigenvector?
+
+An eigenvector is a special vector that keeps the same direction after a matrix transformation.
+
+A matrix may:
+
+* Stretch a vector
+* Shrink a vector
+* Flip a vector
+
+But if the vector stays on the same line (same span), it is an eigenvector.
+
+---
+
+## 2.1 Intuition with the Mona Lisa Example
+
+Imagine a picture with vectors drawn on top.
+
+When a transformation matrix is applied:
+
+* Some vectors change direction completely
+* Some vectors stay on the same axis
+
+Vectors that remain on the same axis are eigenvectors.
+
+---
+
+## 2.2 Examples
+
+### Reflection Matrix
+
+If a matrix flips an image across the y-axis:
+
+* Horizontal vector stays horizontal
+* Vertical vector stays vertical
+
+These vectors are eigenvectors.
+
+---
+
+### Shearing Matrix
+
+A shearing transformation slants the image.
+
+* One vector may stay aligned
+* Another may tilt away
+
+Only vectors that keep their direction are eigenvectors.
+
+---
+
+# 3. What Is an Eigenvalue?
+
+An eigenvalue tells us how much an eigenvector changes length during transformation.
+
+---
+
+## 3.1 Eigenvalue Meanings
+
+| Eigenvalue | Meaning             |
+| ---------- | ------------------- |
+| 1          | Same length         |
+| 2          | Doubled length      |
+| 0.5        | Half length         |
+| -1         | Flipped direction   |
+| -2         | Flipped and doubled |
+
+---
+
+# 4. Core Eigenvector Equation
+
+The central equation is:
+
+[
+Av = \lambda v
+]
+
+Where:
+
+* (A) = matrix
+* (v) = eigenvector
+* (\lambda) = eigenvalue
+
+Meaning:
+
+Applying matrix (A) to vector (v) gives the same result as scaling (v) by (\lambda).
+
+---
+
+# 5. Computing Eigenvectors and Eigenvalues in NumPy
+
+---
+
+# 5.1 Create a Matrix
+
+-------------------code----------------------
+import numpy as np
+
+A = np.array([
+    [-1, 4],
+    [2, -2]
+])
+-------------------code----------------------
+
+---
+
+# 5.2 Compute Eigenvalues and Eigenvectors
+
+-------------------code----------------------
+lambdas, V = np.linalg.eig(A)
+-------------------code----------------------
+
+* `lambdas` contains eigenvalues
+* `V` contains eigenvectors as columns
+
+---
+
+# 5.3 View Eigenvectors
+
+-------------------code----------------------
+print(V)
+-------------------code----------------------
+
+Example output:
+
+-------------------code----------------------
+[[ 0.86  0.82]
+ [ 0.51 -0.57]]
+-------------------code----------------------
+
+Each column is one eigenvector.
+
+---
+
+# 5.4 View Eigenvalues
+
+-------------------code----------------------
+print(lambdas)
+-------------------code----------------------
+
+Example:
+
+-------------------code----------------------
+[ 1.37 -4.37]
+-------------------code----------------------
+
+---
+
+# 6. Verifying the Eigenvector Equation
+
+We verify:
+
+[
+Av = \lambda v
+]
+
+---
+
+# 6.1 First Eigenvector
+
+-------------------code----------------------
+v = V[:, 0]
+lambda_ = lambdas[0]
+-------------------code----------------------
+
+---
+
+# 6.2 Compute Left Side
+
+-------------------code----------------------
+Av = A.dot(v)
+
+print(Av)
+-------------------code----------------------
+
+---
+
+# 6.3 Compute Right Side
+
+-------------------code----------------------
+lambda_v = lambda_ * v
+
+print(lambda_v)
+-------------------code----------------------
+
+Both outputs should match.
+
+---
+
+# 7. Visual Understanding
+
+Suppose the original eigenvector is:
+
+-------------------code----------------------
+v = [0.86, 0.51]
+-------------------code----------------------
+
+After transformation:
+
+* It keeps the same direction
+* Its length changes
+
+If eigenvalue is:
+
+-------------------code----------------------
+1.37
+-------------------code----------------------
+
+Then the vector becomes 1.37 times longer.
+
+---
+
+# 8. Negative Eigenvalues
+
+If an eigenvalue is negative:
+
+* The vector flips direction
+* The length scales by the magnitude
+
+Example:
+
+-------------------code----------------------
+-4.4
+-------------------code----------------------
+
+Means:
+
+* Vector flips
+* Becomes 4.4 times longer
+
+---
+
+# 9. Using PyTorch
+
+PyTorch can compute eigenvectors and eigenvalues too.
+
+---
+
+# 9.1 Create Matrix
+
+-------------------code----------------------
+import torch
+
+A = torch.tensor([
+    [-1., 4.],
+    [2., -2.]
+])
+-------------------code----------------------
+
+Important:
+PyTorch requires float tensors.
+
+---
+
+# 9.2 Compute Eigenvalues and Eigenvectors
+
+-------------------code----------------------
+eigens = torch.eig(A, eigenvectors=True)
+-------------------code----------------------
+
+---
+
+# 9.3 Extract Eigenvectors
+
+-------------------code----------------------
+v = eigens.eigenvectors[:, 0]
+-------------------code----------------------
+
+---
+
+# 9.4 Extract Eigenvalues
+
+-------------------code----------------------
+lambda_ = eigens.eigenvalues[0, 0]
+-------------------code----------------------
+
+---
+
+# 9.5 Verify Equation
+
+-------------------code----------------------
+Av = torch.matmul(A, v)
+
+lambda_v = lambda_ * v
+
+print(Av)
+print(lambda_v)
+-------------------code----------------------
+
+Both results should match.
+
+---
+
+# 10. Eigenvectors in Higher Dimensions
+
+Eigenvectors are not limited to 2D matrices.
+
+Example:
+
+-------------------code----------------------
+X = np.array([
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+])
+-------------------code----------------------
+
+A 3×3 matrix has:
+
+* 3 eigenvectors
+* 3 eigenvalues
+
+---
+
+# 10.1 Compute Them
+
+-------------------code----------------------
+lambdas, V = np.linalg.eig(X)
+-------------------code----------------------
+
+---
+
+# 10.2 Select One Eigenvector
+
+-------------------code----------------------
+v = V[:, 0]
+
+lambda_ = lambdas[0]
+-------------------code----------------------
+
+---
+
+# 10.3 Verify Equation
+
+-------------------code----------------------
+print(X.dot(v))
+
+print(lambda_ * v)
+-------------------code----------------------
+
+Outputs should match.
+
+---
+
+# 11. Important Concepts
+
+---
+
+## 11.1 Eigenvectors Are Directions
+
+They represent directions that remain unchanged after transformation.
+
+---
+
+## 11.2 Eigenvalues Represent Scaling
+
+They describe:
+
+* Stretching
+* Shrinking
+* Flipping
+
+---
+
+## 11.3 Every Eigenvector Has a Matching Eigenvalue
+
+The first eigenvalue corresponds to the first eigenvector.
+
+Second eigenvalue corresponds to second eigenvector, etc.
+
+---
+
+# 12. Important Notes and Best Practices
+
+---
+
+## 12.1 NumPy vs PyTorch
+
+### NumPy
+
+-------------------code----------------------
+np.linalg.eig()
+-------------------code----------------------
+
+Returns:
+
+* Eigenvalues
+* Eigenvectors
+
+Automatically.
+
+---
+
+### PyTorch
+
+-------------------code----------------------
+torch.eig()
+-------------------code----------------------
+
+Requires:
+
+-------------------code----------------------
+eigenvectors=True
+-------------------code----------------------
+
+to return eigenvectors.
+
+---
+
+## 12.2 Use Float Types in PyTorch
+
+Correct:
+
+-------------------code----------------------
+torch.tensor([[1., 2.], [3., 4.]])
+-------------------code----------------------
+
+Incorrect:
+
+-------------------code----------------------
+torch.tensor([[1, 2], [3, 4]])
+-------------------code----------------------
+
+---
+
+## 12.3 Eigenvectors Are Stored as Columns
+
+This is very important.
+
+Access them like:
+
+-------------------code----------------------
+V[:, 0]
+-------------------code----------------------
+
+not:
+
+-------------------code----------------------
+V[0]
+-------------------code----------------------
+
+---
+
+## 12.4 Small Numerical Errors Are Normal
+
+Floating point arithmetic can produce tiny rounding errors.
+
+This is expected.
+
+---
+
+# 13. Step-by-Step Workflow
+
+---
+
+## Step 1: Create Matrix
+
+-------------------code----------------------
+A = np.array([
+    [-1, 4],
+    [2, -2]
+])
+-------------------code----------------------
+
+---
+
+## Step 2: Compute Eigenvalues and Eigenvectors
+
+-------------------code----------------------
+lambdas, V = np.linalg.eig(A)
+-------------------code----------------------
+
+---
+
+## Step 3: Select Eigenvector
+
+-------------------code----------------------
+v = V[:, 0]
+-------------------code----------------------
+
+---
+
+## Step 4: Select Eigenvalue
+
+-------------------code----------------------
+lambda_ = lambdas[0]
+-------------------code----------------------
+
+---
+
+## Step 5: Verify Equation
+
+-------------------code----------------------
+A.dot(v)
+-------------------code----------------------
+
+and
+
+-------------------code----------------------
+lambda_ * v
+-------------------code----------------------
+
+should match.
+
+---
+
+# 14. Full Final NumPy Code
+
+-------------------code----------------------
+import numpy as np
+
+# Create matrix
+A = np.array([
+    [-1, 4],
+    [2, -2]
+])
+
+# Compute eigenvalues and eigenvectors
+lambdas, V = np.linalg.eig(A)
+
+print("Eigenvalues:")
+print(lambdas)
+
+print("\nEigenvectors:")
+print(V)
+
+# First eigenvector and eigenvalue
+v1 = V[:, 0]
+lambda1 = lambdas[0]
+
+print("\nFirst Eigenvector:")
+print(v1)
+
+print("\nFirst Eigenvalue:")
+print(lambda1)
+
+# Verify Av = λv
+Av = A.dot(v1)
+
+lambda_v = lambda1 * v1
+
+print("\nA dot v:")
+print(Av)
+
+print("\nLambda times v:")
+print(lambda_v)
+
+# Second eigenvector and eigenvalue
+v2 = V[:, 1]
+lambda2 = lambdas[1]
+
+Av2 = A.dot(v2)
+
+lambda_v2 = lambda2 * v2
+
+print("\nSecond Eigenvector:")
+print(v2)
+
+print("\nSecond Eigenvalue:")
+print(lambda2)
+
+print("\nA dot v2:")
+print(Av2)
+
+print("\nLambda times v2:")
+print(lambda_v2)
+-------------------code----------------------
+
+---
+
+# 15. Full Final PyTorch Code
+
+-------------------code----------------------
+import torch
+
+# Create matrix
+A = torch.tensor([
+    [-1., 4.],
+    [2., -2.]
+])
+
+# Compute eigenvalues and eigenvectors
+eigens = torch.eig(A, eigenvectors=True)
+
+# Extract eigenvectors
+v1 = eigens.eigenvectors[:, 0]
+v2 = eigens.eigenvectors[:, 1]
+
+# Extract eigenvalues
+lambda1 = eigens.eigenvalues[0, 0]
+lambda2 = eigens.eigenvalues[1, 0]
+
+# Verify first eigenvector
+Av1 = torch.matmul(A, v1)
+lambda_v1 = lambda1 * v1
+
+print("First Eigenvector Verification")
+print(Av1)
+print(lambda_v1)
+
+# Verify second eigenvector
+Av2 = torch.matmul(A, v2)
+lambda_v2 = lambda2 * v2
+
+print("\nSecond Eigenvector Verification")
+print(Av2)
+print(lambda_v2)
+-------------------code----------------------
+
+---
+
+# 16. Summary
+
+---
+
+## Key Ideas
+
+* Eigenvectors keep the same direction after matrix transformation.
+* Eigenvalues describe how eigenvectors scale.
+* The key equation is:
+
+[
+Av = \lambda v
+]
+
+* Positive eigenvalues keep direction.
+* Negative eigenvalues flip direction.
+
+---
+
+## NumPy Functions
+
+-------------------code----------------------
+np.linalg.eig()
+-------------------code----------------------
+
+Used to compute:
+
+* Eigenvalues
+* Eigenvectors
+
+---
+
+## PyTorch Functions
+
+-------------------code----------------------
+torch.eig()
+-------------------code----------------------
+
+Requires:
+
+-------------------code----------------------
+eigenvectors=True
+-------------------code----------------------
+
+---
+
+## Important Machine Learning Uses
+
+* PCA
+* Dimensionality reduction
+* Compression
+* Computer vision
+* Deep learning
+* Recommender systems
+
+---
+
+## Most Important Takeaway
+
+Eigenvectors reveal the important directions inside a matrix transformation, and eigenvalues tell us how strongly those directions are stretched or flipped.
