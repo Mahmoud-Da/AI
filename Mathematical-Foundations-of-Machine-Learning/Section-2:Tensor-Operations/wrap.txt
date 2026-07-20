@@ -2272,3 +2272,322 @@ print("Example 3:", sp.solve((eq1, eq2), (x, y)))
   * Infinite solutions (same line)
 
 This method builds intuition before moving to **matrix-based computational solutions** in the next section.
+
+*** 21. Solving Linear Systems with Elimination ***
+# 1. Overview of the Lecture
+
+This lecture introduces the **elimination method** for solving linear systems.
+
+Key ideas:
+
+* Used when substitution is not convenient
+* Eliminates one variable using addition/subtraction
+* Works by making coefficients cancel out
+
+---
+
+# 2. When to Use Elimination
+
+## 2.1 Best Case
+
+Use elimination when:
+
+* No variable has coefficient = 1
+* Substitution would be messy
+
+## 2.2 Core Idea
+
+Make coefficients of one variable:
+
+* Equal in magnitude
+* Opposite in sign
+
+So they cancel when adding equations
+
+---
+
+# 3. Elimination Method (Step-by-Step)
+
+## Example System
+
+-------------------code----------------------
+{
+  2x - 3y = 15
+  4x + 10y = 14
+}
+-------------------code----------------------
+
+---
+
+## Step 1: Align coefficients
+
+Multiply first equation by -2:
+
+-------------------code----------------------
+-4x + 6y = -30
+-------------------code----------------------
+
+---
+
+## Step 2: Add equations
+
+-------------------code----------------------
+(-4x + 6y) + (4x + 10y) = -30 + 14
+-------------------code----------------------
+
+---
+
+## Step 3: Simplify
+
+-------------------code----------------------
+16y = -16
+y = -1
+-------------------code----------------------
+
+---
+
+## Step 4: Substitute back
+
+-------------------code----------------------
+2x - 3(-1) = 15
+2x + 3 = 15
+2x = 12
+x = 6
+-------------------code----------------------
+
+---
+
+## Final Answer
+
+-------------------code----------------------
+(x, y) = (6, -1)
+-------------------code----------------------
+
+---
+
+# 4. Practice Example 1
+
+## Given
+
+-------------------code----------------------
+{
+  4x - 3y = 25
+  -3x + 8y = 10
+}
+-------------------code----------------------
+
+---
+
+## Step 1: Match coefficients
+
+Multiply:
+
+* First equation ×3
+* Second equation ×4
+
+-------------------code----------------------
+12x - 9y = 75
+-12x + 32y = 40
+-------------------code----------------------
+
+---
+
+## Step 2: Add equations
+
+-------------------code----------------------
+23y = 115
+y = 5
+-------------------code----------------------
+
+---
+
+## Step 3: Substitute
+
+-------------------code----------------------
+4x - 3(5) = 25
+4x - 15 = 25
+4x = 40
+x = 10
+-------------------code----------------------
+
+---
+
+## Final Answer
+
+-------------------code----------------------
+(x, y) = (10, 5)
+-------------------code----------------------
+
+---
+
+# 5. Practice Example 2 (No Solution)
+
+## Key Idea
+
+If elimination leads to:
+
+-------------------code----------------------
+0 = -15
+-------------------code----------------------
+
+Then:
+
+* System is inconsistent
+* No solution exists
+
+## Interpretation
+
+* Lines are **parallel**
+* They never intersect
+
+---
+
+# 6. Practice Example 3 (Smart Shortcut)
+
+## Given
+
+-------------------code----------------------
+{
+  4x + 2y = 4
+  5x + 3y = 7
+}
+-------------------code----------------------
+
+---
+
+## Step 1: Simplify equation
+
+Divide first equation by 2:
+
+-------------------code----------------------
+2x + y = 2
+-------------------code----------------------
+
+---
+
+## Step 2: Switch to substitution
+
+-------------------code----------------------
+y = 2 - 2x
+-------------------code----------------------
+
+---
+
+## Step 3: Substitute
+
+-------------------code----------------------
+5x + 3(2 - 2x) = 7
+-------------------code----------------------
+
+---
+
+## Step 4: Solve
+
+-------------------code----------------------
+5x + 6 - 6x = 7
+-x = 1
+x = -1
+-------------------code----------------------
+
+---
+
+## Step 5: Find y
+
+-------------------code----------------------
+y = 2 - 2(-1) = 4
+-------------------code----------------------
+
+---
+
+## Final Answer
+
+-------------------code----------------------
+(x, y) = (-1, 4)
+-------------------code----------------------
+
+---
+
+# 7. Code Example (Verification)
+
+-------------------code----------------------python id="code1"
+import sympy as sp
+
+x, y = sp.symbols('x y')
+
+# Example system
+eq1 = sp.Eq(2*x - 3*y, 15)
+eq2 = sp.Eq(4*x + 10*y, 14)
+
+solution = sp.solve((eq1, eq2), (x, y))
+print(solution)
+-------------------code----------------------
+
+---
+
+# 8. Full Final Code
+
+-------------------code----------------------python id="finalcode"
+import sympy as sp
+
+x, y = sp.symbols('x y')
+
+# Example 1
+eq1 = sp.Eq(2*x - 3*y, 15)
+eq2 = sp.Eq(4*x + 10*y, 14)
+print("Example 1:", sp.solve((eq1, eq2), (x, y)))
+
+# Practice Example 1
+eq1 = sp.Eq(4*x - 3*y, 25)
+eq2 = sp.Eq(-3*x + 8*y, 10)
+print("Example 2:", sp.solve((eq1, eq2), (x, y)))
+
+# Practice Example 3
+eq1 = sp.Eq(2*x + y, 2)
+eq2 = sp.Eq(5*x + 3*y, 7)
+print("Example 3:", sp.solve((eq1, eq2), (x, y)))
+-------------------code----------------------
+
+---
+
+# 9. Important Notes and Best Practices
+
+## Elimination Strategy
+
+* Choose variable with easiest coefficients
+* Multiply equations carefully
+* Keep track of signs
+
+## Efficiency Tips
+
+* Try simplifying equations first
+* Sometimes convert to substitution if easier
+
+## Detect Special Cases
+
+* **No solution** → contradiction (parallel lines)
+* **Infinite solutions** → same equation
+
+## Common Mistakes
+
+* Forgetting to multiply all terms
+* Sign errors during addition
+* Mixing variables incorrectly
+
+---
+
+# 10. Summary
+
+* Elimination removes a variable by combining equations
+* Steps:
+
+  1. Match coefficients
+  2. Add/subtract equations
+  3. Solve remaining variable
+  4. Substitute back
+* Systems can have:
+
+  * One solution
+  * No solution (parallel lines)
+  * Infinite solutions
+
+This method, together with substitution, builds the foundation for solving systems before moving to **matrix-based computational methods**.
