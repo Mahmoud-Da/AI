@@ -2423,3 +2423,437 @@ A matrix must be:
 ## Core Takeaway
 
 Matrix inversion is one of the foundational operations behind regression and many machine learning algorithms. It provides a powerful computational way to solve systems of equations and estimate unknown model parameters.
+
+*** 29. Diagonal Matrices ***
+# 1. Diagonal Matrices
+
+A diagonal matrix is a special type of matrix where:
+
+* All non-diagonal elements are `0`
+* Only the main diagonal can contain non-zero values
+
+Example:
+
+[
+X =
+\begin{bmatrix}
+x_1 & 0 & 0 \
+0 & x_2 & 0 \
+0 & 0 & x_3
+\end{bmatrix}
+]
+
+The matrix can be represented using only the diagonal values:
+
+[
+x = [x_1, x_2, x_3]
+]
+
+This is useful because all other values are known to be zero.
+
+---
+
+# 2. Why Diagonal Matrices Are Important
+
+Diagonal matrices are important because they make computations:
+
+1. Faster
+2. Simpler
+3. More memory efficient
+
+They are widely used in:
+
+* Machine learning
+* Linear algebra
+* Optimization
+* Neural networks
+
+---
+
+# 3. Multiplication with Diagonal Matrices
+
+## 3.1 Matrix Form
+
+Suppose:
+
+[
+X =
+\begin{bmatrix}
+2 & 0 & 0 \
+0 & 3 & 0 \
+0 & 0 & 4
+\end{bmatrix}
+]
+
+And:
+
+[
+y =
+\begin{bmatrix}
+5 \
+6 \
+7
+\end{bmatrix}
+]
+
+Then:
+
+[
+Xy =
+\begin{bmatrix}
+2 \cdot 5 \
+3 \cdot 6 \
+4 \cdot 7
+\end{bmatrix}
+=============
+
+\begin{bmatrix}
+10 \
+18 \
+28
+\end{bmatrix}
+]
+
+---
+
+## 3.2 Key Insight
+
+Multiplying a diagonal matrix by a vector is equivalent to:
+
+* Element-wise multiplication (Hadamard product)
+* Or multiplying matching vector elements directly
+
+Instead of full matrix multiplication, we only multiply:
+
+[
+[x_1, x_2, x_3] \cdot [y_1, y_2, y_3]
+]
+
+This makes the computation very efficient.
+
+---
+
+# 4. Step-by-Step Python Example
+
+## 4.1 Create a Diagonal Matrix
+
+### NumPy Code
+
+-------------------code----------------------
+import numpy as np
+
+X = np.diag([2, 3, 4])
+
+print(X)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+[[2 0 0]
+ [0 3 0]
+ [0 0 4]]
+-------------------code----------------------
+
+---
+
+## 4.2 Create a Vector
+
+-------------------code----------------------
+y = np.array([5, 6, 7])
+
+print(y)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+[5 6 7]
+-------------------code----------------------
+
+---
+
+## 4.3 Multiply the Matrix and Vector
+
+-------------------code----------------------
+result = X @ y
+
+print(result)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+[10 18 28]
+-------------------code----------------------
+
+---
+
+# 5. Efficient Alternative
+
+Because diagonal matrices only use diagonal values, we can avoid full matrix multiplication.
+
+Instead:
+
+-------------------code----------------------
+x = np.array([2, 3, 4])
+
+result = x * y
+
+print(result)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+[10 18 28]
+-------------------code----------------------
+
+This gives the exact same result.
+
+---
+
+# 6. Inversion of Diagonal Matrices
+
+## 6.1 Concept
+
+Diagonal matrices are very easy to invert.
+
+We simply invert each diagonal element individually.
+
+Example:
+
+[
+\begin{bmatrix}
+2 & 0 \
+0 & 4
+\end{bmatrix}^{-1}
+==================
+
+\begin{bmatrix}
+1/2 & 0 \
+0 & 1/4
+\end{bmatrix}
+]
+
+---
+
+## 6.2 Important Rule
+
+A diagonal matrix cannot be inverted if any diagonal value is `0`.
+
+Why?
+
+Because division by zero is impossible.
+
+---
+
+# 7. Step-by-Step Inversion Example
+
+## 7.1 Create a Diagonal Matrix
+
+-------------------code----------------------
+X = np.diag([2, 4, 8])
+
+print(X)
+-------------------code----------------------
+
+---
+
+## 7.2 Compute the Inverse
+
+-------------------code----------------------
+X_inv = np.linalg.inv(X)
+
+print(X_inv)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+[[0.5   0.    0.   ]
+ [0.    0.25  0.   ]
+ [0.    0.    0.125]]
+-------------------code----------------------
+
+---
+
+# 8. Non-Square Diagonal Matrices
+
+Diagonal matrices are usually square in machine learning, but not always.
+
+Examples:
+
+## Tall Matrix
+
+More rows than columns:
+
+[
+\begin{bmatrix}
+1 & 0 \
+0 & 2 \
+0 & 0
+\end{bmatrix}
+]
+
+Extra rows can lead to additional zeros in results.
+
+---
+
+## Wide Matrix
+
+More columns than rows:
+
+[
+\begin{bmatrix}
+1 & 0 & 0 \
+0 & 2 & 0
+\end{bmatrix}
+]
+
+Some result elements may be removed or ignored.
+
+---
+
+# 9. Important Notes and Best Practices
+
+## Best Practices
+
+### Use diagonal matrices when possible
+
+They are much faster than full matrices.
+
+---
+
+### Avoid unnecessary matrix multiplication
+
+If you only need diagonal values:
+
+-------------------code----------------------
+x * y
+-------------------code----------------------
+
+is faster than:
+
+-------------------code----------------------
+X @ y
+-------------------code----------------------
+
+---
+
+### Always check for zeros before inversion
+
+This will fail:
+
+-------------------code----------------------
+np.linalg.inv(np.diag([1, 0, 2]))
+-------------------code----------------------
+
+because division by zero is not allowed.
+
+---
+
+### Use NumPy diagonal utilities
+
+Useful functions:
+
+-------------------code----------------------
+np.diag()
+np.linalg.inv()
+-------------------code----------------------
+
+---
+
+# 10. Full Final Code
+
+-------------------code----------------------
+import numpy as np
+
+# -----------------------------------
+# Create a diagonal matrix
+# -----------------------------------
+
+X = np.diag([2, 3, 4])
+
+print("Diagonal Matrix:")
+print(X)
+
+# -----------------------------------
+# Create a vector
+# -----------------------------------
+
+y = np.array([5, 6, 7])
+
+print("\nVector:")
+print(y)
+
+# -----------------------------------
+# Matrix-vector multiplication
+# -----------------------------------
+
+result_matrix = X @ y
+
+print("\nMatrix Multiplication Result:")
+print(result_matrix)
+
+# -----------------------------------
+# Efficient element-wise multiplication
+# -----------------------------------
+
+x = np.array([2, 3, 4])
+
+result_elementwise = x * y
+
+print("\nElement-wise Multiplication Result:")
+print(result_elementwise)
+
+# -----------------------------------
+# Invert a diagonal matrix
+# -----------------------------------
+
+X_inv = np.linalg.inv(X)
+
+print("\nInverse of Diagonal Matrix:")
+print(X_inv)
+-------------------code----------------------
+
+---
+
+# 11. Summary
+
+## What Is a Diagonal Matrix?
+
+A matrix where:
+
+* Only diagonal elements may be non-zero
+* All other elements are zero
+
+---
+
+## Key Advantages
+
+* Fast computations
+* Memory efficient
+* Easy multiplication
+* Easy inversion
+
+---
+
+## Multiplication Rule
+
+Diagonal matrix multiplication behaves like element-wise multiplication.
+
+---
+
+## Inversion Rule
+
+To invert a diagonal matrix:
+
+* Invert each diagonal value individually
+* No diagonal element can be zero
+
+---
+
+## Main Takeaway
+
+Diagonal matrices simplify many machine learning and linear algebra computations because operations become much cheaper and easier compared to full matrices.
