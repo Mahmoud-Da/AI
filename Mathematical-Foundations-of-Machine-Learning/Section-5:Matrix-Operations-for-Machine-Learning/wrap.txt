@@ -3810,3 +3810,661 @@ Why it matters in Machine Learning:
 * Provides a compact way to express matrix norms and objectives
 
 The trace operator is simple to compute, but it becomes extremely powerful when working with advanced machine learning mathematics.
+
+*** 48. Principal Component Analysis (PCA) ***
+# Principal Component Analysis (PCA)
+
+## 1. Overview
+
+**Principal Component Analysis (PCA)** is one of the most widely used unsupervised machine learning algorithms.
+
+It is used to:
+
+* Discover hidden structure in unlabeled data
+* Reduce dimensionality
+* Compress data while preserving important information
+* Visualize high-dimensional datasets
+* Remove redundancy among features
+
+PCA is closely related to:
+
+* Eigenvalues
+* Eigenvectors
+* Singular Value Decomposition (SVD)
+* Orthogonal matrices
+* Matrix norms
+* Trace operator
+
+---
+
+# 2. What Problem Does PCA Solve?
+
+Suppose we have measurements of flowers:
+
+| Flower   | Sepal Length | Sepal Width | Petal Length | Petal Width |
+| -------- | ------------ | ----------- | ------------ | ----------- |
+| Flower 1 | 5.1          | 3.5         | 1.4          | 0.2         |
+| Flower 2 | 4.9          | 3.0         | 1.4          | 0.2         |
+| ...      | ...          | ...         | ...          | ...         |
+
+We have:
+
+* Many measurements (features)
+* No labels
+
+Questions:
+
+* Are there hidden groups?
+* Which features matter most?
+* Can we represent the data using fewer dimensions?
+
+PCA helps answer these questions.
+
+---
+
+# 3. Key Idea Behind PCA
+
+PCA finds new axes called **Principal Components**.
+
+These components capture the most important structure in the data.
+
+### First Principal Component (PC1)
+
+Contains:
+
+* The largest variance
+* The strongest pattern
+* The most information
+
+---
+
+### Second Principal Component (PC2)
+
+Contains:
+
+* The next largest variance
+* Information not already captured by PC1
+
+---
+
+### Additional Components
+
+Each subsequent component captures:
+
+* Remaining variance
+* Remaining structure
+
+while staying orthogonal to previous components.
+
+---
+
+# 4. PCA as Data Compression
+
+Imagine a dataset with:
+
+* 4 features
+
+PCA can compress it into:
+
+* 2 principal components
+
+while retaining most useful information.
+
+Instead of:
+
+[
+(x_1,x_2,x_3,x_4)
+]
+
+we use:
+
+[
+(PC_1, PC_2)
+]
+
+This is called **lossy compression** because some information is discarded.
+
+The goal is to lose as little information as possible.
+
+---
+
+# 5. Iris Dataset Used in the Lecture
+
+The lecture uses the famous Iris dataset from Scikit-Learn.
+
+### Dataset Information
+
+* 150 flowers
+* 4 measurements per flower
+
+Features:
+
+1. Sepal Length
+2. Sepal Width
+3. Petal Length
+4. Petal Width
+
+---
+
+## Dataset Shape
+
+-------------------code----------------------
+from sklearn.datasets import load_iris
+
+iris = load_iris()
+
+X = iris.data
+
+print(X.shape)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+(150, 4)
+-------------------code----------------------
+
+Meaning:
+
+* 150 rows (flowers)
+* 4 columns (measurements)
+
+---
+
+# 6. Viewing the Data
+
+## Step 1: Load Dataset
+
+-------------------code----------------------
+from sklearn.datasets import load_iris
+
+iris = load_iris()
+
+X = iris.data
+-------------------code----------------------
+
+---
+
+## Step 2: Inspect First Samples
+
+-------------------code----------------------
+print(X[:6])
+-------------------code----------------------
+
+Example Output:
+
+-------------------code----------------------
+[[5.1 3.5 1.4 0.2]
+ [4.9 3.0 1.4 0.2]
+ [4.7 3.2 1.3 0.2]
+ ...
+]
+-------------------code----------------------
+
+Each row represents one flower.
+
+---
+
+# 7. Applying PCA
+
+## Step 1: Import PCA
+
+-------------------code----------------------
+from sklearn.decomposition import PCA
+-------------------code----------------------
+
+---
+
+## Step 2: Create PCA Model
+
+We want to reduce:
+
+[
+4 \rightarrow 2
+]
+
+dimensions.
+
+-------------------code----------------------
+pca = PCA(n_components=2)
+-------------------code----------------------
+
+---
+
+### Why 2 Components?
+
+Because:
+
+* 2 dimensions are easy to visualize
+* We can create an x-y scatter plot
+
+---
+
+## Step 3: Fit and Transform
+
+-------------------code----------------------
+X_pca = pca.fit_transform(X)
+-------------------code----------------------
+
+This performs:
+
+1. Learn principal components
+2. Transform original data
+3. Return compressed representation
+
+---
+
+## Step 4: Check Shape
+
+-------------------code----------------------
+print(X_pca.shape)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+(150, 2)
+-------------------code----------------------
+
+Now we have:
+
+* Same 150 flowers
+* Only 2 features
+
+instead of 4.
+
+---
+
+# 8. Inspect Principal Components
+
+-------------------code----------------------
+print(X_pca[:6])
+-------------------code----------------------
+
+Example:
+
+-------------------code----------------------
+[[-2.68  0.31]
+ [-2.71 -0.17]
+ ...
+]
+-------------------code----------------------
+
+Each flower is now represented by:
+
+* Principal Component 1
+* Principal Component 2
+
+instead of the original 4 measurements.
+
+---
+
+# 9. Visualizing PCA Results
+
+## Scatter Plot
+
+-------------------code----------------------
+import matplotlib.pyplot as plt
+
+plt.scatter(
+    X_pca[:,0],
+    X_pca[:,1]
+)
+
+plt.xlabel("Principal Component 1")
+plt.ylabel("Principal Component 2")
+
+plt.show()
+-------------------code----------------------
+
+---
+
+## What Do We Observe?
+
+Points naturally form clusters.
+
+This suggests:
+
+* Hidden structure exists
+* Different flower types may exist
+
+even though PCA never received any labels.
+
+This demonstrates the power of unsupervised learning.
+
+---
+
+# 10. Adding Labels for Visualization
+
+The lecture initially treats the dataset as unlabeled.
+
+However, the Iris dataset actually contains labels.
+
+---
+
+## Target Labels
+
+-------------------code----------------------
+y = iris.target
+-------------------code----------------------
+
+Three flower species:
+
+-------------------code----------------------
+print(iris.target_names)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+['setosa', 'versicolor', 'virginica']
+-------------------code----------------------
+
+Each species contains:
+
+-------------------code----------------------
+50 flowers
+-------------------code----------------------
+
+---
+
+# 11. Coloring PCA Plot by Species
+
+-------------------code----------------------
+plt.scatter(
+    X_pca[:,0],
+    X_pca[:,1],
+    c=y
+)
+
+plt.xlabel("Principal Component 1")
+plt.ylabel("Principal Component 2")
+
+plt.show()
+-------------------code----------------------
+
+---
+
+## Result
+
+The clusters become obvious:
+
+### Setosa
+
+Forms a very distinct cluster.
+
+---
+
+### Versicolor
+
+Forms another group.
+
+---
+
+### Virginica
+
+Forms a third group.
+
+---
+
+## Important Observation
+
+PCA discovered meaningful structure using only flower measurements.
+
+It was not trained using species labels.
+
+The labels are added afterward only to verify the results.
+
+---
+
+# 12. Why PCA Works
+
+PCA identifies directions where data varies most.
+
+Instead of analyzing:
+
+[
+4
+]
+
+original features independently,
+
+it finds:
+
+[
+PC_1,\ PC_2,\ PC_3,\ PC_4
+]
+
+ordered by importance.
+
+---
+
+### Variance Ranking
+
+[
+PC_1 > PC_2 > PC_3 > PC_4
+]
+
+in terms of information content.
+
+---
+
+The first few components often contain most of the useful information.
+
+This allows dimensionality reduction.
+
+---
+
+# 13. Connection to Earlier Linear Algebra Topics
+
+PCA builds upon many concepts from the course.
+
+### Eigenvectors
+
+Principal components are related to eigenvectors.
+
+---
+
+### Eigenvalues
+
+Measure how much variance each component explains.
+
+---
+
+### SVD
+
+PCA is commonly implemented using Singular Value Decomposition.
+
+---
+
+### Orthogonal Matrices
+
+Principal components are orthogonal to each other.
+
+---
+
+### Trace Operator
+
+Appears in PCA derivations and variance calculations.
+
+---
+
+# 14. Common Applications of PCA
+
+### Data Compression
+
+Reduce storage requirements.
+
+---
+
+### Visualization
+
+Convert high-dimensional data into:
+
+* 2D
+* 3D
+
+for plotting.
+
+---
+
+### Noise Reduction
+
+Discard low-variance components.
+
+---
+
+### Feature Engineering
+
+Create better representations for machine learning models.
+
+---
+
+### Exploratory Data Analysis
+
+Discover hidden patterns and clusters.
+
+---
+
+# 15. Important Notes & Best Practices
+
+### Standardize Features Before PCA
+
+In real projects:
+
+-------------------code----------------------
+from sklearn.preprocessing import StandardScaler
+
+X_scaled = StandardScaler().fit_transform(X)
+-------------------code----------------------
+
+PCA is sensitive to feature scales.
+
+---
+
+### PCA Is Unsupervised
+
+PCA ignores labels.
+
+It only looks at feature values.
+
+---
+
+### PCA Does Not Always Preserve Interpretability
+
+Principal components are combinations of original features.
+
+They may not have an obvious physical meaning.
+
+---
+
+### More Components = More Information
+
+Keeping more components:
+
+* Preserves accuracy
+* Reduces compression
+
+Keeping fewer components:
+
+* Increases compression
+* Loses more information
+
+---
+
+# 16. Full Final Code
+
+-------------------code----------------------
+from sklearn.datasets import load_iris
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
+
+# -----------------------------
+# Load Dataset
+# -----------------------------
+
+iris = load_iris()
+
+X = iris.data
+y = iris.target
+
+print("Original Shape:")
+print(X.shape)
+
+print("\nFirst 6 Rows:")
+print(X[:6])
+
+# -----------------------------
+# PCA
+# -----------------------------
+
+pca = PCA(n_components=2)
+
+X_pca = pca.fit_transform(X)
+
+print("\nCompressed Shape:")
+print(X_pca.shape)
+
+print("\nFirst 6 PCA Rows:")
+print(X_pca[:6])
+
+# -----------------------------
+# PCA Plot Without Labels
+# -----------------------------
+
+plt.figure(figsize=(8,6))
+
+plt.scatter(
+    X_pca[:,0],
+    X_pca[:,1]
+)
+
+plt.title("PCA of Iris Dataset")
+plt.xlabel("Principal Component 1")
+plt.ylabel("Principal Component 2")
+
+plt.show()
+
+# -----------------------------
+# PCA Plot With Labels
+# -----------------------------
+
+plt.figure(figsize=(8,6))
+
+plt.scatter(
+    X_pca[:,0],
+    X_pca[:,1],
+    c=y
+)
+
+plt.title("PCA with Iris Species")
+plt.xlabel("Principal Component 1")
+plt.ylabel("Principal Component 2")
+
+plt.show()
+-------------------code----------------------
+
+# 17. Summary
+
+PCA (Principal Component Analysis) is an unsupervised learning algorithm used to discover structure in unlabeled data.
+
+Key ideas:
+
+1. PCA reduces dimensionality.
+2. The first principal component contains the most variance.
+3. The second component contains the next most variance.
+4. PCA performs lossy compression while preserving important information.
+5. PCA is closely related to:
+
+   * Eigenvectors
+   * Eigenvalues
+   * SVD
+   * Orthogonal matrices
+   * Trace operator
+
+In the Iris dataset example:
+
+* Original data: 150 × 4
+* PCA output: 150 × 2
+
+The resulting visualization revealed clear clusters corresponding to three flower species, demonstrating how PCA can uncover hidden structure in data without using labels.
