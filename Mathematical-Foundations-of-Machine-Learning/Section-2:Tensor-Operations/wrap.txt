@@ -1007,3 +1007,340 @@ if __name__ == "__main__":
 * Same concepts apply across NumPy, PyTorch, and TensorFlow
 
 ---
+
+*** 17. Tensor Reduction ***
+# 1. Introduction to Reduction
+
+**Reduction** is a common tensor operation where we **combine multiple values into a single value**.
+
+Most common example:
+
+* **Sum of all elements in a tensor**
+
+Reduction is widely used in:
+
+* Machine learning (loss calculations)
+* Statistics (mean, max, etc.)
+* Data aggregation
+
+---
+
+# 2. Reduction on Vectors
+
+## 2.1 Concept
+
+For a vector:
+
+[
+x = [x_1, x_2, ..., x_n]
+]
+
+The reduced sum is:
+
+[
+\text{sum}(x) = x_1 + x_2 + ... + x_n
+]
+
+---
+
+## 2.2 Example in NumPy
+
+-------------------code----------------------
+import numpy as np
+
+x = np.array([1, 2, 3, 4])
+
+total = x.sum()
+print(total)  # Output: 10
+-------------------code----------------------
+
+---
+
+# 3. Reduction on Matrices
+
+## 3.1 Concept
+
+For a matrix:
+
+* You can sum **all elements**
+* Or sum along a specific **axis (dimension)**
+
+---
+
+## 3.2 Example Matrix
+
+-------------------code----------------------
+import numpy as np
+
+X = np.array([
+    [25, 2],
+    [5, 26],
+    [3, 7]
+])
+-------------------code----------------------
+
+---
+
+# 4. Sum Across All Elements
+
+## 4.1 NumPy
+
+-------------------code----------------------
+total_sum = X.sum()
+print(total_sum)  # Output: 68
+-------------------code----------------------
+
+Explanation:
+
+-------------------code----------------------
+25 + 2 + 5 + 26 + 3 + 7 = 68
+-------------------code----------------------
+
+---
+
+## 4.2 PyTorch
+
+-------------------code----------------------
+import torch
+
+X_torch = torch.tensor([
+    [25, 2],
+    [5, 26],
+    [3, 7]
+])
+
+total_sum = torch.sum(X_torch)
+print(total_sum)  # Output: 68
+-------------------code----------------------
+
+---
+
+## 4.3 TensorFlow
+
+-------------------code----------------------
+import tensorflow as tf
+
+X_tf = tf.constant([
+    [25, 2],
+    [5, 26],
+    [3, 7]
+])
+
+total_sum = tf.reduce_sum(X_tf)
+print(total_sum)  # Output: 68
+-------------------code----------------------
+
+---
+
+# 5. Reduction Along Specific Axes
+
+## 5.1 Understanding Axes
+
+For a matrix:
+
+-------------------code----------------------
+Rows → axis = 0
+Columns → axis = 1
+-------------------code----------------------
+
+---
+
+## 5.2 Sum Along Columns (axis = 0)
+
+### NumPy
+
+-------------------code----------------------
+col_sum = X.sum(axis=0)
+print(col_sum)  # Output: [33, 35]
+-------------------code----------------------
+
+Explanation:
+
+-------------------code----------------------
+Column 1: 25 + 5 + 3 = 33
+Column 2: 2 + 26 + 7 = 35
+-------------------code----------------------
+
+---
+
+## 5.3 Sum Along Rows (axis = 1)
+
+### NumPy
+
+-------------------code----------------------
+row_sum = X.sum(axis=1)
+print(row_sum)  # Output: [27, 31, 10]
+-------------------code----------------------
+
+---
+
+## 5.4 PyTorch Example
+
+-------------------code----------------------
+col_sum_torch = torch.sum(X_torch, dim=0)
+row_sum_torch = torch.sum(X_torch, dim=1)
+-------------------code----------------------
+
+---
+
+## 5.5 TensorFlow Example
+
+-------------------code----------------------
+col_sum_tf = tf.reduce_sum(X_tf, axis=0)
+row_sum_tf = tf.reduce_sum(X_tf, axis=1)
+-------------------code----------------------
+
+---
+
+# 6. Other Types of Reduction
+
+Besides sum, you can reduce tensors using:
+
+## 6.1 Maximum
+
+-------------------code----------------------
+np.max(X)
+-------------------code----------------------
+
+## 6.2 Minimum
+
+-------------------code----------------------
+np.min(X)
+-------------------code----------------------
+
+## 6.3 Mean (Average)
+
+-------------------code----------------------
+np.mean(X)
+-------------------code----------------------
+
+## 6.4 Product
+
+-------------------code----------------------
+np.prod(X)
+-------------------code----------------------
+
+These operations also support axis-based reduction.
+
+---
+
+# 7. Important Notes & Best Practices
+
+## 7.1 Axis Understanding is Critical
+
+* `axis=0` → collapse rows (sum vertically)
+* `axis=1` → collapse columns (sum horizontally)
+
+## 7.2 Keep Dimensions in Mind
+
+* Reduction **reduces dimensionality**
+* Example:
+
+  * Matrix (3×2) → vector (length 2 or 3)
+
+## 7.3 Consistency Across Libraries
+
+* NumPy → `axis`
+* PyTorch → `dim`
+* TensorFlow → `axis`
+
+Same concept, different parameter name.
+
+## 7.4 Most Common Reduction in ML
+
+* **Sum** is the most used
+* Others (mean, max) are also important but less frequent
+
+## 7.5 Use Built-in Functions
+
+Avoid manual loops:
+
+-------------------code----------------------
+# Bad
+total = 0
+for row in X:
+    for val in row:
+        total += val
+
+# Good
+X.sum()
+-------------------code----------------------
+
+---
+
+# 8. Full Final Code
+
+-------------------code----------------------
+import numpy as np
+import torch
+import tensorflow as tf
+
+
+def numpy_demo():
+    print("=== NumPy ===")
+    X = np.array([
+        [25, 2],
+        [5, 26],
+        [3, 7]
+    ])
+
+    print("Full sum:", X.sum())
+
+    print("Sum along columns (axis=0):", X.sum(axis=0))
+    print("Sum along rows (axis=1):", X.sum(axis=1))
+
+    print("Max:", np.max(X))
+    print("Min:", np.min(X))
+    print("Mean:", np.mean(X))
+    print("Product:", np.prod(X))
+
+
+def pytorch_demo():
+    print("\n=== PyTorch ===")
+    X = torch.tensor([
+        [25, 2],
+        [5, 26],
+        [3, 7]
+    ])
+
+    print("Full sum:", torch.sum(X))
+
+    print("Sum along columns (dim=0):", torch.sum(X, dim=0))
+    print("Sum along rows (dim=1):", torch.sum(X, dim=1))
+
+
+def tensorflow_demo():
+    print("\n=== TensorFlow ===")
+    X = tf.constant([
+        [25, 2],
+        [5, 26],
+        [3, 7]
+    ])
+
+    print("Full sum:", tf.reduce_sum(X))
+
+    print("Sum along columns (axis=0):", tf.reduce_sum(X, axis=0))
+    print("Sum along rows (axis=1):", tf.reduce_sum(X, axis=1))
+
+
+if __name__ == "__main__":
+    numpy_demo()
+    pytorch_demo()
+    tensorflow_demo()
+-------------------code----------------------
+
+---
+
+# 9. Summary
+
+* Reduction = combining many values into fewer values
+* Most common operation: **sum**
+* Can reduce:
+
+  * Entire tensor → single value
+  * Along axis → vector
+* Axis defines direction of reduction
+* Same logic across NumPy, PyTorch, TensorFlow
+* Built-in functions are efficient and preferred
+
+---
