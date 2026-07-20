@@ -289,3 +289,391 @@ This transition is critical because:
 * Computation → enables machine learning
 
 ---
+
+*** 15. Tensor Transposition ***
+## 1. Introduction to Tensor Transposition
+
+### 1.1 What is Transposition?
+
+* **Transposition** is an operation that **rearranges the dimensions of a tensor**.
+* The most common case:
+
+  * Swap **rows and columns**
+
+---
+
+## 2. Transpose by Tensor Type
+
+### 2.1 Scalar (0D Tensor)
+
+#### Concept:
+
+* A scalar has **no dimensions**
+* Therefore, transposing it does **nothing**
+
+[
+x^T = x
+]
+
+---
+
+#### Code Example:
+
+-------------------code----------------------
+x = 5
+print(x)  # same after transpose
+-------------------code----------------------
+
+---
+
+### 2.2 Vector (1D Tensor)
+
+#### Concept:
+
+* Transpose converts:
+
+  * **Column vector → Row vector**
+  * **Row vector → Column vector**
+
+---
+
+#### Example:
+
+Column vector:
+
+[
+\begin{bmatrix}
+1 \
+2 \
+3
+\end{bmatrix}
+]
+
+Transpose:
+
+[
+\begin{bmatrix}
+1 & 2 & 3
+\end{bmatrix}
+]
+
+---
+
+#### Code Example:
+
+-------------------code----------------------
+import numpy as np
+
+v = np.array([[1],
+              [2],
+              [3]])
+
+v_T = v.T
+
+print(v)
+print(v_T)
+-------------------code----------------------
+
+---
+
+### 2.3 Matrix (2D Tensor)
+
+#### Concept:
+
+* Transpose flips matrix **over the main diagonal**
+* Main diagonal:
+
+  * From **top-left → bottom-right**
+
+---
+
+### 2.3.1 Rule
+
+[
+X_{i,j} \rightarrow X_{j,i}
+]
+
+* Row becomes column
+* Column becomes row
+
+---
+
+### 2.3.2 Example
+
+Original matrix:
+
+[
+\begin{bmatrix}
+1 & 2 \
+3 & 4
+\end{bmatrix}
+]
+
+Transpose:
+
+[
+\begin{bmatrix}
+1 & 3 \
+2 & 4
+\end{bmatrix}
+]
+
+---
+
+### 2.3.3 Key Observations
+
+* Shape changes:
+
+  * (rows, cols) → (cols, rows)
+* Elements remain the same
+* Only positions change
+
+---
+
+## 3. Transposition in Python
+
+---
+
+## 3.1 Using NumPy
+
+### Step 1: Import
+
+-------------------code----------------------
+import numpy as np
+-------------------code----------------------
+
+---
+
+### Step 2: Create Matrix
+
+-------------------code----------------------
+X = np.array([
+    [1, 2],
+    [3, 4],
+    [5, 6]
+])
+-------------------code----------------------
+
+---
+
+### Step 3: Transpose
+
+-------------------code----------------------
+X_T = X.T
+
+print("Original:\n", X)
+print("Transpose:\n", X_T)
+-------------------code----------------------
+
+---
+
+## 3.2 Using PyTorch
+
+### Step 1: Import
+
+-------------------code----------------------
+import torch
+-------------------code----------------------
+
+---
+
+### Step 2: Create Tensor
+
+-------------------code----------------------
+X_torch = torch.tensor([
+    [1, 2],
+    [3, 4],
+    [5, 6]
+])
+-------------------code----------------------
+
+---
+
+### Step 3: Transpose
+
+-------------------code----------------------
+X_torch_T = X_torch.T
+
+print(X_torch_T)
+-------------------code----------------------
+
+---
+
+## 3.3 Using TensorFlow
+
+### Step 1: Import
+
+-------------------code----------------------
+import tensorflow as tf
+-------------------code----------------------
+
+---
+
+### Step 2: Create Tensor
+
+-------------------code----------------------
+X_tf = tf.Variable([
+    [1, 2],
+    [3, 4],
+    [5, 6]
+])
+-------------------code----------------------
+
+---
+
+### Step 3: Transpose
+
+-------------------code----------------------
+X_tf_T = tf.transpose(X_tf)
+
+print(X_tf_T)
+-------------------code----------------------
+
+---
+
+## 4. Step-by-Step Understanding
+
+### Step 1: Identify tensor type
+
+* Scalar → no change
+* Vector → flip orientation
+* Matrix → swap rows and columns
+
+---
+
+### Step 2: Apply rule
+
+* Position (i, j) → (j, i)
+
+---
+
+### Step 3: Verify shape
+
+* Always check `.shape`
+
+---
+
+## 5. Important Notes and Best Practices
+
+### 5.1 Shape Awareness
+
+* Always verify:
+
+-------------------code----------------------
+print(X.shape)
+-------------------code----------------------
+
+---
+
+### 5.2 Vector Pitfall
+
+* 1D arrays (`[1,2,3]`) don’t transpose properly
+* Use:
+
+-------------------code----------------------
+[[1],[2],[3]]
+-------------------code----------------------
+
+---
+
+### 5.3 Library Differences
+
+| Library    | Method           |
+| ---------- | ---------------- |
+| NumPy      | `.T`             |
+| PyTorch    | `.T`             |
+| TensorFlow | `tf.transpose()` |
+
+---
+
+### 5.4 Why Transpose Matters
+
+Used in:
+
+* Matrix multiplication
+* Neural networks
+* Linear algebra transformations
+
+---
+
+## 6. Full Final Python Script
+
+-------------------code----------------------
+import numpy as np
+import torch
+import tensorflow as tf
+
+
+def numpy_example():
+    print("=== NumPy ===")
+
+    X = np.array([
+        [1, 2],
+        [3, 4],
+        [5, 6]
+    ])
+
+    print("Original:\n", X)
+    print("Transpose:\n", X.T)
+
+
+def pytorch_example():
+    print("\n=== PyTorch ===")
+
+    X = torch.tensor([
+        [1, 2],
+        [3, 4],
+        [5, 6]
+    ])
+
+    print("Original:\n", X)
+    print("Transpose:\n", X.T)
+
+
+def tensorflow_example():
+    print("\n=== TensorFlow ===")
+
+    X = tf.Variable([
+        [1, 2],
+        [3, 4],
+        [5, 6]
+    ])
+
+    X_T = tf.transpose(X)
+
+    print("Original:\n", X)
+    print("Transpose:\n", X_T)
+
+
+def main():
+    numpy_example()
+    pytorch_example()
+    tensorflow_example()
+
+
+if __name__ == "__main__":
+    main()
+-------------------code----------------------
+
+---
+
+## 7. Summary
+
+* Transposition rearranges tensor dimensions
+* Scalar → unchanged
+* Vector → row ↔ column
+* Matrix → flip over diagonal
+* Key rule:
+
+  * ( X_{i,j} \rightarrow X_{j,i} )
+* Easy to implement in Python:
+
+  * NumPy / PyTorch → `.T`
+  * TensorFlow → `tf.transpose()`
+* Essential for:
+
+  * Matrix operations
+  * Machine learning computations
+
+---
+
