@@ -1287,3 +1287,430 @@ if __name__ == "__main__":
 * Tensors are essential for machine learning systems
 
 ---
+
+
+*** 6. Scalars ***
+---
+
+# Machine Learning Foundations
+
+## Subject 1: Linear Algebra
+
+### Lecture: Scalar Tensors (Theory + Practice)
+
+---
+
+# 1. Purpose of This Lecture
+
+This lecture focuses on **scalar tensors**, the simplest type of tensor.
+
+### Key Goals
+
+* Understand what a scalar is
+* Learn its notation and properties
+* Implement scalars in:
+
+  * Base Python
+  * NumPy
+  * PyTorch
+  * TensorFlow
+
+---
+
+# 2. What is a Scalar Tensor?
+
+### Definition
+
+A **scalar** is:
+
+* A **0-dimensional tensor**
+* A **single numeric value**
+
+### Examples
+
+* 5
+* 3.14
+* -10
+
+---
+
+# 3. Properties of Scalars
+
+### 3.1 No Dimensions
+
+* Scalars have **no shape**
+* Represent only magnitude
+
+---
+
+### 3.2 Notation
+
+In mathematics:
+
+* Written as lowercase italic letters
+
+  * Example: x
+
+---
+
+### 3.3 Data Types
+
+Scalars are always typed:
+
+* Integer (int)
+* Float (float32, float64)
+
+---
+
+# 4. Scalars in Python (Step-by-Step)
+
+---
+
+## Step 1: Create Scalar (Integer)
+
+-------------------code----------------------
+x = 25
+-------------------code----------------------
+
+### Check Type
+
+-------------------code----------------------
+print(type(x))
+-------------------code----------------------
+
+---
+
+## Step 2: Create Another Scalar
+
+-------------------code----------------------
+y = 3
+-------------------code----------------------
+
+---
+
+## Step 3: Perform Operation
+
+-------------------code----------------------
+z = x + y
+print(z)
+print(type(z))
+-------------------code----------------------
+
+### Result
+
+* Value: 28
+* Type: int
+
+---
+
+## Step 4: Use Float
+
+-------------------code----------------------
+x_float = 25.0
+z = x_float + y
+
+print(z)
+print(type(z))
+-------------------code----------------------
+
+### Key Insight
+
+* Mixing int + float → result is float
+
+---
+
+# 5. Scalars in NumPy
+
+---
+
+## Step 1: Import NumPy
+
+-------------------code----------------------
+import numpy as np
+-------------------code----------------------
+
+---
+
+## Step 2: Create Scalar
+
+-------------------code----------------------
+x_np = np.array(25)
+-------------------code----------------------
+
+---
+
+## Step 3: Check Shape
+
+-------------------code----------------------
+print(x_np.shape)
+-------------------code----------------------
+
+### Output
+
+* `()` → no dimensions
+
+---
+
+## Step 4: Specify Type
+
+-------------------code----------------------
+x_np_float = np.array(25, dtype=np.float32)
+-------------------code----------------------
+
+---
+
+# 6. Scalars in PyTorch
+
+---
+
+## Step 1: Import PyTorch
+
+-------------------code----------------------
+import torch
+-------------------code----------------------
+
+---
+
+## Step 2: Create Scalar
+
+-------------------code----------------------
+x_torch = torch.tensor(25)
+-------------------code----------------------
+
+---
+
+## Step 3: Check Shape
+
+-------------------code----------------------
+print(x_torch.shape)
+-------------------code----------------------
+
+### Output
+
+* `torch.Size([])` → no dimensions
+
+---
+
+## Step 4: Specify Type
+
+-------------------code----------------------
+x_torch_float = torch.tensor(25.0, dtype=torch.float32)
+-------------------code----------------------
+
+---
+
+## Step 5: Operations
+
+-------------------code----------------------
+y_torch = torch.tensor(3)
+z_torch = x_torch + y_torch
+
+print(z_torch)
+-------------------code----------------------
+
+---
+
+# 7. Scalars in TensorFlow
+
+---
+
+## Step 1: Import TensorFlow
+
+-------------------code----------------------
+import tensorflow as tf
+-------------------code----------------------
+
+---
+
+## Step 2: Create Scalar
+
+-------------------code----------------------
+x_tf = tf.Variable(25, dtype=tf.int32)
+-------------------code----------------------
+
+---
+
+## Step 3: Check Shape
+
+-------------------code----------------------
+print(x_tf.shape)
+-------------------code----------------------
+
+### Output
+
+* `()` → no dimensions
+
+---
+
+## Step 4: Create Another Scalar
+
+-------------------code----------------------
+y_tf = tf.Variable(3, dtype=tf.int32)
+-------------------code----------------------
+
+---
+
+## Step 5: Perform Operation
+
+-------------------code----------------------
+z_tf = x_tf + y_tf
+print(z_tf)
+-------------------code----------------------
+
+---
+
+## Step 6: Convert to NumPy
+
+-------------------code----------------------
+z_np = z_tf.numpy()
+print(type(z_np))
+-------------------code----------------------
+
+---
+
+## Step 7: Float Example
+
+-------------------code----------------------
+x_tf_float = tf.Variable(25.0, dtype=tf.float32)
+print(x_tf_float)
+-------------------code----------------------
+
+---
+
+# 8. Full Final Script
+
+Save as: `scalar_tensors.py`
+
+-------------------code----------------------
+import numpy as np
+import torch
+import tensorflow as tf
+
+
+def main():
+    # --------------------
+    # Base Python
+    # --------------------
+    x = 25
+    y = 3
+
+    z = x + y
+    print("Python scalar:", z, type(z))
+
+    x_float = 25.0
+    z_float = x_float + y
+    print("Python float result:", z_float, type(z_float))
+
+    # --------------------
+    # NumPy
+    # --------------------
+    x_np = np.array(25)
+    print("NumPy scalar:", x_np)
+    print("Shape:", x_np.shape)
+
+    x_np_float = np.array(25, dtype=np.float32)
+    print("NumPy float scalar:", x_np_float)
+
+    # --------------------
+    # PyTorch
+    # --------------------
+    x_torch = torch.tensor(25)
+    y_torch = torch.tensor(3)
+
+    z_torch = x_torch + y_torch
+    print("PyTorch scalar:", z_torch)
+    print("Shape:", x_torch.shape)
+
+    x_torch_float = torch.tensor(25.0, dtype=torch.float32)
+    print("PyTorch float scalar:", x_torch_float)
+
+    # --------------------
+    # TensorFlow
+    # --------------------
+    x_tf = tf.Variable(25, dtype=tf.int32)
+    y_tf = tf.Variable(3, dtype=tf.int32)
+
+    z_tf = x_tf + y_tf
+    print("TensorFlow scalar:", z_tf)
+    print("Shape:", x_tf.shape)
+
+    z_np = z_tf.numpy()
+    print("Converted to NumPy:", z_np, type(z_np))
+
+    x_tf_float = tf.Variable(25.0, dtype=tf.float32)
+    print("TensorFlow float scalar:", x_tf_float)
+
+
+if __name__ == "__main__":
+    main()
+-------------------code----------------------
+
+---
+
+# 9. Important Notes and Best Practices
+
+### 9.1 Scalars Have No Shape
+
+* Always expect shape:
+
+  * NumPy → `()`
+  * PyTorch → `torch.Size([])`
+
+---
+
+### 9.2 Type Matters
+
+* Be explicit when needed:
+
+  * `int32`, `float32`, etc.
+
+---
+
+### 9.3 Type Promotion
+
+* int + float → float
+* Important in ML pipelines
+
+---
+
+### 9.4 Library Differences
+
+| Library    | Style    | Notes                 |
+| ---------- | -------- | --------------------- |
+| Python     | Simple   | No control over dtype |
+| NumPy      | Flexible | Good for prototyping  |
+| PyTorch    | Pythonic | Best for research     |
+| TensorFlow | Verbose  | Best for production   |
+
+---
+
+### 9.5 Conversion Between Libraries
+
+* TensorFlow → `.numpy()`
+* PyTorch → `.numpy()` (if CPU tensor)
+
+---
+
+# 10. Conceptual Takeaways
+
+* Scalars are the simplest tensors
+* They are the building blocks of all higher-dimensional tensors
+* Every ML model ultimately operates on tensors
+* Understanding types and shapes is critical
+
+---
+
+# 11. Summary
+
+* A scalar is a 0D tensor with a single value
+* Scalars have no dimensions or shape
+* They can be integers or floats
+* You can create and manipulate scalars in:
+
+  * Python
+  * NumPy
+  * PyTorch
+  * TensorFlow
+* Understanding scalars is the first step toward mastering tensors and machine learning
+
+---
