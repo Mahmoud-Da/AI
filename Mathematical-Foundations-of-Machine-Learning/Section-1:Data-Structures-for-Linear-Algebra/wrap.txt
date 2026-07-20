@@ -1,0 +1,329 @@
+*** 2. What Linear Algebra Is ***
+---
+
+# Machine Learning Foundations
+
+## Subject 1: Introduction to Linear Algebra
+
+### Lecture 1: Data Structures for Algebra (Part 1)
+
+---
+
+## 1. Course Overview
+
+* Instructor: John Krohn
+* Series: Machine Learning Foundations
+* Current subject: Introduction to Linear Algebra
+
+### Structure of the Subject
+
+The course is divided into three main segments:
+
+1. Data structures for algebra
+2. Tensor operations (with practical examples)
+3. Matrix properties
+
+This lecture focuses on the beginning of Segment 1.
+
+---
+
+## 2. Topics Covered in Segment 1
+
+* Definition of linear algebra
+* Brief history of algebra
+* Tensors and their types:
+
+  * Scalars
+  * Vectors
+  * Matrices
+* Vector operations:
+
+  * Transposition
+  * Norms
+  * Unit vectors
+  * Orthogonal and orthonormal vectors
+* Implementations using:
+
+  * NumPy
+  * TensorFlow
+  * PyTorch
+
+---
+
+## 3. What is Algebra?
+
+Algebra is a form of arithmetic that includes unknown variables (e.g., x).
+
+### Example
+
+Solve:
+2x + 5 = 25
+
+Steps:
+
+* Subtract 5 from both sides → 2x = 20
+* Divide by 2 → x = 10
+
+Verification:
+Substitute x = 10 into the original equation → valid solution
+
+---
+
+## 4. What is Linear Algebra?
+
+Linear algebra focuses on solving systems of linear equations.
+
+### Definition
+
+A system of linear equations is a set of equations solved simultaneously for unknown variables.
+
+### Important Note
+
+An equation is not linear if it includes:
+
+* Powers (e.g., x²)
+* Roots (e.g., √x)
+
+These are nonlinear transformations.
+
+difference between **linear** and **non‑linear** in a simple way:
+
+---
+
+### Linear
+
+- **Graph is a straight line**
+- The variable (like \(x\)) has no exponent higher than 1
+- No multiplication of variables together (no \(x \times y\) or \(x^2\))
+
+**Examples:**
+- \(y = 2x + 3\)
+- \(3x + 5 = 20\)
+- \(y = -x + 7\)
+
+If you plot it, you get a **straight line**.
+
+---
+
+### Non‑linear
+
+- **Graph is NOT a straight line** (it curves, bends, or has shapes)
+- The variable has an exponent higher than 1 (like \(x^2\), \(x^3\)), or variables multiply together (like \(x \times y\)), or appears in a function (like \(\sin x\))
+
+**Examples:**
+- \(y = x^2\) (parabola — a U‑shape)
+- \(y = \frac{1}{x}\) (hyperbola — two curves)
+- \(x^2 + y^2 = 1\) (circle)
+- \(y = 2^x\) (exponential curve)
+
+If you plot it, you get a **curve, circle, or other shape** — not a straight line.
+
+---
+
+### Quick Summary Table
+
+| | **Linear** | **Non‑linear** |
+|---|---|---|
+| **Graph** | Straight line | Curve, circle, etc. |
+| **Equation form** | \(y = mx + b\) or similar | \(x^2\), \(xy\), \(\sin x\), etc. |
+| **Change** | Constant rate of change | Rate of change varies |
+| **Example** | \(y = 3x + 1\) | \(y = x^2\) |
+
+---
+
+In short:
+> **Linear = straight line**  
+> **Non‑linear = anything that bends, curves, or is not straight**
+
+---
+
+## 5. Example: System of Linear Equations
+
+### Problem Setup
+
+* Sheriff speed: 180 km/h → 3 km/min
+* Bank robber speed: 150 km/h → 2.5 km/min
+* Robber head start: 5 minutes
+
+### Equations
+
+* Robber:
+  D = 2.5t
+
+* Sheriff:
+  D = 3(t − 5)
+
+### Solve
+
+Set equal:
+2.5t = 3(t − 5)
+
+Steps:
+
+* Expand → 2.5t = 3t − 15
+* Rearrange → -0.5t = -15
+* Solve → t = 30 minutes
+
+### Distance
+
+D = 2.5 × 30 = 75 km
+
+---
+
+## 6. Possible Solutions in Linear Systems
+
+There are only three possible outcomes:
+
+1. One solution (lines intersect once)
+2. No solution (parallel lines)
+3. Infinite solutions (identical lines)
+
+Important property:
+
+* Linear systems cannot intersect more than once
+
+---
+
+## 7. Linear Algebra in Machine Learning
+
+### Regression Model Example
+
+Goal:
+Predict house price (Y) using features (X)
+
+### Components
+
+* Y: target variable (e.g., price)
+* X₁, X₂, ..., Xₘ: features (e.g., bedrooms, distance to school)
+* Parameters: coefficients to be learned
+
+### Characteristics
+
+* Many rows (n): number of data points
+* Many columns (m): number of features
+
+Typical sizes:
+
+* Regression: thousands of rows, dozens of features
+* Deep learning: millions of rows and parameters
+
+---
+
+## 8. General Form of the System
+
+For each data point (i):
+
+* Yᵢ = function of (Xᵢ₁, Xᵢ₂, ..., Xᵢₘ)
+
+Key idea:
+
+* Parameters are shared across all equations
+* The goal is to find one set of parameters that fits all data
+
+---
+
+## 9. Linear Algebra in Deep Learning
+
+### Example: Neural Network
+
+* Input: vector (e.g., 784 pixels for images)
+* Output: vector (e.g., 10 classes)
+* Parameters:
+
+  * Weights (matrices)
+  * Biases (vectors)
+
+### Key Idea
+
+* Inputs (X) → transformed via weights and biases → output (Y)
+* Training adjusts parameters to improve predictions
+
+---
+
+## 10. Tensors
+
+Tensors are generalized data structures in linear algebra.
+
+### Types
+
+* Scalar: single number (0D)
+* Vector: 1D array
+* Matrix: 2D array
+* Higher-dimensional tensors: 3D+ arrays
+
+Used in:
+
+* TensorFlow
+* PyTorch
+
+### Application
+
+* Convolutional Neural Networks (CNNs) use high-dimensional tensors
+
+---
+
+## 11. Brief History of Algebra
+
+### Key Figure
+
+* Al-Khwarizmi (780–850 CE)
+
+  * Persian mathematician
+  * Origin of the word “algorithm”
+  * His work introduced the term “algebra”
+
+### Contributions by Civilizations
+
+* Babylonians (1900 BCE): rhetorical algebra
+* Egyptians (1650 BCE): early linear equations
+* Indians (600 BCE): algebraic methods
+* Greeks (400 BCE): geometric algebra (Euclid)
+* Chinese (250 BCE): systems of equations
+* Islamic scholars: development of symbolic algebra
+* Europeans (12th–17th century): refinement and expansion
+
+---
+
+## 12. Applications of Linear Algebra
+
+* Machine learning (core foundation)
+* Dimensionality reduction (e.g., PCA)
+* Search engines (e.g., ranking via eigenvectors)
+* Recommender systems (e.g., SVD)
+* Natural language processing
+* Computer vision
+
+---
+
+## 13. Role in Machine Learning Curriculum
+
+Linear algebra is foundational for:
+
+* Linear Algebra II (advanced topics like eigenvectors, PCA, SVD)
+* Calculus (derivatives, integrals)
+* Probability and statistics
+* Optimization (final objective of the series)
+
+Less directly related:
+
+* Algorithms and data structures
+
+---
+
+## 14. Summary
+
+* Algebra introduces unknown variables and symbolic manipulation
+* Linear algebra solves systems of linear equations
+* Only three solution types exist: one, none, or infinite
+* Core to machine learning and deep learning
+* Tensors are the fundamental data structures
+* Deep historical roots across multiple civilizations
+
+---
+
+## 15. Next Lecture
+
+* Introduction to tensors in detail
+
+---
+
