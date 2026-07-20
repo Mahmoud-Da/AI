@@ -2591,3 +2591,282 @@ print("Example 3:", sp.solve((eq1, eq2), (x, y)))
   * Infinite solutions
 
 This method, together with substitution, builds the foundation for solving systems before moving to **matrix-based computational methods**.
+
+*** 22. Visualizing Linear Systems ***
+# 1. Overview
+
+This lecture focuses on **visualizing linear systems of equations** using Python.
+Instead of only solving equations algebraically (substitution/elimination), we now:
+
+* Convert equations into functions
+* Plot them as lines
+* Identify the **intersection point (solution)** visually
+
+---
+
+# 2. Key Idea: Geometric Interpretation
+
+## 2.1 What a Linear System Represents
+
+A system of equations:
+
+* Each equation = a **line**
+* Solution = **intersection point of lines**
+
+### Example:
+
+[
+y = 3x
+]
+[
+-5x + 2y = 2
+]
+
+After rearranging:
+[
+y = 3x
+]
+[
+y = \frac{1 + 5x}{2}
+]
+
+The solution is the point where both lines meet.
+
+---
+
+# 3. Step-by-Step Visualization (Substitution Example)
+
+## 3.1 Step 1: Define X Range
+
+We simulate many x-values:
+
+-------------------code----------------------
+import numpy as np
+
+x = np.linspace(-10, 10, 1000)
+-------------------code----------------------
+
+---
+
+## 3.2 Step 2: Define Equations
+
+-------------------code----------------------
+y1 = 3 * x
+y2 = 1 + (5 * x) / 2
+-------------------code----------------------
+
+---
+
+## 3.3 Step 3: Plot Lines
+
+-------------------code----------------------
+import matplotlib.pyplot as plt
+
+plt.plot(x, y1)
+plt.plot(x, y2)
+-------------------code----------------------
+
+---
+
+## 3.4 Step 4: Plot Intersection Point
+
+We already solved:
+
+* x = 2
+* y = 6
+
+-------------------code----------------------
+plt.scatter(2, 6)
+-------------------code----------------------
+
+---
+
+## 3.5 Step 5: Finalize Plot
+
+-------------------code----------------------
+plt.xlabel("x")
+plt.ylabel("y")
+plt.xlim(0, 3)
+plt.ylim(0, 8)
+plt.show()
+-------------------code----------------------
+
+---
+
+# 4. Step-by-Step Visualization (Elimination Example)
+
+## 4.1 Original System
+
+[
+2x - 3y = 15
+]
+[
+4x + 10y = 14
+]
+
+---
+
+## 4.2 Step 1: Convert to y = f(x)
+
+First equation:
+[
+y = -5 + \frac{2x}{3}
+]
+
+Second equation:
+[
+y = \frac{7 - 2x}{5}
+]
+
+---
+
+## 4.3 Step 2: Define in Code
+
+-------------------code----------------------
+x = np.linspace(-10, 10, 1000)
+
+y1 = -5 + (2 * x) / 3
+y2 = (7 - 2 * x) / 5
+-------------------code----------------------
+
+---
+
+## 4.4 Step 3: Plot Lines
+
+-------------------code----------------------
+plt.plot(x, y1)
+plt.plot(x, y2)
+-------------------code----------------------
+
+---
+
+## 4.5 Step 4: Add Axes (Optional but Useful)
+
+-------------------code----------------------
+plt.axhline(0)
+plt.axvline(0)
+-------------------code----------------------
+
+---
+
+## 4.6 Step 5: Plot Solution Point
+
+From algebra:
+
+* x = 6
+* y = -1
+
+-------------------code----------------------
+plt.scatter(6, -1)
+-------------------code----------------------
+
+---
+
+## 4.7 Step 6: Finalize Plot
+
+-------------------code----------------------
+plt.xlabel("x")
+plt.ylabel("y")
+plt.xlim(-1, 8)
+plt.ylim(-5, 5)
+plt.show()
+-------------------code----------------------
+
+---
+
+# 5. Important Notes & Best Practices
+
+## 5.1 Always Convert to y = f(x)
+
+* Required for plotting
+* Makes visualization straightforward
+
+## 5.2 Choose a Good Range for x
+
+* Use prior knowledge of solution if available
+* Otherwise experiment with ranges
+
+## 5.3 Use Enough Points
+
+* `np.linspace(..., 1000)` ensures smooth lines
+
+## 5.4 Label and Scale Axes
+
+* Helps interpret results clearly
+
+## 5.5 Understand the Meaning
+
+* Intersection = solution
+* Parallel lines = no solution
+* Same line = infinite solutions
+
+---
+
+# 6. Full Final Code
+
+-------------------code----------------------
+import numpy as np
+import matplotlib.pyplot as plt
+
+# -------- Substitution Example --------
+x = np.linspace(-10, 10, 1000)
+
+y1 = 3 * x
+y2 = 1 + (5 * x) / 2
+
+plt.figure()
+plt.plot(x, y1, label="y = 3x")
+plt.plot(x, y2, label="y = (1 + 5x)/2")
+plt.scatter(2, 6, label="Solution (2,6)")
+plt.xlabel("x")
+plt.ylabel("y")
+plt.xlim(0, 3)
+plt.ylim(0, 8)
+plt.legend()
+plt.show()
+
+# -------- Elimination Example --------
+x = np.linspace(-10, 10, 1000)
+
+y1 = -5 + (2 * x) / 3
+y2 = (7 - 2 * x) / 5
+
+plt.figure()
+plt.plot(x, y1, label="y = -5 + (2x/3)")
+plt.plot(x, y2, label="y = (7 - 2x)/5")
+
+# Axes
+plt.axhline(0)
+plt.axvline(0)
+
+# Solution point
+plt.scatter(6, -1, label="Solution (6,-1)")
+
+plt.xlabel("x")
+plt.ylabel("y")
+plt.xlim(-1, 8)
+plt.ylim(-5, 5)
+plt.legend()
+plt.show()
+-------------------code----------------------
+
+---
+
+# 7. Summary
+
+* Linear systems can be visualized as **lines in a plane**
+* The **solution is the intersection point**
+* Steps:
+
+  1. Rearrange equations to ( y = f(x) )
+  2. Generate x values
+  3. Compute y values
+  4. Plot lines
+  5. Mark intersection
+* Visualization strengthens intuition:
+
+  * Intersection → one solution
+  * Parallel → no solution
+  * Same line → infinite solutions
+
+This bridges algebra and geometry, which is essential for understanding machine learning models later.
