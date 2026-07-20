@@ -1252,3 +1252,760 @@ SVD is foundational for:
 * Latent Semantic Analysis
 
 The next topic builds on SVD by showing how it can be used for practical tasks such as dramatic data and image compression.
+
+*** 44. Data Compression with SVD ***
+# Image Compression Using Singular Value Decomposition (SVD)
+
+## 1. Lecture Overview
+
+This lecture demonstrates a practical application of **Singular Value Decomposition (SVD)**:
+
+**Image Compression**
+
+The goal is to:
+
+1. Load an image.
+2. Convert it to grayscale.
+3. Represent the image as a matrix.
+4. Apply SVD.
+5. Reconstruct the image using only a small number of singular values and singular vectors.
+6. Achieve dramatic compression while preserving image quality.
+
+The image used in the lecture:
+
+-------------------code----------------------
+wget https://raw.githubusercontent.com/jonkrohn/DLTFpT/master/notebooks/oboe-with-book.jpg
+-------------------code----------------------
+
+Image:
+
+* Oboe (the Machine Learning mascot)
+* Holding the book *Deep Learning Illustrated*
+
+---
+
+# 2. Why SVD Can Compress Images
+
+Recall the SVD formula:
+
+[
+A = UDV^T
+]
+
+Where:
+
+* (U) = Left singular vectors
+* (D) = Singular values
+* (V^T) = Right singular vectors
+
+Not all singular values are equally important.
+
+By convention:
+
+* Singular values are ordered from largest to smallest.
+* The first singular values capture most of the important information.
+* Later singular values capture fine details and noise.
+
+This allows us to approximate the image using only the first few singular values.
+
+---
+
+# 3. Step 1: Import Required Libraries
+
+-------------------code----------------------
+from PIL import Image
+import numpy as np
+import matplotlib.pyplot as plt
+-------------------code----------------------
+
+### Purpose
+
+* `PIL` → Load images
+* `NumPy` → Matrix operations and SVD
+* `Matplotlib` → Display images
+
+---
+
+# 4. Step 2: Load the Image
+
+-------------------code----------------------
+img = Image.open("oboe-with-book.jpg")
+img
+-------------------code----------------------
+
+This displays the original color image.
+
+---
+
+# 5. Step 3: Convert to Grayscale
+
+## Why?
+
+A color image contains:
+
+* Red channel
+* Green channel
+* Blue channel
+
+Three channels make the example more complicated.
+
+Instead, convert to grayscale:
+
+-------------------code----------------------
+img_gray = img.convert("LA")
+img_gray
+-------------------code----------------------
+
+### Result
+
+The image now contains a single intensity value per pixel.
+
+Each pixel stores:
+
+-------------------code----------------------
+0   = black
+255 = white
+-------------------code----------------------
+
+This allows us to treat the image as a simple matrix.
+
+---
+
+# 6. Step 4: Convert Image into a NumPy Matrix
+
+-------------------code----------------------
+X = np.array(img_gray)[:, :, 0]
+-------------------code----------------------
+
+### What Happens?
+
+The image becomes a matrix:
+
+-------------------code----------------------
+Rows    = image height
+Columns = image width
+-------------------code----------------------
+
+Example dimensions:
+
+-------------------code----------------------
+print(X.shape)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+(4032, 3024)
+-------------------code----------------------
+
+Meaning:
+
+* 4032 rows
+* 3024 columns
+
+Every entry stores pixel brightness.
+
+---
+
+# 7. Step 5: Compute the SVD
+
+Apply SVD:
+
+-------------------code----------------------
+U, s, VT = np.linalg.svd(X)
+-------------------code----------------------
+
+This decomposes the image matrix into:
+
+### U
+
+Left singular vectors
+
+-------------------code----------------------
+print(U.shape)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+(4032, 4032)
+-------------------code----------------------
+
+---
+
+### Singular Values
+
+-------------------code----------------------
+print(s.shape)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+(3024,)
+-------------------code----------------------
+
+---
+
+### Vᵀ
+
+Right singular vectors
+
+-------------------code----------------------
+print(VT.shape)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+(3024, 3024)
+-------------------code----------------------
+
+---
+
+# 8. Understanding Image Reconstruction
+
+The full image reconstruction is:
+
+[
+A = UDV^T
+]
+
+Instead of using all singular values, we keep only the most important ones.
+
+---
+
+# 9. Step 6: Reconstruct Using Only One Singular Value
+
+Keep:
+
+* First left singular vector
+* First singular value
+* First right singular vector
+
+-------------------code----------------------
+recon = s[0] * np.outer(U[:,0], VT[0,:])
+-------------------code----------------------
+
+Display:
+
+-------------------code----------------------
+plt.imshow(recon, cmap="gray")
+plt.axis("off")
+-------------------code----------------------
+
+### Result
+
+The image is barely recognizable.
+
+Only the strongest feature remains.
+
+---
+
+# 10. Step 7: Improve Quality by Adding More Singular Values
+
+Instead of using one singular value:
+
+Use:
+
+-------------------code----------------------
+2
+4
+8
+16
+32
+64
+-------------------code----------------------
+
+singular values.
+
+---
+
+## Reconstruction Function
+
+-------------------code----------------------
+def reconstruct(U, s, VT, k):
+    return U[:, :k] @ np.diag(s[:k]) @ VT[:k, :]
+-------------------code----------------------
+
+---
+
+## Example with 2 Components
+
+-------------------code----------------------
+img2 = reconstruct(U, s, VT, 2)
+-------------------code----------------------
+
+The dog starts becoming visible.
+
+---
+
+## Example with 4 Components
+
+-------------------code----------------------
+img4 = reconstruct(U, s, VT, 4)
+-------------------code----------------------
+
+More detail appears.
+
+---
+
+## Example with 8 Components
+
+-------------------code----------------------
+img8 = reconstruct(U, s, VT, 8)
+-------------------code----------------------
+
+The dog becomes clearly identifiable.
+
+---
+
+## Example with 16 Components
+
+-------------------code----------------------
+img16 = reconstruct(U, s, VT, 16)
+-------------------code----------------------
+
+The image is now recognizable.
+
+---
+
+## Example with 32 Components
+
+-------------------code----------------------
+img32 = reconstruct(U, s, VT, 32)
+-------------------code----------------------
+
+Good visual quality.
+
+---
+
+## Example with 64 Components
+
+-------------------code----------------------
+img64 = reconstruct(U, s, VT, 64)
+-------------------code----------------------
+
+Very close to the original image.
+
+Most viewers would consider it acceptable.
+
+---
+
+# 11. Display Multiple Reconstructions
+
+-------------------code----------------------
+for k in [2, 4, 8, 16, 32, 64]:
+    recon = reconstruct(U, s, VT, k)
+
+    plt.figure(figsize=(5,5))
+    plt.imshow(recon, cmap="gray")
+    plt.title(f"{k} Singular Values")
+    plt.axis("off")
+    plt.show()
+-------------------code----------------------
+
+This visualizes how image quality improves as more singular values are included.
+
+---
+
+# 12. Compression Analysis
+
+## Original Image Size
+
+Dimensions:
+
+-------------------code----------------------
+4032 × 3024
+-------------------code----------------------
+
+Total elements:
+
+[
+4032 \times 3024
+================
+
+12,192,768
+]
+
+Approximately:
+
+-------------------code----------------------
+12.2 million values
+-------------------code----------------------
+
+---
+
+## Compressed Representation (64 Components)
+
+We store:
+
+### Left Singular Vectors
+
+64 vectors
+
+Length:
+
+-------------------code----------------------
+4032
+-------------------code----------------------
+
+Storage:
+
+[
+64 \times 4032
+==============
+
+258,048
+]
+
+---
+
+### Singular Values
+
+[
+64
+]
+
+values
+
+---
+
+### Right Singular Vectors
+
+64 vectors
+
+Length:
+
+-------------------code----------------------
+3024
+-------------------code----------------------
+
+Storage:
+
+[
+64 \times 3024
+==============
+
+193,536
+]
+
+---
+
+### Total
+
+[
+258,048 + 64 + 193,536
+======================
+
+451,648
+]
+
+Approximately:
+
+-------------------code----------------------
+452,000 values
+-------------------code----------------------
+
+---
+
+# 13. Compression Ratio
+
+Original:
+
+-------------------code----------------------
+12,192,768
+-------------------code----------------------
+
+Compressed:
+
+-------------------code----------------------
+451,648
+-------------------code----------------------
+
+Percentage retained:
+
+[
+\frac{451,648}{12,192,768}
+==========================
+
+0.037
+]
+
+Only:
+
+-------------------code----------------------
+3.7%
+-------------------code----------------------
+
+of the original data is stored.
+
+---
+
+# 14. Compression Achieved
+
+Data retained:
+
+-------------------code----------------------
+3.7%
+-------------------code----------------------
+
+Compression:
+
+-------------------code----------------------
+96.3%
+-------------------code----------------------
+
+reduction in storage.
+
+Yet the image remains highly recognizable.
+
+This demonstrates the power of SVD.
+
+---
+
+# 15. Why This Works
+
+The largest singular values capture:
+
+* Main shapes
+* Major structures
+* Important edges
+
+Smaller singular values capture:
+
+* Fine details
+* Tiny textures
+* Noise
+
+Removing smaller singular values preserves most visual information while reducing storage dramatically.
+
+---
+
+# 16. Machine Learning Applications
+
+SVD is widely used for:
+
+### Image Compression
+
+Reduce storage requirements.
+
+---
+
+### Dimensionality Reduction
+
+Reduce feature count.
+
+---
+
+### Recommendation Systems
+
+Netflix-style recommendation engines.
+
+---
+
+### Natural Language Processing
+
+Latent Semantic Analysis (LSA).
+
+---
+
+### Noise Reduction
+
+Remove less important components.
+
+---
+
+### Faster Model Training
+
+Smaller datasets require:
+
+* Less memory
+* Less computation
+* Faster training
+
+---
+
+# 17. Important Notes
+
+### SVD Compression Is Lossy
+
+Some information is discarded.
+
+The reconstructed image is not identical to the original.
+
+---
+
+### More Singular Values = Better Quality
+
+Increasing:
+
+-------------------code----------------------
+k
+-------------------code----------------------
+
+improves image quality.
+
+But increases storage.
+
+---
+
+### Fewer Singular Values = Higher Compression
+
+Smaller:
+
+-------------------code----------------------
+k
+-------------------code----------------------
+
+means:
+
+* Less storage
+* Lower quality
+
+---
+
+### Choose k Carefully
+
+Common approach:
+
+Keep enough singular values to preserve most variance while minimizing storage.
+
+---
+
+# 18. Best Practices
+
+### Convert to Grayscale First
+
+Simplifies learning and reduces computation.
+
+---
+
+### Start with Small k
+
+Try:
+
+-------------------code----------------------
+k = 16
+k = 32
+k = 64
+-------------------code----------------------
+
+before increasing further.
+
+---
+
+### Visualize Results
+
+Always compare:
+
+* Original image
+* Reconstructed image
+
+to judge quality.
+
+---
+
+### Use SVD for Large Datasets
+
+The same principle applies beyond images:
+
+* Audio
+* Text
+* Sensor data
+* User-item matrices
+
+---
+
+# 19. Full Final Code
+
+-------------------code----------------------
+from PIL import Image
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load image
+img = Image.open("oboe-with-book.jpg")
+
+# Convert to grayscale
+img_gray = img.convert("LA")
+
+# Convert to matrix
+X = np.array(img_gray)[:, :, 0]
+
+# Compute SVD
+U, s, VT = np.linalg.svd(X)
+
+# Reconstruction function
+def reconstruct(U, s, VT, k):
+    return U[:, :k] @ np.diag(s[:k]) @ VT[:k, :]
+
+# Show compressed versions
+for k in [2, 4, 8, 16, 32, 64]:
+    recon = reconstruct(U, s, VT, k)
+
+    plt.figure(figsize=(5,5))
+    plt.imshow(recon, cmap="gray")
+    plt.title(f"{k} Singular Values")
+    plt.axis("off")
+    plt.show()
+
+# Compression statistics
+rows, cols = X.shape
+
+original_elements = rows * cols
+
+k = 64
+
+compressed_elements = (
+    rows * k +
+    k +
+    cols * k
+)
+
+compression_ratio = (
+    compressed_elements /
+    original_elements
+)
+
+print("Original elements:", original_elements)
+print("Compressed elements:", compressed_elements)
+print("Percentage retained:", compression_ratio * 100)
+print("Compression achieved:", (1 - compression_ratio) * 100)
+-------------------code----------------------
+
+# 20. Summary
+
+### Core Idea
+
+SVD decomposes an image matrix into:
+
+[
+A = UDV^T
+]
+
+where:
+
+* U = Left singular vectors
+* D = Singular values
+* Vᵀ = Right singular vectors
+
+### Key Insight
+
+Most image information is contained in the largest singular values.
+
+### Compression Strategy
+
+1. Compute SVD.
+2. Keep only the largest k singular values.
+3. Reconstruct the image.
+4. Discard the rest.
+
+### Results from the Lecture
+
+* Original image: ~12.2 million values
+* Compressed image (k=64): ~452,000 values
+* Data retained: ~3.7%
+* Compression achieved: ~96.3%
+
+This is one of the most practical and intuitive demonstrations of how linear algebra directly powers real-world machine learning and data compression systems.
