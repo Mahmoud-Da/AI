@@ -3606,3 +3606,310 @@ if __name__ == "__main__":
   * Avoiding errors
 
 ---
+
+*** 12. Exercises on Algebra Data Structures ***
+## 1. Overview of the Exercise
+
+This lecture tests understanding of:
+
+* **Vector transposition**
+* **Matrix dimensions (shape)**
+* **Element indexing in matrices**
+
+You are given:
+
+1. A vector → find its transpose
+2. A matrix → find its dimensions
+3. A matrix → locate a specific element
+
+---
+
+## 2. Question 1: Vector Transpose
+
+### 2.1 Concept
+
+* A **transpose** converts:
+
+  * **Column vector → Row vector**
+  * **Row vector → Column vector**
+* **Order of elements stays the same**
+
+---
+
+### 2.2 Example
+
+Original vector (column):
+
+[
+\mathbf{x} =
+\begin{bmatrix}
+x_1 \
+x_2 \
+x_3
+\end{bmatrix}
+]
+
+Transpose:
+
+[
+\mathbf{x}^T =
+\begin{bmatrix}
+x_1 & x_2 & x_3
+\end{bmatrix}
+]
+
+---
+
+### 2.3 Python Example
+
+#### Step 1: Create Column Vector
+
+-------------------code----------------------
+import numpy as np
+
+x = np.array([[1],
+              [2],
+              [3]])
+-------------------code----------------------
+
+---
+
+#### Step 2: Transpose Vector
+
+-------------------code----------------------
+x_T = x.T
+
+print("Original:\n", x)
+print("Transposed:\n", x_T)
+-------------------code----------------------
+
+---
+
+## 3. Question 2: Matrix Dimensions
+
+### 3.1 Concept
+
+* Matrix dimensions are written as:
+
+[
+(\text{rows}, \text{columns})
+]
+
+---
+
+### 3.2 Example from Lecture
+
+Matrix **Y** has:
+
+* 2 rows
+* 4 columns
+
+So:
+
+[
+Y \in \mathbb{R}^{2 \times 4}
+]
+
+or simply:
+
+-------------------code----------------------
+(2, 4)
+-------------------code----------------------
+
+---
+
+### 3.3 Python Example
+
+#### Step 1: Create Matrix
+
+-------------------code----------------------
+Y = np.array([
+    [5, 8, 17, 2],
+    [9, 4, 6, 1]
+])
+-------------------code----------------------
+
+---
+
+#### Step 2: Get Shape
+
+-------------------code----------------------
+print("Shape:", Y.shape)
+-------------------code----------------------
+
+---
+
+## 4. Question 3: Element Position
+
+### 4.1 Concept
+
+* Position is written as:
+
+[
+(i, j)
+]
+
+Where:
+
+* i → row number
+* j → column number
+
+---
+
+### 4.2 Example from Lecture
+
+* Element **17** is located at:
+
+  * Row = 2
+  * Column = 3
+
+So:
+
+[
+(2, 3)
+]
+
+---
+
+### 4.3 Python Verification
+
+-------------------code----------------------
+print("Element at row 2, col 3:", Y[1, 2])
+-------------------code----------------------
+
+Note:
+
+* Python uses **zero-based indexing**
+
+  * Row 2 → index 1
+  * Column 3 → index 2
+
+---
+
+## 5. Step-by-Step Summary of Concepts
+
+### Step 1: Transpose
+
+* Switch rows and columns
+* Keep order of elements
+
+---
+
+### Step 2: Dimensions
+
+* Always (rows, columns)
+* Count rows first
+
+---
+
+### Step 3: Position
+
+* Use (row, column)
+* Adjust for Python indexing
+
+---
+
+## 6. Important Notes and Best Practices
+
+### 6.1 Python vs Math Indexing
+
+| System | Starts From |
+| ------ | ----------- |
+| Math   | 1           |
+| Python | 0           |
+
+---
+
+### 6.2 Always Check Shape
+
+-------------------code----------------------
+print(matrix.shape)
+-------------------code----------------------
+
+---
+
+### 6.3 Use `.T` for Transpose
+
+* Clean and fast
+* Works for NumPy arrays
+
+---
+
+### 6.4 Be Careful with Vector Shape
+
+* `(3,)` → not a true column vector
+* `(3,1)` → proper column vector
+
+---
+
+## 7. Full Final Python Script
+
+-------------------code----------------------
+import numpy as np
+
+
+def transpose_example():
+    print("=== Vector Transpose ===")
+
+    x = np.array([[1],
+                  [2],
+                  [3]])
+
+    x_T = x.T
+
+    print("Original vector:\n", x)
+    print("Transposed vector:\n", x_T)
+
+
+def matrix_dimensions_example():
+    print("\n=== Matrix Dimensions ===")
+
+    Y = np.array([
+        [5, 8, 17, 2],
+        [9, 4, 6, 1]
+    ])
+
+    print("Matrix:\n", Y)
+    print("Shape (rows, cols):", Y.shape)
+
+
+def element_position_example():
+    print("\n=== Element Position ===")
+
+    Y = np.array([
+        [5, 8, 17, 2],
+        [9, 4, 6, 1]
+    ])
+
+    value = Y[1, 2]
+
+    print("Element at (2,3):", value)
+
+
+def main():
+    transpose_example()
+    matrix_dimensions_example()
+    element_position_example()
+
+
+if __name__ == "__main__":
+    main()
+-------------------code----------------------
+
+---
+
+## 8. Summary
+
+* **Transpose** switches rows and columns without changing order
+* **Matrix dimensions** are written as (rows, columns)
+* **Element position** is (row, column)
+* Python uses **zero-based indexing**, unlike math
+* These basics are essential before moving to:
+
+  * Matrix operations
+  * Linear transformations
+  * Machine learning models
+
+---
+
+If you want, next I can give you a **quick test like interview questions** to make sure you fully mastered this section.
