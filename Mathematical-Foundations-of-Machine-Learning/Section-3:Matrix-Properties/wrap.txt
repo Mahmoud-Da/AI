@@ -3369,3 +3369,622 @@ Orthogonal matrices are critical in machine learning because they:
 ## Main Takeaway
 
 Orthogonal matrices are powerful because their transpose automatically gives their inverse, making many machine learning computations significantly faster and more stable.
+
+*** 31. Orthogonal Matrix Exercises ***
+# 1. Orthogonal Matrix Exercises Overview
+
+These exercises review several important linear algebra concepts:
+
+1. Orthogonal matrices
+2. Identity matrices
+3. Dot product
+4. L2 norm
+5. Orthonormal vectors
+
+The goal is to prove whether a matrix is orthogonal.
+
+---
+
+# 2. Review: What Is an Orthogonal Matrix?
+
+A matrix is orthogonal if:
+
+1. Its columns are orthonormal
+2. Its rows are orthonormal
+
+Orthonormal means:
+
+* Vectors are orthogonal
+* Each vector has unit norm
+
+Main property:
+
+[
+A^T A = I
+]
+
+Where:
+
+* (A^T) = transpose of matrix (A)
+* (I) = identity matrix
+
+---
+
+# 3. Exercise 1 — Prove Identity Matrix Columns Are Orthogonal
+
+We use the identity matrix:
+
+[
+I_3 =
+\begin{bmatrix}
+1 & 0 & 0 \
+0 & 1 & 0 \
+0 & 0 & 1
+\end{bmatrix}
+]
+
+---
+
+## 3.1 Step-by-Step Dot Product Calculation
+
+### Column 1 and Column 2
+
+[
+(1)(0) + (0)(1) + (0)(0)
+]
+
+[
+= 0
+]
+
+---
+
+### Column 1 and Column 3
+
+[
+(1)(0) + (0)(0) + (0)(1)
+]
+
+[
+= 0
+]
+
+---
+
+### Column 2 and Column 3
+
+[
+(0)(0) + (1)(0) + (0)(1)
+]
+
+[
+= 0
+]
+
+---
+
+## Conclusion
+
+All dot products equal zero.
+
+Therefore:
+
+* Every pair of columns is orthogonal.
+
+---
+
+# 4. Exercise 2 — Prove Columns Have Unit Norm
+
+We compute the L2 norm of each column.
+
+---
+
+## 4.1 First Column
+
+[
+\sqrt{1^2 + 0^2 + 0^2}
+]
+
+[
+= \sqrt{1}
+= 1
+]
+
+---
+
+## 4.2 Second Column
+
+[
+\sqrt{0^2 + 1^2 + 0^2}
+]
+
+[
+= 1
+]
+
+---
+
+## 4.3 Third Column
+
+[
+\sqrt{0^2 + 0^2 + 1^2}
+]
+
+[
+= 1
+]
+
+---
+
+## Conclusion
+
+All columns have:
+
+* Norm = 1
+
+Therefore:
+
+* The columns are orthonormal.
+
+Since the identity matrix transpose equals itself:
+
+[
+I^T = I
+]
+
+its rows are also orthonormal.
+
+So the identity matrix is orthogonal.
+
+---
+
+# 5. Exercise 3 — Verify Using NumPy Code
+
+---
+
+## 5.1 Create Identity Matrix
+
+-------------------code----------------------
+import numpy as np
+
+I3 = np.eye(3)
+
+print(I3)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+[[1. 0. 0.]
+ [0. 1. 0.]
+ [0. 0. 1.]]
+-------------------code----------------------
+
+---
+
+## 5.2 Extract Columns
+
+-------------------code----------------------
+c1 = I3[:, 0]
+c2 = I3[:, 1]
+c3 = I3[:, 2]
+-------------------code----------------------
+
+---
+
+## 5.3 Compute Dot Products
+
+-------------------code----------------------
+print(np.dot(c1, c2))
+print(np.dot(c1, c3))
+print(np.dot(c2, c3))
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+0.0
+0.0
+0.0
+-------------------code----------------------
+
+This proves orthogonality.
+
+---
+
+## 5.4 Compute L2 Norms
+
+-------------------code----------------------
+print(np.linalg.norm(c1))
+print(np.linalg.norm(c2))
+print(np.linalg.norm(c3))
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+1.0
+1.0
+1.0
+-------------------code----------------------
+
+This proves unit norm.
+
+---
+
+# 6. Exercise 4 — Check Another Matrix K
+
+Matrix:
+
+[
+K =
+\begin{bmatrix}
+\frac{2}{3} & \frac{1}{3} & \frac{2}{3} \
+-\frac{2}{3} & \frac{2}{3} & \frac{1}{3} \
+\frac{1}{3} & \frac{2}{3} & -\frac{2}{3}
+\end{bmatrix}
+]
+
+Goal:
+
+* Determine whether (K) is orthogonal.
+
+---
+
+# 7. Step-by-Step Dot Product Checks
+
+---
+
+## 7.1 Column 1 and Column 2
+
+[
+\frac{2}{3}\frac{1}{3}
++
+\left(-\frac{2}{3}\right)\frac{2}{3}
++
+\frac{1}{3}\frac{2}{3}
+]
+
+# [
+
+## \frac{2}{9}
+
+\frac{4}{9}
++
+\frac{2}{9}
+]
+
+[
+= 0
+]
+
+---
+
+## 7.2 Remaining Column Pairs
+
+The same process gives:
+
+[
+0
+]
+
+for all remaining column pairs.
+
+So:
+
+* All columns are orthogonal.
+
+---
+
+# 8. Check Unit Norms
+
+---
+
+## 8.1 First Column Norm
+
+[
+\sqrt{
+\left(\frac{2}{3}\right)^2
++
+\left(-\frac{2}{3}\right)^2
++
+\left(\frac{1}{3}\right)^2
+}
+]
+
+# [
+
+\sqrt{
+\frac{4}{9}
++
+\frac{4}{9}
++
+\frac{1}{9}
+}
+]
+
+# [
+
+\sqrt{1}
+= 1
+]
+
+All columns also have norm 1.
+
+So the columns are orthonormal.
+
+---
+
+# 9. Verify Matrix K Using PyTorch
+
+---
+
+## 9.1 Import PyTorch
+
+-------------------code----------------------
+import torch
+-------------------code----------------------
+
+---
+
+## 9.2 Create Matrix K
+
+-------------------code----------------------
+K = torch.tensor([
+    [ 2/3, 1/3,  2/3],
+    [-2/3, 2/3,  1/3],
+    [ 1/3, 2/3, -2/3]
+], dtype=torch.float32)
+
+print(K)
+-------------------code----------------------
+
+---
+
+## 9.3 Extract Columns
+
+-------------------code----------------------
+c1 = K[:, 0]
+c2 = K[:, 1]
+c3 = K[:, 2]
+-------------------code----------------------
+
+---
+
+## 9.4 Compute Dot Products
+
+-------------------code----------------------
+print(torch.dot(c1, c2))
+print(torch.dot(c1, c3))
+print(torch.dot(c2, c3))
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+tensor(0.)
+tensor(0.)
+tensor(0.)
+-------------------code----------------------
+
+---
+
+## 9.5 Compute Norms
+
+-------------------code----------------------
+print(torch.norm(c1))
+print(torch.norm(c2))
+print(torch.norm(c3))
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+tensor(1.)
+tensor(1.)
+tensor(1.)
+-------------------code----------------------
+
+---
+
+# 10. Final Orthogonality Test
+
+The fastest test:
+
+[
+K^T K = I
+]
+
+---
+
+## 10.1 Compute (K^T K)
+
+-------------------code----------------------
+result = torch.matmul(K.T, K)
+
+print(result)
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+tensor([
+ [1.0000, 0.0000, 0.0000],
+ [0.0000, 1.0000, 0.0000],
+ [0.0000, 0.0000, 1.0000]
+])
+-------------------code----------------------
+
+This confirms:
+
+* (K) is orthogonal.
+
+---
+
+# 11. Important Notes and Best Practices
+
+## Use `allclose()` for floating-point comparisons
+
+Due to rounding errors:
+
+-------------------code----------------------
+torch.allclose(result, torch.eye(3))
+-------------------code----------------------
+
+is better than exact equality checks.
+
+---
+
+## Orthogonal matrices preserve information
+
+They are important in:
+
+* Machine learning
+* Deep learning
+* PCA
+* Rotations
+* Numerical optimization
+
+---
+
+## Identity matrices are always orthogonal
+
+Because:
+
+* Columns are orthonormal
+* Rows are orthonormal
+
+---
+
+## Orthogonality requires BOTH conditions
+
+A matrix is orthogonal only if:
+
+1. Columns are orthonormal
+2. Rows are orthonormal
+
+---
+
+# 12. Full Final Code
+
+-------------------code----------------------
+import numpy as np
+import torch
+
+# =====================================
+# PART 1 — Identity Matrix in NumPy
+# =====================================
+
+I3 = np.eye(3)
+
+print("Identity Matrix:")
+print(I3)
+
+# Extract columns
+c1 = I3[:, 0]
+c2 = I3[:, 1]
+c3 = I3[:, 2]
+
+# Dot products
+print("\nDot Products:")
+print(np.dot(c1, c2))
+print(np.dot(c1, c3))
+print(np.dot(c2, c3))
+
+# Norms
+print("\nL2 Norms:")
+print(np.linalg.norm(c1))
+print(np.linalg.norm(c2))
+print(np.linalg.norm(c3))
+
+# =====================================
+# PART 2 — Matrix K in PyTorch
+# =====================================
+
+K = torch.tensor([
+    [ 2/3, 1/3,  2/3],
+    [-2/3, 2/3,  1/3],
+    [ 1/3, 2/3, -2/3]
+], dtype=torch.float32)
+
+print("\nMatrix K:")
+print(K)
+
+# Extract columns
+k1 = K[:, 0]
+k2 = K[:, 1]
+k3 = K[:, 2]
+
+# Dot products
+print("\nDot Products:")
+print(torch.dot(k1, k2))
+print(torch.dot(k1, k3))
+print(torch.dot(k2, k3))
+
+# Norms
+print("\nL2 Norms:")
+print(torch.norm(k1))
+print(torch.norm(k2))
+print(torch.norm(k3))
+
+# Orthogonality check
+result = torch.matmul(K.T, K)
+
+print("\nK^T K:")
+print(result)
+
+# Compare with identity matrix
+is_orthogonal = torch.allclose(result, torch.eye(3))
+
+print("\nIs K orthogonal?")
+print(is_orthogonal)
+-------------------code----------------------
+
+---
+
+# 13. Summary
+
+## Identity Matrix
+
+The identity matrix is orthogonal because:
+
+* Columns are orthogonal
+* Columns have unit norm
+* Rows are also orthonormal
+
+---
+
+## Orthogonal Matrix Checks
+
+To verify orthogonality:
+
+### Method 1
+
+Check:
+
+* Dot products = 0
+* Norms = 1
+
+### Method 2
+
+Check:
+
+[
+A^T A = I
+]
+
+---
+
+## Matrix K Result
+
+Matrix (K) is orthogonal because:
+
+[
+K^T K = I
+]
+
+---
+
+## Main Takeaway
+
+Orthogonal matrices are built from orthonormal vectors, and they can be efficiently verified using dot products, norms, and the identity matrix relationship (A^T A = I).
