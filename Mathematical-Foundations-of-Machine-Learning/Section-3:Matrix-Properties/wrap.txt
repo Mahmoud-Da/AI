@@ -2857,3 +2857,515 @@ To invert a diagonal matrix:
 ## Main Takeaway
 
 Diagonal matrices simplify many machine learning and linear algebra computations because operations become much cheaper and easier compared to full matrices.
+
+
+*** 30. Orthogonal Matrices ***
+# 1. Orthogonal Matrices
+
+Orthogonal matrices are a special type of matrix that are extremely important in:
+
+* Machine learning
+* Linear algebra
+* Computer graphics
+* Optimization
+* Deep learning
+
+They are built using orthonormal vectors.
+
+---
+
+# 2. Review: Orthonormal Vectors
+
+Before understanding orthogonal matrices, we need to remember what orthonormal vectors are.
+
+A set of vectors is orthonormal if:
+
+1. The vectors are orthogonal
+
+   * Their dot product equals zero
+
+2. Each vector has unit norm
+
+   * Length (magnitude) equals 1
+
+Example:
+
+[
+v_1 =
+\begin{bmatrix}
+1 \
+0
+\end{bmatrix}
+,
+\quad
+v_2 =
+\begin{bmatrix}
+0 \
+1
+\end{bmatrix}
+]
+
+These are basis vectors and are orthonormal.
+
+---
+
+# 3. Definition of an Orthogonal Matrix
+
+A matrix is orthogonal if:
+
+* All rows are orthonormal vectors
+* All columns are orthonormal vectors
+
+This gives orthogonal matrices several special mathematical properties.
+
+---
+
+# 4. Main Property of Orthogonal Matrices
+
+For an orthogonal matrix ( A ):
+
+[
+A^T A = I
+]
+
+and also:
+
+[
+A A^T = I
+]
+
+Where:
+
+* ( A^T ) = transpose of matrix ( A )
+* ( I ) = identity matrix
+
+This is one of the most important properties in linear algebra.
+
+---
+
+# 5. Why This Property Matters
+
+Because:
+
+[
+A^T A = I
+]
+
+the transpose behaves exactly like the inverse.
+
+That means:
+
+[
+A^{-1} = A^T
+]
+
+This is extremely useful because:
+
+* Computing a transpose is very cheap
+* Computing a normal matrix inverse is expensive
+
+So orthogonal matrices allow very efficient computations.
+
+---
+
+# 6. Step-by-Step Example
+
+## 6.1 Create an Orthogonal Matrix
+
+Example matrix:
+
+[
+A =
+\begin{bmatrix}
+0 & -1 \
+1 & 0
+\end{bmatrix}
+]
+
+This is an orthogonal matrix.
+
+---
+
+## 6.2 Compute the Transpose
+
+Transpose swaps rows and columns.
+
+[
+A^T =
+\begin{bmatrix}
+0 & 1 \
+-1 & 0
+\end{bmatrix}
+]
+
+---
+
+## 6.3 Multiply ( A^T A )
+
+The result becomes:
+
+[
+I =
+\begin{bmatrix}
+1 & 0 \
+0 & 1
+\end{bmatrix}
+]
+
+This confirms the matrix is orthogonal.
+
+---
+
+# 7. NumPy Code Example
+
+## 7.1 Import NumPy
+
+-------------------code----------------------
+import numpy as np
+-------------------code----------------------
+
+---
+
+## 7.2 Create the Matrix
+
+-------------------code----------------------
+A = np.array([
+    [0, -1],
+    [1,  0]
+])
+
+print(A)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+[[ 0 -1]
+ [ 1  0]]
+-------------------code----------------------
+
+---
+
+## 7.3 Compute the Transpose
+
+-------------------code----------------------
+A_T = A.T
+
+print(A_T)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+[[ 0  1]
+ [-1  0]]
+-------------------code----------------------
+
+---
+
+## 7.4 Verify Orthogonality
+
+Multiply transpose by the original matrix:
+
+-------------------code----------------------
+result = A_T @ A
+
+print(result)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+[[1 0]
+ [0 1]]
+-------------------code----------------------
+
+This is the identity matrix.
+
+---
+
+# 8. Comparing Inverse and Transpose
+
+## 8.1 Compute the Inverse
+
+-------------------code----------------------
+A_inv = np.linalg.inv(A)
+
+print(A_inv)
+-------------------code----------------------
+
+---
+
+## 8.2 Compare with the Transpose
+
+-------------------code----------------------
+print(np.allclose(A_inv, A_T))
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+True
+-------------------code----------------------
+
+This confirms:
+
+[
+A^{-1} = A^T
+]
+
+---
+
+# 9. Why Orthogonal Matrices Matter in Machine Learning
+
+Orthogonal matrices are heavily used because they:
+
+* Preserve vector lengths
+* Preserve angles
+* Avoid distortion
+* Improve numerical stability
+* Make inverse operations efficient
+
+Applications include:
+
+* Deep learning
+* PCA (Principal Component Analysis)
+* SVD (Singular Value Decomposition)
+* Rotation transformations
+* Optimization algorithms
+
+---
+
+# 10. Important Notes and Best Practices
+
+## Best Practices
+
+### Verify orthogonality using:
+
+-------------------code----------------------
+A.T @ A
+-------------------code----------------------
+
+The result should equal the identity matrix.
+
+---
+
+### Use `np.allclose()` instead of `==`
+
+Floating-point calculations may contain tiny rounding errors.
+
+Good:
+
+-------------------code----------------------
+np.allclose(A.T @ A, np.eye(n))
+-------------------code----------------------
+
+Avoid:
+
+-------------------code----------------------
+(A.T @ A) == np.eye(n)
+-------------------code----------------------
+
+---
+
+### Orthogonal matrices must be square
+
+They need:
+
+* Same number of rows and columns
+
+---
+
+### Transpose is computationally cheap
+
+This makes orthogonal matrices very efficient for machine learning systems.
+
+---
+
+# 11. Full Final Code
+
+-------------------code----------------------
+import numpy as np
+
+# -----------------------------------
+# Create an orthogonal matrix
+# -----------------------------------
+
+A = np.array([
+    [0, -1],
+    [1,  0]
+])
+
+print("Matrix A:")
+print(A)
+
+# -----------------------------------
+# Compute transpose
+# -----------------------------------
+
+A_T = A.T
+
+print("\nTranspose of A:")
+print(A_T)
+
+# -----------------------------------
+# Verify orthogonality
+# A^T A should equal identity matrix
+# -----------------------------------
+
+result = A_T @ A
+
+print("\nA^T @ A:")
+print(result)
+
+# -----------------------------------
+# Create identity matrix for comparison
+# -----------------------------------
+
+I = np.eye(2)
+
+print("\nIdentity Matrix:")
+print(I)
+
+# -----------------------------------
+# Check if orthogonal
+# -----------------------------------
+
+is_orthogonal = np.allclose(result, I)
+
+print("\nIs A orthogonal?")
+print(is_orthogonal)
+
+# -----------------------------------
+# Compute inverse
+# -----------------------------------
+
+A_inv = np.linalg.inv(A)
+
+print("\nInverse of A:")
+print(A_inv)
+
+# -----------------------------------
+# Verify inverse equals transpose
+# -----------------------------------
+
+same = np.allclose(A_inv, A_T)
+
+print("\nDoes inverse equal transpose?")
+print(same)
+-------------------code----------------------
+
+---
+
+# 12. Final Subject Recap
+
+The lecture also summarized the entire Intro to Linear Algebra subject.
+
+---
+
+## Segment 1: Data Structures for Algebra
+
+Covered:
+
+* Scalars
+* Vectors
+* Matrices
+* Tensors
+
+Focused on understanding tensor structure and dimensions.
+
+---
+
+## Segment 2: Common Tensor Operations
+
+Covered:
+
+* Addition
+* Subtraction
+* Dot product
+* Tensor operations
+* Solving linear systems
+
+Focused on practical operations used in machine learning.
+
+---
+
+## Segment 3: Matrix Properties
+
+Covered:
+
+* Frobenius norm
+* Matrix multiplication
+* Symmetric matrices
+* Identity matrices
+* Matrix inversion
+* Diagonal matrices
+* Orthogonal matrices
+
+Focused on advanced matrix behavior and machine learning applications.
+
+---
+
+# 13. What Comes Next
+
+The next subject in the Machine Learning Foundations series is:
+
+## Linear Algebra 2
+
+Topics include:
+
+* Eigenvectors
+* Eigenvalues
+* Determinants
+* Singular Value Decomposition (SVD)
+* Moore-Penrose Pseudoinverse
+
+These topics are essential for advanced machine learning.
+
+---
+
+# 14. Summary
+
+## What Is an Orthogonal Matrix?
+
+A matrix whose:
+
+* Rows are orthonormal
+* Columns are orthonormal
+
+---
+
+## Main Identity
+
+[
+A^T A = I
+]
+
+---
+
+## Key Shortcut
+
+For orthogonal matrices:
+
+[
+A^{-1} = A^T
+]
+
+This makes inversion very fast and efficient.
+
+---
+
+## Why They Matter
+
+Orthogonal matrices are critical in machine learning because they:
+
+* Preserve information
+* Improve stability
+* Reduce computational cost
+* Simplify matrix inversion
+
+---
+
+## Main Takeaway
+
+Orthogonal matrices are powerful because their transpose automatically gives their inverse, making many machine learning computations significantly faster and more stable.
