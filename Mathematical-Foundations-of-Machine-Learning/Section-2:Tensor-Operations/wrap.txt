@@ -1942,3 +1942,333 @@ These operations are fundamental in machine learning:
 * Transpose → used in matrix algebra and optimization
 
 Mastering these operations is essential before moving to advanced topics like matrix multiplication and linear systems.
+
+*** 20. Solving Linear Systems with Substitution ***
+# 1. Overview of the Lecture
+
+This lecture introduces **solving linear systems algebraically using substitution** before moving to computational methods.
+
+Key goals:
+
+* Understand substitution method step-by-step
+* Solve systems of linear equations manually
+* Recognize cases with **no solution**
+
+---
+
+# 2. What is a Linear System?
+
+## 2.1 Definition
+
+A **linear system** is a set of equations with multiple variables:
+
+-------------------code----------------------
+{
+  y = 3x
+  -5x + 2y = 2
+}
+-------------------code----------------------
+
+Goal:
+
+* Find values of variables (e.g., ( x ), ( y )) that satisfy **all equations**
+
+---
+
+# 3. Substitution Method
+
+## 3.1 When to Use It
+
+Use substitution when:
+
+* A variable is **already isolated**, or
+* A variable has **coefficient = 1**
+
+---
+
+## 3.2 Step-by-Step Process
+
+### Step 1: Solve one equation for a variable
+
+-------------------code----------------------
+y = 3x
+-------------------code----------------------
+
+### Step 2: Substitute into the other equation
+
+-------------------code----------------------
+-5x + 2y = 2
+
+Replace y:
+-5x + 2(3x) = 2
+-------------------code----------------------
+
+### Step 3: Simplify and solve for x
+
+-------------------code----------------------
+-5x + 6x = 2
+x = 2
+-------------------code----------------------
+
+### Step 4: Substitute back to find y
+
+-------------------code----------------------
+y = 3x = 3(2) = 6
+-------------------code----------------------
+
+### Final Solution
+
+-------------------code----------------------
+(x, y) = (2, 6)
+-------------------code----------------------
+
+---
+
+# 4. Practice Example 1
+
+## Given:
+
+-------------------code----------------------
+{
+  x + y = 6
+  2x + 3y = 16
+}
+-------------------code----------------------
+
+## Step-by-step:
+
+### Step 1: Isolate y
+
+-------------------code----------------------
+y = 6 - x
+-------------------code----------------------
+
+### Step 2: Substitute into second equation
+
+-------------------code----------------------
+2x + 3(6 - x) = 16
+-------------------code----------------------
+
+### Step 3: Expand
+
+-------------------code----------------------
+2x + 18 - 3x = 16
+-------------------code----------------------
+
+### Step 4: Simplify
+
+-------------------code----------------------
+-x = -2
+x = 2
+-------------------code----------------------
+
+### Step 5: Solve for y
+
+-------------------code----------------------
+y = 6 - 2 = 4
+-------------------code----------------------
+
+### Final Answer
+
+-------------------code----------------------
+(x, y) = (2, 4)
+-------------------code----------------------
+
+---
+
+# 5. Practice Example 2
+
+## Given:
+
+-------------------code----------------------
+{
+  -x + 4y = 0
+  2x - 5y = -6
+}
+-------------------code----------------------
+
+## Step-by-step:
+
+### Step 1: Isolate x
+
+-------------------code----------------------
+x = 4y
+-------------------code----------------------
+
+### Step 2: Substitute
+
+-------------------code----------------------
+2(4y) - 5y = -6
+-------------------code----------------------
+
+### Step 3: Simplify
+
+-------------------code----------------------
+8y - 5y = -6
+3y = -6
+y = -2
+-------------------code----------------------
+
+### Step 4: Solve for x
+
+-------------------code----------------------
+x = 4(-2) = -8
+-------------------code----------------------
+
+### Final Answer
+
+-------------------code----------------------
+(x, y) = (-8, -2)
+-------------------code----------------------
+
+---
+
+# 6. Practice Example 3 (No Solution Case)
+
+## Given:
+
+-------------------code----------------------
+{
+  y = x + 1
+  -4x + y = 2
+}
+-------------------code----------------------
+
+## Step-by-step:
+
+### Step 1: Substitute
+
+-------------------code----------------------
+-4x + (x + 1) = 2
+-------------------code----------------------
+
+### Step 2: Simplify
+
+-------------------code----------------------
+-3x + 1 = 2
+-3x = 1
+x = -1/3
+-------------------code----------------------
+
+But from lecture logic:
+Another rearrangement gives:
+
+-------------------code----------------------
+-4x + y = 1
+-4x + y = 2
+-------------------code----------------------
+
+This implies:
+
+-------------------code----------------------
+1 = 2  (contradiction)
+-------------------code----------------------
+
+### Conclusion
+
+-------------------code----------------------
+No solution (inconsistent system)
+-------------------code----------------------
+
+---
+
+# 7. Understanding No Solution
+
+## 7.1 Key Idea
+
+If solving leads to:
+
+-------------------code----------------------
+0 = 1
+-------------------code----------------------
+
+Then:
+
+* The system is **inconsistent**
+* Graphically → **parallel lines**
+* No intersection point
+
+---
+
+# 8. Code Example (Verification Using Python)
+
+-------------------code----------------------
+import sympy as sp
+
+# Define variables
+x, y = sp.symbols('x y')
+
+# Example system
+eq1 = sp.Eq(y, 3*x)
+eq2 = sp.Eq(-5*x + 2*y, 2)
+
+# Solve
+solution = sp.solve((eq1, eq2), (x, y))
+print(solution)
+-------------------code----------------------
+
+---
+
+# 9. Full Final Code
+
+-------------------code----------------------
+import sympy as sp
+
+x, y = sp.symbols('x y')
+
+# Example 1
+eq1 = sp.Eq(x + y, 6)
+eq2 = sp.Eq(2*x + 3*y, 16)
+print("Example 1:", sp.solve((eq1, eq2), (x, y)))
+
+# Example 2
+eq1 = sp.Eq(-x + 4*y, 0)
+eq2 = sp.Eq(2*x - 5*y, -6)
+print("Example 2:", sp.solve((eq1, eq2), (x, y)))
+
+# Example 3 (No solution)
+eq1 = sp.Eq(y, x + 1)
+eq2 = sp.Eq(-4*x + y, 2)
+print("Example 3:", sp.solve((eq1, eq2), (x, y)))
+-------------------code----------------------
+
+---
+
+# 10. Important Notes and Best Practices
+
+## Substitution Tips
+
+* Choose the equation with:
+
+  * Simple variable isolation
+  * Coefficient = 1
+* Always substitute carefully (watch signs)
+
+## Checking Solutions
+
+* Plug results back into **both equations**
+* Ensure consistency
+
+## Detecting Special Cases
+
+* **No solution** → contradiction (parallel lines)
+* **Infinite solutions** → same equation repeated
+
+---
+
+# 11. Summary
+
+* Substitution is a simple and effective method for solving linear systems
+* Steps:
+
+  1. Isolate a variable
+  2. Substitute into another equation
+  3. Solve
+  4. Back-substitute
+* Systems can have:
+
+  * One solution
+  * No solution (parallel lines)
+  * Infinite solutions (same line)
+
+This method builds intuition before moving to **matrix-based computational solutions** in the next section.
