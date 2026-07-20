@@ -1437,3 +1437,825 @@ Matrix application is foundational for:
 * Data transformations
 
 These concepts become central throughout machine learning and advanced linear algebra.
+
+*** 34. Affine Transformations ***
+# Affine Transformations via Matrix Application
+
+# 1. Introduction
+
+This lecture introduces **affine transformations** using NumPy and matrix multiplication.
+
+Affine transformations are geometric operations applied to vectors using matrices.
+
+Examples include:
+
+* Reflection (flipping)
+* Rotation
+* Scaling
+* Shearing
+
+These transformations are extremely important in:
+
+* Linear algebra
+* Computer graphics
+* Machine learning
+* Neural networks
+* Eigen decomposition
+
+---
+
+# 2. What Is Matrix Application?
+
+Applying a matrix to a vector means:
+
+[
+Av
+]
+
+which is simply matrix-vector multiplication.
+
+The matrix transforms the vector geometrically.
+
+---
+
+# 3. Setting Up the Environment
+
+## Import NumPy
+
+-------------------code----------------------
+import numpy as np
+-------------------code----------------------
+
+---
+
+## Import Matplotlib
+
+-------------------code----------------------
+import matplotlib.pyplot as plt
+-------------------code----------------------
+
+---
+
+# 4. Creating a Vector
+
+## Define Vector (v)
+
+[
+v =
+\begin{bmatrix}
+3 \
+1
+\end{bmatrix}
+]
+
+### Code
+
+-------------------code----------------------
+v = np.array([3, 1])
+-------------------code----------------------
+
+---
+
+# 5. Plotting Vectors
+
+## Helper Function
+
+-------------------code----------------------
+def plot_vectors(vectors, colors):
+    plt.figure(figsize=(6,6))
+
+    for i in range(len(vectors)):
+        plt.quiver(
+            0, 0,
+            vectors[i][0],
+            vectors[i][1],
+            angles='xy',
+            scale_units='xy',
+            scale=1,
+            color=colors[i]
+        )
+
+    plt.xlim(-5, 5)
+    plt.ylim(-5, 5)
+    plt.grid()
+    plt.axhline(y=0, color='black')
+    plt.axvline(x=0, color='black')
+    plt.show()
+-------------------code----------------------
+
+---
+
+## Plot Original Vector
+
+-------------------code----------------------
+plot_vectors([v], ['lightblue'])
+-------------------code----------------------
+
+---
+
+# 6. Identity Matrix Transformation
+
+## Identity Matrix
+
+[
+I_2 =
+\begin{bmatrix}
+1 & 0 \
+0 & 1
+\end{bmatrix}
+]
+
+Applying the identity matrix leaves vectors unchanged.
+
+---
+
+## Create Identity Matrix
+
+-------------------code----------------------
+I = np.eye(2)
+-------------------code----------------------
+
+---
+
+## Apply Identity Matrix
+
+-------------------code----------------------
+Iv = np.dot(I, v)
+
+print(Iv)
+-------------------code----------------------
+
+### Output
+
+-------------------code----------------------
+[3. 1.]
+-------------------code----------------------
+
+---
+
+## Plot Before and After
+
+-------------------code----------------------
+plot_vectors(
+    [v, Iv],
+    ['lightblue', 'blue']
+)
+-------------------code----------------------
+
+---
+
+# 7. Reflection Over the X-Axis
+
+## Reflection Matrix
+
+[
+E =
+\begin{bmatrix}
+1 & 0 \
+0 & -1
+\end{bmatrix}
+]
+
+This flips vectors across the x-axis.
+
+---
+
+## Apply Reflection
+
+-------------------code----------------------
+E = np.array([
+    [1, 0],
+    [0, -1]
+])
+
+Ev = np.dot(E, v)
+
+print(Ev)
+-------------------code----------------------
+
+### Output
+
+-------------------code----------------------
+[ 3 -1]
+-------------------code----------------------
+
+---
+
+## Explanation
+
+Original vector:
+
+[
+(3,1)
+]
+
+After reflection:
+
+[
+(3,-1)
+]
+
+Only the y-value changes sign.
+
+---
+
+## Plot Reflection
+
+-------------------code----------------------
+plot_vectors(
+    [v, Ev],
+    ['lightblue', 'blue']
+)
+-------------------code----------------------
+
+---
+
+# 8. Reflection Over the Y-Axis
+
+## Reflection Matrix
+
+[
+F =
+\begin{bmatrix}
+-1 & 0 \
+0 & 1
+\end{bmatrix}
+]
+
+This flips vectors across the y-axis.
+
+---
+
+## Apply Transformation
+
+-------------------code----------------------
+F = np.array([
+    [-1, 0],
+    [0, 1]
+])
+
+Fv = np.dot(F, v)
+
+print(Fv)
+-------------------code----------------------
+
+### Output
+
+-------------------code----------------------
+[-3  1]
+-------------------code----------------------
+
+---
+
+## Explanation
+
+Original vector:
+
+[
+(3,1)
+]
+
+After transformation:
+
+[
+(-3,1)
+]
+
+Only the x-value changes sign.
+
+---
+
+## Plot Reflection
+
+-------------------code----------------------
+plot_vectors(
+    [v, Fv],
+    ['lightblue', 'blue']
+)
+-------------------code----------------------
+
+---
+
+# 9. What Are Affine Transformations?
+
+Affine transformations are geometric transformations that preserve:
+
+* Parallel lines
+* Straightness of lines
+
+But they may change:
+
+* Angles
+* Distances
+* Orientation
+* Lengths
+
+---
+
+# 10. Common Affine Transformations
+
+| Transformation | Description                       |
+| -------------- | --------------------------------- |
+| Reflection     | Flips vectors                     |
+| Rotation       | Rotates vectors                   |
+| Scaling        | Changes vector size               |
+| Shearing       | Slants vectors                    |
+| Combination    | Multiple transformations together |
+
+---
+
+# 11. Applying Complex Transformations
+
+## Matrix A
+
+-------------------code----------------------
+A = np.array([
+    [1, 1],
+    [-1, 2]
+])
+-------------------code----------------------
+
+This matrix performs multiple transformations simultaneously.
+
+Possible effects:
+
+* Rotation
+* Stretching
+* Reflection
+* Scaling
+
+---
+
+## Apply Matrix A
+
+-------------------code----------------------
+Av = np.dot(A, v)
+
+print(Av)
+-------------------code----------------------
+
+### Output
+
+-------------------code----------------------
+[4 -1]
+-------------------code----------------------
+
+---
+
+## Plot Transformation
+
+-------------------code----------------------
+plot_vectors(
+    [v, Av],
+    ['lightblue', 'blue']
+)
+-------------------code----------------------
+
+---
+
+# 12. Different Vectors Transform Differently
+
+## Create Another Vector
+
+-------------------code----------------------
+v2 = np.array([1, 3])
+-------------------code----------------------
+
+---
+
+## Apply Matrix A
+
+-------------------code----------------------
+Av2 = np.dot(A, v2)
+
+print(Av2)
+-------------------code----------------------
+
+---
+
+## Plot Both Transformations
+
+-------------------code----------------------
+plot_vectors(
+    [v, Av, v2, Av2],
+    ['lightblue', 'blue', 'lightgreen', 'green']
+)
+-------------------code----------------------
+
+---
+
+# 13. Important Insight
+
+The same matrix affects different vectors differently.
+
+Transformation depends on:
+
+* Direction
+* Magnitude
+* Position of vector
+
+This idea is critical for understanding:
+
+* Eigenvectors
+* Eigenvalues
+* PCA
+* Neural networks
+
+---
+
+# 14. Applying a Matrix to Multiple Vectors
+
+## Create More Vectors
+
+-------------------code----------------------
+v3 = np.array([-2, 2])
+v4 = np.array([2, -3])
+-------------------code----------------------
+
+---
+
+# 15. Convert Vectors into Column Vectors
+
+-------------------code----------------------
+v_col = v.reshape(2,1)
+v2_col = v2.reshape(2,1)
+v3_col = v3.reshape(2,1)
+v4_col = v4.reshape(2,1)
+-------------------code----------------------
+
+---
+
+# 16. Concatenate Into Matrix V
+
+-------------------code----------------------
+V = np.concatenate(
+    [v_col, v2_col, v3_col, v4_col],
+    axis=1
+)
+
+print(V)
+-------------------code----------------------
+
+### Output
+
+-------------------code----------------------
+[[ 3  1 -2  2]
+ [ 1  3  2 -3]]
+-------------------code----------------------
+
+---
+
+# 17. Apply Matrix A to Matrix V
+
+-------------------code----------------------
+AV = np.dot(A, V)
+
+print(AV)
+-------------------code----------------------
+
+---
+
+# 18. Important Matrix Multiplication Concept
+
+When applying a matrix to another matrix:
+
+[
+AV
+]
+
+each column is transformed independently.
+
+Meaning:
+
+[
+AV =
+[A v_1 \quad A v_2 \quad A v_3 \quad A v_4]
+]
+
+This is one of the most important ideas in linear algebra.
+
+---
+
+# 19. Helper Function for Plotting Columns
+
+-------------------code----------------------
+def vectorfy(matrix, column):
+    return matrix[:, column]
+-------------------code----------------------
+
+---
+
+# 20. Plot All Transformations
+
+-------------------code----------------------
+plot_vectors(
+    [
+        vectorfy(V,0),
+        vectorfy(AV,0),
+
+        vectorfy(V,1),
+        vectorfy(AV,1),
+
+        vectorfy(V,2),
+        vectorfy(AV,2),
+
+        vectorfy(V,3),
+        vectorfy(AV,3)
+    ],
+    [
+        'lightblue', 'blue',
+        'lightgreen', 'green',
+        'lightgray', 'gray',
+        'orange', 'red'
+    ]
+)
+-------------------code----------------------
+
+---
+
+# 21. Key Observations
+
+## Different vectors react differently
+
+Some vectors:
+
+* Rotate more
+* Stretch more
+* Reflect differently
+
+---
+
+## Matrix transformations are geometric
+
+Matrices are not just numbers.
+
+They describe transformations of space.
+
+---
+
+## Multiple transformations can happen at once
+
+A single matrix can:
+
+* Rotate
+* Stretch
+* Reflect
+* Shear
+
+simultaneously.
+
+---
+
+# 22. Why This Matters in Machine Learning
+
+Affine transformations appear everywhere in machine learning:
+
+* Neural networks
+* Image processing
+* Computer vision
+* PCA
+* Feature transformations
+* Deep learning layers
+
+Neural network layers are essentially repeated affine transformations.
+
+---
+
+# 23. Best Practices
+
+## Always Check Matrix Dimensions
+
+Matrix multiplication requires:
+
+[
+(m \times n)(n \times p)
+]
+
+Inner dimensions must match.
+
+---
+
+## Use Column Vectors
+
+In linear algebra:
+
+* Vectors are usually represented as columns.
+
+---
+
+## Visualize Transformations
+
+Plotting vectors helps build intuition about:
+
+* Rotation
+* Scaling
+* Reflection
+* Eigenvectors
+
+---
+
+## Think Geometrically
+
+Matrices represent transformations of space.
+
+This mindset is extremely important later.
+
+---
+
+# 24. Full Final Code
+
+-------------------code----------------------
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Plot helper
+def plot_vectors(vectors, colors):
+
+    plt.figure(figsize=(6,6))
+
+    for i in range(len(vectors)):
+        plt.quiver(
+            0, 0,
+            vectors[i][0],
+            vectors[i][1],
+            angles='xy',
+            scale_units='xy',
+            scale=1,
+            color=colors[i]
+        )
+
+    plt.xlim(-5, 5)
+    plt.ylim(-5, 5)
+
+    plt.grid()
+    plt.axhline(y=0, color='black')
+    plt.axvline(x=0, color='black')
+
+    plt.show()
+
+# Original vector
+v = np.array([3, 1])
+
+plot_vectors([v], ['lightblue'])
+
+# Identity matrix
+I = np.eye(2)
+
+Iv = np.dot(I, v)
+
+plot_vectors(
+    [v, Iv],
+    ['lightblue', 'blue']
+)
+
+# Reflection over x-axis
+E = np.array([
+    [1, 0],
+    [0, -1]
+])
+
+Ev = np.dot(E, v)
+
+plot_vectors(
+    [v, Ev],
+    ['lightblue', 'blue']
+)
+
+# Reflection over y-axis
+F = np.array([
+    [-1, 0],
+    [0, 1]
+])
+
+Fv = np.dot(F, v)
+
+plot_vectors(
+    [v, Fv],
+    ['lightblue', 'blue']
+)
+
+# General affine transformation
+A = np.array([
+    [1, 1],
+    [-1, 2]
+])
+
+Av = np.dot(A, v)
+
+plot_vectors(
+    [v, Av],
+    ['lightblue', 'blue']
+)
+
+# Additional vectors
+v2 = np.array([1, 3])
+v3 = np.array([-2, 2])
+v4 = np.array([2, -3])
+
+# Convert to column vectors
+v_col = v.reshape(2,1)
+v2_col = v2.reshape(2,1)
+v3_col = v3.reshape(2,1)
+v4_col = v4.reshape(2,1)
+
+# Concatenate into matrix
+V = np.concatenate(
+    [v_col, v2_col, v3_col, v4_col],
+    axis=1
+)
+
+# Apply matrix transformation
+AV = np.dot(A, V)
+
+# Helper function
+def vectorfy(matrix, column):
+    return matrix[:, column]
+
+# Plot all vectors
+plot_vectors(
+    [
+        vectorfy(V,0),
+        vectorfy(AV,0),
+
+        vectorfy(V,1),
+        vectorfy(AV,1),
+
+        vectorfy(V,2),
+        vectorfy(AV,2),
+
+        vectorfy(V,3),
+        vectorfy(AV,3)
+    ],
+    [
+        'lightblue', 'blue',
+        'lightgreen', 'green',
+        'lightgray', 'gray',
+        'orange', 'red'
+    ]
+)
+-------------------code----------------------
+
+---
+
+# 25. Summary
+
+## Main Concepts Learned
+
+### Matrix Application
+
+Applying a matrix means performing matrix multiplication.
+
+---
+
+### Affine Transformations
+
+Affine transformations include:
+
+* Reflection
+* Rotation
+* Scaling
+* Shearing
+
+---
+
+### Identity Matrix
+
+Identity matrices leave vectors unchanged.
+
+---
+
+### Reflection Matrices
+
+Special matrices can flip vectors across:
+
+* x-axis
+* y-axis
+
+---
+
+### Matrix Transformations
+
+A single matrix can apply multiple transformations simultaneously.
+
+---
+
+### Matrix-to-Matrix Application
+
+When multiplying matrices:
+
+* Each column transforms independently.
+
+---
+
+### Why This Matters
+
+Affine transformations are foundational for:
+
+* Eigenvectors
+* Eigenvalues
+* PCA
+* Neural networks
+* Computer vision
+* Deep learning
+
+Understanding these geometric transformations is essential for advanced machine learning topics.
