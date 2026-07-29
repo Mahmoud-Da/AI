@@ -2147,7 +2147,7 @@ f'(x)
 
 Example
 
--------------------code----------------------text
+-------------------code----------------------
       d
      ─── (f(x))
       dx
@@ -2292,7 +2292,7 @@ print(derivative(f, 2))
 
 Output (approximately)
 
--------------------code----------------------text
+-------------------code----------------------
 6.0
 -------------------code----------------------
 
@@ -2311,7 +2311,7 @@ print(second_derivative(f, 2))
 
 Output (approximately)
 
--------------------code----------------------text
+-------------------code----------------------
 2.0
 -------------------code----------------------
 
@@ -2395,3 +2395,444 @@ print("Second derivative =", second_derivative(f, 2))
   * (f''(x))
   * (\frac{d^2y}{dx^2})
 * The instructor recommends **Leibniz notation** because it clearly identifies both the dependent and independent variables, making it especially useful in advanced calculus and machine learning.
+
+*** 62. The Derivative of a Constant ***
+# Calculus 1 – Differentiation Rule 1: The Constant Rule
+
+## Lecture Summary (Structured Notes)
+
+---
+
+# 1. Objective of This Lecture
+
+This lecture introduces the **first differentiation rule**, called the **Constant Rule**.
+
+This rule is one of the simplest and most fundamental rules in calculus.
+
+It states:
+
+> **The derivative of any constant is always zero.**
+
+Although simple, this rule is used constantly when differentiating more complex equations, especially in machine learning cost functions.
+
+---
+
+# 2. What is a Constant?
+
+A **constant** is a value that **never changes**.
+
+Examples:
+
+-------------------code----------------------
+5
+12
+-8
+100
+π
+e
+25
+-------------------code----------------------
+
+These are constants because their values remain fixed.
+
+A constant is **not** a variable.
+
+For example:
+
+-------------------code----------------------
+x
+y
+z
+-------------------code----------------------
+
+are **variables**, not constants.
+
+---
+
+# 3. The Constant Rule
+
+The rule is simply:
+
+where
+
+* (C) is any constant.
+* The derivative is always **0**.
+
+---
+
+# 4. Why Does the Derivative Become Zero?
+
+Remember:
+
+> A derivative measures **how fast something changes**.
+
+A constant never changes.
+
+For example,
+
+-------------------code----------------------
+25
+-------------------code----------------------
+
+always equals
+
+-------------------code----------------------
+25
+-------------------code----------------------
+
+No matter what x is.
+
+Since there is **no change**, the rate of change is
+
+-------------------code----------------------
+0
+-------------------code----------------------
+
+Therefore,
+
+[
+\frac{d}{dx}(25)=0
+]
+
+---
+
+# 5. Visual Intuition
+
+Imagine the graph
+
+-------------------code----------------------
+y = 25
+-------------------code----------------------
+
+It is simply a horizontal line.
+
+-------------------code----------------------
+y
+
+25  ----------------------------
+
+0
+   -----------------------------> x
+-------------------code----------------------
+
+A horizontal line has
+
+* no increase
+* no decrease
+
+Therefore,
+
+-------------------code----------------------
+Slope = 0
+-------------------code----------------------
+
+Since a derivative is simply the slope,
+
+-------------------code----------------------
+Derivative = 0
+-------------------code----------------------
+
+---
+
+# 6. Examples
+
+### Example 1
+
+Function
+
+-------------------code----------------------
+y = 25
+-------------------code----------------------
+
+Derivative
+
+-------------------code----------------------
+0
+-------------------code----------------------
+
+---
+
+### Example 2
+
+Function
+
+-------------------code----------------------
+y = -8
+-------------------code----------------------
+
+Derivative
+
+-------------------code----------------------
+0
+-------------------code----------------------
+
+---
+
+### Example 3
+
+Function
+
+-------------------code----------------------
+y = π
+-------------------code----------------------
+
+Derivative
+
+-------------------code----------------------
+0
+-------------------code----------------------
+
+Even though π is irrational, it is still a constant.
+
+---
+
+### Example 4
+
+Function
+
+-------------------code----------------------
+y = 1000
+-------------------code----------------------
+
+Derivative
+
+-------------------code----------------------
+0
+-------------------code----------------------
+
+---
+
+# 7. Python Demonstration
+
+Since constants never change, we can represent one as a function.
+
+-------------------code----------------------
+def f(x):
+    return 25
+-------------------code----------------------
+
+No matter what x is:
+
+-------------------code----------------------
+print(f(-100))
+print(f(0))
+print(f(10))
+print(f(500))
+-------------------code----------------------
+
+Output
+
+-------------------code----------------------
+25
+25
+25
+25
+-------------------code----------------------
+
+The output never changes.
+
+Therefore,
+
+-------------------code----------------------
+Derivative = 0
+-------------------code----------------------
+
+---
+
+# 8. Numerical Verification
+
+Using numerical differentiation:
+
+-------------------code----------------------
+def derivative(f, x, delta=1e-6):
+    return (f(x + delta) - f(x)) / delta
+
+def f(x):
+    return 25
+
+print(derivative(f, 2))
+-------------------code----------------------
+
+Output
+
+-------------------code----------------------
+0.0
+-------------------code----------------------
+
+Exactly as expected.
+
+---
+
+# 9. Why This Rule Matters
+
+Many functions contain constant terms.
+
+Example
+
+-------------------code----------------------
+y = x² + 3x + 7
+-------------------code----------------------
+
+When differentiating,
+
+* (x^2) follows the Power Rule.
+* (3x) follows another differentiation rule.
+* **7 disappears**, because it is a constant.
+
+Result
+
+-------------------code----------------------
+2x + 3 + 0
+-------------------code----------------------
+
+Eventually
+
+-------------------code----------------------
+2x + 3
+-------------------code----------------------
+
+This is why constants often "vanish" during differentiation.
+
+---
+
+# 10. Machine Learning Connection
+
+In Machine Learning, many equations contain constants.
+
+Example:
+
+-------------------code----------------------
+Cost = x² + 10
+-------------------code----------------------
+
+During differentiation,
+
+the constant
+
+-------------------code----------------------
+10
+-------------------code----------------------
+
+contributes nothing.
+
+Only terms containing variables affect the gradient.
+
+This is one reason optimization algorithms ignore standalone constants during gradient calculations.
+
+---
+
+# 11. Common Mistakes
+
+### Mistake 1
+
+Thinking
+
+-------------------code----------------------
+25
+-------------------code----------------------
+
+has a slope.
+
+It does not.
+
+It is completely flat.
+
+---
+
+### Mistake 2
+
+Confusing constants with coefficients.
+
+Example
+
+-------------------code----------------------
+5x
+-------------------code----------------------
+
+The **5** is constant,
+
+but the whole expression
+
+-------------------code----------------------
+5x
+-------------------code----------------------
+
+is **not** a constant because it depends on x.
+
+---
+
+### Mistake 3
+
+Thinking π behaves differently.
+
+Although
+
+-------------------code----------------------
+π = 3.141592...
+-------------------code----------------------
+
+it is still a fixed value.
+
+Therefore,
+
+-------------------code----------------------
+d/dx (π) = 0
+-------------------code----------------------
+
+---
+
+# 12. Best Practices
+
+* Always identify constant terms before differentiating.
+* Remove standalone constants immediately.
+* Remember that only expressions containing variables can have non-zero derivatives.
+* Recognize that constants appear frequently inside larger equations.
+
+---
+
+# 13. Full Final Code
+
+-------------------code----------------------
+# Constant function
+def f(x):
+    return 25
+
+# Numerical derivative
+def derivative(f, x, delta=1e-6):
+    return (f(x + delta) - f(x)) / delta
+
+# Test function values
+print("Function values:")
+print(f(-100))
+print(f(0))
+print(f(10))
+print(f(500))
+
+# Test derivative
+print("\nDerivative:")
+print(derivative(f, 2))
+print(derivative(f, -5))
+print(derivative(f, 100))
+-------------------code----------------------
+
+---
+
+# 14. Summary
+
+* A **constant** is a value that never changes.
+
+* The derivative measures the **rate of change** of a function.
+
+* Since constants do not change, their rate of change is always zero.
+
+* The Constant Rule is:
+
+  [
+  \frac{d}{dx}(C)=0
+  ]
+
+* Horizontal lines always have **zero slope**, which explains why the derivative of a constant is zero.
+
+* In larger equations, standalone constants disappear during differentiation.
+
+* This rule is heavily used in calculus, optimization, and machine learning because many objective and cost functions include constant terms that do not affect the gradient.
