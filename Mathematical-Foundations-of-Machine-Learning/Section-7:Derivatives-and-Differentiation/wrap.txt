@@ -1942,3 +1942,456 @@ for d in deltas:
 ## Part 17: Final Thought
 
 > The derivative is simply the slope of a curve at a single point. We find it by taking two points that are infinitely close together and calculating the slope between them. This simple idea is the foundation of all calculus and modern machine learning.
+
+*** 61. Derivative Notation ***
+# Calculus 1 – Derivative Notation
+
+## Lecture Summary (Structured Notes)
+
+---
+
+# 1. Objective of This Lecture
+
+This lecture introduces the **most common ways to write derivatives**.
+
+Although the symbols look different, they all represent the **same mathematical idea**:
+
+> Find the rate of change (slope) of a function with respect to a variable.
+
+Understanding these notations is essential because different textbooks, professors, and programming libraries may use different forms.
+
+---
+
+# 2. Review: What is Differentiation?
+
+Suppose we have a function
+
+[
+y = f(x)
+]
+
+Differentiation means:
+
+> Compute the slope (rate of change) of this function with respect to (x).
+
+The result is called the **first derivative**.
+
+---
+
+# 3. Differentiation Process
+
+The process always follows the same order:
+
+-------------------code----------------------
+Original Function
+        ↓
+Apply Differentiation Operator
+        ↓
+First Derivative
+-------------------code----------------------
+
+Example:
+
+-------------------code----------------------
+f(x)
+   ↓ differentiate
+f'(x)
+-------------------code----------------------
+
+Think of it as a mathematical transformation.
+
+---
+
+# 4. First Derivative Notations
+
+All of the following notations mean exactly the same thing.
+
+| Notation        | Name              | Meaning                               |
+| --------------- | ----------------- | ------------------------------------- |
+| (\dot{y})       | Newton notation   | First derivative                      |
+| (y')            | Prime notation    | First derivative                      |
+| (f'(x))         | Function notation | Derivative of (f(x))                  |
+| (\frac{dy}{dx}) | Leibniz notation  | Derivative of (y) with respect to (x) |
+
+All represent:
+
+> The slope of the function.
+
+---
+
+# 5. Newton Notation
+
+Newton used a **dot above the variable**.
+
+Example
+
+[
+\dot{y}
+]
+
+Used mostly in:
+
+* Physics
+* Engineering
+* Motion equations
+
+Example:
+
+-------------------code----------------------
+Position
+   ↓
+Velocity (ẏ)
+-------------------code----------------------
+
+---
+
+# 6. Prime Notation
+
+The most common notation in mathematics.
+
+Example
+
+[
+y'
+]
+
+or
+
+[
+f'(x)
+]
+
+Read as:
+
+> "f prime of x"
+
+Example
+
+-------------------code----------------------
+f(x)
+↓
+f'(x)
+-------------------code----------------------
+
+---
+
+# 7. Leibniz Notation (Most Recommended)
+
+The instructor prefers
+
+Why?
+
+Because it clearly shows:
+
+* what is changing (y)
+* with respect to what (x)
+
+This notation becomes extremely useful later when studying:
+
+* Partial derivatives
+* Chain Rule
+* Machine Learning
+* Optimization
+
+It makes complicated equations much easier to read.
+
+---
+
+# 8. Why Leibniz Notation is So Useful
+
+Instead of writing only
+
+-------------------code----------------------
+y'
+-------------------code----------------------
+
+you immediately know
+
+-------------------code----------------------
+dy
+──
+dx
+-------------------code----------------------
+
+Meaning
+
+-------------------code----------------------
+Change in y
+--------------
+per change in x
+-------------------code----------------------
+
+This makes formulas much easier to understand.
+
+---
+
+# 9. Differentiation Operators
+
+Before differentiation
+
+-------------------code----------------------
+f(x)
+-------------------code----------------------
+
+Apply the differentiation operator
+
+-------------------code----------------------
+d/dx
+-------------------code----------------------
+
+Result
+
+-------------------code----------------------
+f'(x)
+-------------------code----------------------
+
+Example
+
+-------------------code----------------------text
+      d
+     ─── (f(x))
+      dx
+
+        ↓
+
+      f'(x)
+-------------------code----------------------
+
+The operator tells us:
+
+> Differentiate this function with respect to x.
+
+---
+
+# 10. Alternative Operator Notation
+
+Another common notation is
+
+-------------------code----------------------
+Dx
+-------------------code----------------------
+
+where
+
+* **D** means differentiate
+* **x** indicates the variable
+
+Example
+
+-------------------code----------------------
+Dx f
+-------------------code----------------------
+
+Meaning:
+
+> Differentiate function **f** with respect to x.
+
+---
+
+# 11. Second Derivatives
+
+Sometimes we differentiate again.
+
+-------------------code----------------------
+Function
+      ↓
+First Derivative
+      ↓
+Second Derivative
+-------------------code----------------------
+
+Example
+
+-------------------code----------------------
+Position
+     ↓
+Velocity
+     ↓
+Acceleration
+-------------------code----------------------
+
+---
+
+# 12. Second Derivative Notations
+
+All of these are equivalent.
+
+| Notation            | Meaning           |
+| ------------------- | ----------------- |
+| (\ddot{y})          | Newton notation   |
+| (y'')               | Double prime      |
+| (f''(x))            | Function notation |
+| (\frac{d^2y}{dx^2}) | Leibniz notation  |
+
+All mean:
+
+> Differentiate twice.
+
+---
+
+# 13. Leibniz Second Derivative
+
+The most common notation is
+
+Notice carefully:
+
+* the **2** is attached to **d** in the numerator
+* the **2** is attached to **x** in the denominator
+
+This notation becomes especially important when studying:
+
+* Partial derivatives
+* Multivariable calculus
+* Machine Learning optimization
+
+---
+
+# 14. Real-World Interpretation
+
+Suppose
+
+-------------------code----------------------
+Position
+-------------------code----------------------
+
+is measured over time.
+
+First derivative
+
+-------------------code----------------------
+Position
+     ↓
+Velocity
+-------------------code----------------------
+
+Second derivative
+
+-------------------code----------------------
+Velocity
+     ↓
+Acceleration
+-------------------code----------------------
+
+This is one of the most common applications of higher-order derivatives.
+
+---
+
+# 15. Code Example (Numerical Differentiation)
+
+Although this lecture focuses on notation rather than computation, here is a simple numerical approximation of the first derivative.
+
+-------------------code----------------------
+def f(x):
+    return x**2 + 2*x + 2
+
+def derivative(f, x, delta=1e-6):
+    return (f(x + delta) - f(x)) / delta
+
+print(derivative(f, 2))
+-------------------code----------------------
+
+Output (approximately)
+
+-------------------code----------------------text
+6.0
+-------------------code----------------------
+
+Approximate second derivative:
+
+-------------------code----------------------
+def second_derivative(f, x, delta=1e-6):
+    return (
+        f(x + delta)
+        - 2 * f(x)
+        + f(x - delta)
+    ) / (delta ** 2)
+
+print(second_derivative(f, 2))
+-------------------code----------------------
+
+Output (approximately)
+
+-------------------code----------------------text
+2.0
+-------------------code----------------------
+
+---
+
+# 16. Comparison of Notations
+
+| Notation            | Read As                           | Common Usage                  |
+| ------------------- | --------------------------------- | ----------------------------- |
+| (\dot{y})           | y dot                             | Physics                       |
+| (y')                | y prime                           | Mathematics                   |
+| (f'(x))             | f prime of x                      | Calculus                      |
+| (\frac{dy}{dx})     | derivative of y with respect to x | Engineering, Machine Learning |
+| (\ddot{y})          | y double dot                      | Physics                       |
+| (y'')               | y double prime                    | Mathematics                   |
+| (f''(x))            | second derivative                 | Calculus                      |
+| (\frac{d^2y}{dx^2}) | second derivative                 | Engineering, ML               |
+
+---
+
+# 17. Important Notes
+
+* All first derivative notations represent **the same concept**.
+* Different books may prefer different notation.
+* In Machine Learning and optimization, **Leibniz notation** is the most common because it clearly indicates the variables involved.
+* Second derivatives describe how the first derivative itself changes (for example, acceleration is the rate of change of velocity).
+
+---
+
+# 18. Best Practices
+
+* Learn to recognize **all** derivative notations, even if you prefer one style.
+* Use **Leibniz notation** when learning calculus because it makes formulas easier to interpret.
+* Understand the meaning behind the notation instead of memorizing symbols.
+* Remember that notation changes, but the underlying mathematics does not.
+
+---
+
+# 19. Full Final Code
+
+-------------------code----------------------
+# Example function
+def f(x):
+    return x**2 + 2*x + 2
+
+# Numerical first derivative
+def derivative(f, x, delta=1e-6):
+    return (f(x + delta) - f(x)) / delta
+
+# Numerical second derivative
+def second_derivative(f, x, delta=1e-6):
+    return (
+        f(x + delta)
+        - 2 * f(x)
+        + f(x - delta)
+    ) / (delta ** 2)
+
+# Test
+print("f(2) =", f(2))
+print("First derivative =", derivative(f, 2))
+print("Second derivative =", second_derivative(f, 2))
+-------------------code----------------------
+
+---
+
+# 20. Summary
+
+* **Differentiation** is the process of finding the slope or rate of change of a function.
+* The result of one differentiation is the **first derivative**.
+* Differentiating again gives the **second derivative**.
+* Common first derivative notations include:
+
+  * (\dot{y})
+  * (y')
+  * (f'(x))
+  * (\frac{dy}{dx})
+* Common second derivative notations include:
+
+  * (\ddot{y})
+  * (y'')
+  * (f''(x))
+  * (\frac{d^2y}{dx^2})
+* The instructor recommends **Leibniz notation** because it clearly identifies both the dependent and independent variables, making it especially useful in advanced calculus and machine learning.
