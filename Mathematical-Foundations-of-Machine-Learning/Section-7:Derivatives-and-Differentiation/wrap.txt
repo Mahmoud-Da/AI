@@ -6277,3 +6277,449 @@ which simplified to:
 ]
 
 The key differences from the Product Rule are the **subtraction in the numerator** and the **squared denominator**. This rule is especially useful for differentiating rational functions and is an important foundation before learning the **Chain Rule**, one of the most widely used differentiation techniques in machine learning.
+
+
+*** 69. The Chain Rule ***
+# Calculus I – The Chain Rule
+
+## 1. Overview
+
+The **Chain Rule** is one of the most important differentiation rules in calculus and machine learning.
+
+It is used whenever a function is **inside another function** (nested or composite functions).
+
+It is especially important because it is the mathematical foundation behind:
+
+* Gradient Descent
+* Backpropagation
+* Neural Networks
+* Deep Learning
+* Automatic Differentiation
+
+This rule is used throughout machine learning, from simple linear regression to modern deep learning models.
+
+---
+
+# 2. Why the Chain Rule Matters
+
+Many machine learning models are built from multiple functions connected together.
+
+Example:
+
+-------------------code----------------------
+Input
+   ↓
+Function 1
+   ↓
+Function 2
+   ↓
+Function 3
+   ↓
+Output
+-------------------code----------------------
+
+Instead of differentiating the whole expression at once, the Chain Rule lets us differentiate **one layer at a time**.
+
+This is exactly how **backpropagation** works in neural networks.
+
+---
+
+# 3. Composite (Nested) Functions
+
+Consider:
+
+[
+y=(5x+25)^3
+]
+
+This is difficult to differentiate directly.
+
+Instead, separate it into two functions.
+
+### Inner function
+
+[
+u=5x+25
+]
+
+### Outer function
+
+[
+y=u^3
+]
+
+Now the complicated expression becomes two simple functions.
+
+---
+
+# 4. The Chain Rule Formula
+
+If
+
+[
+y=f(u)
+]
+
+and
+
+[
+u=g(x)
+]
+
+then
+
+[
+\boxed{\frac{dy}{dx}=\frac{dy}{du}\times\frac{du}{dx}}
+]
+
+The intermediate variable cancels:
+
+[
+\frac{dy}{du}\times\frac{du}{dx}
+================================
+
+\frac{dy}{dx}
+]
+
+This makes differentiation much easier.
+
+---
+
+# 5. Step-by-Step Example
+
+Given
+
+[
+y=(2x^2+8)^2
+]
+
+---
+
+## Step 1 — Define the Inner Function
+
+Let
+
+[
+u=2x^2+8
+]
+
+Then
+
+[
+y=u^2
+]
+
+---
+
+## Step 2 — Differentiate the Inner Function
+
+Use:
+
+* Sum Rule
+* Constant Multiple Rule
+* Power Rule
+
+Constant disappears:
+
+[
+\frac{d}{dx}(8)=0
+]
+
+Differentiate
+
+[
+2x^2
+]
+
+Power Rule:
+
+[
+x^2 \rightarrow 2x
+]
+
+Multiply by 2:
+
+[
+\boxed{\frac{du}{dx}=4x}
+]
+
+---
+
+## Step 3 — Differentiate the Outer Function
+
+Differentiate
+
+[
+y=u^2
+]
+
+Power Rule:
+
+[
+\boxed{\frac{dy}{du}=2u}
+]
+
+Replace (u):
+
+[
+2(2x^2+8)
+]
+
+Simplify:
+
+[
+\boxed{\frac{dy}{du}=4x^2+16}
+]
+
+---
+
+## Step 4 — Apply the Chain Rule
+
+Multiply both derivatives.
+
+[
+\frac{dy}{dx}
+=============
+
+(4x)(4x^2+16)
+]
+
+Multiply:
+
+[
+4x\times4x^2=16x^3
+]
+
+[
+4x\times16=64x
+]
+
+Final answer:
+
+[
+\boxed{\frac{dy}{dx}=16x^3+64x}
+]
+
+---
+
+# 6. Complete Worked Example
+
+### Original Function
+
+[
+y=(2x^2+8)^2
+]
+
+---
+
+### Inner Function
+
+[
+u=2x^2+8
+]
+
+---
+
+### Outer Function
+
+[
+y=u^2
+]
+
+---
+
+### Differentiate Inner Function
+
+[
+\frac{du}{dx}=4x
+]
+
+---
+
+### Differentiate Outer Function
+
+[
+\frac{dy}{du}=2u
+]
+
+Replace (u):
+
+[
+4x^2+16
+]
+
+---
+
+### Chain Rule
+
+[
+\frac{dy}{dx}
+=============
+
+(4x)(4x^2+16)
+]
+
+---
+
+### Final Answer
+
+[
+\boxed{16x^3+64x}
+]
+
+---
+
+# 7. Python Demonstration
+
+-------------------code----------------------
+import sympy as sp
+
+x = sp.symbols('x')
+
+y = (2*x**2 + 8)**2
+
+dy_dx = sp.diff(y, x)
+
+print(dy_dx)
+-------------------code----------------------
+
+Output
+
+-------------------code----------------------
+16*x**3 + 64*x
+-------------------code----------------------
+
+---
+
+# 8. How the Chain Rule Works Conceptually
+
+Suppose we have
+
+-------------------code----------------------
+x
+↓
+u
+↓
+y
+-------------------code----------------------
+
+Instead of jumping directly from **x → y**, we calculate:
+
+1. Change from **x to u**
+2. Change from **u to y**
+3. Multiply them together
+
+This "chain" of derivatives gives the final derivative.
+
+---
+
+# 9. Relationship to Machine Learning
+
+The lecture emphasizes that the Chain Rule is essential because it powers:
+
+### Gradient Descent
+
+* Computes gradients used to minimize loss functions.
+
+### Backpropagation
+
+* Computes gradients through many neural network layers.
+* Makes training deep neural networks efficient.
+
+### Deep Learning
+
+A deep neural network is essentially a long chain of nested functions.
+
+The Chain Rule allows gradients to flow through every layer.
+
+---
+
+# 10. Rules Used Together
+
+To solve Chain Rule problems, you often combine earlier differentiation rules.
+
+| Rule                   | Purpose                                |
+| ---------------------- | -------------------------------------- |
+| Constant Rule          | Derivative of constants is 0           |
+| Power Rule             | Differentiate powers of variables      |
+| Constant Multiple Rule | Keep constants outside differentiation |
+| Sum Rule               | Differentiate each term separately     |
+| Chain Rule             | Differentiate nested functions         |
+
+---
+
+# 11. Best Practices
+
+* Always check whether a function is nested before differentiating.
+* Define the inner function using a temporary variable (commonly (u)).
+* Differentiate the inner and outer functions separately.
+* Substitute the inner function back before multiplying.
+* Multiply the derivatives only after both have been computed.
+* Simplify the final expression.
+
+---
+
+# 12. Full Final Code
+
+-------------------code----------------------
+import sympy as sp
+
+# Define variable
+x = sp.symbols('x')
+
+# Original function
+y = (2*x**2 + 8)**2
+
+# Differentiate using SymPy
+dy_dx = sp.diff(y, x)
+
+print("Original Function:")
+print(y)
+
+print("\nDerivative:")
+print(dy_dx)
+-------------------code----------------------
+
+Output
+
+-------------------code----------------------
+Original Function:
+(2*x**2 + 8)**2
+
+Derivative:
+16*x**3 + 64*x
+-------------------code----------------------
+
+---
+
+# 13. Summary
+
+* The **Chain Rule** is used for **nested (composite) functions**.
+* Break a complex function into an **inner function** and an **outer function**.
+* Differentiate each function separately.
+* Multiply the two derivatives:
+
+[
+\frac{dy}{dx}
+=============
+
+\frac{dy}{du}
+\times
+\frac{du}{dx}
+]
+
+* The intermediate variable ((du)) cancels, leaving the desired derivative.
+* This rule is fundamental in machine learning because it enables **gradient descent**, **backpropagation**, and the training of **deep neural networks**.
+* The example
+
+[
+(2x^2+8)^2
+]
+
+differentiates to
+
+[
+\boxed{16x^3+64x}
+]
+
+by applying the Chain Rule together with the Power Rule, Constant Multiple Rule, and Sum Rule.
