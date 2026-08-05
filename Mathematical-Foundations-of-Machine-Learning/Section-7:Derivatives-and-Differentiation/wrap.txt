@@ -5746,3 +5746,534 @@ Derivative dy/dx = How fast are you moving? (rate of change)
 **Both are important, but they are completely different things!**
 
 ---
+
+*** 68. The Quotient Rule ***
+# Calculus I – Quotient Rule (Structured Notes)
+
+# 1. Lecture Overview
+
+This lecture introduces the **Quotient Rule**, which is used to differentiate functions written as **fractions**.
+
+The Quotient Rule is closely related to the Product Rule but is specifically designed for expressions where one function is divided by another.
+
+The lecture explains:
+
+* What the Quotient Rule is
+* Why it is needed
+* How to apply it step-by-step
+* A complete worked example
+
+---
+
+# 2. What is the Quotient Rule?
+
+Suppose a function is written as:
+
+[
+Y=\frac{W}{Z}
+]
+
+where:
+
+* (W) = numerator
+* (Z) = denominator
+
+The derivative is:
+
+[
+\boxed{
+\frac{d}{dx}\left(\frac{W}{Z}\right)
+====================================
+
+\frac{Z\frac{dW}{dx}-W\frac{dZ}{dx}}{Z^2}
+}
+]
+
+This is called the **Quotient Rule** (or Fraction Rule).
+
+---
+
+# 3. Comparing Product Rule and Quotient Rule
+
+## Product Rule
+
+For multiplication:
+
+[
+\frac{d}{dx}(WZ)
+================
+
+WZ'+ZW'
+]
+
+Notice the **plus (+)** sign.
+
+---
+
+## Quotient Rule
+
+For division:
+
+[
+\frac{d}{dx}\left(\frac{W}{Z}\right)
+====================================
+
+\frac{ZW'-WZ'}{Z^2}
+]
+
+Differences:
+
+* Uses a **minus (-)** sign.
+* Divides by the **square of the denominator**.
+
+---
+
+# 4. When Should You Use the Quotient Rule?
+
+Use the Quotient Rule whenever:
+
+* One function is divided by another.
+* The expression is written as a fraction.
+* Simplifying the fraction first is difficult or impossible.
+
+Examples:
+
+[
+\frac{x^2}{x+1}
+]
+
+[
+\frac{\sin x}{x}
+]
+
+[
+\frac{e^x}{x^2+1}
+]
+
+---
+
+# 5. Example from the Lecture
+
+Given
+
+[
+Y=\frac{4x^2}{x^3+1}
+]
+
+Split the function into:
+
+Numerator:
+
+[
+W=4x^2
+]
+
+Denominator:
+
+[
+Z=x^3+1
+]
+
+---
+
+# 6. Step 1 – Differentiate the Numerator
+
+Differentiate
+
+[
+W=4x^2
+]
+
+Use:
+
+* Constant Multiple Rule
+* Power Rule
+
+Result:
+
+[
+\boxed{
+W'=8x
+}
+]
+
+---
+
+### Python Code
+
+-------------------code----------------------
+import sympy as sp
+
+x = sp.Symbol('x')
+
+W = 4*x**2
+
+dW = sp.diff(W, x)
+
+print(dW)
+-------------------code----------------------
+
+Output
+
+-------------------code----------------------
+8*x
+-------------------code----------------------
+
+---
+
+# 7. Step 2 – Differentiate the Denominator
+
+Differentiate
+
+[
+Z=x^3+1
+]
+
+Apply the Sum Rule.
+
+### First term
+
+[
+x^3
+]
+
+Derivative:
+
+[
+3x^2
+]
+
+### Second term
+
+[
+1
+]
+
+Derivative:
+
+[
+0
+]
+
+Result:
+
+[
+\boxed{
+Z'=3x^2
+}
+]
+
+---
+
+### Python Code
+
+-------------------code----------------------
+Z = x**3 + 1
+
+dZ = sp.diff(Z, x)
+
+print(dZ)
+-------------------code----------------------
+
+Output
+
+-------------------code----------------------
+3*x**2
+-------------------code----------------------
+
+---
+
+# 8. Step 3 – Apply the Quotient Rule
+
+Substitute into
+
+[
+\frac{ZW'-WZ'}{Z^2}
+]
+
+Result:
+
+[
+\frac{(x^3+1)(8x)-(4x^2)(3x^2)}
+{(x^3+1)^2}
+]
+
+---
+
+### Python Code
+
+-------------------code----------------------
+quotient = (Z*dW - W*dZ) / Z**2
+
+print(quotient)
+-------------------code----------------------
+
+Output
+
+-------------------code----------------------
+((x**3 + 1)*(8*x) - (4*x**2)*(3*x**2))/(x**3 + 1)**2
+-------------------code----------------------
+
+---
+
+# 9. Step 4 – Simplify the Numerator
+
+Expand the first product:
+
+[
+(x^3+1)(8x)
+===========
+
+8x^4+8x
+]
+
+Expand the second product:
+
+[
+(4x^2)(3x^2)
+============
+
+12x^4
+]
+
+Substitute:
+
+[
+\frac{8x^4+8x-12x^4}
+{(x^3+1)^2}
+]
+
+---
+
+# 10. Step 5 – Combine Like Terms
+
+Combine the (x^4) terms:
+
+[
+8x^4-12x^4
+==========
+
+-4x^4
+]
+
+Final answer:
+
+[
+\boxed{
+\frac{-4x^4+8x}
+{(x^3+1)^2}
+}
+]
+
+The lecture notes that there is **no need to expand the denominator**, since leaving it as
+
+[
+(x^3+1)^2
+]
+
+is already a clean and useful form.
+
+---
+
+### Python Code
+
+-------------------code----------------------
+simplified = sp.expand((x**3 + 1)*(8*x) - (4*x**2)*(3*x**2))
+
+print(simplified)
+-------------------code----------------------
+
+Output
+
+-------------------code----------------------
+-4*x**4 + 8*x
+-------------------code----------------------
+
+---
+
+# 11. Complete Worked Example
+
+Given
+
+[
+Y=\frac{4x^2}{x^3+1}
+]
+
+### Step 1
+
+Differentiate numerator.
+
+[
+W'=8x
+]
+
+---
+
+### Step 2
+
+Differentiate denominator.
+
+[
+Z'=3x^2
+]
+
+---
+
+### Step 3
+
+Apply Quotient Rule.
+
+[
+\frac{(x^3+1)(8x)-(4x^2)(3x^2)}
+{(x^3+1)^2}
+]
+
+---
+
+### Step 4
+
+Expand numerator.
+
+[
+\frac{8x^4+8x-12x^4}
+{(x^3+1)^2}
+]
+
+---
+
+### Step 5
+
+Simplify.
+
+[
+\boxed{
+\frac{-4x^4+8x}
+{(x^3+1)^2}
+}
+]
+
+---
+
+# 12. Important Notes
+
+* The Quotient Rule is only used for **division**.
+* Always identify:
+
+  * Numerator ((W))
+  * Denominator ((Z))
+* Differentiate the numerator and denominator separately before applying the formula.
+* The denominator is always squared:
+
+[
+Z^2
+]
+
+* The numerator uses subtraction:
+
+[
+ZW'-WZ'
+]
+
+not addition.
+
+* The lecture recommends **not expanding the denominator** unless specifically required.
+
+---
+
+# 13. Best Practices
+
+* Write the Quotient Rule before substituting values.
+* Compute (W') and (Z') first.
+* Substitute carefully to avoid sign mistakes.
+* Keep the denominator factored whenever possible.
+* Simplify only the numerator unless further expansion is necessary.
+
+---
+
+# 14. Full Final Code
+
+-------------------code----------------------
+import sympy as sp
+
+# Variable
+x = sp.Symbol('x')
+
+# Numerator and denominator
+W = 4*x**2
+Z = x**3 + 1
+
+# Step 1: Differentiate numerator
+dW = sp.diff(W, x)
+
+# Step 2: Differentiate denominator
+dZ = sp.diff(Z, x)
+
+print("W' =", dW)
+print("Z' =", dZ)
+
+# Step 3: Apply Quotient Rule
+quotient_derivative = (Z*dW - W*dZ) / Z**2
+
+print("\nBefore Simplification:")
+print(quotient_derivative)
+
+# Step 4: Simplify numerator
+simplified_numerator = sp.expand((Z*dW) - (W*dZ))
+
+print("\nSimplified Numerator:")
+print(simplified_numerator)
+
+print("\nFinal Derivative:")
+print(simplified_numerator / Z**2)
+-------------------code----------------------
+
+---
+
+# 15. Summary
+
+The **Quotient Rule** is the standard method for differentiating fractions. For a function
+
+[
+Y=\frac{W}{Z},
+]
+
+the derivative is
+
+[
+\boxed{
+\frac{d}{dx}\left(\frac{W}{Z}\right)
+====================================
+
+\frac{ZW'-WZ'}{Z^2}
+}
+]
+
+In the lecture example:
+
+[
+Y=\frac{4x^2}{x^3+1},
+]
+
+the derivatives were:
+
+[
+W'=8x,\qquad Z'=3x^2.
+]
+
+Applying the Quotient Rule produced:
+
+[
+\frac{(x^3+1)(8x)-(4x^2)(3x^2)}
+{(x^3+1)^2},
+]
+
+which simplified to:
+
+[
+\boxed{
+\frac{-4x^4+8x}
+{(x^3+1)^2}
+}.
+]
+
+The key differences from the Product Rule are the **subtraction in the numerator** and the **squared denominator**. This rule is especially useful for differentiating rational functions and is an important foundation before learning the **Chain Rule**, one of the most widely used differentiation techniques in machine learning.
