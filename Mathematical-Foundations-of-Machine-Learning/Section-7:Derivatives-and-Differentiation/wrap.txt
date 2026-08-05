@@ -4507,3 +4507,605 @@ which is
 ]
 
 * In practice, most polynomial derivatives are solved by repeatedly applying the **Sum Rule** together with the **Power Rule** and **Constant Multiple Rule**.
+
+*** 66. Exercises on Derivative Rules ***
+# Calculus I – Derivative Rules Exercises (Structured Notes)
+
+## 1. Lecture Overview
+
+This lecture reviews the basic derivative rules through five exercises.
+
+The rules covered are:
+
+1. Constant Rule
+2. Power Rule
+3. Constant Multiple Rule
+4. Sum Rule
+
+It also shows that the derivative rules produce the same slopes previously found using the **Delta Method**.
+
+---
+
+# 2. Review of Derivative Rules
+
+## Rule 1: Constant Rule
+
+The derivative of any constant is zero.
+
+[
+\frac{d}{dx}(c)=0
+]
+
+Example:
+
+[
+\frac{d}{dx}(7)=0
+]
+
+---
+
+## Rule 2: Power Rule
+
+For powers of (x):
+
+[
+\frac{d}{dx}(x^n)=nx^{n-1}
+]
+
+Example:
+
+[
+\frac{d}{dx}(x^5)=5x^4
+]
+
+---
+
+## Rule 3: Constant Multiple Rule
+
+Ignore the constant while differentiating.
+
+Multiply it back afterward.
+
+[
+\frac{d}{dx}(cf(x))
+===================
+
+c\frac{d}{dx}(f(x))
+]
+
+Example:
+
+[
+\frac{d}{dx}(8x^3)
+==================
+
+# 8(3x^2)
+
+24x^2
+]
+
+---
+
+## Rule 4: Sum Rule
+
+Differentiate each term separately.
+
+[
+\frac{d}{dx}(f(x)+g(x))
+=======================
+
+f'(x)+g'(x)
+]
+
+This also works with subtraction.
+
+Example:
+
+[
+\frac{d}{dx}(x^2+x^5)
+=====================
+
+2x+5x^4
+]
+
+---
+
+# 3. Exercise 1
+
+## Problem
+
+Differentiate
+
+[
+y=-5x^3
+]
+
+---
+
+## Step 1: Separate the constant
+
+Using the Constant Multiple Rule:
+
+[
+-5\frac{d}{dx}(x^3)
+]
+
+---
+
+## Step 2: Apply the Power Rule
+
+[
+\frac{d}{dx}(x^3)=3x^2
+]
+
+---
+
+## Step 3: Multiply the constant back
+
+[
+-5(3x^2)
+========
+
+-15x^2
+]
+
+---
+
+## Final Answer
+
+[
+\boxed{-15x^2}
+]
+
+---
+
+## Python Code
+
+-------------------code----------------------
+import sympy as sp
+
+x = sp.Symbol('x')
+y = -5*x**3
+
+print(sp.diff(y, x))
+-------------------code----------------------
+
+Output
+
+-------------------code----------------------
+-15*x**2
+-------------------code----------------------
+
+---
+
+# 4. Exercise 2
+
+## Problem
+
+Differentiate
+
+[
+y=2x^2+2x+2
+]
+
+---
+
+## Step 1: Apply the Sum Rule
+
+Differentiate each term separately.
+
+---
+
+### First Term
+
+[
+2x^2
+]
+
+Constant Multiple Rule:
+
+[
+2\frac{d}{dx}(x^2)
+]
+
+Power Rule:
+
+[
+2(2x)=4x
+]
+
+---
+
+### Second Term
+
+[
+2x
+]
+
+Power Rule:
+
+[
+2(1)=2
+]
+
+---
+
+### Third Term
+
+[
+2
+]
+
+Constant Rule:
+
+[
+0
+]
+
+---
+
+## Combine Results
+
+[
+4x+2+0
+]
+
+---
+
+## Final Answer
+
+[
+\boxed{4x+2}
+]
+
+---
+
+## Python Code
+
+-------------------code----------------------
+import sympy as sp
+
+x = sp.Symbol('x')
+y = 2*x**2 + 2*x + 2
+
+print(sp.diff(y, x))
+-------------------code----------------------
+
+Output
+
+-------------------code----------------------
+4*x + 2
+-------------------code----------------------
+
+---
+
+# 5. Exercise 3
+
+## Problem
+
+Differentiate
+
+[
+y=10x^5-6x^3-x+5
+]
+
+---
+
+## Step 1: Differentiate each term
+
+### First Term
+
+[
+10x^5
+]
+
+Power Rule:
+
+[
+10(5x^4)=50x^4
+]
+
+---
+
+### Second Term
+
+[
+-6x^3
+]
+
+Power Rule:
+
+[
+-6(3x^2)
+========
+
+-18x^2
+]
+
+---
+
+### Third Term
+
+[
+-x
+]
+
+Treat as
+
+[
+-1(x)
+]
+
+Derivative:
+
+[
+-1
+]
+
+---
+
+### Fourth Term
+
+[
+5
+]
+
+Derivative:
+
+[
+0
+]
+
+---
+
+## Final Answer
+
+[
+\boxed{50x^4-18x^2-1}
+]
+
+---
+
+## Python Code
+
+-------------------code----------------------
+import sympy as sp
+
+x = sp.Symbol('x')
+y = 10*x**5 - 6*x**3 - x + 5
+
+print(sp.diff(y, x))
+-------------------code----------------------
+
+Output
+
+-------------------code----------------------
+50*x**4 - 18*x**2 - 1
+-------------------code----------------------
+
+---
+
+# 6. Exercise 4
+
+## Problem
+
+Given
+
+[
+y=x^2+2x+2
+]
+
+Find the slope when
+
+[
+x=2
+]
+
+---
+
+## Step 1: Differentiate
+
+Using the Sum Rule:
+
+[
+\frac{d}{dx}(x^2)=2x
+]
+
+[
+\frac{d}{dx}(2x)=2
+]
+
+[
+\frac{d}{dx}(2)=0
+]
+
+So
+
+[
+\boxed{y'=2x+2}
+]
+
+---
+
+## Step 2: Substitute
+
+[
+2(2)+2
+======
+
+6
+]
+
+---
+
+## Final Answer
+
+[
+\boxed{6}
+]
+
+This matches the result previously obtained using the **Delta Method**.
+
+---
+
+## Python Code
+
+-------------------code----------------------
+import sympy as sp
+
+x = sp.Symbol('x')
+y = x**2 + 2*x + 2
+
+dy = sp.diff(y, x)
+
+print(dy)
+print(dy.subs(x, 2))
+-------------------code----------------------
+
+Output
+
+-------------------code----------------------
+2*x + 2
+6
+-------------------code----------------------
+
+---
+
+# 7. Exercise 5
+
+## Problem
+
+Use the same derivative
+
+[
+2x+2
+]
+
+Find the slope at
+
+[
+x=-1
+]
+
+---
+
+## Step 1: Substitute
+
+[
+2(-1)+2
+=======
+
+# -2+2
+
+0
+]
+
+---
+
+## Final Answer
+
+[
+\boxed{0}
+]
+
+This agrees with the earlier Delta Method result.
+
+---
+
+## Python Code
+
+-------------------code----------------------
+import sympy as sp
+
+x = sp.Symbol('x')
+y = x**2 + 2*x + 2
+
+dy = sp.diff(y, x)
+
+print(dy.subs(x, -1))
+-------------------code----------------------
+
+Output
+
+-------------------code----------------------
+0
+-------------------code----------------------
+
+---
+
+# 8. Important Notes
+
+* Always simplify the function term-by-term.
+* Constants always disappear after differentiation.
+* For (x), remember that:
+
+[
+x=x^1
+]
+
+so
+
+[
+\frac{d}{dx}(x)=1
+]
+
+* Any expression raised to the power of zero equals 1:
+
+[
+x^0=1
+]
+
+* Use the **Sum Rule** before applying other rules when multiple terms are present.
+* Use the **Constant Multiple Rule** whenever a numerical coefficient multiplies a variable term.
+* After finding the derivative, substitute any (x)-value to compute the slope at that point.
+* These derivative rules produce the same answers as the Delta Method but are much faster.
+
+---
+
+# 9. Full Final Code
+
+-------------------code----------------------
+import sympy as sp
+
+x = sp.Symbol('x')
+
+# Exercise 1
+y1 = -5*x**3
+print("Exercise 1:")
+print(sp.diff(y1, x))
+
+# Exercise 2
+y2 = 2*x**2 + 2*x + 2
+print("\nExercise 2:")
+print(sp.diff(y2, x))
+
+# Exercise 3
+y3 = 10*x**5 - 6*x**3 - x + 5
+print("\nExercise 3:")
+print(sp.diff(y3, x))
+
+# Exercise 4
+y4 = x**2 + 2*x + 2
+dy4 = sp.diff(y4, x)
+
+print("\nExercise 4:")
+print("Derivative:", dy4)
+print("Slope at x=2:", dy4.subs(x, 2))
+
+# Exercise 5
+print("\nExercise 5:")
+print("Slope at x=-1:", dy4.subs(x, -1))
+-------------------code----------------------
+
+---
+
+# 10. Summary
+
+This lecture reinforced the four foundational differentiation rules through practical exercises:
+
+* **Constant Rule:** Constants differentiate to 0.
+* **Power Rule:** Move the exponent to the front and subtract 1 from the exponent.
+* **Constant Multiple Rule:** Differentiate the variable part first, then multiply by the constant.
+* **Sum Rule:** Differentiate each term independently and combine the results.
+
+The lecture also demonstrated that derivative rules yield the same slopes previously obtained using the **Delta Method**, confirming that differentiation provides a faster and more efficient way to compute the slope of a curve at any point. These rules form the basis for more advanced topics, including the **Product Rule**, **Chain Rule**, and later applications in machine learning such as differentiating cost functions.
