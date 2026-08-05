@@ -3967,3 +3967,543 @@ d/dx(5x^3) = 15x^2
 ]
 
 This simple pattern will be used repeatedly in calculus and later in machine learning when differentiating cost functions and optimization equations.
+
+*** 65. The Sum Rule ***
+
+# Calculus One – Differentiation Rules (Part 3)
+
+# Sum Rule
+
+---
+
+# 1. Introduction
+
+The **Sum Rule** is another fundamental differentiation rule.
+
+It states that when a function is made up of multiple terms separated by **+** or **−**, you can differentiate **each term independently** and then combine the results.
+
+This makes differentiating large polynomial expressions much simpler.
+
+---
+
+# 2. Sum Rule
+
+## Rule
+
+If
+
+[
+y=f(x)+g(x)
+]
+
+then
+
+Similarly,
+
+[
+\frac{d}{dx}(f(x)-g(x))
+=======================
+
+## \frac{d}{dx}f(x)
+
+\frac{d}{dx}g(x)
+]
+
+---
+
+# 3. Why Does This Work?
+
+When terms are separated by **+** or **−**, each term contributes independently to the overall rate of change.
+
+Therefore:
+
+1. Differentiate the first term.
+2. Differentiate the second term.
+3. Add (or subtract) the results.
+
+There is no need to differentiate the entire expression at once.
+
+---
+
+# 4. Step-by-Step Example
+
+Suppose
+
+[
+y=x^4
+]
+
+and
+
+[
+w=x^9
+]
+
+We want to differentiate
+
+[
+y+w
+]
+
+---
+
+### Step 1
+
+Separate the terms.
+
+[
+\frac{d}{dx}(y+w)
+=================
+
+\frac{dy}{dx}
++
+\frac{dw}{dx}
+]
+
+---
+
+### Step 2
+
+Differentiate the first term.
+
+Using the Power Rule
+
+[
+\frac{d}{dx}(x^4)=4x^3
+]
+
+---
+
+### Step 3
+
+Differentiate the second term.
+
+Using the Power Rule
+
+[
+\frac{d}{dx}(x^9)=9x^8
+]
+
+---
+
+### Step 4
+
+Combine the results.
+
+Final Answer
+
+[
+\frac{d}{dx}(x^4+x^9)
+=====================
+
+4x^3+9x^8
+]
+
+---
+
+# 5. Another Example
+
+Differentiate
+
+[
+x^5+x^2
+]
+
+Differentiate each term separately.
+
+First term
+
+[
+x^5
+\rightarrow
+5x^4
+]
+
+Second term
+
+[
+x^2
+\rightarrow
+2x
+]
+
+Final Answer
+
+[
+5x^4+2x
+]
+
+---
+
+# 6. Example with Three Terms
+
+Differentiate
+
+[
+x^6+x^3+x
+]
+
+Each term is treated independently.
+
+[
+x^6
+\rightarrow
+6x^5
+]
+
+[
+x^3
+\rightarrow
+3x^2
+]
+
+[
+x
+\rightarrow
+1
+]
+
+Final Answer
+
+[
+6x^5+3x^2+1
+]
+
+---
+
+# 7. Minus Sign Works the Same Way
+
+The lecture explains that subtraction follows exactly the same idea.
+
+Think of subtraction as adding a negative term.
+
+Example
+
+[
+x^5-x^2
+]
+
+Differentiate each term separately.
+
+[
+x^5
+\rightarrow
+5x^4
+]
+
+[
+-x^2
+\rightarrow
+-2x
+]
+
+Final Answer
+
+[
+5x^4-2x
+]
+
+---
+
+# 8. Combining Previous Rules
+
+The Sum Rule is usually combined with the:
+
+* Constant Rule
+* Constant Multiple Rule
+* Power Rule
+
+Example
+
+[
+2x^4+5x^2+7
+]
+
+### First term
+
+[
+2x^4
+]
+
+Power Rule
+
+[
+4x^3
+]
+
+Multiply by 2
+
+[
+8x^3
+]
+
+---
+
+### Second term
+
+[
+5x^2
+]
+
+Power Rule
+
+[
+2x
+]
+
+Multiply by 5
+
+[
+10x
+]
+
+---
+
+### Third term
+
+[
+7
+]
+
+Constant Rule
+
+[
+0
+]
+
+---
+
+Final Answer
+
+[
+8x^3+10x
+]
+
+---
+
+# 9. Python Example (Step by Step)
+
+-------------------code----------------------
+def derivative_term(coefficient, exponent):
+    if exponent == 0:
+        return (0, 0)
+
+    return coefficient * exponent, exponent - 1
+
+
+term1 = derivative_term(1, 4)
+term2 = derivative_term(1, 9)
+
+print(f"First term : {term1[0]}x^{term1[1]}")
+print(f"Second term: {term2[0]}x^{term2[1]}")
+-------------------code----------------------
+
+Output
+
+-------------------code----------------------
+First term : 4x^3
+Second term: 9x^8
+-------------------code----------------------
+
+---
+
+# 10. Python Example (Combining the Terms)
+
+-------------------code----------------------
+terms = [
+    (1, 4),
+    (1, 9)
+]
+
+result = []
+
+for coefficient, exponent in terms:
+    new_coefficient = coefficient * exponent
+    new_exponent = exponent - 1
+    result.append((new_coefficient, new_exponent))
+
+print(result)
+-------------------code----------------------
+
+Output
+
+-------------------code----------------------
+[(4, 3), (9, 8)]
+-------------------code----------------------
+
+Which represents
+
+[
+4x^3+9x^8
+]
+
+---
+
+# 11. Important Notes
+
+### Separate each term first.
+
+Never try to differentiate the whole expression at once.
+
+---
+
+### Plus and minus are handled the same way.
+
+The lecture explains that subtraction is simply treating the second term as a negative quantity.
+
+---
+
+### Use previous rules for each term.
+
+For every term:
+
+* Constant Rule
+* Power Rule
+* Constant Multiple Rule
+
+are applied individually.
+
+---
+
+# 12. Common Mistakes
+
+### Incorrect
+
+Differentiate the expression as one piece.
+
+Example
+
+[
+x^4+x^9
+]
+
+Wrong
+
+[
+13x^{12}
+]
+
+---
+
+### Correct
+
+Differentiate each term separately.
+
+[
+4x^3+9x^8
+]
+
+---
+
+### Incorrect
+
+Forget one of the terms.
+
+Example
+
+[
+x^5+x^2
+]
+
+Wrong
+
+[
+5x^4
+]
+
+---
+
+### Correct
+
+[
+5x^4+2x
+]
+
+---
+
+# 13. Best Practices
+
+* Split expressions into separate terms before differentiating.
+* Apply the appropriate differentiation rule to each term independently.
+* Combine the differentiated terms only after finishing each one.
+* Remember that subtraction works exactly like addition, except the negative sign stays with the term.
+
+---
+
+# 14. Full Final Code
+
+-------------------code----------------------
+def derivative_term(coefficient, exponent):
+    """
+    Differentiate coefficient * x^exponent
+    using the Constant Rule,
+    Constant Multiple Rule,
+    and Power Rule.
+    """
+
+    if exponent == 0:
+        return (0, 0)
+
+    return coefficient * exponent, exponent - 1
+
+
+terms = [
+    (2, 4),   # 2x^4
+    (5, 2),   # 5x^2
+    (7, 0)    # constant
+]
+
+print("Derivative:")
+
+for coefficient, exponent in terms:
+
+    new_coefficient, new_exponent = derivative_term(coefficient, exponent)
+
+    if new_coefficient == 0:
+        continue
+
+    if new_exponent == 0:
+        print(f"{new_coefficient}")
+    elif new_exponent == 1:
+        print(f"{new_coefficient}x")
+    else:
+        print(f"{new_coefficient}x^{new_exponent}")
+-------------------code----------------------
+
+### Expected Output
+
+-------------------code----------------------
+Derivative:
+8x^3
+10x
+-------------------code----------------------
+
+This corresponds to the derivative of
+
+[
+2x^4+5x^2+7
+]
+
+which is
+
+[
+8x^3+10x
+]
+
+---
+
+# 15. Summary
+
+* The **Sum Rule** states that each term in a sum or difference can be differentiated **independently**.
+* The rule works for both **addition** and **subtraction**.
+* For each individual term, apply the appropriate differentiation rule (Constant Rule, Constant Multiple Rule, or Power Rule).
+* Example:
+
+[
+\frac{d}{dx}(x^4+x^9)
+=====================
+
+4x^3+9x^8
+]
+
+* In practice, most polynomial derivatives are solved by repeatedly applying the **Sum Rule** together with the **Power Rule** and **Constant Multiple Rule**.
