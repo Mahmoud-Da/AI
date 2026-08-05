@@ -5109,3 +5109,640 @@ This lecture reinforced the four foundational differentiation rules through prac
 * **Sum Rule:** Differentiate each term independently and combine the results.
 
 The lecture also demonstrated that derivative rules yield the same slopes previously obtained using the **Delta Method**, confirming that differentiation provides a faster and more efficient way to compute the slope of a curve at any point. These rules form the basis for more advanced topics, including the **Product Rule**, **Chain Rule**, and later applications in machine learning such as differentiating cost functions.
+
+*** 67. The Product Rule ***
+
+# Calculus I – Product Rule (Structured Notes)
+
+# 1. Lecture Overview
+
+This lecture introduces the **Product Rule**, an important differentiation rule used when a function is the **product (multiplication)** of two functions.
+
+Instead of expanding the multiplication first (which may be difficult or impossible), the Product Rule allows us to differentiate each function separately and combine the results.
+
+---
+
+# 2. What is the Product Rule?
+
+Suppose two functions are:
+
+* (W(x))
+* (Z(x))
+
+and
+
+[
+Y = W \cdot Z
+]
+
+The derivative is:
+
+[
+\boxed{
+\frac{d}{dx}(WZ)
+================
+
+W\frac{dZ}{dx}
++
+Z\frac{dW}{dx}
+}
+]
+
+Notice the pattern:
+
+* Keep the **first function** unchanged and differentiate the **second**.
+* Then keep the **second function** unchanged and differentiate the **first**.
+* Add the two results together.
+
+A common memory trick is:
+
+> First × derivative of Second + Second × derivative of First
+
+---
+
+# 3. When Should You Use the Product Rule?
+
+Use the Product Rule whenever:
+
+* Two (or more) functions are multiplied together.
+* Expanding the multiplication first is difficult or impossible.
+* The expression contains multiple differentiation rules that are easier to apply separately.
+
+Examples:
+
+* (x^2\sin x)
+* (e^x(x+3))
+* ((x^2+1)(x^3-5))
+
+---
+
+# 4. Example from the Lecture
+
+Given
+
+[
+Y=(6x^3)(7x^4)
+]
+
+Split the product into two functions:
+
+[
+W=6x^3
+]
+
+[
+Z=7x^4
+]
+
+---
+
+# 5. Step 1 – Differentiate Each Function
+
+## Differentiate (W)
+
+Using:
+
+* Constant Multiple Rule
+* Power Rule
+
+[
+W=6x^3
+]
+
+Derivative:
+
+[
+\frac{dW}{dx}
+=============
+
+18x^2
+]
+
+---
+
+### Python Code
+
+-------------------code----------------------
+import sympy as sp
+
+x = sp.Symbol('x')
+
+W = 6*x**3
+dW = sp.diff(W, x)
+
+print(dW)
+-------------------code----------------------
+
+Output
+
+-------------------code----------------------
+18*x**2
+-------------------code----------------------
+
+---
+
+## Differentiate (Z)
+
+[
+Z=7x^4
+]
+
+Derivative:
+
+[
+\frac{dZ}{dx}
+=============
+
+28x^3
+]
+
+---
+
+### Python Code
+
+-------------------code----------------------
+import sympy as sp
+
+x = sp.Symbol('x')
+
+Z = 7*x**4
+dZ = sp.diff(Z, x)
+
+print(dZ)
+-------------------code----------------------
+
+Output
+
+-------------------code----------------------
+28*x**3
+-------------------code----------------------
+
+---
+
+# 6. Step 2 – Apply the Product Rule
+
+Substitute into
+
+[
+W\frac{dZ}{dx}
++
+Z\frac{dW}{dx}
+]
+
+Result:
+
+[
+(6x^3)(28x^3)
++
+(7x^4)(18x^2)
+]
+
+---
+
+### Python Code
+
+-------------------code----------------------
+product_derivative = W*dZ + Z*dW
+
+print(product_derivative)
+-------------------code----------------------
+
+Output
+
+-------------------code----------------------
+168*x**6 + 126*x**6
+-------------------code----------------------
+
+---
+
+# 7. Step 3 – Simplify
+
+Multiply coefficients.
+
+### First term
+
+[
+6\times28=168
+]
+
+Exponents:
+
+[
+x^3x^3=x^6
+]
+
+Result
+
+[
+168x^6
+]
+
+---
+
+### Second term
+
+[
+7\times18=126
+]
+
+Exponents:
+
+[
+x^4x^2=x^6
+]
+
+Result
+
+[
+126x^6
+]
+
+---
+
+# 8. Step 4 – Combine Like Terms
+
+Both terms contain
+
+[
+x^6
+]
+
+So simply add the coefficients.
+
+[
+168+126=294
+]
+
+Final answer:
+
+[
+\boxed{
+\frac{dy}{dx}=294x^6
+}
+]
+
+---
+
+### Python Code
+
+-------------------code----------------------
+simplified = sp.expand(product_derivative)
+
+print(simplified)
+-------------------code----------------------
+
+Output
+
+-------------------code----------------------
+294*x**6
+-------------------code----------------------
+
+---
+
+# 9. Understanding Exponent Multiplication
+
+When multiplying powers with the same base:
+
+[
+x^a\cdot x^b=x^{a+b}
+]
+
+Examples
+
+[
+x^3x^3=x^6
+]
+
+[
+x^4x^2=x^6
+]
+
+Only **exponents are added**.
+
+Do **not** multiply exponents.
+
+---
+
+# 10. Complete Example
+
+Given
+
+[
+Y=(6x^3)(7x^4)
+]
+
+### Step 1
+
+Differentiate each function.
+
+[
+W'=18x^2
+]
+
+[
+Z'=28x^3
+]
+
+---
+
+### Step 2
+
+Apply Product Rule.
+
+[
+(6x^3)(28x^3)
++
+(7x^4)(18x^2)
+]
+
+---
+
+### Step 3
+
+Multiply.
+
+[
+168x^6+126x^6
+]
+
+---
+
+### Step 4
+
+Combine like terms.
+
+[
+\boxed{294x^6}
+]
+
+---
+
+# 11. Important Notes
+
+* Use the Product Rule **only when functions are multiplied**.
+* Do **not** use the Sum Rule for multiplication.
+* Differentiate each function separately before substituting into the Product Rule.
+* Keep one function unchanged while differentiating the other.
+* Remember the order:
+
+[
+WZ' + ZW'
+]
+
+* When multiplying powers of the same variable:
+
+[
+x^a x^b = x^{a+b}
+]
+
+* After applying the Product Rule, always simplify like terms.
+
+---
+
+# 12. Best Practices
+
+* Clearly identify the two functions before differentiating.
+* Compute each derivative separately to avoid mistakes.
+* Substitute into the Product Rule only after both derivatives are known.
+* Simplify coefficients and combine like terms at the end.
+* Expanding the multiplication first may work in simple cases, but the Product Rule is more general and is essential for more complex expressions.
+
+---
+
+# 13. Full Final Code
+
+-------------------code----------------------
+import sympy as sp
+
+# Variable
+x = sp.Symbol('x')
+
+# Original functions
+W = 6*x**3
+Z = 7*x**4
+
+# Step 1: Differentiate
+dW = sp.diff(W, x)
+dZ = sp.diff(Z, x)
+
+print("W' =", dW)
+print("Z' =", dZ)
+
+# Step 2: Product Rule
+product_derivative = W*dZ + Z*dW
+
+print("\nBefore Simplification:")
+print(product_derivative)
+
+# Step 3: Simplify
+final_answer = sp.expand(product_derivative)
+
+print("\nFinal Derivative:")
+print(final_answer)
+-------------------code----------------------
+
+---
+
+# 14. Summary
+
+The **Product Rule** is used to differentiate the product of two functions. Instead of differentiating the product directly, keep one function unchanged while differentiating the other, then reverse the roles and add the two results:
+
+[
+\frac{d}{dx}(WZ)=WZ'+ZW'
+]
+
+In the lecture example:
+
+[
+Y=(6x^3)(7x^4)
+]
+
+the derivatives were:
+
+[
+W'=18x^2,\qquad Z'=28x^3
+]
+
+Applying the Product Rule produced:
+
+[
+168x^6+126x^6
+]
+
+which simplified to:
+
+[
+\boxed{294x^6}
+]
+
+This rule becomes especially valuable when working with more complicated functions in calculus and machine learning, where expanding expressions beforehand is often impractical or impossible.
+
+
+
+
+
+
+
+
+
+
+
+
+
+dY/dx (find Derivative) means where y and x meet ?
+
+# What Does dY/dx Mean?
+
+Great question! Many people confuse the derivative with the point where axes meet. Let me explain the difference in the simplest way possible.
+
+---
+
+## The Short Answer
+
+**No, dY/dx does NOT mean "the point where y and x meet"!**
+
+**dY/dx means:**
+> "The rate of change of y with respect to x"
+> Or in other words: "How much does y change when x changes by a tiny amount"
+
+---
+
+## Part 1: The Difference Between a "Point" and a "Rate of Change"
+
+### A Point = A Specific Location
+
+-------------------code----------------------
+The point (2, 5) means:
+x = 2
+y = 5
+-------------------code----------------------
+
+This is a specific location on the graph.
+
+---
+
+### The Derivative = Rate of Change
+
+-------------------code----------------------
+dY/dx at x = 2 means:
+"When x = 2, how much does y change for each change in x?"
+-------------------code----------------------
+
+This is the speed of change at that location, not the location itself.
+
+---
+
+## Part 2: Car Analogy
+
+| Question | Answer |
+| :--- | :--- |
+| Where are you now? | Location = The point (x, y) |
+| How fast are you going? | Speed = The derivative dY/dx |
+
+**The difference:**
+- Location tells you **where** you are
+- Speed tells you **how fast** you are moving
+
+This is exactly the same difference between a point and a derivative!
+
+---
+
+## Part 3: Visual Explanation
+
+### The Graph:
+
+-------------------code----------------------
+y
+^
+|        *
+|       *  <- The point (2, 5)
+|      *
+|     *
+|    *
+|   *
+|  *
+| *
+|*
++----------------> x
+-------------------code----------------------
+
+**The point (2, 5):** A specific location on the curve
+
+**The derivative dY/dx at x = 2:** The slope of the curve at that point (how steep it is)
+
+---
+
+## Part 4: Example with Numbers
+
+### Function: y = x²
+
+| x | y = x² | dY/dx = 2x |
+| :--- | :--- | :--- |
+| 1 | 1 | 2 |
+| 2 | 4 | 4 |
+| 3 | 9 | 6 |
+| 4 | 16 | 8 |
+
+**At each point:**
+- **y** = the location of the point on the vertical axis
+- **dY/dx** = the speed of change at that point
+
+**Example: at x = 2**
+- The point is (2, 4)
+- The derivative is 4 (meaning y changes by 4 for each change in x)
+
+---
+
+## Part 5: Meaning of the Symbols
+
+### dY/dx has two parts:
+
+| Symbol | Meaning |
+| :--- | :--- |
+| **dY** | A very small change in Y |
+| **dx** | A very small change in X |
+| **dY/dx** | The rate of change of Y with respect to X |
+
+---
+
+## Part 6: Why Do We Use "d"?
+
+**d** means "a very small change" (Differential)
+
+**Comparison:**
+-------------------code----------------------
+Δy/Δx = Rate of change between two far points (average speed)
+dy/dx = Rate of change at a single point (instantaneous speed)
+-------------------code----------------------
+
+---
+
+## Part 7: Final Summary
+
+| Question | Answer |
+| :--- | :--- |
+| Does dY/dx mean where y and x meet? | **No**, this is a common misunderstanding |
+| What does dY/dx mean? | The rate of change of Y with respect to X |
+| What does it tell us? | Speed of change or slope of the curve |
+| What is the difference between a point and a derivative? | Point = location, derivative = speed |
+| Example of a point? | (2, 5) |
+| Example of a derivative? | dY/dx = 4 at x = 2 |
+
+---
+
+## The Most Important Sentence
+
+> **dY/dx does NOT mean "the point where axes meet". It means "the rate of change of Y with respect to X". It tells us the speed of change at any point, not the location of the point itself.**
+
+---
+
+## Part 8: Always Remember
+
+-------------------code----------------------
+Point (x, y) = Where are you? (location)
+Derivative dy/dx = How fast are you moving? (rate of change)
+-------------------code----------------------
+
+**Both are important, but they are completely different things!**
+
+---
