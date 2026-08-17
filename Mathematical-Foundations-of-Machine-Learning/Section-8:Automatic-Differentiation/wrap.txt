@@ -1,0 +1,417 @@
+*** 72. Segment Intro ***
+# 1. Where We Are in the Machine Learning Foundation Series
+
+The **Machine Learning Foundation series** consists of **eight subjects**.
+
+We are currently studying:
+
+**Subject 3: Calculus 1 — Limits and Derivatives**
+
+The subject is divided into **three major segments**:
+
+-------------------code----------------------
+Calculus 1: Limits and Derivatives
+│
+├── Segment 1: Limits
+├── Segment 2: Derivatives and Differentiation
+└── Segment 3: Automatic Differentiation
+-------------------code----------------------
+
+---
+
+# 2. Segment 1 — Limits
+
+The first segment focused on **limits**.
+
+The main goal was to learn how to calculate and understand limits.
+
+Limits are important because they provide the mathematical foundation for understanding derivatives.
+
+The lecture does not introduce additional formulas or Python code for limits in this particular video because this segment is being used as a review.
+
+---
+
+# 3. Segment 2 — Derivatives and Differentiation
+
+The second segment focused on **computing derivatives**.
+
+## 3.1 The Delta Method
+
+Initially, derivatives were calculated using the **Delta method**.
+
+The basic idea was:
+
+-------------------code----------------------
+Two points on a curve
+        ↓
+Calculate Δy / Δx
+        ↓
+Make Δx smaller and smaller
+        ↓
+Δx → 0
+        ↓
+Slope approaches the derivative
+-------------------code----------------------
+
+The Delta method therefore connected our previous understanding of limits with derivatives.
+
+---
+
+## 3.2 Differentiation Rules
+
+After developing an understanding of derivatives using the Delta method, we learned a collection of rules that allow derivatives to be calculated much more quickly.
+
+The rules covered included:
+
+* Constant rule
+* Power rule
+* Constant multiple rule
+* Sum rule
+* Product rule
+* Quotient rule
+* Chain rule
+* Power rule on a function chain
+
+These rules allow us to differentiate increasingly complicated mathematical expressions without repeatedly going back to the Delta method.
+
+---
+
+# 4. Why Segment 2 Leads Into Segment 3
+
+Everything learned so far provides the foundation for **automatic differentiation**.
+
+Previously, we calculated derivatives:
+
+-------------------code----------------------
+By hand
+   ↓
+Using mathematical rules
+   ↓
+For individual functions
+-------------------code----------------------
+
+But machine learning frequently involves extremely large and complicated mathematical expressions.
+
+For example, a neural network can contain many layers, with each layer effectively forming part of a large chain of functions.
+
+Doing all of these derivatives manually would be impractical.
+
+This creates the motivation for **automatic differentiation**.
+
+---
+
+# 5. Segment 3 — Automatic Differentiation
+
+The third and final segment of Calculus 1 focuses on **Automatic Differentiation (AD)**.
+
+The key idea is:
+
+> Use computational techniques to calculate derivatives automatically rather than calculating them manually.
+
+This allows derivative calculations to scale to the large problems encountered in machine learning.
+
+The progression is:
+
+-------------------code----------------------
+Manual differentiation
+        ↓
+Derivative rules
+        ↓
+Automatic differentiation
+        ↓
+Large machine-learning computations
+-------------------code----------------------
+
+---
+
+# 6. Automatic Differentiation With PyTorch
+
+One of the first topics in this segment will be implementing automatic differentiation using **PyTorch**.
+
+The lecture specifically says that we will study automatic differentiation in the **PyTorch library**.
+
+The goal is to move from manually calculating derivatives to letting a machine-learning framework perform the calculations computationally.
+
+A basic conceptual example can be represented as:
+
+-------------------code----------------------python
+import torch
+
+x = torch.tensor(2.0, requires_grad=True)
+
+y = x ** 2
+
+y.backward()
+
+print(x.grad)
+-------------------code----------------------
+
+The important idea here is that PyTorch tracks the computation involving `x` and can calculate the derivative automatically.
+
+For:
+
+[
+y=x^2
+]
+
+the derivative is:
+
+[
+\frac{dy}{dx}=2x
+]
+
+so at (x=2):
+
+-------------------code----------------------
+dy/dx = 4
+-------------------code----------------------
+
+Note: the lecture excerpt itself only introduces that PyTorch automatic differentiation will be covered; the code above is a simple illustrative implementation, not code presented in the lecture.
+
+---
+
+# 7. Automatic Differentiation With TensorFlow
+
+The segment will also cover automatic differentiation using the **TensorFlow library**.
+
+Therefore, the two major frameworks explicitly mentioned are:
+
+-------------------code----------------------
+PyTorch
+TensorFlow
+-------------------code----------------------
+
+Both provide computational mechanisms for calculating derivatives, allowing these calculations to be integrated into machine-learning workflows.
+
+---
+
+# 8. First Machine Learning Example With Differentiation
+
+The segment will then introduce a **first example of machine learning using differentiation**.
+
+This is important because the course is moving from pure calculus toward actual machine-learning applications.
+
+The progression is essentially:
+
+-------------------code----------------------
+Calculus
+   ↓
+Derivatives
+   ↓
+Automatic differentiation
+   ↓
+Machine learning
+-------------------code----------------------
+
+The lecture specifically states that this example will introduce **cost functions**.
+
+---
+
+# 9. Cost Functions / Loss Functions
+
+A major upcoming concept is the **cost function**, also called a **loss function**.
+
+The lecture emphasizes that cost/loss functions are critical for evaluating the performance of a machine-learning algorithm.
+
+Conceptually:
+
+-------------------code----------------------
+Machine-learning model
+        ↓
+Makes predictions
+        ↓
+Compare predictions with desired results
+        ↓
+Calculate loss/cost
+        ↓
+Measure model performance
+-------------------code----------------------
+
+The exact cost functions and their mathematical derivations are not covered in this introductory lecture; they will be developed later in the segment.
+
+---
+
+# 10. Differentiation and Machine Learning
+
+This segment connects everything we've learned so far.
+
+The overall picture is:
+
+-------------------code----------------------
+Limits
+  ↓
+Derivatives
+  ↓
+Differentiation rules
+  ↓
+Automatic differentiation
+  ↓
+Cost / loss functions
+  ↓
+Machine learning
+-------------------code----------------------
+
+This is an important transition in the course.
+
+Previously, calculus was primarily being studied as mathematics.
+
+Now, the course begins using calculus as a **computational tool for machine learning**.
+
+---
+
+# 11. Differentiable Programming
+
+The final topic mentioned in this segment is **differentiable programming**.
+
+The lecture describes this as something that is:
+
+* Coming in the future
+* Potentially a major game changer
+* A somewhat unusual or unconventional idea
+
+The lecture does not provide a detailed definition or implementation yet, so there is not enough information in this particular video to explain its mechanics.
+
+For now, the important point is simply that **differentiable programming will be discussed toward the end of this segment**.
+
+---
+
+# 12. What We Will Learn in Segment 3
+
+The lecture gives us the roadmap for the final segment:
+
+### 1. Automatic differentiation with PyTorch
+
+-------------------code----------------------
+PyTorch
+    ↓
+Automatic derivative calculation
+-------------------code----------------------
+
+### 2. Automatic differentiation with TensorFlow
+
+-------------------code----------------------
+TensorFlow
+    ↓
+Automatic derivative calculation
+-------------------code----------------------
+
+### 3. First machine-learning example using differentiation
+
+-------------------code----------------------
+Differentiation
+      ↓
+Machine-learning example
+-------------------code----------------------
+
+### 4. Cost/loss functions
+
+-------------------code----------------------
+Predictions
+    ↓
+Loss function
+    ↓
+Evaluate model performance
+-------------------code----------------------
+
+### 5. Differentiable programming
+
+-------------------code----------------------
+Differentiation
+      +
+Programming
+      ↓
+Differentiable programming
+-------------------code----------------------
+
+---
+
+# 13. Full Final Code
+
+Because this lecture is primarily a **roadmap/introduction** to automatic differentiation and does not provide a complete coding exercise, there is no official final code from the lecture itself.
+
+For reference, the following is a small illustrative PyTorch example showing the basic idea of automatic differentiation:
+
+-------------------code----------------------python
+import torch
+
+# Create a variable and tell PyTorch to track its derivatives
+x = torch.tensor(2.0, requires_grad=True)
+
+# Define a function
+y = x ** 2
+
+# Calculate the derivative automatically
+y.backward()
+
+# Display dy/dx
+print(x.grad)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+tensor(4.)
+-------------------code----------------------
+
+This corresponds to:
+
+[
+y=x^2
+]
+
+and:
+
+[
+\frac{dy}{dx}=2x
+]
+
+At (x=2):
+
+[
+\frac{dy}{dx}=4
+]
+
+Again, this code is **illustrative rather than code supplied in the lecture**.
+
+---
+
+# 14. Summary
+
+This lecture marks the beginning of **Segment 3: Automatic Differentiation**.
+
+The journey so far is:
+
+-------------------code----------------------
+Subject 3: Calculus 1 — Limits and Derivatives
+
+Segment 1
+    Limits
+       ↓
+Segment 2
+    Derivatives & Differentiation
+       ↓
+    Delta Method
+       ↓
+    Differentiation Equation
+       ↓
+    Derivative Rules
+       ↓
+Segment 3
+    Automatic Differentiation
+       ↓
+    PyTorch
+       ↓
+    TensorFlow
+       ↓
+    Machine Learning + Differentiation
+       ↓
+    Cost / Loss Functions
+       ↓
+    Differentiable Programming
+-------------------code----------------------
+
+### Key takeaway
+
+The purpose of Segment 3 is to take everything learned about derivatives and move from **manual mathematical differentiation** to **automatic computational differentiation at the scale required by machine learning**.
+
+The next major topic is **Automatic Differentiation in PyTorch**.
