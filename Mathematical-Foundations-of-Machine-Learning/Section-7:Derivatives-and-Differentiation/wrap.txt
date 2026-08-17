@@ -7649,3 +7649,629 @@ The main goal of this lecture is to become comfortable **combining differentiati
 ]
 
 The most important skill here is not memorizing isolated formulas. It is **recognizing the structure of a function and choosing the appropriate rule**, often combining several rules in the same problem.
+
+*** 71. The Power Rule on a Function Chain ***
+# 1. Power Rule on a Function Chain
+
+The **power rule on a function chain** combines two rules we already learned:
+
+1. **Power Rule**
+2. **Chain Rule**
+
+It gives us a faster way to differentiate expressions where a function is raised to a power.
+
+---
+
+# 2. The Rule
+
+Suppose we have:
+
+[
+y = u^n
+]
+
+where (u) is itself a function of (x).
+
+The rule is:
+
+In simple terms:
+
+1. Bring the exponent (n) in front.
+2. Reduce the exponent by 1.
+3. Multiply by the derivative of the inside function (du/dx).
+
+This is essentially the **power rule + chain rule in one step**.
+
+---
+
+# 3. Example: (y=(3x+1)^2)
+
+This is the same function used in the previous advanced exercises.
+
+We have:
+
+[
+y=(3x+1)^2
+]
+
+The expression has a nested structure:
+
+* Inner function: (3x+1)
+* Outer operation: raising the inner function to the power of 2
+
+## Step 1: Identify the inner function
+
+Let:
+
+[
+u=3x+1
+]
+
+The exponent is:
+
+[
+n=2
+]
+
+---
+
+## Step 2: Differentiate the inner function
+
+Differentiate:
+
+[
+u=3x+1
+]
+
+Using the constant rule and constant multiple rule:
+
+[
+\frac{du}{dx}=3
+]
+
+In Python, we could represent the inner function as:
+
+-------------------code----------------------
+def u(x):
+    return 3 * x + 1
+-------------------code----------------------
+
+And conceptually its derivative is:
+
+-------------------code----------------------
+du_dx = 3
+-------------------code----------------------
+
+---
+
+# 4. Apply the Power Rule on a Function Chain
+
+Using:
+
+[
+\frac{dy}{dx}=n u^{n-1}\frac{du}{dx}
+]
+
+Substitute:
+
+* (n=2)
+* (u=3x+1)
+* (du/dx=3)
+
+We get:
+
+[
+\frac{dy}{dx}
+=============
+
+2(3x+1)^{2-1}(3)
+]
+
+Since (2-1=1):
+
+[
+\frac{dy}{dx}
+=============
+
+2(3x+1)(3)
+]
+
+Multiply:
+
+[
+\frac{dy}{dx}=6(3x+1)
+]
+
+And finally:
+
+[
+\boxed{\frac{dy}{dx}=18x+6}
+]
+
+This is the same answer obtained previously using the full chain-rule procedure.
+
+---
+
+# 5. Why This Rule Is Useful
+
+Previously, with the chain rule, we had to:
+
+1. Identify the inner function.
+2. Identify the outer function.
+3. Differentiate the inner function.
+4. Differentiate the outer function.
+5. Chain the derivatives together.
+
+The power rule on a function chain lets us perform this much more directly:
+
+-------------------code----------------------
+Identify the power
+       ↓
+Bring power in front
+       ↓
+Reduce power by 1
+       ↓
+Multiply by derivative of inside
+-------------------code----------------------
+
+So instead of separately calculating two derivatives and then multiplying them, we can use one compact rule.
+
+---
+
+# 6. Code Representation
+
+The lecture is primarily mathematical, but we can represent the calculation in Python.
+
+## Step 1: Define the original function
+
+-------------------code----------------------
+def f(x):
+    return (3 * x + 1) ** 2
+-------------------code----------------------
+
+## Step 2: Define the derivative
+
+Using the power rule on a function chain:
+
+-------------------code----------------------
+def df_dx(x):
+    return 2 * (3 * x + 1) ** (2 - 1) * 3
+-------------------code----------------------
+
+## Step 3: Simplify the implementation
+
+Since the exponent becomes 1:
+
+-------------------code----------------------
+def df_dx(x):
+    return 2 * (3 * x + 1) * 3
+-------------------code----------------------
+
+Or:
+
+-------------------code----------------------
+def df_dx(x):
+    return 18 * x + 6
+-------------------code----------------------
+
+All three derivative representations are mathematically equivalent.
+
+---
+
+# 7. Comparing With the Full Chain Rule
+
+Previously we would have done:
+
+-------------------code----------------------
+y = u²
+u = 3x + 1
+
+dy/du = 2u
+du/dx = 3
+
+dy/dx = (dy/du)(du/dx)
+-------------------code----------------------
+
+Then substitute (u=3x+1):
+
+-------------------code----------------------
+dy/dx = 2(3x+1)(3)
+-------------------code----------------------
+
+The new power-rule-on-a-function-chain approach goes directly to:
+
+-------------------code----------------------
+dy/dx = 2(3x+1)¹(3)
+-------------------code----------------------
+
+So the result is identical, but the calculation is shorter.
+
+---
+
+# 8. Practice Exercise
+
+The lecture recommends repeating **Exercises 4 and 5 from the previous advanced exercises**, but using this new rule.
+
+The purpose is to see that the new rule allows you to solve those problems more quickly than applying the full chain rule step-by-step.
+
+---
+
+# 9. Segment 2 Review: Derivatives and Differentiation
+
+This completes **Segment 2 of 3** in Subject 3, *Calculus 1: Limits and Derivatives*.
+
+The segment covered the following topics.
+
+## 9.1 Delta Method
+
+The Delta method uses two points that become increasingly close together to determine the slope of a curve.
+
+As:
+
+[
+\Delta x \rightarrow 0
+]
+
+the slope between the two points approaches the actual slope of the curve at the point of interest.
+
+---
+
+## 9.2 Differentiation Equation
+
+From the Delta method, we derived the standard differentiation equation:
+
+This represents the derivative as the limit of the slope between two increasingly close points.
+
+---
+
+## 9.3 Derivative Notation
+
+Several common ways of representing the first derivative were covered:
+
+-------------------code----------------------
+ẏ
+y'
+f'(x)
+dy/dx
+-------------------code----------------------
+
+The lecture particularly favored **Leibniz notation**:
+
+-------------------code----------------------
+dy/dx
+-------------------code----------------------
+
+because it explicitly shows both variables involved.
+
+For second derivatives:
+
+-------------------code----------------------
+ÿ
+y''
+f''(x)
+d²y/dx²
+-------------------code----------------------
+
+---
+
+# 10. Basic Differentiation Rules
+
+The segment then introduced several important rules.
+
+## 10.1 Constant Rule
+
+A constant has no variation, so its derivative is zero.
+
+-------------------code----------------------
+d/dx(C) = 0
+-------------------code----------------------
+
+Example:
+
+-------------------code----------------------
+d/dx(25) = 0
+-------------------code----------------------
+
+---
+
+## 10.2 Power Rule
+
+For:
+
+-------------------code----------------------
+xⁿ
+-------------------code----------------------
+
+the exponent moves in front and decreases by one.
+
+-------------------code----------------------
+xⁿ → n xⁿ⁻¹
+-------------------code----------------------
+
+Example:
+
+-------------------code----------------------
+x⁴ → 4x³
+-------------------code----------------------
+
+---
+
+## 10.3 Constant Multiple Rule
+
+A constant multiplying a function can remain outside the differentiation operation.
+
+Example:
+
+-------------------code----------------------
+2x⁴
+-------------------code----------------------
+
+Differentiate (x^4):
+
+-------------------code----------------------
+4x³
+-------------------code----------------------
+
+Then restore the constant:
+
+-------------------code----------------------
+2 × 4x³ = 8x³
+-------------------code----------------------
+
+Therefore:
+
+-------------------code----------------------
+d/dx(2x⁴) = 8x³
+-------------------code----------------------
+
+---
+
+## 10.4 Sum Rule
+
+Terms separated by addition or subtraction can be differentiated independently.
+
+Example:
+
+-------------------code----------------------
+y = x⁴ + x⁹
+-------------------code----------------------
+
+becomes:
+
+-------------------code----------------------
+dy/dx = 4x³ + 9x⁸
+-------------------code----------------------
+
+---
+
+# 11. Advanced Differentiation Rules
+
+The segment then introduced three major rules.
+
+## 11.1 Product Rule
+
+For two functions (W) and (Z):
+
+[
+\frac{d(WZ)}{dx}
+================
+
+W\frac{dZ}{dx}
++
+Z\frac{dW}{dx}
+]
+
+The important pattern is:
+
+-------------------code----------------------
+first × derivative of second
++
+second × derivative of first
+-------------------code----------------------
+
+---
+
+## 11.2 Quotient Rule
+
+For:
+
+[
+y=\frac{W}{Z}
+]
+
+the quotient rule uses:
+
+[
+\frac{dy}{dx}
+=============
+
+\frac{
+Z\frac{dW}{dx}
+--------------
+
+W\frac{dZ}{dx}
+}{
+Z^2
+}
+]
+
+The important pattern is:
+
+-------------------code----------------------
+denominator × derivative of numerator
+-
+numerator × derivative of denominator
+--------------------------------------
+             denominator²
+-------------------code----------------------
+
+---
+
+## 11.3 Chain Rule
+
+The chain rule handles **nested/composite functions**.
+
+For:
+
+-------------------code----------------------
+y = outer(inner(x))
+-------------------code----------------------
+
+we can differentiate:
+
+-------------------code----------------------
+dy/dx = dy/du × du/dx
+-------------------code----------------------
+
+The intermediate (du) effectively cancels:
+
+-------------------code----------------------
+dy   du
+-- × --
+du   dx
+
+   ↓
+
+dy
+--
+dx
+-------------------code----------------------
+
+This is particularly important in machine learning because neural networks can be viewed as long chains of nested functions.
+
+---
+
+# 12. Machine Learning Importance
+
+The lecture emphasizes that the chain rule is especially important because it is fundamental to:
+
+* **Gradient descent**
+* **Backpropagation**
+* **Neural networks**
+* **Deep learning**
+
+Gradient descent appears throughout machine learning, from relatively simple regression models through deep learning.
+
+Backpropagation uses the chain rule to efficiently connect the derivatives through the layers of a neural network.
+
+This is why the chain rule becomes one of the most important calculus concepts for machine learning.
+
+---
+
+# 13. Final Rule: Power Rule on a Function Chain
+
+The final rule combines:
+
+-------------------code----------------------
+Power Rule
++
+Chain Rule
+-------------------code----------------------
+
+The general form is:
+
+[
+\frac{dy}{dx}=n u^{n-1}\frac{du}{dx}
+]
+
+Think of it as:
+
+-------------------code----------------------
+power
+  ↓
+bring it forward
+  ↓
+subtract 1
+  ↓
+multiply by derivative of inside
+-------------------code----------------------
+
+---
+
+# 14. Full Final Code
+
+-------------------code----------------------
+# Power Rule on a Function Chain
+# Example:
+# y = (3x + 1)^2
+
+# Original function
+def f(x):
+    return (3 * x + 1) ** 2
+
+
+# Inner function
+def u(x):
+    return 3 * x + 1
+
+
+# Derivative of the inner function
+def du_dx(x):
+    return 3
+
+
+# Derivative using the power rule on a function chain
+def df_dx(x):
+    n = 2
+    return n * u(x) ** (n - 1) * du_dx(x)
+
+
+# Simplified derivative:
+# dy/dx = 18x + 6
+def df_dx_simplified(x):
+    return 18 * x + 6
+
+
+# Example calculation
+x = 2
+
+print("f(x) =", f(x))
+print("Derivative using chain-power rule =", df_dx(x))
+print("Simplified derivative =", df_dx_simplified(x))
+-------------------code----------------------
+
+For (x=2):
+
+-------------------code----------------------
+f(2) = 49
+df/dx = 42
+-------------------code----------------------
+
+---
+
+# 15. Final Summary
+
+The key progression of this segment is:
+
+-------------------code----------------------
+Limits
+   ↓
+Delta Method
+   ↓
+Slope between two points
+   ↓
+Δx → 0
+   ↓
+Derivative
+   ↓
+Differentiation notation
+   ↓
+Basic derivative rules
+   ↓
+Product / Quotient / Chain Rules
+   ↓
+Power Rule on a Function Chain
+-------------------code----------------------
+
+The most important ideas to remember are:
+
+1. **The Delta method** uses increasingly small differences to determine the slope of a curve.
+2. **The derivative** represents the slope of a curve at a particular point.
+3. **The power rule** handles powers of variables.
+4. **The constant multiple and sum rules** make differentiation of ordinary expressions easier.
+5. **Product and quotient rules** handle multiplication and division of functions.
+6. **The chain rule** handles nested functions.
+7. **The power rule on a function chain** combines the power rule and chain rule into one step.
+8. The **chain rule is fundamental to gradient descent and backpropagation**, making it especially important for machine learning.
+9. This completes **Segment 2: Derivatives and Differentiation**.
+10. The next segment moves to **Automatic Differentiation**, which focuses on scaling derivative calculations to the large function chains commonly encountered in machine learning.
