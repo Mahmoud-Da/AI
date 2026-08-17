@@ -415,3 +415,620 @@ Segment 3
 The purpose of Segment 3 is to take everything learned about derivatives and move from **manual mathematical differentiation** to **automatic computational differentiation at the scale required by machine learning**.
 
 The next major topic is **Automatic Differentiation in PyTorch**.
+
+
+*** 73. What Automatic Differentiation Is ***
+# 1. What Is Automatic Differentiation?
+
+**Automatic Differentiation (AD)** is a computational technique for calculating derivatives automatically through a sequence of mathematical operations.
+
+It is especially useful in **machine learning**, where models can contain many inputs and extremely long chains of nested functions.
+
+---
+
+# 2. Different Names for Automatic Differentiation
+
+The lecture gives several names:
+
+| Name                              | Meaning                                               |
+| --------------------------------- | ----------------------------------------------------- |
+| **Automatic Differentiation**     | Full name                                             |
+| **Autodiff**                      | Short form                                            |
+| **Autograd**                      | Common name related to automatic gradient calculation |
+| **Computational Differentiation** | Emphasizes the computational nature                   |
+| **Algorithmic Differentiation**   | Another standard name                                 |
+| **Reverse Mode Differentiation**  | Refers to the direction used by reverse-mode autodiff |
+
+For this course, **Autodiff** and **Autograd** are especially important terms to recognize.
+
+---
+
+# 3. Why Not Just Use the Methods We Already Learned?
+
+Before automatic differentiation, we studied two main approaches.
+
+## 3.1 Numerical Differentiation
+
+The **Delta method** is an example of numerical differentiation.
+
+The basic idea is:
+
+-------------------code----------------------
+Take two nearby points
+        ↓
+Calculate Δy / Δx
+        ↓
+Make Δx increasingly small
+        ↓
+Approximate the derivative
+-------------------code----------------------
+
+For example:
+
+-------------------code----------------------
+def f(x):
+    return x ** 2
+
+x = 2
+delta = 1e-6
+
+derivative = (f(x + delta) - f(x)) / delta
+
+print(derivative)
+-------------------code----------------------
+
+This gives an approximation close to:
+
+-------------------code----------------------
+4
+-------------------code----------------------
+
+### Problem
+
+Numerical differentiation can introduce **rounding errors** when implemented computationally.
+
+Therefore, although it works well for simple examples, it is not the preferred approach for large machine-learning computations.
+
+---
+
+# 4. Symbolic Differentiation
+
+The second approach is **symbolic differentiation**.
+
+This is what we primarily practiced in Segment 2.
+
+For example:
+
+[
+y=x^2
+]
+
+Using the power rule:
+
+[
+\frac{dy}{dx}=2x
+]
+
+We could theoretically write software that implements rules such as:
+
+* Constant rule
+* Power rule
+* Sum rule
+* Product rule
+* Quotient rule
+* Chain rule
+
+and then applies them to increasingly complicated expressions.
+
+### Problem
+
+This becomes **computationally inefficient** as functions become more complicated.
+
+Machine-learning algorithms can contain:
+
+-------------------code----------------------
+Many operations
+      ↓
+Many nested functions
+      ↓
+Large computational graphs
+      ↓
+Very complicated derivatives
+-------------------code----------------------
+
+Symbolically manipulating all of those expressions can become impractical.
+
+The lecture emphasizes that symbolic differentiation could work for simple functions, but becomes unsuitable for complex real-world machine-learning examples.
+
+---
+
+# 5. Why Automatic Differentiation?
+
+Automatic differentiation provides a computationally convenient alternative.
+
+According to the lecture, compared with the classical approaches, automatic differentiation:
+
+* Avoids the rounding-error problem associated with numerical differentiation.
+* Avoids the computational inefficiency of explicitly applying symbolic differentiation rules.
+* Handles functions with **many inputs** well.
+* Handles **higher-order derivatives** effectively.
+
+This makes it particularly suitable for machine learning.
+
+---
+
+# 6. The Core Idea: Automatic Differentiation Uses the Chain Rule
+
+The most important concept in this lecture is:
+
+> **Automatic differentiation works by applying the chain rule to a sequence of arithmetic operations.**
+
+The lecture describes this as a **forward pass of arithmetic operations**.
+
+Consider two nested functions:
+
+[
+x \rightarrow u \rightarrow y
+]
+
+For example:
+
+[
+u=f(x)
+]
+
+and:
+
+[
+y=g(u)
+]
+
+The chain rule tells us:
+
+The intermediate (du) effectively cancels:
+
+-------------------code----------------------
+dy   du
+-- × --
+du   dx
+
+   ↓
+
+dy
+--
+dx
+-------------------code----------------------
+
+This is the mathematical foundation that automatic differentiation uses.
+
+---
+
+# 7. Forward Pass
+
+The forward computation proceeds from the input toward the output:
+
+-------------------code----------------------
+x
+↓
+u
+↓
+y
+-------------------code----------------------
+
+For example:
+
+-------------------code----------------------
+x = 2
+
+u = x ** 2
+y = u + 3
+
+print(y)
+-------------------code----------------------
+
+The computation is:
+
+-------------------code----------------------
+x = 2
+ ↓
+u = 4
+ ↓
+y = 7
+-------------------code----------------------
+
+This is the **forward pass**.
+
+---
+
+# 8. How Automatic Differentiation Moves Through the Computation
+
+Here is the important distinction.
+
+When we manually applied the chain rule in Segment 2, we generally started from the **innermost function**.
+
+For example:
+
+-------------------code----------------------
+x → u → y
+-------------------code----------------------
+
+we might start by differentiating:
+
+-------------------code----------------------
+u with respect to x
+-------------------code----------------------
+
+and then:
+
+-------------------code----------------------
+y with respect to u
+-------------------code----------------------
+
+Automatic differentiation, specifically **reverse-mode differentiation**, works in the opposite direction.
+
+It proceeds:
+
+-------------------code----------------------
+y
+↓
+u
+↓
+x
+-------------------code----------------------
+
+This is why the lecture calls it **reverse mode differentiation**.
+
+---
+
+# 9. Reverse-Mode Automatic Differentiation
+
+The basic idea is:
+
+-------------------code----------------------
+Forward computation:
+
+x → u → y
+
+
+Reverse differentiation:
+
+y → u → x
+-------------------code----------------------
+
+The derivatives from the different stages are chained together.
+
+Conceptually:
+
+-------------------code----------------------
+Forward:
+x ─────→ u ─────→ y
+
+Reverse:
+∂y/∂x ← ∂y/∂u ← ∂u/∂x
+-------------------code----------------------
+
+The goal is ultimately to calculate:
+
+[
+\frac{dy}{dx}
+]
+
+---
+
+# 10. Why Reverse Mode Is Computationally Useful
+
+One of the major advantages described in the lecture is computational efficiency.
+
+Suppose the forward pass is:
+
+-------------------code----------------------
+x → u → y
+-------------------code----------------------
+
+Automatic differentiation performs the derivative calculation backward:
+
+-------------------code----------------------
+y → u → x
+-------------------code----------------------
+
+The lecture explains that the additional computational cost is only a **small constant factor** compared with the original forward pass.
+
+Conceptually:
+
+-------------------code----------------------
+Forward computation
+        ↓
+   relatively cheap
+        ↓
+Reverse-mode autodiff
+        ↓
+Only a small constant-factor overhead
+-------------------code----------------------
+
+This is one of the reasons automatic differentiation is so useful for machine learning.
+
+---
+
+# 11. Simple Conceptual Code Example
+
+The lecture itself does not provide a specific PyTorch or TensorFlow implementation yet. It only introduces the concept before those demonstrations.
+
+We can represent the mathematical idea manually:
+
+-------------------code----------------------
+# Forward pass
+
+x = 2
+
+u = x ** 2
+y = u ** 3
+
+print("x:", x)
+print("u:", u)
+print("y:", y)
+-------------------code----------------------
+
+The computation is:
+
+-------------------code----------------------
+x = 2
+ ↓
+u = x² = 4
+ ↓
+y = u³ = 64
+-------------------code----------------------
+
+The chain rule would conceptually give:
+
+-------------------code----------------------
+dy/dx = dy/du × du/dx
+-------------------code----------------------
+
+For this example:
+
+-------------------code----------------------
+dy/du = 3u²
+du/dx = 2x
+-------------------code----------------------
+
+and therefore:
+
+-------------------code----------------------
+dy/dx = (3u²)(2x)
+-------------------code----------------------
+
+The important point for this lecture is not manually calculating the derivative, but recognizing that **automatic differentiation can computationally track this chain**.
+
+---
+
+# 12. Numerical vs Symbolic vs Automatic Differentiation
+
+A useful comparison from the lecture:
+
+| Method                        | Basic idea                                              | Main issue                                                |
+| ----------------------------- | ------------------------------------------------------- | --------------------------------------------------------- |
+| **Numerical differentiation** | Approximate derivative using small changes such as Δx   | Rounding errors                                           |
+| **Symbolic differentiation**  | Apply algebraic differentiation rules                   | Becomes computationally inefficient for complex functions |
+| **Automatic differentiation** | Apply the chain rule computationally through operations | Designed to scale to complex computational graphs         |
+
+The key distinction is:
+
+-------------------code----------------------
+Numerical:
+Approximate the derivative
+
+Symbolic:
+Manipulate mathematical expressions
+
+Automatic:
+Compute derivatives through the actual sequence of operations
+-------------------code----------------------
+
+---
+
+# 13. Important Terminology
+
+### Autodiff
+
+Short for **automatic differentiation**.
+
+### Autograd
+
+A term commonly associated with automatically calculating gradients.
+
+### Computational graph
+
+Although the lecture does not develop this concept in detail yet, its description of a sequence of arithmetic operations can be visualized as:
+
+-------------------code----------------------
+x
+↓
+operation
+↓
+u
+↓
+operation
+↓
+y
+-------------------code----------------------
+
+This sequence becomes important when working with machine-learning frameworks.
+
+### Reverse mode
+
+The differentiation process moves from the output back toward the inputs:
+
+-------------------code----------------------
+output → intermediate values → input
+-------------------code----------------------
+
+---
+
+# 14. Important Machine Learning Connection
+
+This lecture is setting up an important concept for the rest of the course.
+
+Machine-learning models often look conceptually like:
+
+-------------------code----------------------
+Inputs
+  ↓
+Layer / operation
+  ↓
+Layer / operation
+  ↓
+Layer / operation
+  ↓
+Prediction
+  ↓
+Loss
+-------------------code----------------------
+
+There can be many operations in this chain.
+
+Automatic differentiation allows derivatives to be calculated efficiently through this sequence.
+
+This becomes particularly important for calculating **gradients**, which will be central to machine learning and later topics such as gradient descent.
+
+---
+
+# 15. What the Lecture Does Not Cover Yet
+
+This is a **high-level introduction**.
+
+The lecture explicitly postpones some details.
+
+In particular:
+
+* Partial derivatives will be covered in **Calculus 2**.
+* The current discussion simplifies things by focusing on the basic chain-rule idea.
+* PyTorch implementation comes next.
+* TensorFlow implementation also comes next.
+
+So for now, the most important thing is to understand the conceptual flow rather than the implementation details.
+
+---
+
+# 16. What Comes Next
+
+The next lectures will put this theory into practice using:
+
+-------------------code----------------------
+Automatic Differentiation
+       ↓
+PyTorch
+       ↓
+TensorFlow
+-------------------code----------------------
+
+The goal is to move from understanding the mathematical idea to actually using automatic differentiation in code.
+
+---
+
+# 17. Full Final Code
+
+The lecture itself does not provide a complete code implementation, so there is no official "final code" to reproduce from the source.
+
+The following code is a compact conceptual demonstration of the forward computation discussed above:
+
+-------------------code----------------------
+# Automatic Differentiation - Conceptual Example
+#
+# The lecture explains autodiff conceptually through
+# a sequence of arithmetic operations.
+#
+# Forward computation:
+# x -> u -> y
+
+# Input
+x = 2.0
+
+# First operation
+u = x ** 2
+
+# Second operation
+y = u ** 3
+
+# Display the forward-pass values
+print("x =", x)
+print("u =", u)
+print("y =", y)
+
+# The mathematical chain rule for this computation is:
+#
+# dy/dx = dy/du * du/dx
+#
+# For:
+# u = x²
+# y = u³
+#
+# dy/du = 3u²
+# du/dx = 2x
+#
+# Therefore:
+# dy/dx = (3u²)(2x)
+
+dy_du = 3 * u ** 2
+du_dx = 2 * x
+
+dy_dx = dy_du * du_dx
+
+print("dy/du =", dy_du)
+print("du/dx =", du_dx)
+print("dy/dx =", dy_dx)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+x = 2.0
+u = 4.0
+y = 64.0
+dy/du = 48.0
+du/dx = 4.0
+dy/dx = 192.0
+-------------------code----------------------
+
+This code demonstrates the **mathematical chain-rule idea** behind automatic differentiation. The actual automated implementation using **PyTorch and TensorFlow** comes in the following lectures.
+
+---
+
+# 18. Summary
+
+The central idea of this lecture is:
+
+> **Automatic differentiation computationally applies the chain rule through a sequence of arithmetic operations to efficiently calculate derivatives.**
+
+Remember the three approaches:
+
+-------------------code----------------------
+Numerical differentiation
+    → approximates derivatives
+    → rounding errors
+
+
+Symbolic differentiation
+    → manipulates equations
+    → becomes inefficient for complex functions
+
+
+Automatic differentiation
+    → follows computational operations
+    → applies the chain rule
+    → scales well to machine-learning computations
+-------------------code----------------------
+
+And remember the direction:
+
+-------------------code----------------------
+Forward pass:
+
+x → u → y
+
+
+Reverse-mode differentiation:
+
+y → u → x
+-------------------code----------------------
+
+The next step is to see this process **actually implemented in PyTorch and TensorFlow**.
