@@ -2248,3 +2248,629 @@ x.grad                     tape.gradient()
 -------------------code----------------------
 
 The next major step is applying these derivatives to a **simple regression model and its cost/loss function**, which begins connecting Autodiff directly to machine-learning optimization.
+
+*** 76. The Line Equation as a Tensor Graph ***
+# 1. Overview: From Calculus to Automatic Differentiation
+
+This lecture begins the transition from **calculus by hand** to using **automatic differentiation (Autodiff)** inside machine learning.
+
+The main goal is:
+
+> Represent a machine-learning equation as a computational graph in PyTorch, so that automatic differentiation can later calculate how the output changes with respect to the model parameters.
+
+The example is the simplest possible machine-learning model:
+
+[
+y = mx+b
+]
+
+where:
+
+* (x) = input
+* (y) = model output
+* (m) = slope/weight parameter
+* (b) = y-intercept/bias parameter
+
+---
+
+# 2. The Computational Graph
+
+The equation
+
+[
+y = mx+b
+]
+
+can be represented as a **Directed Acyclic Graph (DAG)**.
+
+### Nodes
+
+The graph contains:
+
+1. Input: (x)
+2. Parameter: (m)
+3. Multiplication: (m \times x)
+4. Parameter: (b)
+5. Addition: (mx+b)
+6. Output: (y)
+
+Conceptually:
+
+-------------------code----------------------
+x ─────┐
+       × ─────┐
+m ─────┘      +
+              ├── y
+b ────────────┘
+-------------------code----------------------
+
+### Edges
+
+The arrows connecting the nodes are **directed edges**.
+
+In this computational graph:
+
+* Information flows in one direction.
+* There are no loops/cycles.
+* Therefore, it is a **directed acyclic graph**.
+
+The edges carry tensors containing information such as:
+
+-------------------code----------------------
+x
+m
+m × x
+b
+y
+-------------------code----------------------
+
+---
+
+# 3. Why Use a Computational Graph?
+
+The important idea is that a machine-learning model can be represented as a sequence of operations.
+
+For our line:
+
+-------------------code----------------------
+x
+ ↓
+m × x
+ ↓
+m × x + b
+ ↓
+y
+-------------------code----------------------
+
+This becomes especially powerful when the model contains hundreds or thousands of operations.
+
+Instead of manually differentiating the entire equation, PyTorch can track the operations and later use automatic differentiation to calculate gradients.
+
+---
+
+# 4. The Machine-Learning Example
+
+The lecture uses a simple regression problem.
+
+The goal is to fit a straight line to data points.
+
+The model is:
+
+-------------------code----------------------
+y = m * x + b
+-------------------code----------------------
+
+The model has only two parameters:
+
+-------------------code----------------------
+m = slope
+b = y-intercept
+-------------------code----------------------
+
+The lecture deliberately starts these parameters with values that are not close to the correct answer so that we can observe the model learning.
+
+Initial values:
+
+-------------------code----------------------
+m = 0.9
+b = 0.1
+-------------------code----------------------
+
+These are intentionally near zero.
+
+---
+
+# 5. Why Initialize Parameters Near Zero?
+
+A common machine-learning approach is to initialize model parameters with relatively small values.
+
+For this simple example:
+
+-------------------code----------------------
+m = 0.9
+b = 0.1
+-------------------code----------------------
+
+The lecture emphasizes that we **could** try to guess better values.
+
+For example, visually we could see that:
+
+* The data has a negative slope.
+* The y-intercept appears to be around 2.
+
+But doing this would make the demonstration artificially easy.
+
+Instead, we start with values that don't fit the data well and allow the machine-learning process to improve them.
+
+### Important idea
+
+The point isn't merely to solve this tiny regression problem.
+
+The important advantage is **scalability**.
+
+The same general approach can scale from:
+
+-------------------code----------------------
+2 parameters + 8 data points
+-------------------code----------------------
+
+to models containing:
+
+-------------------code----------------------
+millions of parameters
+millions/billions of data points
+-------------------code----------------------
+
+This is one of the major reasons gradient-based machine learning is so important.
+
+---
+
+# 6. Creating the Data
+
+The lecture uses artificial data representing:
+
+* (X): drug dosage
+* (Y): patient forgetfulness
+
+The example is fictional.
+
+The underlying line was generated using approximately:
+
+-------------------code----------------------
+m = -0.5
+b = 2
+-------------------code----------------------
+
+and random noise was added.
+
+The basic idea is:
+
+-------------------code----------------------
+y = m * x + b + noise
+-------------------code----------------------
+
+The noise simulates the fact that real-world observations usually don't lie perfectly on a mathematical line.
+
+The lecture notes that the amount of noise can be controlled using the standard deviation.
+
+---
+
+# 7. Creating the Data in PyTorch
+
+The lecture uses PyTorch and Matplotlib.
+
+-------------------code----------------------
+import torch
+import matplotlib.pyplot as plt
+-------------------code----------------------
+
+Example input values:
+
+-------------------code----------------------
+x = torch.tensor([0., 1., 2., 3., 4., 5., 6., 7.])
+-------------------code----------------------
+
+The exact fixed `y` values are used in the notebook for reproducibility.
+
+The important concept is that the data consists of input/output pairs:
+
+-------------------code----------------------
+X → Y
+-------------------code----------------------
+
+---
+
+# 8. Visualizing the Data
+
+A scatter plot lets us inspect the relationship between (X) and (Y).
+
+-------------------code----------------------
+plt.scatter(x, y)
+plt.xlabel("Drug dosage")
+plt.ylabel("Patient forgetfulness")
+plt.show()
+-------------------code----------------------
+
+The lecture observes a clear **negative relationship**:
+
+> As drug dosage increases, forgetfulness decreases.
+
+This means the underlying line should have a negative slope.
+
+---
+
+# 9. Initialize the Model Parameters
+
+Next, we create tensors for (m) and (b).
+
+-------------------code----------------------
+m = torch.tensor(0.9)
+b = torch.tensor(0.1)
+-------------------code----------------------
+
+The important new requirement is that PyTorch needs to track gradients for these parameters.
+
+So we enable gradient tracking:
+
+-------------------code----------------------
+m.requires_grad_()
+b.requires_grad_()
+-------------------code----------------------
+
+Now PyTorch will track operations involving these tensors.
+
+---
+
+# 10. Why `requires_grad` Matters
+
+When we eventually calculate:
+
+-------------------code----------------------
+y = mx + b
+-------------------code----------------------
+
+PyTorch needs to know how (y) depends on:
+
+* (m)
+* (b)
+
+This allows us to later calculate:
+
+[
+\frac{\partial y}{\partial m}
+]
+
+and
+
+[
+\frac{\partial y}{\partial b}
+]
+
+These gradients tell us how changing each parameter affects the output.
+
+This is the foundation for later **gradient descent**.
+
+---
+
+# 11. Building the Regression Function
+
+The lecture creates a function implementing the line equation.
+
+-------------------code----------------------
+def regression(x, m, b):
+    return m * x + b
+-------------------code----------------------
+
+This connects the components of our computational graph:
+
+-------------------code----------------------
+x ─────┐
+       × ─────┐
+m ─────┘      +
+              ├── y
+b ────────────┘
+-------------------code----------------------
+
+In code:
+
+-------------------code----------------------
+y_pred = regression(x, m, b)
+-------------------code----------------------
+
+The model takes:
+
+-------------------code----------------------
+m
+x
+b
+-------------------code----------------------
+
+and produces:
+
+-------------------code----------------------
+y
+-------------------code----------------------
+
+---
+
+# 12. Visualizing the Initial Model
+
+At this point, the model's parameters are:
+
+-------------------code----------------------
+m = 0.9
+b = 0.1
+-------------------code----------------------
+
+So the predicted line is:
+
+-------------------code----------------------
+y_pred = regression(x, m, b)
+-------------------code----------------------
+
+We can visualize it:
+
+-------------------code----------------------
+plt.scatter(x, y)
+plt.plot(x, y_pred.detach())
+plt.xlabel("Drug dosage")
+plt.ylabel("Patient forgetfulness")
+plt.show()
+-------------------code----------------------
+
+The initial line does **not** fit the data well.
+
+That's intentional.
+
+The next stage of the machine-learning process will use differentiation to determine how the parameters should change.
+
+---
+
+# 13. How This Connects to Automatic Differentiation
+
+The computational graph allows PyTorch to remember the operations used to calculate (y).
+
+For example:
+
+-------------------code----------------------
+m ──┐
+    × ──> mx ──┐
+x ──┘          +
+               ├──> y
+b ─────────────┘
+-------------------code----------------------
+
+Because `m` and `b` have gradient tracking enabled, PyTorch can later calculate gradients through this graph.
+
+Conceptually:
+
+[
+y = mx+b
+]
+
+We want to know:
+
+[
+\frac{\partial y}{\partial m}
+]
+
+and
+
+[
+\frac{\partial y}{\partial b}
+]
+
+Those gradients will eventually tell the optimization algorithm how to modify (m) and (b).
+
+---
+
+# 14. Why This Is Different From the Earlier Linear Algebra Approach
+
+Earlier in the Machine Learning Foundation series, the same regression problem was solved using the **Moore-Penrose pseudoinverse**.
+
+That is an algebraic approach.
+
+Here, the same problem is being solved using:
+
+-------------------code----------------------
+Machine learning
+      ↓
+Computational graph
+      ↓
+Automatic differentiation
+      ↓
+Gradients
+      ↓
+Parameter updates
+-------------------code----------------------
+
+The lecture's important point is that the calculus-based approach scales much better to very large machine-learning models.
+
+---
+
+# 15. Key Concepts to Remember
+
+| Concept                  | Meaning                                                 |
+| ------------------------ | ------------------------------------------------------- |
+| (x)                      | Input                                                   |
+| (y)                      | Output                                                  |
+| (m)                      | Slope/parameter                                         |
+| (b)                      | Y-intercept/parameter                                   |
+| DAG                      | Directed Acyclic Graph                                  |
+| Tensor                   | Data flowing through the computational graph            |
+| `requires_grad`          | Tells PyTorch to track gradients                        |
+| Forward pass             | Computing the output from the inputs                    |
+| Autodiff                 | Automatically calculating derivatives through the graph |
+| Regression               | Fitting a model to data                                 |
+| Parameter initialization | Choosing starting values for model parameters           |
+
+---
+
+# 16. Important Best Practices
+
+### 16.1 Use floating-point tensors
+
+For this type of PyTorch calculation, use floats:
+
+-------------------code----------------------
+x = torch.tensor([1., 2., 3.])
+-------------------code----------------------
+
+rather than integer tensors when gradient-related calculations are required.
+
+### 16.2 Track gradients only when needed
+
+Gradient tracking has computational/memory costs.
+
+For parameters that need differentiation:
+
+-------------------code----------------------
+m.requires_grad_()
+b.requires_grad_()
+-------------------code----------------------
+
+### 16.3 Don't manually guess the correct parameters
+
+Although we can visually estimate the slope and intercept, the purpose of the machine-learning example is to demonstrate how the algorithm learns them.
+
+Start with reasonable initial values and let the optimization process improve them.
+
+### 16.4 Keep the computational graph concept in mind
+
+Machine-learning models can be understood as chains of operations:
+
+-------------------code----------------------
+Input
+  ↓
+Operation
+  ↓
+Operation
+  ↓
+Operation
+  ↓
+Output
+-------------------code----------------------
+
+Automatic differentiation works by traversing this computational structure to calculate gradients.
+
+---
+
+# 17. Full Final Code
+
+The lecture's core PyTorch implementation can be summarized as follows:
+
+-------------------code----------------------
+import torch
+import matplotlib.pyplot as plt
+
+
+# --------------------------------------------------
+# 1. Input data
+# --------------------------------------------------
+
+x = torch.tensor([
+    0.0,
+    1.0,
+    2.0,
+    3.0,
+    4.0,
+    5.0,
+    6.0,
+    7.0
+])
+
+
+# Example fixed observations.
+# The lecture uses fixed values for reproducibility.
+y = torch.tensor([
+    2.1, 1.4, 1.0, 0.3,
+    0.2, -0.4, -1.1, -1.6
+])
+
+
+# --------------------------------------------------
+# 2. Visualize the data
+# --------------------------------------------------
+
+plt.scatter(x, y)
+plt.xlabel("Drug dosage")
+plt.ylabel("Patient forgetfulness")
+plt.show()
+
+
+# --------------------------------------------------
+# 3. Initialize model parameters
+# --------------------------------------------------
+
+m = torch.tensor(0.9)
+b = torch.tensor(0.1)
+
+
+# Enable gradient tracking
+m.requires_grad_()
+b.requires_grad_()
+
+
+# --------------------------------------------------
+# 4. Define the regression model
+# --------------------------------------------------
+
+def regression(x, m, b):
+    return m * x + b
+
+
+# --------------------------------------------------
+# 5. Forward pass
+# --------------------------------------------------
+
+y_pred = regression(x, m, b)
+
+
+# --------------------------------------------------
+# 6. Plot the initial regression line
+# --------------------------------------------------
+
+plt.scatter(x, y)
+plt.plot(x, y_pred.detach())
+plt.xlabel("Drug dosage")
+plt.ylabel("Patient forgetfulness")
+plt.show()
+-------------------code----------------------
+
+**Note:** The lecture transcript does not provide the exact fixed `y` values used in the original notebook, so they should not be invented. Insert the notebook's fixed values in that section if you want to reproduce the exact plot.
+
+---
+
+# 18. Summary
+
+The main purpose of this lecture is to prepare for using **automatic differentiation in a machine-learning training loop**.
+
+The progression is:
+
+-------------------code----------------------
+y = mx + b
+     ↓
+Computational graph
+     ↓
+PyTorch tensors
+     ↓
+Initialize m and b
+     ↓
+requires_grad = True
+     ↓
+Forward pass
+     ↓
+Automatic differentiation
+     ↓
+Gradients
+     ↓
+Parameter updates
+     ↓
+Better-fitting line
+-------------------code----------------------
+
+The most important takeaway is:
+
+> **A machine-learning model can be represented as a computational graph, and PyTorch can track that graph so that automatic differentiation can later calculate the gradients needed to learn the model parameters.**
+
+This lecture sets up the next step: using those gradients to **actually fit the regression line with machine learning**.
