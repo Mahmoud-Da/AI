@@ -2874,3 +2874,1001 @@ The most important takeaway is:
 > **A machine-learning model can be represented as a computational graph, and PyTorch can track that graph so that automatic differentiation can later calculate the gradients needed to learn the model parameters.**
 
 This lecture sets up the next step: using those gradients to **actually fit the regression line with machine learning**.
+
+*** 77. Machine Learning with Autodiff ***
+# Automatic Differentiation and Linear Regression in PyTorch
+
+## 1. Big Picture
+
+This lecture brings together the main ideas from **Calculus 1: Limits and Derivatives** and applies them to a simple machine learning problem.
+
+The core idea is:
+
+> **Machine learning repeatedly adjusts model parameters so that the cost becomes smaller.**
+
+For the simplest possible regression model:
+
+$$
+\hat{y} = mx+b
+$$
+
+we have only two parameters:
+
+* `m` = slope
+* `b` = y-intercept
+* `x` = input
+* `y` = true target
+* `ŷ` = model prediction
+
+The four-step machine learning loop is:
+
+1. **Forward pass** → calculate `ŷ`
+2. **Calculate cost/loss** → compare `ŷ` with `y`
+3. **Automatic differentiation** → calculate gradients
+4. **Update parameters** → reduce the cost
+
+Then we repeat these steps many times.
+
+---
+
+# 2. Step 1 — Forward Pass
+
+The first step is to send our input through the model.
+
+Our model is:
+
+-------------------code----------------------
+y_hat = m * x + b
+-------------------code----------------------
+
+For example:
+
+-------------------code----------------------
+m = 0.9
+b = 0.1
+
+y_hat = m * x + b
+-------------------code----------------------
+
+Here:
+
+* `x` comes from our dataset.
+* `m` and `b` are model parameters.
+* `y_hat` is the model's prediction.
+
+Initially, `m` and `b` are usually initialized with small values.
+
+### PyTorch
+
+-------------------code----------------------
+import torch
+
+m = torch.tensor(0.9, requires_grad=True)
+b = torch.tensor(0.1, requires_grad=True)
+
+def regression(x, m, b):
+    return m * x + b
+
+y_hat = regression(x, m, b)
+-------------------code----------------------
+
+At this point, we have completed the **forward pass**.
+
+---
+
+# 3. Why Do We Need a Cost Function?
+
+Our initial prediction will probably be bad.
+
+We need a way to answer:
+
+> "How wrong is our model?"
+
+This is the purpose of a **cost function**, also called a **loss function**.
+
+The lecture uses **Mean Squared Error (MSE)**.
+
+---
+
+# 4. Mean Squared Error
+
+First calculate the error:
+
+-------------------code----------------------
+error = y_hat - y
+-------------------code----------------------
+
+Then square it:
+
+-------------------code----------------------
+squared_error = error ** 2
+-------------------code----------------------
+
+Then calculate the mean:
+
+-------------------code----------------------
+cost = torch.mean(squared_error)
+-------------------code----------------------
+
+Mathematically:
+
+$$
+C = \frac{1}{n}\sum_{i=1}^{n}(\hat{y}_i-y_i)^2
+$$
+
+The important idea is that large errors receive disproportionately larger penalties because they are squared.
+
+For example:
+
+-------------------code----------------------
+error = 1  →  squared error = 1
+error = 2  →  squared error = 4
+error = 5  →  squared error = 25
+-------------------code----------------------
+
+Therefore, MSE strongly penalizes large prediction errors.
+
+---
+
+# 5. Implementing MSE Manually
+
+The lecture deliberately implements MSE instead of immediately using PyTorch's built-in function.
+
+-------------------code----------------------
+def mean_squared_error(y_hat, y):
+    error = y_hat - y
+    squared_error = error ** 2
+    sum_squared_error = torch.sum(squared_error)
+    cost = sum_squared_error / len(y)
+
+    return cost
+-------------------code----------------------
+
+Then:
+
+-------------------code----------------------
+cost = mean_squared_error(y_hat, y)
+
+print(cost)
+-------------------code----------------------
+
+This helps us understand what the loss function actually does.
+
+---
+
+# 6. Step 2 — Calculate Cost
+
+The complete first two steps are therefore:
+
+-------------------code----------------------
+y_hat = regression(x, m, b)
+
+cost = mean_squared_error(y_hat, y)
+
+print(cost)
+-------------------code----------------------
+
+Conceptually:
+
+-------------------code----------------------
+x ─────┐
+       │
+       ▼
+     m × x
+       │
+       ▼
+      + b
+       │
+       ▼
+      ŷ
+       │
+       ▼
+ compare with y
+       │
+       ▼
+     Cost
+-------------------code----------------------
+
+The lower the cost, the better our model fits the data.
+
+---
+
+# 7. Step 3 — Automatic Differentiation
+
+Now we need to determine:
+
+> How should we change `m` and `b` to reduce the cost?
+
+This is where **automatic differentiation** becomes important.
+
+We want:
+
+-------------------code----------------------
+dCost/dm
+dCost/db
+-------------------code----------------------
+
+These tell us how the cost changes when we change each parameter.
+
+Because `m` and `b` were created with:
+
+-------------------code----------------------
+requires_grad=True
+-------------------code----------------------
+
+PyTorch tracks the computational graph involving them.
+
+After calculating the cost, we can call:
+
+-------------------code----------------------
+cost.backward()
+-------------------code----------------------
+
+PyTorch then performs automatic differentiation backwards through the computational graph.
+
+-------------------code----------------------
+cost.backward()
+-------------------code----------------------
+
+Now we can inspect the gradients:
+
+-------------------code----------------------
+print(m.grad)
+print(b.grad)
+-------------------code----------------------
+
+---
+
+# 8. Understanding the Gradient
+
+Suppose we obtain:
+
+-------------------code----------------------
+dCost/dm = 36
+dCost/db = 6
+-------------------code----------------------
+
+Both gradients are positive.
+
+That tells us that increasing `m` or `b` would increase the cost.
+
+Therefore, to reduce the cost, we want to move them downward.
+
+The magnitude is also important.
+
+For example:
+
+-------------------code----------------------
+dCost/dm = 36
+dCost/db = 6
+-------------------code----------------------
+
+The cost is much more sensitive to `m` than to `b` at this particular point.
+
+This is why gradients are so important in machine learning.
+
+---
+
+# 9. The Chain Rule Behind Automatic Differentiation
+
+The reason this works is the **chain rule**.
+
+Our model is effectively a sequence of nested functions:
+
+-------------------code----------------------
+x, m, b
+   ↓
+regression function
+   ↓
+ŷ
+   ↓
+cost function
+   ↓
+C
+-------------------code----------------------
+
+So we have:
+
+$$
+\hat{y}=f(x,m,b)
+$$
+
+and:
+
+$$
+C=g(\hat{y},y)
+$$
+
+Therefore:
+
+$$
+C=g(f(x,m,b),y)
+$$
+
+The chain rule allows us to determine how the final cost depends on the model parameters.
+
+For a real machine learning model, there can be hundreds, thousands, or millions of operations.
+
+Automatic differentiation performs this process computationally.
+
+---
+
+# 10. Step 4 — Update the Parameters
+
+Once we know the gradients, we need to change `m` and `b`.
+
+This is the basic idea behind **gradient descent**.
+
+The lecture uses PyTorch's:
+
+-------------------code----------------------
+torch.optim.SGD
+-------------------code----------------------
+
+First create the optimizer:
+
+-------------------code----------------------
+optimizer = torch.optim.SGD(
+    [m, b],
+    lr=0.01
+)
+-------------------code----------------------
+
+Here:
+
+* `[m, b]` = parameters we want to optimize.
+* `lr=0.01` = learning rate.
+
+The learning rate controls how large each parameter update is.
+
+---
+
+# 11. Perform One Optimization Step
+
+After calculating the gradients:
+
+-------------------code----------------------
+cost.backward()
+-------------------code----------------------
+
+we ask the optimizer to update the parameters:
+
+-------------------code----------------------
+optimizer.step()
+-------------------code----------------------
+
+Conceptually:
+
+-------------------code----------------------
+Calculate gradient
+       ↓
+Determine direction
+       ↓
+Adjust m and b
+       ↓
+Hopefully reduce cost
+-------------------code----------------------
+
+After the update:
+
+-------------------code----------------------
+print(m)
+print(b)
+-------------------code----------------------
+
+The values should be different from their initial values.
+
+---
+
+# 12. Why Do We Need `zero_grad()`?
+
+When training repeatedly, PyTorch accumulates gradients by default.
+
+Therefore, before each new iteration, we should clear the previous gradients:
+
+-------------------code----------------------
+optimizer.zero_grad()
+-------------------code----------------------
+
+The standard training sequence is therefore:
+
+-------------------code----------------------
+optimizer.zero_grad()
+
+y_hat = regression(x, m, b)
+
+cost = mean_squared_error(y_hat, y)
+
+cost.backward()
+
+optimizer.step()
+-------------------code----------------------
+
+This is extremely important.
+
+Without:
+
+-------------------code----------------------
+optimizer.zero_grad()
+-------------------code----------------------
+
+the gradients from previous iterations would accumulate.
+
+---
+
+# 13. The Complete Four-Step Machine Learning Loop
+
+The lecture's entire process can now be expressed as:
+
+### Step 1 — Forward pass
+
+-------------------code----------------------
+y_hat = regression(x, m, b)
+-------------------code----------------------
+
+### Step 2 — Calculate cost
+
+-------------------code----------------------
+cost = mean_squared_error(y_hat, y)
+-------------------code----------------------
+
+### Step 3 — Automatic differentiation
+
+-------------------code----------------------
+cost.backward()
+-------------------code----------------------
+
+### Step 4 — Update parameters
+
+-------------------code----------------------
+optimizer.step()
+-------------------code----------------------
+
+And before the next iteration:
+
+-------------------code----------------------
+optimizer.zero_grad()
+-------------------code----------------------
+
+So the actual training loop becomes:
+
+-------------------code----------------------
+for epoch in range(1000):
+    optimizer.zero_grad()
+
+    y_hat = regression(x, m, b)
+
+    cost = mean_squared_error(y_hat, y)
+
+    cost.backward()
+
+    optimizer.step()
+-------------------code----------------------
+
+---
+
+# 14. What Is an Epoch?
+
+An **epoch** is one round of training over the available data.
+
+The lecture uses:
+
+-------------------code----------------------
+for epoch in range(1000):
+-------------------code----------------------
+
+This means the model goes through the training process 1000 times.
+
+The general pattern is:
+
+-------------------code----------------------
+Epoch 1
+    ↓
+Forward pass
+    ↓
+Cost
+    ↓
+Gradient
+    ↓
+Update parameters
+
+Epoch 2
+    ↓
+Forward pass
+    ↓
+Cost
+    ↓
+Gradient
+    ↓
+Update parameters
+
+...
+
+Epoch 1000
+-------------------code----------------------
+
+As training progresses:
+
+-------------------code----------------------
+Cost
+20
+ ↓
+8
+ ↓
+4
+ ↓
+2
+ ↓
+...
+ ↓
+0.195
+-------------------code----------------------
+
+The exact values depend on the data, initialization, and learning rate.
+
+---
+
+# 15. The Result
+
+After 1000 epochs, the lecture obtains approximately:
+
+-------------------code----------------------
+m ≈ -0.47
+b ≈ 1.75
+-------------------code----------------------
+
+So the learned line is approximately:
+
+$$
+\hat{y}=-0.47x+1.75
+$$
+
+The original data was generated using approximately:
+
+-------------------code----------------------
+m = -0.5
+b = 2
+-------------------code----------------------
+
+The model doesn't recover those values exactly because random noise was added to the data.
+
+This is an important machine learning concept:
+
+> The model is fitting the observed data, not necessarily recovering the exact parameters used to generate simulated data.
+
+---
+
+# 16. Why Doesn't the Model Get Exactly `-0.5` and `2`?
+
+The lecture deliberately added random noise to the generated data.
+
+Conceptually:
+
+$$
+y = -0.5x + 2 + \text{noise}
+$$
+
+Therefore, the points don't lie perfectly on the original line.
+
+With only eight observations, the best-fitting line won't necessarily be exactly:
+
+-------------------code----------------------
+m = -0.5
+b = 2
+-------------------code----------------------
+
+More data can produce better estimates of the underlying relationship.
+
+The lecture's main point is:
+
+> More sampled data can provide more accurate estimates of the underlying phenomenon.
+
+---
+
+# 17. Why Use This Approach Instead of Solving Algebraically?
+
+For this tiny problem, there are easier approaches.
+
+For example:
+
+* Guessing the parameters.
+* Linear algebra.
+* Moore-Penrose pseudoinverse.
+* Ordinary least squares.
+
+However, the machine learning approach has a major advantage.
+
+The same fundamental approach can scale from:
+
+-------------------code----------------------
+2 parameters
+-------------------code----------------------
+
+to:
+
+-------------------code----------------------
+millions/billions of parameters
+-------------------code----------------------
+
+This is why automatic differentiation and gradient-based optimization are fundamental to modern machine learning.
+
+---
+
+# 18. Computational Graph
+
+The regression model can be represented as a **Directed Acyclic Graph (DAG)**.
+
+For:
+
+$$
+y=mx+b
+$$
+
+the graph is conceptually:
+
+-------------------code----------------------
+       m ─────┐
+              │
+              ▼
+x ─────────> multiply ────┐
+                           │
+       b ──────────────────┤
+                           ▼
+                         addition
+                           │
+                           ▼
+                           y
+-------------------code----------------------
+
+The nodes represent:
+
+* input `x`
+* parameter `m`
+* multiplication
+* parameter `b`
+* addition
+* output `y`
+
+The edges represent tensors carrying values between operations.
+
+It is:
+
+* **Directed** because information flows in a direction.
+* **Acyclic** because there are no loops.
+* A **Graph** because nodes and edges represent computation.
+
+---
+
+# 19. Why Automatic Differentiation Is So Important
+
+The fundamental relationship is:
+
+-------------------code----------------------
+Data
+ ↓
+Forward pass
+ ↓
+Prediction ŷ
+ ↓
+Cost
+ ↓
+Automatic differentiation
+ ↓
+Gradients
+ ↓
+Parameter update
+ ↓
+Better prediction
+-------------------code----------------------
+
+This is essentially the foundation of training neural networks.
+
+Even though this example only has:
+
+-------------------code----------------------
+m
+b
+-------------------code----------------------
+
+the same concept can be applied to models containing millions or billions of parameters.
+
+---
+
+# 20. Important Best Practices
+
+### 20.1 Track gradients only when needed
+
+For parameters:
+
+-------------------code----------------------
+m = torch.tensor(0.9, requires_grad=True)
+b = torch.tensor(0.1, requires_grad=True)
+-------------------code----------------------
+
+`requires_grad=True` tells PyTorch to track operations involving these tensors.
+
+---
+
+### 20.2 Always clear gradients during iterative training
+
+Use:
+
+-------------------code----------------------
+optimizer.zero_grad()
+-------------------code----------------------
+
+before calculating the next gradient.
+
+---
+
+### 20.3 Keep the learning rate appropriate
+
+Example:
+
+-------------------code----------------------
+optimizer = torch.optim.SGD([m, b], lr=0.01)
+-------------------code----------------------
+
+A learning rate that is too large can make training unstable.
+
+A learning rate that is too small can make training very slow.
+
+---
+
+### 20.4 Start parameters near zero for this simple example
+
+The lecture uses:
+
+-------------------code----------------------
+m = 0.9
+b = 0.1
+-------------------code----------------------
+
+These are deliberately simple near-zero starting values.
+
+For larger neural networks, parameter initialization becomes considerably more sophisticated.
+
+---
+
+### 20.5 Don't expect noisy data to recover the original parameters exactly
+
+If the data contains noise:
+
+-------------------code----------------------
+true relationship + noise
+-------------------code----------------------
+
+the learned parameters represent a best fit to the observed data.
+
+---
+
+# 21. Exercise: Automatic Differentiation
+
+The lecture proposes calculating:
+
+$$
+y=x^2+2x+2
+$$
+
+at:
+
+$$
+x=2
+$$
+
+using PyTorch or TensorFlow.
+
+A PyTorch solution is:
+
+-------------------code----------------------
+import torch
+
+x = torch.tensor(2.0, requires_grad=True)
+
+y = x**2 + 2*x + 2
+
+y.backward()
+
+print(x.grad)
+-------------------code----------------------
+
+The important pattern is:
+
+-------------------code----------------------
+x = torch.tensor(..., requires_grad=True)
+
+y = ...
+
+y.backward()
+
+print(x.grad)
+-------------------code----------------------
+
+---
+
+# 22. Final Code — Complete Regression Example
+
+Below is the complete simplified PyTorch implementation corresponding to the lecture's machine-learning process.
+
+-------------------code----------------------
+import torch
+import matplotlib.pyplot as plt
+
+
+# ============================================================
+# 1. Data
+# ============================================================
+
+x = torch.tensor([
+    0.0, 1.0, 2.0, 3.0,
+    4.0, 5.0, 6.0, 7.0
+])
+
+# Example noisy data generated around:
+# y = -0.5x + 2
+
+y = torch.tensor([
+    1.8,
+    1.6,
+    1.1,
+    0.4,
+    0.1,
+    -0.5,
+    -1.0,
+    -1.4
+])
+
+
+# ============================================================
+# 2. Initialize model parameters
+# ============================================================
+
+m = torch.tensor(0.9, requires_grad=True)
+b = torch.tensor(0.1, requires_grad=True)
+
+
+# ============================================================
+# 3. Regression model
+# ============================================================
+
+def regression(x, m, b):
+    return m * x + b
+
+
+# ============================================================
+# 4. Mean Squared Error
+# ============================================================
+
+def mean_squared_error(y_hat, y):
+    error = y_hat - y
+    squared_error = error ** 2
+    sum_squared_error = torch.sum(squared_error)
+    cost = sum_squared_error / len(y)
+
+    return cost
+
+
+# ============================================================
+# 5. Optimizer
+# ============================================================
+
+optimizer = torch.optim.SGD(
+    [m, b],
+    lr=0.01
+)
+
+
+# ============================================================
+# 6. Training loop
+# ============================================================
+
+epochs = 1000
+
+for epoch in range(epochs):
+
+    # Clear previous gradients
+    optimizer.zero_grad()
+
+    # Step 1: Forward pass
+    y_hat = regression(x, m, b)
+
+    # Step 2: Calculate cost
+    cost = mean_squared_error(y_hat, y)
+
+    # Step 3: Automatic differentiation
+    cost.backward()
+
+    # Step 4: Update parameters
+    optimizer.step()
+
+    if epoch % 100 == 0:
+        print(
+            f"Epoch: {epoch}, "
+            f"Cost: {cost.item():.4f}, "
+            f"m: {m.item():.4f}, "
+            f"b: {b.item():.4f}"
+        )
+
+
+# ============================================================
+# 7. Final parameters
+# ============================================================
+
+print("\nFinal parameters:")
+print(f"Slope (m): {m.item():.4f}")
+print(f"Y-intercept (b): {b.item():.4f}")
+
+
+# ============================================================
+# 8. Final predictions
+# ============================================================
+
+y_hat = regression(x, m, b)
+
+print("\nPredictions:")
+print(y_hat)
+
+
+# ============================================================
+# 9. Plot results
+# ============================================================
+
+plt.scatter(x.detach().numpy(), y.detach().numpy())
+
+plt.plot(
+    x.detach().numpy(),
+    y_hat.detach().numpy()
+)
+
+plt.xlabel("X")
+plt.ylabel("Y")
+plt.title("Linear Regression with PyTorch Autodiff")
+
+plt.show()
+-------------------code----------------------
+
+## 23. Final Summary
+
+The entire lecture can be reduced to one idea:
+
+-------------------code----------------------
+1. Initialize parameters
+        ↓
+2. Forward pass
+        ↓
+3. Calculate cost
+        ↓
+4. Autodiff → calculate gradients
+        ↓
+5. Gradient descent → update parameters
+        ↓
+6. Repeat
+        ↓
+7. Cost decreases
+        ↓
+8. Model fits the data
+-------------------code----------------------
+
+For the simple model:
+
+$$
+\hat y=mx+b
+$$
+
+PyTorch automatically calculates how the cost changes with respect to `m` and `b`.
+
+The key code is:
+
+-------------------code----------------------
+optimizer.zero_grad()
+
+y_hat = regression(x, m, b)
+
+cost = mean_squared_error(y_hat, y)
+
+cost.backward()
+
+optimizer.step()
+-------------------code----------------------
+
+This small loop is the conceptual foundation for much larger machine-learning systems. The next major mathematical step is **partial derivatives**, because real machine-learning models have many inputs and parameters rather than just the two parameters `m` and `b`.
