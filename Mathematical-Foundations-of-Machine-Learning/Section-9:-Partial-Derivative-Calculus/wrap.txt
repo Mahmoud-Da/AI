@@ -1,0 +1,1277 @@
+*** 78. Segment Intro ***
+# Calculus 2 — Partial Derivatives and Integrals
+
+## Segment 1: Review of Introductory Calculus
+
+This lecture begins **Subject 4** of the Machine Learning Foundation series. Its main purpose is to review the calculus from Subject 3 before moving into **multivariate calculus**, especially **partial derivatives and gradients**.
+
+---
+
+# 1. Where We Are in the Course
+
+The Machine Learning Foundation series has **8 subjects**.
+
+We are now starting:
+
+**Subject 4: Calculus 2 — Partial Derivatives and Integrals**
+
+The previous subject was:
+
+**Subject 3: Calculus 1 — Limits and Derivatives**
+
+The progression is:
+
+-------------------code----------------------
+Calculus 1
+    ↓
+Limits
+    ↓
+Derivatives
+    ↓
+Automatic Differentiation
+    ↓
+Calculus 2
+    ↓
+Partial Derivatives
+    ↓
+Gradients
+    ↓
+Integrals
+-------------------code----------------------
+
+Calculus 2 builds heavily on Calculus 1.
+
+---
+
+# 2. What Will Be Covered in Calculus 2?
+
+The subject has three major segments.
+
+### Segment 1 — Review
+
+Review the important concepts from Calculus 1:
+
+* Limits
+* Derivatives
+* Delta method
+* Derivative rules
+* Chain rule
+* Automatic differentiation
+* Machine learning's four-step process
+
+### Segment 2 — Machine Learning Gradients
+
+This is the major focus.
+
+We will learn:
+
+* Multivariate functions
+* Partial derivatives
+* Partial derivative notation
+* Partial derivative chain rule
+* Gradients
+* Quadratic cost gradients
+* Gradient descent
+* Backpropagation
+* Higher-order partial derivatives
+
+### Segment 3 — Integrals
+
+We will learn:
+
+* Integral calculus
+* Areas under curves
+* How integration relates to differentiation
+* Applications in machine learning
+
+---
+
+# 3. What Is Calculus?
+
+Calculus is the mathematical study of **continuous change**.
+
+It has two major branches:
+
+-------------------code----------------------
+Calculus
+├── Differential Calculus
+│   └── Rates of change / slopes
+│
+└── Integral Calculus
+    └── Areas under curves
+-------------------code----------------------
+
+---
+
+# 4. Differential Calculus
+
+Differential calculus studies **rates of change**.
+
+For example, imagine a car traveling a distance over time.
+
+If we have:
+
+-------------------code----------------------
+Distance → D
+Time     → t
+-------------------code----------------------
+
+we can calculate the derivative:
+
+-------------------code----------------------
+dD/dt
+-------------------code----------------------
+
+This tells us the **speed** of the vehicle.
+
+So:
+
+-------------------code----------------------
+Distance
+   ↓ derivative
+Speed
+-------------------code----------------------
+
+In simple terms:
+
+> Differential calculus allows us to calculate slopes and rates of change.
+
+---
+
+# 5. Integral Calculus
+
+Integral calculus deals with **areas under curves**.
+
+It can be viewed as working in the opposite direction from differentiation.
+
+For example:
+
+-------------------code----------------------
+Distance → derivative → Speed
+Speed    → integral   → Distance
+-------------------code----------------------
+
+If we have a speed-over-time graph, the area under the curve represents the total distance traveled.
+
+So:
+
+> Integral calculus allows us to calculate accumulated quantities, such as area under a curve.
+
+The lecture postpones the detailed discussion of integrals until **Segment 3**.
+
+---
+
+# 6. From Limits to Derivatives
+
+In Calculus 1, we first learned about **limits**.
+
+Limits allowed us to develop the **Delta method** for calculating derivatives.
+
+The basic idea is:
+
+1. Choose the point where we want the slope.
+2. Choose another point nearby.
+3. Calculate the slope between the two points.
+4. Move the second point increasingly close to the first.
+5. The limit gives us the slope at the exact point.
+
+Conceptually:
+
+-------------------code----------------------
+Point A ← Point B
+          ↓
+      move closer
+          ↓
+     infinitely close
+          ↓
+    slope at Point A
+-------------------code----------------------
+
+This is the foundation of derivative calculus.
+
+---
+
+# 7. Derivative Notation
+
+Suppose:
+
+-------------------code----------------------
+y = f(x)
+-------------------code----------------------
+
+There are several ways to represent the first derivative:
+
+-------------------code----------------------
+dy/dx
+f'(x)
+d/dx f(x)
+-------------------code----------------------
+
+They all represent the derivative of `y` with respect to `x`.
+
+The derivative tells us the **rate of change of y as x changes**.
+
+---
+
+# 8. Higher-Order Derivatives
+
+We can differentiate more than once.
+
+### First derivative
+
+-------------------code----------------------
+dy/dx
+-------------------code----------------------
+
+### Second derivative
+
+-------------------code----------------------
+d²y/dx²
+-------------------code----------------------
+
+### Third derivative
+
+-------------------code----------------------
+d³y/dx³
+-------------------code----------------------
+
+For example, using the vehicle example:
+
+-------------------code----------------------
+Distance
+   ↓ first derivative
+Speed
+   ↓ second derivative
+Acceleration
+-------------------code----------------------
+
+This idea becomes useful later when studying higher-order derivatives.
+
+---
+
+# 9. Important Derivative Rules
+
+Before learning partial derivatives, we need to remember several rules from Calculus 1.
+
+The important ones are:
+
+1. Constant rule
+2. Power rule
+3. Constant multiple rule
+4. Sum rule
+5. Chain rule
+6. Power rule on a function chain
+
+---
+
+# 10. Constant Rule
+
+If a function is a constant:
+
+-------------------code----------------------
+y = 5
+-------------------code----------------------
+
+its derivative is:
+
+-------------------code----------------------
+dy/dx = 0
+-------------------code----------------------
+
+Because the constant doesn't change when `x` changes.
+
+---
+
+# 11. Power Rule
+
+For:
+
+-------------------code----------------------
+y = x^n
+-------------------code----------------------
+
+the power rule gives:
+
+-------------------code----------------------
+dy/dx = n x^(n-1)
+-------------------code----------------------
+
+For example:
+
+-------------------code----------------------
+y = x²
+-------------------code----------------------
+
+becomes:
+
+-------------------code----------------------
+dy/dx = 2x
+-------------------code----------------------
+
+---
+
+# 12. Constant Multiple Rule
+
+If a constant multiplies a function:
+
+-------------------code----------------------
+y = c f(x)
+-------------------code----------------------
+
+then:
+
+-------------------code----------------------
+dy/dx = c f'(x)
+-------------------code----------------------
+
+Example:
+
+-------------------code----------------------
+y = 3x²
+-------------------code----------------------
+
+Differentiate:
+
+-------------------code----------------------
+dy/dx = 3(2x)
+-------------------code----------------------
+
+Therefore:
+
+-------------------code----------------------
+dy/dx = 6x
+-------------------code----------------------
+
+---
+
+# 13. Sum Rule
+
+If:
+
+-------------------code----------------------
+y = f(x) + g(x)
+-------------------code----------------------
+
+then differentiate each term separately:
+
+-------------------code----------------------
+dy/dx = f'(x) + g'(x)
+-------------------code----------------------
+
+Example:
+
+-------------------code----------------------
+y = x² + 3x
+-------------------code----------------------
+
+becomes:
+
+-------------------code----------------------
+dy/dx = 2x + 3
+-------------------code----------------------
+
+---
+
+# 14. Chain Rule
+
+The **chain rule** is especially important for machine learning.
+
+It allows us to differentiate **nested functions**.
+
+Suppose:
+
+-------------------code----------------------
+x → u → y
+-------------------code----------------------
+
+where:
+
+-------------------code----------------------
+u = f(x)
+y = g(u)
+-------------------code----------------------
+
+Then:
+
+-------------------code----------------------
+dy/dx = dy/du × du/dx
+-------------------code----------------------
+
+The important idea is:
+
+> We can break a complicated nested function into smaller functions and multiply their derivatives together.
+
+This becomes extremely important when machine learning models contain many nested operations.
+
+---
+
+# 15. Power Rule on a Function Chain
+
+Another useful rule from Calculus 1 combines the power rule and chain rule.
+
+For:
+
+-------------------code----------------------
+y = u^n
+-------------------code----------------------
+
+where `u` is itself a function of `x`:
+
+-------------------code----------------------
+dy/dx = n u^(n-1) × du/dx
+-------------------code----------------------
+
+Example:
+
+-------------------code----------------------
+y = (3x + 1)²
+-------------------code----------------------
+
+Let:
+
+-------------------code----------------------
+u = 3x + 1
+-------------------code----------------------
+
+Then:
+
+-------------------code----------------------
+n = 2
+du/dx = 3
+-------------------code----------------------
+
+Therefore:
+
+-------------------code----------------------
+dy/dx = 2(3x + 1)¹ × 3
+-------------------code----------------------
+
+which becomes:
+
+-------------------code----------------------
+dy/dx = 6(3x + 1)
+-------------------code----------------------
+
+and finally:
+
+-------------------code----------------------
+dy/dx = 18x + 6
+-------------------code----------------------
+
+---
+
+# 16. Automatic Differentiation Review
+
+In Calculus 1, we learned **automatic differentiation**, or **Autodiff**.
+
+It can also be called:
+
+* Autodiff
+* Autograd
+* Computational differentiation
+* Algorithmic differentiation
+* Reverse-mode differentiation
+
+The important idea is that automatic differentiation uses the **chain rule computationally**.
+
+Instead of manually differentiating a huge function chain, a library such as PyTorch can calculate the derivatives automatically.
+
+---
+
+# 17. Why Automatic Differentiation Is Useful
+
+Machine learning models can contain enormous numbers of operations.
+
+For example:
+
+-------------------code----------------------
+x
+ ↓
+operation 1
+ ↓
+operation 2
+ ↓
+operation 3
+ ↓
+...
+ ↓
+operation 1000
+ ↓
+y
+-------------------code----------------------
+
+Doing all of the differentiation manually would become impractical.
+
+Automatic differentiation allows us to calculate gradients through these computational graphs.
+
+This is one of the foundations of modern machine learning.
+
+---
+
+# 18. Machine Learning's Four-Step Process
+
+The previous subject introduced a very important four-step machine learning process.
+
+For our simple regression model:
+
+-------------------code----------------------
+y = Mx + B
+-------------------code----------------------
+
+we have:
+
+* `X` = input
+* `M` = slope/model parameter
+* `B` = y-intercept/model parameter
+* `Y` = true output
+* `Ŷ` = predicted output
+* `C` = cost
+
+---
+
+## Step 1 — Forward Pass
+
+We put our input through the model:
+
+-------------------code----------------------
+X → regression model → Ŷ
+-------------------code----------------------
+
+For a line:
+
+-------------------code----------------------
+Ŷ = MX + B
+-------------------code----------------------
+
+`Ŷ` means our model's **prediction**.
+
+---
+
+# 19. Step 2 — Calculate Cost
+
+We compare the prediction with the true value:
+
+-------------------code----------------------
+Ŷ vs Y
+-------------------code----------------------
+
+The difference is converted into a cost.
+
+A common example is **Mean Squared Error (MSE)**:
+
+-------------------code----------------------
+MSE = average((Ŷ - Y)²)
+-------------------code----------------------
+
+The cost tells us how wrong our model currently is.
+
+---
+
+# 20. Step 3 — Calculate the Gradient
+
+Now we want to know:
+
+> How does changing each model parameter affect the cost?
+
+For our model, the parameters are:
+
+-------------------code----------------------
+M
+B
+-------------------code----------------------
+
+So we want:
+
+-------------------code----------------------
+∂C/∂M
+∂C/∂B
+-------------------code----------------------
+
+These are **partial derivatives**.
+
+Together, they form the **gradient**.
+
+Conceptually:
+
+-------------------code----------------------
+Cost
+ ↓
+How does cost change if M changes?
+How does cost change if B changes?
+ ↓
+Gradient
+-------------------code----------------------
+
+This is the central topic of this Calculus 2 subject.
+
+---
+
+# 21. Step 4 — Adjust the Parameters
+
+Once we know the gradient, we can adjust the parameters in a direction that reduces cost.
+
+Conceptually:
+
+-------------------code----------------------
+Calculate gradient
+       ↓
+Determine direction
+       ↓
+Adjust M and B
+       ↓
+Cost decreases
+-------------------code----------------------
+
+This process is called **gradient descent**.
+
+The lecture notes that the detailed mathematics of gradient descent will be covered much more deeply in the final subject on **optimization**.
+
+---
+
+# 22. Repeat the Four Steps
+
+Machine learning doesn't normally perform this process just once.
+
+Instead:
+
+-------------------code----------------------
+1. Forward pass
+       ↓
+2. Calculate cost
+       ↓
+3. Calculate gradient
+       ↓
+4. Adjust parameters
+       ↓
+      repeat
+       ↓
+1. Forward pass
+       ↓
+2. Calculate cost
+       ↓
+...
+-------------------code----------------------
+
+Over many iterations, the model parameters can move toward values that produce a lower cost.
+
+---
+
+# 23. Review of the PyTorch Regression Example
+
+The previous Calculus 1 notebook used a simple regression problem.
+
+The model was:
+
+-------------------code----------------------
+Y = MX + B
+-------------------code----------------------
+
+The input represented a fictional drug dosage.
+
+The output represented a fictional forgetfulness score.
+
+The data showed a negative relationship:
+
+-------------------code----------------------
+Drug dosage ↑
+      ↓
+Forgetfulness ↓
+-------------------code----------------------
+
+The data contained noise, so the relationship wasn't perfectly linear.
+
+---
+
+# 24. Initialize the Model Parameters
+
+The model began with approximate near-zero parameter values:
+
+-------------------code----------------------
+m = torch.tensor(0.9, requires_grad=True)
+b = torch.tensor(0.1, requires_grad=True)
+-------------------code----------------------
+
+The important part is:
+
+-------------------code----------------------
+requires_grad=True
+-------------------code----------------------
+
+This tells PyTorch to track operations involving these tensors so that gradients can later be calculated.
+
+---
+
+# 25. Define the Regression Function
+
+The regression model can be represented directly in Python:
+
+-------------------code----------------------
+def regression(x, m, b):
+    return m * x + b
+-------------------code----------------------
+
+This corresponds exactly to:
+
+-------------------code----------------------
+y = mx + b
+-------------------code----------------------
+
+The function connects our:
+
+-------------------code----------------------
+x
+m
+b
+-------------------code----------------------
+
+to the prediction:
+
+-------------------code----------------------
+ŷ
+-------------------code----------------------
+
+---
+
+# 26. Forward Pass in Code
+
+We can calculate predictions with:
+
+-------------------code----------------------
+y_hat = regression(x, m, b)
+-------------------code----------------------
+
+This is Step 1:
+
+-------------------code----------------------
+X + M + B
+     ↓
+regression()
+     ↓
+Y_hat
+-------------------code----------------------
+
+---
+
+# 27. Mean Squared Error
+
+The cost function used in the example is Mean Squared Error.
+
+The basic process is:
+
+-------------------code----------------------
+error = ŷ - y
+-------------------code----------------------
+
+Then:
+
+-------------------code----------------------
+squared_error = error²
+-------------------code----------------------
+
+Then:
+
+-------------------code----------------------
+cost = mean(squared_error)
+-------------------code----------------------
+
+In mathematical form:
+
+-------------------code----------------------
+MSE = 1/n Σ(ŷᵢ - yᵢ)²
+-------------------code----------------------
+
+---
+
+# 28. MSE in PyTorch
+
+A simple implementation is:
+
+-------------------code----------------------
+def mse(y_hat, y):
+    error = y_hat - y
+    squared_error = error ** 2
+    return squared_error.mean()
+-------------------code----------------------
+
+This performs:
+
+-------------------code----------------------
+prediction
+    ↓
+difference from true value
+    ↓
+square
+    ↓
+average
+    ↓
+cost
+-------------------code----------------------
+
+---
+
+# 29. Automatic Differentiation
+
+After calculating cost:
+
+-------------------code----------------------
+cost = mse(y_hat, y)
+-------------------code----------------------
+
+we can ask PyTorch to calculate the gradients:
+
+-------------------code----------------------
+cost.backward()
+-------------------code----------------------
+
+PyTorch works backward through the computational graph.
+
+Then we can inspect:
+
+-------------------code----------------------
+m.grad
+b.grad
+-------------------code----------------------
+
+These represent:
+
+-------------------code----------------------
+∂C/∂M
+∂C/∂B
+-------------------code----------------------
+
+---
+
+# 30. Gradient Descent
+
+The optimizer can then use these gradients to update the parameters.
+
+For example:
+
+-------------------code----------------------
+optimizer = torch.optim.SGD([m, b], lr=0.01)
+-------------------code----------------------
+
+Then:
+
+-------------------code----------------------
+optimizer.step()
+-------------------code----------------------
+
+This adjusts `m` and `b` according to their gradients.
+
+---
+
+# 31. Why `zero_grad()` Is Important
+
+Before another training iteration, we need:
+
+-------------------code----------------------
+optimizer.zero_grad()
+-------------------code----------------------
+
+Otherwise, PyTorch accumulates gradients from previous iterations.
+
+The normal training pattern is therefore:
+
+-------------------code----------------------
+optimizer.zero_grad()
+
+y_hat = regression(x, m, b)
+cost = mse(y_hat, y)
+
+cost.backward()
+
+optimizer.step()
+-------------------code----------------------
+
+This is one of the most important PyTorch training patterns to remember.
+
+---
+
+# 32. The Complete Machine Learning Loop
+
+The complete process becomes:
+
+-------------------code----------------------
+for each epoch:
+
+    1. Zero old gradients
+
+    2. Forward pass
+       X → model → Y_hat
+
+    3. Calculate cost
+       Y_hat vs Y
+
+    4. Backward pass
+       Cost → gradients
+
+    5. Update parameters
+       M, B → new values
+-------------------code----------------------
+
+In code:
+
+-------------------code----------------------
+for epoch in range(1000):
+
+    optimizer.zero_grad()
+
+    y_hat = regression(x, m, b)
+
+    cost = mse(y_hat, y)
+
+    cost.backward()
+
+    optimizer.step()
+-------------------code----------------------
+
+This is the practical foundation for training much larger machine learning models.
+
+---
+
+# 33. The Main New Idea in Calculus 2
+
+In Calculus 1 we had essentially:
+
+-------------------code----------------------
+one input
+   ↓
+one derivative
+-------------------code----------------------
+
+For example:
+
+-------------------code----------------------
+y = f(x)
+
+dy/dx
+-------------------code----------------------
+
+Calculus 2 expands this to multiple inputs:
+
+-------------------code----------------------
+       x₁
+        \
+       x₂ → Function → y
+        /
+       x₃
+-------------------code----------------------
+
+Now we can ask how `y` changes with respect to each individual input:
+
+-------------------code----------------------
+∂y/∂x₁
+∂y/∂x₂
+∂y/∂x₃
+-------------------code----------------------
+
+These are **partial derivatives**.
+
+---
+
+# 34. Partial Derivatives and Machine Learning
+
+This is extremely important because machine learning models typically have many parameters.
+
+For example:
+
+-------------------code----------------------
+Model
+├── parameter 1
+├── parameter 2
+├── parameter 3
+├── parameter 4
+├── ...
+└── parameter N
+-------------------code----------------------
+
+We need to understand how the cost changes with respect to each parameter:
+
+-------------------code----------------------
+∂C/∂parameter₁
+∂C/∂parameter₂
+∂C/∂parameter₃
+...
+∂C/∂parameterₙ
+-------------------code----------------------
+
+These values collectively form the **gradient**.
+
+This is the mathematical foundation behind the parameter-update step of machine learning.
+
+---
+
+# 35. Connection to Backpropagation
+
+The lecture also previews **backpropagation**.
+
+Backpropagation is closely connected to:
+
+* Partial derivatives
+* Gradients
+* Chain rule
+* Automatic differentiation
+* Gradient descent
+
+Conceptually:
+
+-------------------code----------------------
+Prediction
+    ↓
+Cost
+    ↓
+Backpropagation
+    ↓
+Gradients
+    ↓
+Parameter updates
+-------------------code----------------------
+
+The chain rule is especially important because neural networks contain many nested functions.
+
+---
+
+# 36. Important Terminology
+
+| Term                  | Meaning                                                                      |
+| --------------------- | ---------------------------------------------------------------------------- |
+| Differential calculus | Study of rates of change and slopes                                          |
+| Integral calculus     | Study of areas under curves                                                  |
+| Derivative            | Rate of change / slope                                                       |
+| Partial derivative    | Derivative with respect to one variable while considering multiple variables |
+| Gradient              | Collection of partial derivatives                                            |
+| Cost                  | Measure of how wrong a model's prediction is                                 |
+| Loss                  | Another term for cost                                                        |
+| Forward pass          | Passing inputs through the model to produce predictions                      |
+| Backward pass         | Calculating gradients backward through the computational graph               |
+| Gradient descent      | Updating parameters using gradients                                          |
+| Autodiff              | Automatic calculation of derivatives                                         |
+| Backpropagation       | Gradient calculation through a neural network/computational graph            |
+
+---
+
+# 37. Important Best Practices
+
+### 1. Understand the mathematics behind Autodiff
+
+Don't treat:
+
+-------------------code----------------------
+cost.backward()
+-------------------code----------------------
+
+as magic.
+
+The purpose of Calculus 2 is to understand the mathematics that makes this operation possible.
+
+---
+
+### 2. Remember the four-step ML process
+
+Keep this mental model:
+
+-------------------code----------------------
+Forward pass
+     ↓
+Cost
+     ↓
+Gradient
+     ↓
+Parameter update
+     ↓
+Repeat
+-------------------code----------------------
+
+---
+
+### 3. Remember `zero_grad()`
+
+When using PyTorch optimizers:
+
+-------------------code----------------------
+optimizer.zero_grad()
+-------------------code----------------------
+
+should normally happen before calculating the next gradients.
+
+---
+
+### 4. Distinguish prediction from truth
+
+Use:
+
+-------------------code----------------------
+Y_hat = prediction
+Y     = true value
+-------------------code----------------------
+
+Don't confuse them.
+
+---
+
+### 5. Know what the gradient represents
+
+The gradient tells us how the cost changes with respect to the model parameters.
+
+For two parameters:
+
+-------------------code----------------------
+gradient =
+[
+    ∂C/∂M,
+    ∂C/∂B
+]
+-------------------code----------------------
+
+---
+
+# 38. Summary
+
+Calculus 2 extends the single-variable calculus from Calculus 1 into **multivariate calculus**.
+
+The most important ideas introduced in this lecture are:
+
+1. **Differential calculus** studies rates of change and slopes.
+2. **Integral calculus** studies areas under curves.
+3. The **Delta method** uses limits to calculate derivatives.
+4. Important derivative rules include the power, constant multiple, sum, and chain rules.
+5. **Automatic differentiation** applies these ideas computationally.
+6. Machine learning can be summarized as:
+
+   -------------------code----------------------
+   Forward pass
+   → Cost
+   → Gradient
+   → Parameter update
+   → Repeat
+   -------------------code----------------------
+7. Calculus 2 focuses on **partial derivatives** because machine learning models have multiple parameters.
+8. A collection of partial derivatives forms a **gradient**.
+9. Gradients are central to **gradient descent and backpropagation**.
+10. The detailed mathematics of this process is the main focus of the next segment.
+
+The key transition is:
+
+-------------------code----------------------
+Calculus 1
+Single-variable derivative
+        ↓
+Calculus 2
+Partial derivatives
+        ↓
+Gradient
+        ↓
+Machine learning
+        ↓
+Gradient descent / backpropagation
+-------------------code----------------------
+
+---
+
+# 39. Full Final Code
+
+Below is a clean minimal PyTorch version that combines the main concepts from the lecture: model parameters, forward pass, MSE cost, automatic differentiation, and gradient descent.
+
+-------------------code----------------------
+import torch
+
+
+# --------------------------------------------------
+# 1. Input data
+# --------------------------------------------------
+
+x = torch.tensor(
+    [0., 1., 2., 3., 4., 5., 6., 7.]
+)
+
+y = torch.tensor(
+    [2.0, 1.6, 1.0, 0.7, 0.1, -0.4, -0.9, -1.5]
+)
+
+
+# --------------------------------------------------
+# 2. Initialize model parameters
+# --------------------------------------------------
+
+m = torch.tensor(
+    0.9,
+    requires_grad=True
+)
+
+b = torch.tensor(
+    0.1,
+    requires_grad=True
+)
+
+
+# --------------------------------------------------
+# 3. Regression model
+# --------------------------------------------------
+
+def regression(x, m, b):
+    return m * x + b
+
+
+# --------------------------------------------------
+# 4. Mean Squared Error
+# --------------------------------------------------
+
+def mse(y_hat, y):
+    error = y_hat - y
+    squared_error = error ** 2
+    return squared_error.mean()
+
+
+# --------------------------------------------------
+# 5. Optimizer
+# --------------------------------------------------
+
+optimizer = torch.optim.SGD(
+    [m, b],
+    lr=0.01
+)
+
+
+# --------------------------------------------------
+# 6. Machine learning loop
+# --------------------------------------------------
+
+for epoch in range(1000):
+
+    # Step 0: Clear previous gradients
+    optimizer.zero_grad()
+
+    # Step 1: Forward pass
+    y_hat = regression(x, m, b)
+
+    # Step 2: Calculate cost
+    cost = mse(y_hat, y)
+
+    # Step 3: Automatic differentiation
+    cost.backward()
+
+    # Step 4: Update parameters
+    optimizer.step()
+
+    # Display progress
+    if epoch % 100 == 0:
+        print(
+            f"Epoch: {epoch}, "
+            f"Cost: {cost.item():.4f}, "
+            f"m: {m.item():.4f}, "
+            f"b: {b.item():.4f}"
+        )
+
+
+# --------------------------------------------------
+# 7. Final results
+# --------------------------------------------------
+
+print("\nFinal parameters:")
+print(f"m = {m.item():.4f}")
+print(f"b = {b.item():.4f}")
+
+print("\nFinal predictions:")
+print(regression(x, m, b))
+-------------------code----------------------
