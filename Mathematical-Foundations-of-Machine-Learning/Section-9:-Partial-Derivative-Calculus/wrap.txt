@@ -1275,3 +1275,1046 @@ print(f"b = {b.item():.4f}")
 print("\nFinal predictions:")
 print(regression(x, m, b))
 -------------------code----------------------
+
+*** 79. What Partial Derivatives Are ***
+# Calculus 2 — Partial Derivatives of Multivariate Functions
+
+## 1. Why Do We Need Partial Derivatives?
+
+In Calculus 1, we mainly worked with **univariate functions**, where one variable determines the output.
+
+For example:
+
+-------------------code----------------------
+y=x^2
+-------------------code----------------------
+
+There is only one input variable, \(x\), so we can calculate:
+
+-------------------code----------------------
+\frac{dy}{dx}
+-------------------code----------------------
+
+However, machine-learning models commonly contain **multiple variables**.
+
+A simple linear regression model is:
+
+-------------------code----------------------
+y=mx+b
+-------------------code----------------------
+
+Here, \(y\) depends on **two parameters**:
+
+* \(m\): slope
+* \(b\): intercept
+
+Therefore, when asking how \(y\) changes, we need to consider each variable separately:
+
+-------------------code----------------------
+\frac{\partial y}{\partial m}
+-------------------code----------------------
+
+and
+
+-------------------code----------------------
+\frac{\partial y}{\partial b}
+-------------------code----------------------
+
+These are called **partial derivatives**.
+
+### Key idea
+
+> A partial derivative tells us how the output changes with respect to **one variable while treating the other variables as constants**.
+
+This is extremely important in machine learning because models often have many parameters.
+
+---
+
+# 2. Multivariate Functions
+
+A **multivariate function** is a function with multiple input variables.
+
+The lecture uses:
+
+-------------------code----------------------
+z=x^2-y^2
+-------------------code----------------------
+
+Here:
+
+* \(x\) influences \(z\)
+* \(y\) influences \(z\)
+* \(z\) is the output
+
+So:
+
+-------------------code----------------------
+z=f(x,y)
+-------------------code----------------------
+
+This creates a 3D surface rather than a simple 2D curve.
+
+---
+
+# 3. Visualizing the Function
+
+The function
+
+-------------------code----------------------
+z=x^2-y^2
+-------------------code----------------------
+
+creates a shape called a **saddle surface**.
+
+It behaves differently depending on which direction we look at.
+
+### Along the X direction
+
+If we hold \(y\) constant:
+
+-------------------code----------------------
+z=x^2-\text{constant}
+-------------------code----------------------
+
+This produces an upward-opening parabola.
+
+### Along the Y direction
+
+If we hold \(x\) constant:
+
+-------------------code----------------------
+z=\text{constant}-y^2
+-------------------code----------------------
+
+This produces a downward-opening parabola.
+
+This is the key intuition behind partial derivatives.
+
+---
+
+# 4. Partial Derivative With Respect to X
+
+We start with:
+
+-------------------code----------------------
+z=x^2-y^2
+-------------------code----------------------
+
+We want:
+
+-------------------code----------------------
+\frac{\partial z}{\partial x}
+-------------------code----------------------
+
+### Step 1: Treat Y as a constant
+
+When differentiating with respect to \(x\), pretend that \(y\) is simply a constant.
+
+Therefore:
+
+-------------------code----------------------
+\frac{\partial}{\partial x}(x^2-y^2)
+-------------------code----------------------
+
+becomes:
+
+-------------------code----------------------
+2x-0
+-------------------code----------------------
+
+because \(y^2\) is constant with respect to \(x\).
+
+Therefore:
+
+-------------------code----------------------
+\boxed{\frac{\partial z}{\partial x}=2x}
+-------------------code----------------------
+
+### What does this mean?
+
+The slope of \(z\) along the X direction is:
+
+-------------------code----------------------
+2x
+-------------------code----------------------
+
+For example:
+
+|  x | \(\partial z/\partial x\) | Meaning    |
+| -: | ------------------------: | ---------- |
+| -2 |                        -4 | slope = -4 |
+| -1 |                        -2 | slope = -2 |
+|  0 |                         0 | flat       |
+|  1 |                         2 | slope = 2  |
+|  2 |                         4 | slope = 4  |
+
+So the farther we move from \(x=0\), the steeper the slope becomes.
+
+---
+
+# 5. Partial Derivative Notation
+
+For an ordinary derivative, we use:
+
+-------------------code----------------------
+\frac{dy}{dx}
+-------------------code----------------------
+
+For a partial derivative, we use the curly **∂** symbol:
+
+-------------------code----------------------
+\frac{\partial z}{\partial x}
+-------------------code----------------------
+
+The lecturer refers to this symbol as **"del"**.
+
+So:
+
+-------------------code----------------------
+\frac{\partial z}{\partial x}
+-------------------code----------------------
+
+can be read as:
+
+> "del z del x"
+
+This helps distinguish a partial derivative from an ordinary derivative.
+
+---
+
+# 6. Python: Define the Multivariate Function
+
+We can represent the function in Python:
+
+-------------------code----------------------
+def f(x, y):
+    return x**2 - y**2
+-------------------code----------------------
+
+This function has two inputs:
+
+-------------------code----------------------text
+x
+y
+-------------------code----------------------
+
+and produces:
+
+-------------------code----------------------text
+z
+-------------------code----------------------
+
+---
+
+# 7. Python: Plot Z With Respect to X
+
+To study \(z\) as a function of \(x\), we vary \(x\) while keeping \(y\) fixed.
+
+-------------------code----------------------
+import numpy as np
+import matplotlib.pyplot as plt
+
+def f(x, y):
+    return x**2 - y**2
+
+x = np.linspace(-3, 3, 1000)
+y = 0
+
+z = f(x, y)
+
+plt.plot(x, z)
+plt.axhline(0, color="gray")
+plt.axvline(0, color="gray")
+
+plt.xlabel("X")
+plt.ylabel("Z")
+plt.show()
+-------------------code----------------------
+
+Here:
+
+-------------------code----------------------
+x = np.linspace(-3, 3, 1000)
+-------------------code----------------------
+
+creates 1,000 different \(x\) values.
+
+But:
+
+-------------------code----------------------
+y = 0
+-------------------code----------------------
+
+keeps \(y\) constant.
+
+Therefore, we are effectively looking at:
+
+-------------------code----------------------
+z=x^2
+-------------------code----------------------
+
+---
+
+# 8. Python: Partial Derivative With Respect to X
+
+We already derived:
+
+-------------------code----------------------
+\frac{\partial z}{\partial x}=2x
+-------------------code----------------------
+
+So we can implement it directly:
+
+-------------------code----------------------
+def del_z_del_x(x, y):
+    return 2 * x
+-------------------code----------------------
+
+Notice that the function accepts `y` even though it doesn't use it.
+
+This is intentional: in more complicated multivariate functions, other variables can influence a particular partial derivative.
+
+---
+
+# 9. Tangent Lines
+
+A derivative represents the **slope of the tangent line** at a particular point.
+
+The equation of a line is:
+
+-------------------code----------------------
+z=mx+b
+-------------------code----------------------
+
+where:
+
+* \(m\) = slope
+* \(b\) = intercept
+
+If we know a point \((x,z)\) and the slope \(m\), we can calculate:
+
+-------------------code----------------------
+b=z-mx
+-------------------code----------------------
+
+Then the tangent line becomes:
+
+-------------------code----------------------
+z=mx+b
+-------------------code----------------------
+
+For our function:
+
+-------------------code----------------------
+m=\frac{\partial z}{\partial x}=2x
+-------------------code----------------------
+
+---
+
+# 10. Example: Tangent at X = 2
+
+At:
+
+-------------------code----------------------
+x=2,\quad y=0
+-------------------code----------------------
+
+we have:
+
+-------------------code----------------------
+z=2^2-0^2=4
+-------------------code----------------------
+
+The slope is:
+
+-------------------code----------------------
+m=2(2)=4
+-------------------code----------------------
+
+Then:
+
+-------------------code----------------------
+b=z-mx
+-------------------code----------------------
+
+-------------------code----------------------
+b=4-(4)(2)=-4
+-------------------code----------------------
+
+Therefore the tangent line is:
+
+-------------------code----------------------
+z=4x-4
+-------------------code----------------------
+
+This demonstrates what the partial derivative means geometrically: **it gives the slope of the surface in the X direction at that point.**
+
+---
+
+# 11. Partial Derivative With Respect to Y
+
+Now we do the same thing in the other direction.
+
+Start with:
+
+-------------------code----------------------
+z=x^2-y^2
+-------------------code----------------------
+
+We want:
+
+-------------------code----------------------
+\frac{\partial z}{\partial y}
+-------------------code----------------------
+
+This time, **X is treated as a constant**.
+
+Therefore:
+
+-------------------code----------------------
+\frac{\partial}{\partial y}(x^2-y^2)
+-------------------code----------------------
+
+The \(x^2\) term becomes zero:
+
+-------------------code----------------------
+0-2y
+-------------------code----------------------
+
+So:
+
+-------------------code----------------------
+\boxed{\frac{\partial z}{\partial y}=-2y}
+-------------------code----------------------
+
+---
+
+# 12. What Does \(-2y\) Mean?
+
+The slope of \(z\) along the Y direction is:
+
+-------------------code----------------------
+-2y
+-------------------code----------------------
+
+For example:
+
+|  y | \(\partial z/\partial y\) | Meaning    |
+| -: | ------------------------: | ---------- |
+| -2 |                         4 | slope = 4  |
+| -1 |                         2 | slope = 2  |
+|  0 |                         0 | flat       |
+|  1 |                        -2 | slope = -2 |
+|  2 |                        -4 | slope = -4 |
+
+The important difference is the **negative sign**.
+
+The curve opens downward in the Y direction.
+
+---
+
+# 13. Python: Plot Z With Respect to Y
+
+Now we reverse the process.
+
+Instead of varying \(x\), we vary \(y\).
+
+-------------------code----------------------
+y = np.linspace(-3, 3, 1000)
+x = 0
+
+z = f(x, y)
+
+plt.plot(y, z)
+plt.axhline(0, color="gray")
+plt.axvline(0, color="gray")
+
+plt.xlabel("Y")
+plt.ylabel("Z")
+plt.show()
+-------------------code----------------------
+
+Now:
+
+-------------------code----------------------
+y
+-------------------code----------------------
+
+changes while:
+
+-------------------code----------------------
+x = 0
+-------------------code----------------------
+
+remains constant.
+
+Therefore:
+
+-------------------code----------------------
+z=-y^2
+-------------------code----------------------
+
+---
+
+# 14. Python: Partial Derivative With Respect to Y
+
+The mathematical result was:
+
+-------------------code----------------------
+\frac{\partial z}{\partial y}=-2y
+-------------------code----------------------
+
+So:
+
+-------------------code----------------------
+def del_z_del_y(x, y):
+    return -2 * y
+-------------------code----------------------
+
+Again, `x` is included even though it isn't used.
+
+---
+
+# 15. Important Observation: The Partial Derivative Can Ignore a Variable
+
+This is one of the most important ideas from the lecture.
+
+Our original function is:
+
+-------------------code----------------------
+z=x^2-y^2
+-------------------code----------------------
+
+Therefore, \(z\) depends on **both** \(x\) and \(y\).
+
+But:
+
+-------------------code----------------------
+\frac{\partial z}{\partial x}=2x
+-------------------code----------------------
+
+doesn't contain \(y\).
+
+And:
+
+-------------------code----------------------
+\frac{\partial z}{\partial y}=-2y
+-------------------code----------------------
+
+doesn't contain \(x\).
+
+This means:
+
+> The output \(z\) depends on both variables, but the slope in one particular direction does not necessarily depend on the other variable.
+
+---
+
+# 16. Changing X Does Not Change the Y-Slope
+
+Consider:
+
+-------------------code----------------------
+\frac{\partial z}{\partial y}=-2y
+-------------------code----------------------
+
+There is no \(x\) in this equation.
+
+Suppose:
+
+-------------------code----------------------
+x=0
+-------------------code----------------------
+
+Then:
+
+-------------------code----------------------
+z=-y^2
+-------------------code----------------------
+
+If we change to:
+
+-------------------code----------------------
+x=2
+-------------------code----------------------
+
+then:
+
+-------------------code----------------------
+z=4-y^2
+-------------------code----------------------
+
+The entire curve moves upward by 4.
+
+However, its **shape and slopes remain exactly the same**.
+
+Why?
+
+Because:
+
+-------------------code----------------------
+\frac{\partial z}{\partial y}=-2y
+-------------------code----------------------
+
+is independent of \(x\).
+
+This is a useful way to understand what a partial derivative actually measures.
+
+---
+
+# 17. X and Y Derivatives Compared
+
+For:
+
+-------------------code----------------------
+z=x^2-y^2
+-------------------code----------------------
+
+we have:
+
+-------------------code----------------------
+\boxed{\frac{\partial z}{\partial x}=2x}
+-------------------code----------------------
+
+and:
+
+-------------------code----------------------
+\boxed{\frac{\partial z}{\partial y}=-2y}
+-------------------code----------------------
+
+### Direction X
+
+-------------------code----------------------
+z=x^2
+-------------------code----------------------
+
+when \(y\) is fixed.
+
+The parabola opens **upward**.
+
+### Direction Y
+
+-------------------code----------------------
+z=-y^2
+-------------------code----------------------
+
+when \(x\) is fixed.
+
+The parabola opens **downward**.
+
+This creates the characteristic **saddle shape**.
+
+---
+
+# 18. Python: Plotting Points and Tangent Lines
+
+The lecture creates a helper function to display selected points and their tangent lines.
+
+A simplified version is:
+
+-------------------code----------------------
+def point_and_tangent_x(x_values, x_value, y, f, derivative):
+    z = f(x_value, y)
+
+    plt.scatter(x_value, z)
+
+    m = derivative(x_value, y)
+    b = z - m * x_value
+
+    tangent = m * x_values + b
+
+    plt.plot(x_values, tangent, "--")
+-------------------code----------------------
+
+Then we can examine several points:
+
+-------------------code----------------------
+x_values = np.linspace(-3, 3, 1000)
+
+for x_value in [-2, -1, 0, 1, 2]:
+    point_and_tangent_x(
+        x_values,
+        x_value,
+        0,
+        f,
+        del_z_del_x
+    )
+-------------------code----------------------
+
+The resulting tangent slopes are:
+
+-------------------code----------------------text
+x = -2  → slope = -4
+x = -1  → slope = -2
+x =  0  → slope =  0
+x =  1  → slope =  2
+x =  2  → slope =  4
+-------------------code----------------------
+
+---
+
+# 19. Machine Learning Connection
+
+This concept is extremely important for machine learning.
+
+A model can have many parameters:
+
+-------------------code----------------------
+y=f(w_1,w_2,w_3,\ldots,w_n)
+-------------------code----------------------
+
+We want to know:
+
+> How does the cost change if I change one parameter?
+
+For example:
+
+-------------------code----------------------
+\frac{\partial C}{\partial w_1}
+-------------------code----------------------
+
+tells us how the cost changes with respect to \(w_1\), while treating the other parameters as fixed.
+
+Similarly:
+
+-------------------code----------------------
+\frac{\partial C}{\partial w_2}
+-------------------code----------------------
+
+tells us how the cost changes with respect to \(w_2\).
+
+This is the foundation for the **gradient** used in machine learning optimization.
+
+The lecture will later build from:
+
+**partial derivatives → gradients → gradient descent → backpropagation**
+
+---
+
+# 20. Important Notes and Best Practices
+
+### 20.1 Always identify the variable
+
+Before taking a partial derivative, ask:
+
+> "Which variable am I differentiating with respect to?"
+
+For example:
+
+-------------------code----------------------
+\frac{\partial z}{\partial x}
+-------------------code----------------------
+
+means treat \(y\) as constant.
+
+While:
+
+-------------------code----------------------
+\frac{\partial z}{\partial y}
+-------------------code----------------------
+
+means treat \(x\) as constant.
+
+### 20.2 Think geometrically
+
+Don't only memorize:
+
+-------------------code----------------------
+\frac{\partial z}{\partial x}=2x
+-------------------code----------------------
+
+Think:
+
+> "This is the slope of the surface when I move in the X direction."
+
+And:
+
+-------------------code----------------------
+\frac{\partial z}{\partial y}=-2y
+-------------------code----------------------
+
+means:
+
+> "This is the slope of the surface when I move in the Y direction."
+
+### 20.3 Partial derivative ≠ full derivative
+
+For a function with one variable:
+
+-------------------code----------------------
+y=f(x)
+-------------------code----------------------
+
+we use:
+
+-------------------code----------------------
+\frac{dy}{dx}
+-------------------code----------------------
+
+For a function with multiple variables:
+
+-------------------code----------------------
+z=f(x,y)
+-------------------code----------------------
+
+we can calculate:
+
+-------------------code----------------------
+\frac{\partial z}{\partial x}
+-------------------code----------------------
+
+or:
+
+-------------------code----------------------
+\frac{\partial z}{\partial y}
+-------------------code----------------------
+
+depending on which direction we're studying.
+
+### 20.4 In machine learning, there may be thousands or millions of variables
+
+The simple example only has two variables:
+
+-------------------code----------------------
+x,y
+-------------------code----------------------
+
+But a neural network can have millions or billions of parameters.
+
+The same mathematical idea still applies: calculate how the cost changes with respect to each parameter.
+
+---
+
+# 21. Complete Final Python Code
+
+Here is a clean combined version covering the main coding concepts from the lecture:
+
+-------------------code----------------------
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+# ============================================================
+# 1. Define the multivariate function
+# ============================================================
+
+def f(x, y):
+    return x**2 - y**2
+
+
+# ============================================================
+# 2. Partial derivative with respect to X
+# ============================================================
+
+def del_z_del_x(x, y):
+    return 2 * x
+
+
+# ============================================================
+# 3. Partial derivative with respect to Y
+# ============================================================
+
+def del_z_del_y(x, y):
+    return -2 * y
+
+
+# ============================================================
+# 4. Plot Z with respect to X
+# ============================================================
+
+x = np.linspace(-3, 3, 1000)
+y = 0
+
+z = f(x, y)
+
+plt.figure()
+
+plt.plot(x, z)
+
+plt.axhline(0, color="gray")
+plt.axvline(0, color="gray")
+
+plt.xlabel("X")
+plt.ylabel("Z")
+plt.title("Z as a function of X")
+
+plt.show()
+
+
+# ============================================================
+# 5. Plot Z with respect to Y
+# ============================================================
+
+y = np.linspace(-3, 3, 1000)
+x = 0
+
+z = f(x, y)
+
+plt.figure()
+
+plt.plot(y, z)
+
+plt.axhline(0, color="gray")
+plt.axvline(0, color="gray")
+
+plt.xlabel("Y")
+plt.ylabel("Z")
+plt.title("Z as a function of Y")
+
+plt.show()
+
+
+# ============================================================
+# 6. Helper function for X tangent lines
+# ============================================================
+
+def point_and_tangent_x(x_values, x_value, y, f, derivative):
+    z = f(x_value, y)
+
+    # Plot the point
+    plt.scatter(x_value, z)
+
+    # Calculate slope
+    m = derivative(x_value, y)
+
+    # Calculate intercept
+    b = z - m * x_value
+
+    # Calculate tangent line
+    tangent = m * x_values + b
+
+    # Plot tangent
+    plt.plot(x_values, tangent, "--")
+
+
+# ============================================================
+# 7. Plot X tangent lines at five points
+# ============================================================
+
+x_values = np.linspace(-3, 3, 1000)
+
+plt.figure()
+
+plt.plot(
+    x_values,
+    f(x_values, 0),
+    label="z = x²"
+)
+
+plt.axhline(0, color="gray")
+plt.axvline(0, color="gray")
+
+for x_value in [-2, -1, 0, 1, 2]:
+    point_and_tangent_x(
+        x_values,
+        x_value,
+        0,
+        f,
+        del_z_del_x
+    )
+
+plt.xlabel("X")
+plt.ylabel("Z")
+plt.title("Partial Derivative of Z with Respect to X")
+
+plt.show()
+
+
+# ============================================================
+# 8. Helper function for Y tangent lines
+# ============================================================
+
+def point_and_tangent_y(y_values, y_value, x, f, derivative):
+    z = f(x, y_value)
+
+    # Plot the point
+    plt.scatter(y_value, z)
+
+    # Calculate slope
+    m = derivative(x, y_value)
+
+    # Calculate intercept
+    b = z - m * y_value
+
+    # Calculate tangent line
+    tangent = m * y_values + b
+
+    # Plot tangent
+    plt.plot(y_values, tangent, "--")
+
+
+# ============================================================
+# 9. Plot Y tangent lines at five points
+# ============================================================
+
+y_values = np.linspace(-3, 3, 1000)
+
+plt.figure()
+
+plt.plot(
+    y_values,
+    f(0, y_values),
+    label="z = -y²"
+)
+
+plt.axhline(0, color="gray")
+plt.axvline(0, color="gray")
+
+for y_value in [-2, -1, 0, 1, 2]:
+    point_and_tangent_y(
+        y_values,
+        y_value,
+        0,
+        f,
+        del_z_del_y
+    )
+
+plt.xlabel("Y")
+plt.ylabel("Z")
+plt.title("Partial Derivative of Z with Respect to Y")
+
+plt.show()
+-------------------code----------------------
+
+---
+
+# 22. Quick Review
+
+### Multivariate function
+
+A function with multiple variables:
+
+-------------------code----------------------
+z=f(x,y)
+-------------------code----------------------
+
+### Example
+
+-------------------code----------------------
+z=x^2-y^2
+-------------------code----------------------
+
+### Partial derivative with respect to X
+
+Treat \(y\) as constant:
+
+-------------------code----------------------
+\boxed{\frac{\partial z}{\partial x}=2x}
+-------------------code----------------------
+
+### Partial derivative with respect to Y
+
+Treat \(x\) as constant:
+
+-------------------code----------------------
+\boxed{\frac{\partial z}{\partial y}=-2y}
+-------------------code----------------------
+
+### Main intuition
+
+**Partial derivative = slope in one specific direction while holding the other variables constant.**
+
+For machine learning, this becomes:
+
+**Partial derivatives → Gradient → Gradient descent → Backpropagation**
+
+The key thing to remember from this lecture is not just the formulas, but the idea that **a multivariable function has different slopes depending on which variable/direction you change**.
