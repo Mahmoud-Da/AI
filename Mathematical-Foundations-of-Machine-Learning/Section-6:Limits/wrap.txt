@@ -3789,3 +3789,964 @@ print("f(x) =", f(x))
 * **Higher-order derivatives** enable more advanced optimization techniques.
 * **Integral Calculus** computes areas under curves and is used for metrics like **ROC-AUC** and for calculating **expected values** in probability.
 * Together, differential and integral calculus provide the mathematical tools that power modern machine learning and deep learning systems.
+
+*** 56. Calculating Limits ***
+# Calculus I - Limits (Machine Learning Foundations)
+
+# 1. Overview
+
+This lecture introduces **limits**, one of the most fundamental concepts in calculus.
+
+Limits explain what happens to a function **as the input approaches a particular value**, even if the function cannot actually be evaluated at that exact point.
+
+Limits are the mathematical foundation of:
+
+* Derivatives
+* Differential calculus
+* Optimization
+* Machine Learning algorithms like Gradient Descent
+
+---
+
+# 2. What Is a Limit?
+
+A limit asks:
+
+> "As x gets closer and closer to some value, what value does y approach?"
+
+Notation:
+
+[
+\lim_{x \to a} f(x)
+]
+
+Meaning:
+
+* x approaches a value
+* We observe what happens to y
+* We do **not necessarily evaluate the function exactly at that point**
+
+---
+
+# 3. Limits of Continuous Functions
+
+A continuous function has:
+
+* No jumps
+* No holes
+* No breaks
+
+Example:
+
+[
+f(x)=x^2+2x+2
+]
+
+Question:
+
+[
+\lim_{x\to5}(x^2+2x+2)
+]
+
+Since the function is continuous:
+
+Simply substitute:
+
+-------------------code----------------------
+5² + 2(5) + 2
+=25+10+2
+=37
+-------------------code----------------------
+
+Answer:
+
+[
+\boxed{37}
+]
+
+---
+
+## Rule
+
+For continuous functions:
+
+-------------------code----------------------
+Limit = Function Value
+-------------------code----------------------
+
+Simply substitute the x-value.
+
+---
+
+# 4. When Direct Substitution Fails
+
+Consider
+
+[
+f(x)=\frac{x^2-1}{x-1}
+]
+
+Find
+
+[
+\lim_{x\to1}
+]
+
+Substitute directly:
+
+-------------------code----------------------
+(1²−1)/(1−1)
+
+=0/0
+-------------------code----------------------
+
+Division by zero
+
+Undefined
+
+Direct substitution fails.
+
+---
+
+# 5. Estimating Limits Numerically
+
+Instead of plugging in exactly 1, evaluate nearby values.
+
+Approaching from the left:
+
+-------------------code----------------------
+x = 0.9
+
+x = 0.99
+
+x = 0.999
+-------------------code----------------------
+
+Results:
+
+-------------------code----------------------
+1.9
+
+1.99
+
+1.999
+-------------------code----------------------
+
+Approaching from the right:
+
+-------------------code----------------------
+x = 1.1
+
+x = 1.01
+
+x = 1.001
+-------------------code----------------------
+
+Results:
+
+-------------------code----------------------
+2.1
+
+2.01
+
+2.001
+-------------------code----------------------
+
+Both sides approach:
+
+-------------------code----------------------
+2
+-------------------code----------------------
+
+Therefore:
+
+[
+\boxed{\lim_{x\to1}\frac{x^2-1}{x-1}=2}
+]
+
+---
+
+# 6. Solving Limits Algebraically
+
+Sometimes algebra removes the undefined point.
+
+Factor:
+
+[
+x^2-1=(x-1)(x+1)
+]
+
+Substitute:
+
+[
+\frac{(x-1)(x+1)}{x-1}
+]
+
+Cancel:
+
+-------------------code----------------------
+x−1
+-------------------code----------------------
+
+Result:
+
+[
+x+1
+]
+
+Now substitute:
+
+-------------------code----------------------
+1+1=2
+-------------------code----------------------
+
+Much easier.
+
+---
+
+## Important Note
+
+Factoring only works for certain expressions.
+
+Many limits cannot be simplified this way.
+
+---
+
+# 7. Example: sin(x)/x
+
+Consider
+
+[
+\lim_{x\to0}\frac{\sin x}{x}
+]
+
+Direct substitution:
+
+-------------------code----------------------
+0/0
+-------------------code----------------------
+
+Undefined.
+
+---
+
+## Numerical Evaluation
+
+Approach from the right:
+
+-------------------code----------------------
+0.1
+
+0.01
+
+0.001
+-------------------code----------------------
+
+Results:
+
+-------------------code----------------------
+0.998
+
+0.99998
+
+0.999999
+-------------------code----------------------
+
+Approach from the left:
+
+-------------------code----------------------
+-0.1
+
+-0.01
+
+-0.001
+-------------------code----------------------
+
+Results:
+
+Also approach
+
+-------------------code----------------------
+1
+-------------------code----------------------
+
+Therefore:
+
+[
+\boxed{\lim_{x\to0}\frac{\sin x}{x}=1}
+]
+
+This is one of the most important limits in calculus.
+
+---
+
+# 8. Undefined Points
+
+Sometimes a function has a hole.
+
+Example:
+
+[
+\frac{x^2-1}{x-1}
+]
+
+At
+
+-------------------code----------------------
+x=1
+-------------------code----------------------
+
+the function is undefined.
+
+However,
+
+the limit still exists.
+
+Graphically this is shown as an **open circle**.
+
+The curve approaches the point but never actually reaches it.
+
+---
+
+# 9. Limits Approaching Infinity
+
+Limits don't always approach numbers.
+
+Sometimes x approaches infinity.
+
+Example:
+
+[
+\lim_{x\to\infty}\frac{25}{x}
+]
+
+Evaluate:
+
+-------------------code----------------------
+25/100 = 0.25
+
+25/1000 = 0.025
+
+25/1,000,000 = 0.000025
+-------------------code----------------------
+
+As x becomes larger:
+
+y approaches
+
+-------------------code----------------------
+0
+-------------------code----------------------
+
+Therefore:
+
+[
+\boxed{\lim_{x\to\infty}\frac{25}{x}=0}
+]
+
+---
+
+# 10. Python Demo 1 — Continuous Function
+
+-------------------code----------------------
+import numpy as np
+import matplotlib.pyplot as plt
+
+x = np.linspace(-10, 10, 1000)
+y = x**2 + 2*x + 2
+
+plt.plot(x, y)
+plt.title("Continuous Function")
+plt.show()
+-------------------code----------------------
+
+---
+
+# 11. Python Demo 2 — Function With a Hole
+
+Define:
+
+-------------------code----------------------
+def f(x):
+    return (x**2 - 1)/(x - 1)
+-------------------code----------------------
+
+Evaluate nearby values:
+
+-------------------code----------------------
+print(f(0.9))
+print(f(0.99))
+print(f(0.999))
+
+print(f(1.1))
+print(f(1.01))
+print(f(1.001))
+-------------------code----------------------
+
+Observe:
+
+All outputs approach
+
+-------------------code----------------------
+2
+-------------------code----------------------
+
+---
+
+# 12. Python Demo 3 — Sine Limit
+
+-------------------code----------------------
+import numpy as np
+
+def sine_function(x):
+    return np.sin(x)/x
+-------------------code----------------------
+
+Test:
+
+-------------------code----------------------
+print(sine_function(0.1))
+print(sine_function(0.01))
+print(sine_function(0.001))
+
+print(sine_function(-0.1))
+print(sine_function(-0.01))
+print(sine_function(-0.001))
+-------------------code----------------------
+
+Outputs approach:
+
+-------------------code----------------------
+1
+-------------------code----------------------
+
+---
+
+# 13. Python Demo 4 — Infinity Limit
+
+-------------------code----------------------
+def infinity_function(x):
+    return 25/x
+
+print(infinity_function(100))
+print(infinity_function(1000))
+print(infinity_function(1000000))
+-------------------code----------------------
+
+Outputs:
+
+-------------------code----------------------
+0.25
+
+0.025
+
+0.000025
+-------------------code----------------------
+
+Approaching zero.
+
+---
+
+# 14. Plotting Both Sides Separately
+
+To avoid connecting the graph across an undefined point:
+
+-------------------code----------------------
+x = np.linspace(-10, 10, 1000)
+
+left_x = x[x < 0]
+right_x = x[x > 0]
+
+left_y = 25/left_x
+right_y = 25/right_x
+
+plt.plot(left_x, left_y)
+plt.plot(right_x, right_y)
+
+plt.show()
+-------------------code----------------------
+
+---
+
+# 15. Key Concepts Learned
+
+### Continuous Function
+
+* No jumps
+* No holes
+* Easy limit evaluation
+
+---
+
+### Discontinuous Function
+
+* May contain holes
+* May contain undefined points
+* Limits can still exist
+
+---
+
+### Left-Hand Limit
+
+Approach from values smaller than x.
+
+---
+
+### Right-Hand Limit
+
+Approach from values larger than x.
+
+---
+
+### Limit Exists
+
+Only if both sides approach the same value.
+
+---
+
+### Infinity
+
+Limits also describe behavior as x grows extremely large.
+
+---
+
+# 16. Why Limits Matter in Machine Learning
+
+Limits are the foundation of derivatives.
+
+Derivatives are used to compute:
+
+* Slopes
+* Gradients
+* Optimization
+* Gradient Descent
+* Backpropagation
+* Neural Network training
+
+Without limits:
+
+* No derivatives
+* No gradient computation
+* No modern deep learning optimization
+
+---
+
+# 17. Best Practices
+
+* Always try direct substitution first.
+* If substitution gives a valid value, the limit is usually that value (for continuous functions).
+* If substitution gives an indeterminate form like **0/0**, try algebraic simplification (e.g., factoring) before numerical estimation.
+* Compare both the left-hand and right-hand limits. A limit exists only if they approach the same value.
+* Recognize common limits such as (\lim_{x\to0}\frac{\sin x}{x}=1), as they appear frequently in calculus and machine learning.
+* When graphing functions with undefined points, plot the branches separately to avoid misleading lines across discontinuities.
+
+---
+
+# 18. Full Final Code
+
+-------------------code----------------------
+import numpy as np
+import matplotlib.pyplot as plt
+
+# -----------------------------
+# Continuous function
+# -----------------------------
+x = np.linspace(-10, 10, 1000)
+y = x**2 + 2*x + 2
+
+plt.figure(figsize=(6,4))
+plt.plot(x, y)
+plt.title("Continuous Function")
+plt.grid(True)
+plt.show()
+
+# -----------------------------
+# Function with removable discontinuity
+# -----------------------------
+def f(x):
+    return (x**2 - 1)/(x - 1)
+
+print("Approaching 1 from the left:")
+print(f(0.9))
+print(f(0.99))
+print(f(0.999))
+
+print("\nApproaching 1 from the right:")
+print(f(1.1))
+print(f(1.01))
+print(f(1.001))
+
+# -----------------------------
+# Sine limit
+# -----------------------------
+def sine_function(x):
+    return np.sin(x)/x
+
+print("\nApproaching 0 from the right:")
+print(sine_function(0.1))
+print(sine_function(0.01))
+print(sine_function(0.001))
+
+print("\nApproaching 0 from the left:")
+print(sine_function(-0.1))
+print(sine_function(-0.01))
+print(sine_function(-0.001))
+
+# -----------------------------
+# Infinity example
+# -----------------------------
+def infinity_function(x):
+    return 25/x
+
+print("\nApproaching infinity:")
+print(infinity_function(100))
+print(infinity_function(1000))
+print(infinity_function(1000000))
+
+# -----------------------------
+# Plot 25/x without connecting across x = 0
+# -----------------------------
+x = np.linspace(-10, 10, 1000)
+
+left_x = x[x < 0]
+right_x = x[x > 0]
+
+left_y = 25 / left_x
+right_y = 25 / right_x
+
+plt.figure(figsize=(6,4))
+plt.plot(left_x, left_y)
+plt.plot(right_x, right_y)
+plt.title("y = 25/x")
+plt.grid(True)
+plt.show()
+-------------------code----------------------
+
+---
+
+# 19. Summary
+
+* A **limit** describes the value a function approaches as the input gets closer to a specific point.
+* For **continuous functions**, evaluate the limit by direct substitution.
+* If substitution produces an indeterminate form such as **0/0**, use algebraic simplification or evaluate values approaching the point from both sides.
+* Some functions are **undefined at a point** but still have a well-defined limit.
+* Limits can also describe behavior as **(x) approaches infinity**, revealing long-term trends of functions.
+* The concept of limits is the mathematical foundation of **derivatives**, which in turn power optimization methods used throughout machine learning, including gradient descent and neural network training.
+
+What is a Limit? (The Core Idea)??
+# Limits and Derivatives: The Complete Connection - Full English Version
+
+---
+
+## Part 1: What is a Limit? (The Core Idea)
+
+### The Basic Concept:
+
+**A Limit = "The value we approach" not "The value we reach"**
+
+### Simple Analogy:
+
+Imagine you are **walking towards a door**, but you **never touch it**:
+
+-------------------code----------------------
+You ←←←←← [Door]
+          Getting closer but not touching
+-------------------code----------------------
+
+The limit = **your position when you are extremely close to the door** (not the door itself).
+
+---
+
+### Example with Numbers:
+
+-------------------code----------------------
+Function: f(x) = (x² - 1) / (x - 1)
+We want: lim f(x) as x→1
+-------------------code----------------------
+
+**Try values close to 1 (but NOT 1):**
+
+| x | f(x) |
+| :--- | :--- |
+| 0.9 | 1.9 |
+| 0.99 | 1.99 |
+| 0.999 | 1.999 |
+| 0.9999 | 1.9999 |
+| **1** | **Undefined (0/0)** |
+
+**Conclusion:**
+- As we approach 1, f(x) approaches 2
+- But at x = 1 exactly, the function is undefined!
+- **The limit = 2** (the value we approach)
+
+**This is "the value we approach" not "the value we reach".**
+
+---
+
+## Part 2: How Limits Connect to Derivatives
+
+### What is a Derivative?
+
+A derivative = **Instantaneous rate of change** (speed at an exact moment).
+
+### The Question:
+How do we calculate speed at an exact moment if the car is moving with continuously changing speed?
+
+### The Answer: We use limits!
+
+---
+
+### Real-Life Example: Calculating Instantaneous Speed
+
+**Scenario:**
+A car is moving, and we want to know its speed at **exactly t = 5 seconds**.
+
+**The Old Way (Average Speed):**
+-------------------code----------------------
+Average Speed = Total Distance ÷ Total Time
+-------------------code----------------------
+This gives speed **between** two points, not at an exact moment.
+
+**The New Way (Instantaneous Speed):**
+We measure distance at a time **very close to** 5 seconds, then calculate speed.
+
+-------------------code----------------------
+Instantaneous Speed = lim (Distance at time t - Distance at time 5) / (t - 5)
+                      t→5
+-------------------code----------------------
+
+**This is the connection:**
+- **The limit** allows us to approach time = 5 **without reaching it exactly**
+- **The derivative** is the result of this limit
+
+---
+
+## Part 3: The Mathematical Formula (Simplified)
+
+### Definition of Derivative Using Limits:
+
+-------------------code----------------------
+                         f(x + h) - f(x)
+f'(x) = lim  ────────────────────────
+        h→0          h
+-------------------code----------------------
+
+### Explanation of Each Part:
+
+| Symbol | Meaning | Analogy |
+| :--- | :--- | :--- |
+| h | Very small change (approaches zero) | "Tiny step" |
+| f(x+h) - f(x) | Change in the function | "How much distance changed" |
+| h | Change in x | "How much time changed" |
+| h→0 | Make h extremely small | "Approach the exact moment" |
+| The limit | The value we approach | "Instantaneous speed" |
+
+---
+
+## Part 4: Simple Analogy for Understanding
+
+### Analogy: Walking on a Straight Line 🚶
+
+| Situation | In Mathematics | In Real Life |
+| :--- | :--- | :--- |
+| You are walking | Function f(x) | Distance |
+| You want your current speed | Derivative f'(x) | Instantaneous speed |
+| Measure distance over 5 seconds | Average speed | Approximation |
+| Measure distance over 0.0001 seconds | Approaching the moment | Better approximation |
+| Measure over an infinitely small moment | Limit h→0 | Exact speed |
+
+### As the time interval gets smaller:
+-------------------code----------------------
+5 seconds    →  Approximate speed
+0.1 seconds  →  Better speed
+0.0001 seconds →  Even better speed
+h → 0 (infinitely small) →  Exact instantaneous speed 
+-------------------code----------------------
+
+---
+
+## Part 5: Python Code to Demonstrate
+
+-------------------code----------------------python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# =============================================
+# Example: Calculating derivative of f(x) = x² using limits
+# =============================================
+
+def f(x):
+    return x**2
+
+# Point where we want the derivative
+x = 2  # We want speed at x = 2
+
+print("=" * 60)
+print("Calculating derivative f'(x) = 2x at x = 2")
+print("Using definition: f'(x) = lim [f(x+h) - f(x)] / h")
+print("=" * 60)
+print("h (step)     |  (f(x+h) - f(x)) / h  |  Error from 4")
+print("-" * 60)
+
+for h in [0.1, 0.01, 0.001, 0.0001, 0.00001]:
+    derivative_approx = (f(x + h) - f(x)) / h
+    error = derivative_approx - 4  # 4 is the true derivative at x=2
+    print(f"{h:<12} | {derivative_approx:.8f}        | {error:.8f}")
+
+print("-" * 60)
+print("True derivative f'(2) = 4")
+print("\nAs h gets smaller, the value approaches 4!")
+-------------------code----------------------
+
+**Output:**
+-------------------code----------------------
+============================================================
+Calculating derivative f'(x) = 2x at x = 2
+Using definition: f'(x) = lim [f(x+h) - f(x)] / h
+============================================================
+h (step)     |  (f(x+h) - f(x)) / h  |  Error from 4
+------------------------------------------------------------
+0.1          | 4.10000000        | 0.10000000
+0.01         | 4.01000000        | 0.01000000
+0.001        | 4.00100000        | 0.00100000
+0.0001       | 4.00010000        | 0.00010000
+0.00001      | 4.00001000        | 0.00001000
+------------------------------------------------------------
+True derivative f'(2) = 4
+
+As h gets smaller, the value approaches 4!
+-------------------code----------------------
+
+---
+
+## 🔬 Part 6: Why Do We Need Limits At All?
+
+### The Problem:
+We cannot calculate "speed at an exact moment" using regular methods because:
+
+-------------------code----------------------
+Speed = Distance ÷ Time
+Speed at a moment = Distance ÷ (Time = 0) ← Undefined!
+-------------------code----------------------
+
+### The Solution:
+We use limits to approach time = 0 **without reaching it**.
+
+-------------------code----------------------
+Instantaneous Speed = lim (Distance) / (Time)
+                      Time→0
+-------------------code----------------------
+
+**Limits allow us to divide by a number that is extremely small (but not zero).**
+
+---
+
+## Part 7: Another Example (Slope of a Curve)
+
+### The Problem:
+We want to find the slope of a curve at a specific point.
+
+### The Method:
+
+-------------------code----------------------
+1. Take two points on the curve:
+   - The point where we want the slope
+   - Another point very close to it
+
+2. Calculate the slope between the two points:
+   Slope = (y₂ - y₁) / (x₂ - x₁)
+
+3. Move the second point closer and closer:
+   The two points become almost identical
+
+4. The limit = the derivative (the true slope)
+-------------------code----------------------
+
+### Visual Representation:
+
+-------------------code----------------------
+y
+^
+|        ╲
+|         ╲
+|          ╲  ← The curve
+|           * ← Approaching point
+|         *  ← Original point
+|       *    
+|     *
+|   *
+| *
++----------------→ x
+
+The * moves closer to the original point
+The limit = the true slope
+-------------------code----------------------
+
+---
+
+## Part 8: Limits in Machine Learning
+
+### Why Are Limits the Foundation of Machine Learning?
+
+-------------------code----------------------
+Limits → Derivatives → Gradient Descent → Machine Learning
+-------------------code----------------------
+
+### How?
+
+| Step | Explanation |
+| :--- | :--- |
+| 1. Limits | Allow us to calculate derivatives |
+| 2. Derivatives | Tell us the direction of improvement |
+| 3. Gradient Descent | Uses derivatives to update weights |
+| 4. Machine Learning | The model learns from data |
+
+### Example: Training a Price Prediction Model
+
+-------------------code----------------------
+1. Start with random weights
+2. Calculate the error (how far from truth)
+3. Calculate the derivative (using limits)
+4. Update weights (Gradient Descent)
+5. Repeat until we reach minimum error
+-------------------code----------------------
+
+---
+
+## 🏁 Part 9: Final Summary (In the Simplest Words)
+
+| Question | Answer |
+| :--- | :--- |
+| What is a limit? | "The value we approach" not "the value we reach" |
+| Example of a limit? | Walk towards a door but don't touch it |
+| How do limits connect to derivatives? | Derivative = limit of rate of change as the difference approaches zero |
+| Why do we need limits? | Because division by zero is impossible |
+| What is a derivative? | Instantaneous rate of change (speed at a moment) |
+| Why are limits the foundation of ML? | Because derivatives are the foundation of optimization |
+
+---
+
+## The Most Important Sentence (Explained)
+
+> **"The limit is 'the value we approach' not 'the value we reach'."**
+
+**Meaning:**
+- We cannot calculate speed **exactly at** moment t (because time = 0)
+- But we calculate speed when we **get extremely close** to t
+- This "getting close" is the limit
+- The derivative = this limit
+
+> **"It is the foundation on which derivatives are built."**
+
+**Meaning:**
+- Derivative = a limit (cannot be calculated without limits)
+- All differentiation rules are based on limits
+
+> **"And derivatives are the foundation of modern machine learning."**
+
+**Meaning:**
+- Gradient Descent = uses derivatives
+- Training neural networks = depends on derivatives
+- All machine learning = optimization using derivatives
+
+---
