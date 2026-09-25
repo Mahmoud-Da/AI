@@ -1032,3 +1032,636 @@ y → u → x
 -------------------code----------------------
 
 The next step is to see this process **actually implemented in PyTorch and TensorFlow**.
+
+*** 74. Autodiff with PyTorch ***
+# 1. Automatic Differentiation with PyTorch
+
+This lecture is the first hands-on demonstration of **Automatic Differentiation (Autodiff)** using **PyTorch**.
+
+The goal is simple:
+
+> Calculate the derivative/slope of (y=x^2) at (x=5) using PyTorch, and verify that it matches the result we get manually.
+
+---
+
+# 2. The Mathematical Problem
+
+We start with:
+
+[
+y=x^2
+]
+
+We want to find the slope at:
+
+[
+x=5
+]
+
+From the **power rule**:
+
+[
+\frac{dy}{dx}=2x
+]
+
+Therefore:
+
+[
+\frac{dy}{dx}\bigg|_{x=5}=2(5)=10
+]
+
+So we already know the expected answer:
+
+-------------------code----------------------
+Slope = 10
+-------------------code----------------------
+
+The purpose of PyTorch is to calculate this automatically rather than manually applying the derivative rules.
+
+---
+
+# 3. Import PyTorch
+
+First, import the PyTorch library.
+
+-------------------code----------------------
+import torch
+-------------------code----------------------
+
+PyTorch is commonly thought of as a deep-learning library, but the lecture emphasizes that it is broader than just neural networks.
+
+It can also be used for **automatic differentiation and calculus operations**.
+
+---
+
+# 4. Create the Input Tensor
+
+We create a scalar tensor containing our (x) value:
+
+-------------------code----------------------
+x = torch.tensor(5.0)
+-------------------code----------------------
+
+The decimal point is intentional.
+
+The lecture emphasizes using a **float tensor**, because many PyTorch operations work properly with floating-point tensors.
+
+We can inspect it:
+
+-------------------code----------------------
+print(x)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+tensor(5.)
+-------------------code----------------------
+
+---
+
+# 5. Enable Gradient Tracking
+
+This is the important new concept.
+
+We want PyTorch to calculate derivatives with respect to `x`.
+
+Therefore, we tell PyTorch to track the gradient of `x`:
+
+-------------------code----------------------
+x.requires_grad_()
+-------------------code----------------------
+
+This changes:
+
+-------------------code----------------------
+x.requires_grad
+-------------------code----------------------
+
+from:
+
+-------------------code----------------------
+False
+-------------------code----------------------
+
+to:
+
+-------------------code----------------------
+True
+-------------------code----------------------
+
+You can verify it:
+
+-------------------code----------------------
+print(x.requires_grad)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+True
+-------------------code----------------------
+
+### Why do we need this?
+
+PyTorch does **not** track gradients by default.
+
+Gradient tracking requires additional memory, so it is only enabled when we need derivatives.
+
+---
+
+# 6. Perform the Forward Pass
+
+Now implement our function:
+
+[
+y=x^2
+]
+
+In PyTorch:
+
+-------------------code----------------------
+y = x**2
+-------------------code----------------------
+
+Conceptually, the forward pass is:
+
+-------------------code----------------------
+x → y
+-------------------code----------------------
+
+or:
+
+-------------------code----------------------
+5 → 25
+-------------------code----------------------
+
+We can verify:
+
+-------------------code----------------------
+print(y)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+tensor(25., grad_fn=...)
+-------------------code----------------------
+
+The important idea is that PyTorch has tracked the operation that produced `y` from `x`.
+
+---
+
+# 7. Gradient Tracking Is Contagious
+
+This is an important concept from the lecture.
+
+Because `x` has gradient tracking enabled:
+
+-------------------code----------------------
+x.requires_grad_()
+-------------------code----------------------
+
+tensors created as a result of operations involving `x` will also track the necessary gradient information.
+
+For example:
+
+-------------------code----------------------
+y = x**2
+-------------------code----------------------
+
+PyTorch knows that `y` was created from `x`.
+
+Therefore, it has enough information to work backwards from `y` toward `x`.
+
+Conceptually:
+
+-------------------code----------------------
+Forward:
+
+x ──────→ y
+5         25
+
+
+Backward:
+
+dy/dx
+←───────
+-------------------code----------------------
+
+This is the basis of Autodiff.
+
+---
+
+# 8. Calculate the Derivative with `backward()`
+
+Now we perform automatic differentiation.
+
+-------------------code----------------------
+y.backward()
+-------------------code----------------------
+
+The `backward()` method tells PyTorch to work backwards from `y` and calculate the gradients.
+
+In this example, we want:
+
+[
+\frac{dy}{dx}
+]
+
+PyTorch therefore follows the computational path:
+
+-------------------code----------------------
+y → x
+-------------------code----------------------
+
+and calculates the gradient automatically.
+
+---
+
+# 9. Retrieve the Gradient
+
+After calling:
+
+-------------------code----------------------
+y.backward()
+-------------------code----------------------
+
+we can access the gradient stored on `x`:
+
+-------------------code----------------------
+print(x.grad)
+-------------------code----------------------
+
+The result is:
+
+-------------------code----------------------
+tensor(10.)
+-------------------code----------------------
+
+Therefore:
+
+-------------------code----------------------
+dy/dx = 10
+-------------------code----------------------
+
+This matches our manual calculation exactly.
+
+---
+
+# 10. What PyTorch Did
+
+Let's compare the two approaches.
+
+### Manual differentiation
+
+We started with:
+
+-------------------code----------------------
+y = x²
+-------------------code----------------------
+
+Applied the power rule:
+
+-------------------code----------------------
+dy/dx = 2x
+-------------------code----------------------
+
+Substituted:
+
+-------------------code----------------------
+x = 5
+-------------------code----------------------
+
+Result:
+
+-------------------code----------------------
+dy/dx = 10
+-------------------code----------------------
+
+### PyTorch Autodiff
+
+We:
+
+-------------------code----------------------
+x = torch.tensor(5.0)
+x.requires_grad_()
+
+y = x**2
+
+y.backward()
+
+print(x.grad)
+-------------------code----------------------
+
+Result:
+
+-------------------code----------------------
+10
+-------------------code----------------------
+
+So both approaches produce the same result.
+
+---
+
+# 11. Why This Becomes Powerful in Machine Learning
+
+The example is intentionally extremely simple:
+
+-------------------code----------------------
+x → x² → y
+-------------------code----------------------
+
+But the same idea can be applied to much more complicated computational chains.
+
+For example:
+
+-------------------code----------------------
+x
+ ↓
+function 1
+ ↓
+function 2
+ ↓
+function 3
+ ↓
+...
+ ↓
+function 1000
+ ↓
+y
+-------------------code----------------------
+
+Manually differentiating hundreds or thousands of nested operations would be extremely difficult.
+
+PyTorch can track the computational operations and then use:
+
+-------------------code----------------------
+y.backward()
+-------------------code----------------------
+
+to calculate the gradients automatically.
+
+This becomes particularly useful in machine learning and deep learning.
+
+---
+
+# 12. Multiple Inputs
+
+The lecture also points out that if multiple input tensors contribute to `y`, we can obtain the gradient with respect to each one.
+
+For example, conceptually:
+
+-------------------code----------------------
+x₁ ─┐
+    ├──→ y
+x₂ ─┘
+-------------------code----------------------
+
+We could inspect the gradient of each input:
+
+-------------------code----------------------
+x1.grad
+x2.grad
+-------------------code----------------------
+
+This allows us to determine how sensitive `y` is to each variable.
+
+The lecture does not develop a full multiple-input example here, but this is an important reason Autodiff is useful for machine learning.
+
+---
+
+# 13. Important PyTorch Concepts to Remember
+
+| Concept            | Meaning                                    |
+| ------------------ | ------------------------------------------ |
+| `torch.tensor()`   | Creates a PyTorch tensor                   |
+| `5.0`              | Creates a floating-point value             |
+| `requires_grad_()` | Enables gradient tracking                  |
+| `y = x**2`         | Performs the forward calculation           |
+| `backward()`       | Performs automatic differentiation         |
+| `x.grad`           | Retrieves the gradient with respect to `x` |
+
+The basic workflow is:
+
+-------------------code----------------------
+1. Create tensor
+       ↓
+2. Enable gradient tracking
+       ↓
+3. Perform forward calculation
+       ↓
+4. Call backward()
+       ↓
+5. Read .grad
+-------------------code----------------------
+
+---
+
+# 14. Step-by-Step Complete Example
+
+### Step 1: Import PyTorch
+
+-------------------code----------------------
+import torch
+-------------------code----------------------
+
+### Step 2: Create `x`
+
+-------------------code----------------------
+x = torch.tensor(5.0)
+-------------------code----------------------
+
+### Step 3: Enable gradient tracking
+
+-------------------code----------------------
+x.requires_grad_()
+-------------------code----------------------
+
+### Step 4: Calculate `y`
+
+-------------------code----------------------
+y = x**2
+-------------------code----------------------
+
+### Step 5: Calculate the gradient
+
+-------------------code----------------------
+y.backward()
+-------------------code----------------------
+
+### Step 6: Read the derivative
+
+-------------------code----------------------
+print(x.grad)
+-------------------code----------------------
+
+Expected result:
+
+-------------------code----------------------
+tensor(10.)
+-------------------code----------------------
+
+---
+
+# 15. Best Practices and Important Notes
+
+### 15.1 Use floating-point tensors
+
+For differentiation, follow the lecture's approach and use:
+
+-------------------code----------------------
+torch.tensor(5.0)
+-------------------code----------------------
+
+rather than:
+
+-------------------code----------------------
+torch.tensor(5)
+-------------------code----------------------
+
+The decimal makes the tensor floating-point.
+
+### 15.2 Enable gradients only when needed
+
+Gradient tracking consumes additional memory.
+
+Use:
+
+-------------------code----------------------
+x.requires_grad_()
+-------------------code----------------------
+
+when you actually need to calculate derivatives.
+
+### 15.3 `backward()` calculates gradients
+
+The key operation is:
+
+-------------------code----------------------
+y.backward()
+-------------------code----------------------
+
+It propagates the gradient backward through the operations that produced `y`.
+
+### 15.4 `.grad` contains the result
+
+After:
+
+-------------------code----------------------
+y.backward()
+-------------------code----------------------
+
+retrieve the gradient using:
+
+-------------------code----------------------
+x.grad
+-------------------code----------------------
+
+For this example:
+
+-------------------code----------------------
+x.grad = 10
+-------------------code----------------------
+
+### 15.5 Understand the forward/backward relationship
+
+Think of Autodiff as two stages:
+
+-------------------code----------------------
+FORWARD PASS
+
+x → operations → y
+
+
+BACKWARD PASS
+
+y → operations → x
+
+        ↓
+
+     gradients
+-------------------code----------------------
+
+This forward/backward structure is fundamental to machine learning.
+
+---
+
+# 16. Full Final Code
+
+-------------------code----------------------
+import torch
+
+# Create the input tensor
+x = torch.tensor(5.0)
+
+# Enable gradient tracking
+x.requires_grad_()
+
+# Forward pass: y = x²
+y = x**2
+
+# Automatic differentiation
+y.backward()
+
+# Display the result
+print("x:", x)
+print("y:", y)
+print("dy/dx:", x.grad)
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+x: tensor(5., requires_grad=True)
+y: tensor(25., grad_fn=<PowBackward0>)
+dy/dx: tensor(10.)
+-------------------code----------------------
+
+---
+
+# 17. Summary
+
+The main lesson is how to use **PyTorch Autodiff** to calculate derivatives automatically.
+
+The complete process is:
+
+-------------------code----------------------
+Create x
+   ↓
+Enable requires_grad
+   ↓
+Perform forward calculation
+   ↓
+Call backward()
+   ↓
+Read x.grad
+-------------------code----------------------
+
+For:
+
+[
+y=x^2,\quad x=5
+]
+
+the derivative is:
+
+-------------------code----------------------
+dy/dx = 10
+-------------------code----------------------
+
+PyTorch obtains the same answer automatically.
+
+The most important code to remember is:
+
+-------------------code----------------------
+x = torch.tensor(5.0)
+x.requires_grad_()
+
+y = x**2
+y.backward()
+
+print(x.grad)
+-------------------code----------------------
+
+This simple example is the foundation for using automatic differentiation in much larger machine-learning computational graphs.
