@@ -3450,3 +3450,520 @@ f(x) = x^2 <- Contains x -> 2x
 > The derivative of x is 1 because x changes at a rate of 1 for every change in x. The derivative of 5 is 0 because 5 never changes. The difference is: a constant does not change, but a variable does change.
 
 ---
+
+*** 64. The Constant Multiple Rule ***
+
+# Calculus One – Differentiation Rules (Part 2)
+
+# Constant Multiple Rule
+
+---
+
+# 1. Introduction
+
+The **Constant Multiple Rule** is one of the most commonly used differentiation rules.
+
+It states that if a function is multiplied by a constant, you can:
+
+1. Ignore the constant temporarily.
+2. Differentiate the variable part.
+3. Multiply the result by the constant.
+
+This rule is often used together with the **Power Rule**.
+
+---
+
+# 2. Constant Multiple Rule
+
+## Rule
+
+If:
+
+[
+y = C \cdot f(x)
+]
+
+then
+
+Where:
+
+* **C** = constant
+* **f(x)** = any differentiable function
+
+---
+
+# 3. Why Does This Work?
+
+A constant does **not** change with respect to (x).
+
+Instead of differentiating everything together:
+
+* Move the constant outside.
+* Differentiate the variable expression.
+* Multiply the result by the constant.
+
+This makes differentiation much easier.
+
+---
+
+# 4. Step-by-Step Example
+
+Suppose
+
+[
+y=x^4
+]
+
+Using the **Power Rule**
+
+[
+\frac{dy}{dx}=4x^3
+]
+
+Now suppose we want
+
+[
+\frac{d}{dx}(2y)
+]
+
+### Step 1
+
+Move the constant outside.
+
+[
+2\frac{dy}{dx}
+]
+
+---
+
+### Step 2
+
+Replace the derivative of (y).
+
+Since
+
+[
+\frac{dy}{dx}=4x^3
+]
+
+we get
+
+[
+2(4x^3)
+]
+
+---
+
+### Step 3
+
+Multiply.
+
+[
+8x^3
+]
+
+Final Answer
+
+[
+\frac{d}{dx}(2x^4)=8x^3
+]
+
+---
+
+# 5. Easier Way to Think About It
+
+Instead of separating (2y), simply write
+
+[
+y=2x^4
+]
+
+Then:
+
+### Ignore the constant
+
+Differentiate only
+
+[
+x^4
+]
+
+Using the Power Rule
+
+[
+4x^3
+]
+
+Finally multiply by the constant
+
+[
+2(4x^3)=8x^3
+]
+
+This is exactly the same result with fewer steps.
+
+---
+
+# 6. Step-by-Step Procedure
+
+Whenever you see
+
+[
+C \cdot f(x)
+]
+
+follow these steps:
+
+### Step 1
+
+Leave the constant alone.
+
+---
+
+### Step 2
+
+Differentiate only the variable expression.
+
+---
+
+### Step 3
+
+Multiply the derivative by the constant.
+
+Done.
+
+---
+
+# 7. More Examples
+
+## Example 1
+
+Differentiate
+
+[
+3x^5
+]
+
+Step 1
+
+Ignore the 3.
+
+Differentiate
+
+[
+x^5
+]
+
+Result
+
+[
+5x^4
+]
+
+Step 2
+
+Multiply by 3.
+
+Answer
+
+[
+15x^4
+]
+
+---
+
+## Example 2
+
+Differentiate
+
+[
+7x^2
+]
+
+Power Rule
+
+[
+2x
+]
+
+Multiply by 7.
+
+Answer
+
+[
+14x
+]
+
+---
+
+## Example 3
+
+Differentiate
+
+[
+10x
+]
+
+Since
+
+[
+x=x^1
+]
+
+Derivative
+
+[
+1
+]
+
+Multiply by 10.
+
+Answer
+
+[
+10
+]
+
+---
+
+## Example 4
+
+Differentiate
+
+[
+5x^3
+]
+
+Power Rule
+
+[
+3x^2
+]
+
+Multiply by 5.
+
+Answer
+
+[
+15x^2
+]
+
+---
+
+# 8. Python Example (Step by Step)
+
+-------------------code----------------------
+coefficient = 2
+power = 4
+
+new_coefficient = coefficient * power
+new_power = power - 1
+
+print(f"Derivative = {new_coefficient}x^{new_power}")
+-------------------code----------------------
+
+Output
+
+-------------------code----------------------
+Derivative = 8x^3
+-------------------code----------------------
+
+---
+
+# 9. Generic Python Function
+
+-------------------code----------------------
+def derivative_constant_multiple(coefficient, exponent):
+    new_coefficient = coefficient * exponent
+    new_exponent = exponent - 1
+    return new_coefficient, new_exponent
+
+
+coef, power = derivative_constant_multiple(2, 4)
+
+print(f"Derivative = {coef}x^{power}")
+-------------------code----------------------
+
+Output
+
+-------------------code----------------------
+Derivative = 8x^3
+-------------------code----------------------
+
+---
+
+# 10. Relationship to the Power Rule
+
+The Constant Multiple Rule is almost always used together with the Power Rule.
+
+Example
+
+[
+6x^7
+]
+
+1. Leave 6 alone.
+2. Differentiate (x^7).
+
+[
+7x^6
+]
+
+3. Multiply by 6.
+
+Answer
+
+[
+42x^6
+]
+
+---
+
+# 11. Important Notes
+
+### Constants never change.
+
+The constant is **not differentiated**.
+
+---
+
+### Differentiate only the variable part.
+
+Correct:
+
+[
+2x^4
+]
+
+Differentiate
+
+[
+x^4
+]
+
+then multiply by 2.
+
+---
+
+### Combine with the Power Rule.
+
+Most polynomial derivatives use both rules together.
+
+---
+
+# 12. Common Mistakes
+
+### Incorrect
+
+Forget the constant.
+
+[
+\frac{d}{dx}(5x^2)=2x
+]
+
+Wrong.
+
+---
+
+### Correct
+
+Multiply by 5 afterward.
+
+[
+10x
+]
+
+---
+
+### Incorrect
+
+Subtract one from the coefficient.
+
+Example
+
+[
+5x^4
+]
+
+Wrong answer
+
+[
+4x^3
+]
+
+The coefficient **does not decrease**.
+
+Only the exponent decreases.
+
+---
+
+# 13. Best Practices
+
+* Always identify whether a number is a constant before differentiating.
+* Ignore the constant while applying the Power Rule.
+* Multiply the derivative by the constant only after differentiating.
+* Practice this rule together with the Power Rule since they are usually used as a pair.
+
+---
+
+# 14. Full Final Code
+
+-------------------code----------------------
+def derivative_constant_multiple(coefficient, exponent):
+    """
+    Differentiate coefficient * x^exponent
+    using the Constant Multiple Rule
+    and the Power Rule.
+    """
+    new_coefficient = coefficient * exponent
+    new_exponent = exponent - 1
+    return new_coefficient, new_exponent
+
+
+examples = [
+    (2, 4),
+    (3, 5),
+    (7, 2),
+    (10, 1),
+    (5, 3)
+]
+
+for coefficient, exponent in examples:
+    coef, power = derivative_constant_multiple(coefficient, exponent)
+
+    if power == 0:
+        print(f"d/dx({coefficient}x^{exponent}) = {coef}")
+    elif power == 1:
+        print(f"d/dx({coefficient}x^{exponent}) = {coef}x")
+    else:
+        print(f"d/dx({coefficient}x^{exponent}) = {coef}x^{power}")
+-------------------code----------------------
+
+### Expected Output
+
+-------------------code----------------------
+d/dx(2x^4) = 8x^3
+d/dx(3x^5) = 15x^4
+d/dx(7x^2) = 14x
+d/dx(10x^1) = 10
+d/dx(5x^3) = 15x^2
+-------------------code----------------------
+
+---
+
+# 15. Summary
+
+* The **Constant Multiple Rule** allows you to move a constant outside the differentiation operation.
+* Differentiate **only the variable part** of the expression.
+* After finding the derivative, multiply the result by the constant.
+* This rule is almost always used together with the **Power Rule** when differentiating polynomial functions.
+* Example:
+
+[
+\frac{d}{dx}(2x^4)
+=2\cdot\frac{d}{dx}(x^4)
+=2(4x^3)
+=8x^3
+]
+
+This simple pattern will be used repeatedly in calculus and later in machine learning when differentiating cost functions and optimization equations.
