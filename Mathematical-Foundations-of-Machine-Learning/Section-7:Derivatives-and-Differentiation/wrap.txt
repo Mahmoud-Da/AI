@@ -1,0 +1,255 @@
+*** 58. Segment Intro ***
+# Calculus I: Segment 2 Introduction – Computing Derivatives with Differentiation
+
+## 1. Overview
+
+After learning **limits**, the next step in calculus is learning **derivatives**.
+
+This segment explains how limits are used to calculate the **rate of change** (slope) of a function at any point.
+
+This topic is one of the most important foundations for machine learning because optimization algorithms rely on derivatives.
+
+---
+
+# 2. Position in the Machine Learning Foundations Series
+
+The course contains **8 subjects**.
+
+We are currently studying:
+
+**Subject 3: Calculus I – Limits and Derivatives**
+
+This subject is divided into three parts:
+
+1. Limits
+2. Computing Derivatives with Differentiation
+3. Automatic Differentiation in Python
+
+The lecture marks the transition from **Segment 1** to **Segment 2**.
+
+---
+
+# 3. What You Already Learned
+
+Before computing derivatives, you learned how to calculate **limits**.
+
+Limits answer questions like:
+
+> "What value does a function approach as x gets closer to a certain number?"
+
+Example:
+
+[
+\lim_{x\to5}(x^2+2x+2)=37
+]
+
+Limits are the mathematical foundation of differentiation.
+
+---
+
+# 4. What You Will Learn in This Segment
+
+## 4.1 The Delta Method
+
+The first concept is the **Delta Method**.
+
+Purpose:
+
+* Compare two nearby points on a curve.
+* Measure how much the function changes.
+* Use smaller and smaller distances.
+* Eventually compute the exact slope.
+
+This creates the intuition behind derivatives.
+
+---
+
+## 4.2 The Differentiation Equation
+
+Next, you'll learn the formal derivative equation.
+
+Conceptually, it computes:
+
+* Change in output
+
+divided by
+
+* Change in input
+
+as the change becomes infinitely small.
+
+The derivative is defined by:
+
+[
+f'(x)=\lim_{h\to0}\frac{f(x+h)-f(x)}{h}
+]
+
+This equation combines:
+
+* Limits
+* Rate of change
+* Tangent slope
+
+into one formula.
+
+---
+
+## 4.3 Differentiation Notation
+
+There are several ways to write derivatives.
+
+Common examples include:
+
+Leibniz notation
+
+[
+\frac{dy}{dx}
+]
+
+Prime notation
+
+[
+f'(x)
+]
+
+Higher-order derivatives
+
+[
+f''(x)
+]
+
+Understanding these symbols is important because different textbooks use different notation.
+
+---
+
+## 4.4 Differentiation Rules
+
+Instead of calculating every derivative from scratch using limits, mathematicians developed rules.
+
+Examples include:
+
+* Constant Rule
+* Power Rule
+* Product Rule
+* Quotient Rule
+* Chain Rule
+
+These rules make differentiation much faster and are heavily used in machine learning.
+
+---
+
+# 5. Why Derivatives Matter in Machine Learning
+
+Derivatives are used to optimize models.
+
+Applications include:
+
+* Gradient Descent
+* Backpropagation
+* Neural Network Training
+* Loss Function Optimization
+* Deep Learning
+
+Without derivatives, modern deep learning would not be practical.
+
+---
+
+# 6. Step-by-Step Learning Path
+
+### Step 1
+
+Learn limits.
+
+Result:
+
+Understand what happens as values approach a point.
+
+---
+
+### Step 2
+
+Use the Delta Method.
+
+Result:
+
+Estimate the slope using two nearby points.
+
+---
+
+### Step 3
+
+Shrink the distance between the points.
+
+Result:
+
+The estimated slope approaches the exact tangent slope.
+
+---
+
+### Step 4
+
+Use the differentiation formula.
+
+Result:
+
+Compute the exact derivative.
+
+---
+
+### Step 5
+
+Learn derivative rules.
+
+Result:
+
+Differentiate complex functions quickly without repeatedly using limits.
+
+---
+
+# 7. Code
+
+This lecture is only an introduction.
+
+No Python code was demonstrated.
+
+---
+
+# 8. Full Final Code
+
+No code was provided in this lecture.
+
+---
+
+# 9. Important Notes
+
+* Limits are the mathematical foundation of derivatives.
+* A derivative measures the instantaneous rate of change.
+* The derivative equals the slope of the tangent line.
+* Differentiation is one of the most important topics in machine learning.
+* Learning the derivative rules will save enormous amounts of work compared to computing derivatives from first principles every time.
+* Automatic differentiation (covered later) allows frameworks like TensorFlow and PyTorch to compute derivatives automatically.
+
+---
+
+# 10. Best Practices
+
+* Make sure you fully understand limits before learning derivatives.
+* Focus on the intuition first before memorizing formulas.
+* Learn both the geometric meaning (slope) and the algebraic meaning (rate of change).
+* Practice derivative rules repeatedly—they become essential in optimization and neural networks.
+* Remember that automatic differentiation tools work because of the mathematical principles you'll learn in this segment.
+
+---
+
+# 11. Summary
+
+This lecture introduces the second segment of **Calculus I**, where the focus shifts from **limits** to **derivatives**.
+
+The upcoming topics include:
+
+1. The Delta Method for estimating slopes.
+2. The formal differentiation equation based on limits.
+3. Common derivative notation.
+4. Differentiation rules for efficiently computing derivatives.
+
+These concepts form the mathematical foundation for optimization algorithms such as **Gradient Descent** and **Backpropagation**, making them essential for understanding modern machine learning and deep learning.
