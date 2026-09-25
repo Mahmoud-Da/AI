@@ -6723,3 +6723,929 @@ differentiates to
 ]
 
 by applying the Chain Rule together with the Power Rule, Constant Multiple Rule, and Sum Rule.
+
+
+*** 70. Advanced Exercises on Derivative Rules ***
+# Calculus I — Advanced Differentiation Exercises
+
+This lecture combines all the differentiation rules covered so far:
+
+1. Constant Rule
+2. Power Rule
+3. Constant Multiple Rule
+4. Sum Rule
+5. Product Rule
+6. Quotient Rule
+7. Chain Rule
+
+The exercises are designed to make you comfortable choosing and combining the correct rules.
+
+---
+
+# 1. Exercise 1 — Product Rule
+
+We want to differentiate:
+
+[
+y=(2x^2+6x)(2x^3+5x^2)
+]
+
+This is a **product of two functions**, so use the Product Rule.
+
+## Step 1: Separate the two functions
+
+Let:
+
+[
+W=2x^2+6x
+]
+
+[
+Z=2x^3+5x^2
+]
+
+The Product Rule is:
+
+[
+\frac{dy}{dx}
+=============
+
+W\frac{dZ}{dx}
++
+Z\frac{dW}{dx}
+]
+
+## Step 2: Differentiate (W)
+
+[
+W=2x^2+6x
+]
+
+Using the Power Rule and Constant Multiple Rule:
+
+[
+\frac{dW}{dx}=4x+6
+]
+
+## Step 3: Differentiate (Z)
+
+[
+Z=2x^3+5x^2
+]
+
+Therefore:
+
+[
+\frac{dZ}{dx}=6x^2+10x
+]
+
+## Step 4: Apply the Product Rule
+
+Substitute everything:
+
+[
+\frac{dy}{dx}
+=============
+
+(2x^2+6x)(6x^2+10x)
++
+(2x^3+5x^2)(4x+6)
+]
+
+This is already a valid answer.
+
+If we expand and combine like terms:
+
+[
+\boxed{\frac{dy}{dx}=24x^4+80x^3+60x^2}
+]
+
+### Python
+
+-------------------code----------------------
+import sympy as sp
+
+x = sp.symbols('x')
+
+W = 2*x**2 + 6*x
+Z = 2*x**3 + 5*x**2
+
+y = W * Z
+dy_dx = sp.diff(y, x)
+
+print(dy_dx)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+24*x**4 + 80*x**3 + 60*x**2
+-------------------code----------------------
+
+---
+
+# 2. Exercise 2 — Quotient Rule
+
+We want to differentiate:
+
+[
+y=\frac{6x^2}{2-x}
+]
+
+Because this is a fraction, use the **Quotient Rule**.
+
+## Step 1: Separate numerator and denominator
+
+Let:
+
+[
+W=6x^2
+]
+
+[
+Z=2-x
+]
+
+The Quotient Rule is:
+
+[
+\frac{dy}{dx}
+=============
+
+\frac{
+Z\frac{dW}{dx}
+--------------
+
+W\frac{dZ}{dx}
+}{
+Z^2
+}
+]
+
+## Step 2: Differentiate (W)
+
+[
+W=6x^2
+]
+
+Therefore:
+
+[
+\frac{dW}{dx}=12x
+]
+
+## Step 3: Differentiate (Z)
+
+[
+Z=2-x
+]
+
+The derivative of 2 is 0.
+
+Since
+
+[
+-x=-1x
+]
+
+its derivative is:
+
+[
+-1
+]
+
+Therefore:
+
+[
+\frac{dZ}{dx}=-1
+]
+
+## Step 4: Apply the Quotient Rule
+
+Substitute:
+
+[
+\frac{dy}{dx}
+=============
+
+\frac{
+(2-x)(12x)
+----------
+
+(6x^2)(-1)
+}{
+(2-x)^2
+}
+]
+
+Expand the numerator:
+
+[
+(2-x)(12x)=24x-12x^2
+]
+
+and:
+
+[
+-(6x^2)(-1)=+6x^2
+]
+
+Therefore:
+
+[
+24x-12x^2+6x^2
+==============
+
+24x-6x^2
+]
+
+Final answer:
+
+[
+\boxed{
+\frac{dy}{dx}
+=============
+
+\frac{-6x^2+24x}{(2-x)^2}
+}
+]
+
+### Python
+
+-------------------code----------------------
+import sympy as sp
+
+x = sp.symbols('x')
+
+W = 6*x**2
+Z = 2 - x
+
+y = W / Z
+dy_dx = sp.simplify(sp.diff(y, x))
+
+print(dy_dx)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+6*x*(4 - x)/(x - 2)**2
+-------------------code----------------------
+
+This is algebraically equivalent to:
+
+[
+\frac{-6x^2+24x}{(2-x)^2}
+]
+
+---
+
+# 3. Exercise 3 — Chain Rule
+
+Consider:
+
+[
+y=(3x+1)^2
+]
+
+This is a nested function, so use the **Chain Rule**.
+
+## Step 1: Define the inner function
+
+Let:
+
+[
+u=3x+1
+]
+
+Then:
+
+[
+y=u^2
+]
+
+## Step 2: Differentiate the inner function
+
+[
+\frac{du}{dx}=3
+]
+
+## Step 3: Differentiate the outer function
+
+[
+y=u^2
+]
+
+Therefore:
+
+[
+\frac{dy}{du}=2u
+]
+
+Substitute:
+
+[
+u=3x+1
+]
+
+giving:
+
+[
+\frac{dy}{du}=2(3x+1)=6x+2
+]
+
+## Step 4: Chain the derivatives
+
+[
+\frac{dy}{dx}
+=============
+
+\frac{dy}{du}
+\frac{du}{dx}
+]
+
+Therefore:
+
+[
+\frac{dy}{dx}
+=============
+
+(6x+2)(3)
+]
+
+Final answer:
+
+[
+\boxed{\frac{dy}{dx}=18x+6}
+]
+
+### Python
+
+-------------------code----------------------
+import sympy as sp
+
+x = sp.symbols('x')
+
+y = (3*x + 1)**2
+dy_dx = sp.diff(y, x)
+
+print(dy_dx)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+18*x + 6
+-------------------code----------------------
+
+---
+
+# 4. Exercise 4 — Chain Rule with a Higher Power
+
+Consider:
+
+[
+y=(x^2+5x)^6
+]
+
+Again, this is a nested function.
+
+## Step 1: Define the inner function
+
+[
+u=x^2+5x
+]
+
+Therefore:
+
+[
+y=u^6
+]
+
+## Step 2: Differentiate the inner function
+
+Using the Sum Rule and Power Rule:
+
+[
+\frac{du}{dx}=2x+5
+]
+
+## Step 3: Differentiate the outer function
+
+[
+y=u^6
+]
+
+Using the Power Rule:
+
+[
+\frac{dy}{du}=6u^5
+]
+
+Substitute (u):
+
+[
+\frac{dy}{du}=6(x^2+5x)^5
+]
+
+## Step 4: Apply the Chain Rule
+
+[
+\frac{dy}{dx}
+=============
+
+6(x^2+5x)^5(2x+5)
+]
+
+Final answer:
+
+[
+\boxed{
+\frac{dy}{dx}
+=============
+
+6(x^2+5x)^5(2x+5)
+}
+]
+
+There is **no need to expand** ((x^2+5x)^5).
+
+Keeping it factored makes the answer much easier to read.
+
+### Python
+
+-------------------code----------------------
+import sympy as sp
+
+x = sp.symbols('x')
+
+y = (x**2 + 5*x)**6
+dy_dx = sp.diff(y, x)
+
+print(dy_dx)
+-------------------code----------------------
+
+---
+
+# 5. Exercise 5 — Multiple Nested Functions
+
+This is the most advanced exercise because it contains **three levels of nested functions**.
+
+The structure is:
+
+[
+y=
+\frac{1}{
+\left((x^4+1)^5+7\right)
+}
+]
+
+We can rewrite the outermost function as:
+
+[
+y=u^{-1}
+]
+
+This makes the Chain Rule easier to apply.
+
+---
+
+## Step 1: Define the innermost function
+
+Let:
+
+[
+t=x^4+1
+]
+
+Differentiate:
+
+[
+\frac{dt}{dx}=4x^3
+]
+
+---
+
+## Step 2: Define the intermediate function
+
+The denominator is:
+
+[
+u=t^5+7
+]
+
+Differentiate with respect to (t):
+
+[
+\frac{du}{dt}=5t^4
+]
+
+Substitute:
+
+[
+t=x^4+1
+]
+
+Therefore:
+
+[
+\frac{du}{dt}
+=============
+
+5(x^4+1)^4
+]
+
+---
+
+## Step 3: Define the outer function
+
+We have:
+
+[
+y=u^{-1}
+]
+
+Using the Power Rule:
+
+[
+\frac{dy}{du}
+=============
+
+-u^{-2}
+]
+
+Substitute (u):
+
+[
+\frac{dy}{du}
+=============
+
+-\left((x^4+1)^5+7\right)^{-2}
+]
+
+---
+
+# 6. Chain All Three Derivatives
+
+We now have:
+
+[
+\frac{dy}{du}
+]
+
+[
+\frac{du}{dt}
+]
+
+[
+\frac{dt}{dx}
+]
+
+Chain them together:
+
+[
+\frac{dy}{dx}
+=============
+
+\frac{dy}{du}
+\frac{du}{dt}
+\frac{dt}{dx}
+]
+
+Substitute everything:
+
+[
+\frac{dy}{dx}
+=============
+
+-\left((x^4+1)^5+7\right)^{-2}
+\cdot
+5(x^4+1)^4
+\cdot
+4x^3
+]
+
+Simplify the constants:
+
+[
+5\times4=20
+]
+
+Therefore:
+
+[
+\boxed{
+\frac{dy}{dx}
+=============
+
+-20x^3(x^4+1)^4
+\left((x^4+1)^5+7\right)^{-2}
+}
+]
+
+Or equivalently:
+
+[
+\boxed{
+\frac{dy}{dx}
+=============
+
+\frac{-20x^3(x^4+1)^4}
+{\left((x^4+1)^5+7\right)^2}
+}
+]
+
+### Python
+
+-------------------code----------------------
+import sympy as sp
+
+x = sp.symbols('x')
+
+y = 1 / ((x**4 + 1)**5 + 7)
+
+dy_dx = sp.diff(y, x)
+
+print(dy_dx)
+-------------------code----------------------
+
+---
+
+# 7. The Key Pattern for Multiple Chain Rules
+
+For a function with several nested layers:
+
+-------------------code----------------------
+x → t → u → y
+-------------------code----------------------
+
+differentiate each layer:
+
+-------------------code----------------------
+dy/du
+du/dt
+dt/dx
+-------------------code----------------------
+
+Then multiply:
+
+[
+\frac{dy}{dx}
+=============
+
+\frac{dy}{du}
+\frac{du}{dt}
+\frac{dt}{dx}
+]
+
+The intermediate terms cancel conceptually:
+
+[
+\frac{dy}{\cancel{du}}
+\frac{\cancel{du}}{\cancel{dt}}
+\frac{\cancel{dt}}{dx}
+======================
+
+\frac{dy}{dx}
+]
+
+This is why it is called the **Chain Rule**.
+
+---
+
+# 8. How to Decide Which Rule to Use
+
+A useful review strategy is to look at the structure of the function first.
+
+| Function structure       | Rule                           |
+| ------------------------ | ------------------------------ |
+| Constant                 | Constant Rule                  |
+| (x^n)                    | Power Rule                     |
+| (cx^n)                   | Constant Multiple + Power Rule |
+| (f(x)+g(x))              | Sum Rule                       |
+| (f(x)g(x))               | Product Rule                   |
+| (\frac{f(x)}{g(x)})      | Quotient Rule                  |
+| (f(g(x)))                | Chain Rule                     |
+| Several nested functions | Chain Rule repeatedly          |
+
+In complicated expressions, **multiple rules can be required simultaneously**.
+
+For example:
+
+[
+(x^2+5x)^6
+]
+
+requires:
+
+* Sum Rule
+* Power Rule
+* Constant Multiple Rule
+* Chain Rule
+
+---
+
+# 9. Important Notes and Best Practices
+
+### 1. Work from the inside out
+
+For Chain Rule problems, identify the **innermost function first**.
+
+For example:
+
+[
+y=\frac{1}{((x^4+1)^5+7)}
+]
+
+think:
+
+-------------------code----------------------
+x
+↓
+x⁴ + 1
+↓
+(x⁴ + 1)⁵ + 7
+↓
+1 / [(x⁴ + 1)⁵ + 7]
+-------------------code----------------------
+
+This makes the structure much easier to understand.
+
+### 2. Do not expand unnecessarily
+
+For example:
+
+[
+6(x^2+5x)^5(2x+5)
+]
+
+is usually better than expanding everything.
+
+Likewise:
+
+[
+\frac{-20x^3(x^4+1)^4}
+{((x^4+1)^5+7)^2}
+]
+
+is much easier to understand than a huge expanded polynomial.
+
+### 3. Name intermediate functions
+
+For complicated Chain Rule problems, use:
+
+[
+t,\ u,\ v,\ldots
+]
+
+This prevents you from losing track of which layer you are differentiating.
+
+### 4. Check the structure before calculating
+
+Do not immediately start applying rules.
+
+First ask:
+
+> Is this a product, quotient, nested function, or combination of several structures?
+
+Then choose the appropriate rule.
+
+---
+
+# 10. Full Final Code
+
+-------------------code----------------------
+import sympy as sp
+
+# Define the variable
+x = sp.symbols('x')
+
+
+# --------------------------------------------------
+# Exercise 1: Product Rule
+# y = (2x^2 + 6x)(2x^3 + 5x^2)
+# --------------------------------------------------
+
+W1 = 2*x**2 + 6*x
+Z1 = 2*x**3 + 5*x**2
+
+y1 = W1 * Z1
+dy1_dx = sp.simplify(sp.diff(y1, x))
+
+print("Exercise 1:")
+print("y =", y1)
+print("dy/dx =", dy1_dx)
+
+
+# --------------------------------------------------
+# Exercise 2: Quotient Rule
+# y = 6x^2 / (2 - x)
+# --------------------------------------------------
+
+W2 = 6*x**2
+Z2 = 2 - x
+
+y2 = W2 / Z2
+dy2_dx = sp.simplify(sp.diff(y2, x))
+
+print("\nExercise 2:")
+print("y =", y2)
+print("dy/dx =", dy2_dx)
+
+
+# --------------------------------------------------
+# Exercise 3: Chain Rule
+# y = (3x + 1)^2
+# --------------------------------------------------
+
+y3 = (3*x + 1)**2
+dy3_dx = sp.simplify(sp.diff(y3, x))
+
+print("\nExercise 3:")
+print("y =", y3)
+print("dy/dx =", dy3_dx)
+
+
+# --------------------------------------------------
+# Exercise 4: Chain Rule
+# y = (x^2 + 5x)^6
+# --------------------------------------------------
+
+y4 = (x**2 + 5*x)**6
+dy4_dx = sp.simplify(sp.diff(y4, x))
+
+print("\nExercise 4:")
+print("y =", y4)
+print("dy/dx =", dy4_dx)
+
+
+# --------------------------------------------------
+# Exercise 5: Multiple Chain Rule
+# y = 1 / ((x^4 + 1)^5 + 7)
+# --------------------------------------------------
+
+y5 = 1 / ((x**4 + 1)**5 + 7)
+dy5_dx = sp.simplify(sp.diff(y5, x))
+
+print("\nExercise 5:")
+print("y =", y5)
+print("dy/dx =", dy5_dx)
+-------------------code----------------------
+
+---
+
+# 11. Summary
+
+The main goal of this lecture is to become comfortable **combining differentiation rules**.
+
+### Exercise 1 — Product Rule
+
+[
+\boxed{
+\frac{dy}{dx}=24x^4+80x^3+60x^2
+}
+]
+
+### Exercise 2 — Quotient Rule
+
+[
+\boxed{
+\frac{dy}{dx}
+=============
+
+\frac{-6x^2+24x}{(2-x)^2}
+}
+]
+
+### Exercise 3 — Chain Rule
+
+[
+\boxed{
+\frac{dy}{dx}=18x+6
+}
+]
+
+### Exercise 4 — Chain Rule
+
+[
+\boxed{
+\frac{dy}{dx}
+=============
+
+6(x^2+5x)^5(2x+5)
+}
+]
+
+### Exercise 5 — Multiple Chain Rule
+
+[
+\boxed{
+\frac{dy}{dx}
+=============
+
+\frac{-20x^3(x^4+1)^4}
+{\left((x^4+1)^5+7\right)^2}
+}
+]
+
+The most important skill here is not memorizing isolated formulas. It is **recognizing the structure of a function and choosing the appropriate rule**, often combining several rules in the same problem.
