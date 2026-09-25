@@ -1040,3 +1040,905 @@ Trained Model ←── Used in ←──
 | Why do we need this? | To build AI systems that learn from data |
 
 ---
+
+*** 60. How Derivatives Arise from Limits ***
+
+# Calculus 1 – The Delta Method and the Definition of Derivatives
+
+## Lecture Summary (Structured Notes)
+
+---
+
+# 1. Objective of This Lecture
+
+This lecture introduces the **Delta Method**, an old but powerful technique for finding the **slope of a curve at any point**.
+
+The lecture also shows how the Delta Method leads directly to the **standard derivative formula** used throughout calculus.
+
+By the end of the lecture you should understand:
+
+* What the Delta Method is
+* Why two nearby points are needed
+* Why limits are necessary
+* How the derivative formula is derived from first principles
+
+---
+
+# 2. Starting Function
+
+Throughout the lecture, the same function is used.
+
+[
+f(x)=x^2+2x+2
+]
+
+Python:
+
+-------------------code----------------------
+def f(x):
+    return x**2 + 2*x + 2
+-------------------code----------------------
+
+---
+
+# 3. Plot the Curve
+
+Generate many x-values to make the graph smooth.
+
+-------------------code----------------------
+import numpy as np
+import matplotlib.pyplot as plt
+
+x = np.linspace(-10, 10, 1000)
+y = f(x)
+
+plt.plot(x, y)
+plt.show()
+-------------------code----------------------
+
+Why 1000 points?
+
+* Smooth graph
+* Better visualization
+* Higher accuracy
+
+---
+
+# 4. Choose Point P
+
+Suppose we want the slope at
+
+[
+x=2
+]
+
+Calculate y.
+
+-------------------code----------------------
+x1 = 2
+y1 = f(x1)
+
+print(x1, y1)
+-------------------code----------------------
+
+Output
+
+-------------------code----------------------
+2 10
+-------------------code----------------------
+
+Point P is
+
+[
+(2,10)
+]
+
+---
+
+# 5. Choose Another Nearby Point Q
+
+Initially choose
+
+[
+x=5
+]
+
+-------------------code----------------------
+x2 = 5
+y2 = f(x2)
+-------------------code----------------------
+
+Point Q becomes
+
+-------------------code----------------------
+(5,37)
+-------------------code----------------------
+
+---
+
+# 6. Calculate the Slope Between Two Points
+
+The slope formula is
+
+[
+m=\frac{\Delta y}{\Delta x}
+]
+
+or
+
+[
+m=\frac{y_2-y_1}{x_2-x_1}
+]
+
+Python
+
+-------------------code----------------------
+m = (y2 - y1) / (x2 - x1)
+print(m)
+-------------------code----------------------
+
+Output
+
+-------------------code----------------------
+9
+-------------------code----------------------
+
+This is **not** the true derivative.
+
+It is only the slope of the line connecting P and Q.
+
+This line is called the **secant line**.
+
+---
+
+# 7. Find the Line Equation
+
+The line equation is
+
+[
+y=mx+b
+]
+
+Solve for b
+
+[
+b=y-mx
+]
+
+Python
+
+-------------------code----------------------
+b = y2 - m*x2
+-------------------code----------------------
+
+Now generate the line.
+
+-------------------code----------------------
+line = m*x + b
+
+plt.plot(x, y)
+plt.plot(x, line)
+plt.scatter([x1], [y1])
+plt.scatter([x2], [y2])
+plt.show()
+-------------------code----------------------
+
+---
+
+# 8. Move Point Q Closer
+
+Instead of
+
+-------------------code----------------------
+x = 5
+-------------------code----------------------
+
+move Q much closer.
+
+-------------------code----------------------
+x = 2.1
+-------------------code----------------------
+
+-------------------code----------------------
+x2 = 2.1
+y2 = f(x2)
+
+m = (y2-y1)/(x2-x1)
+
+print(m)
+-------------------code----------------------
+
+Output
+
+-------------------code----------------------
+6.1
+-------------------code----------------------
+
+Notice
+
+-------------------code----------------------
+Before : 9
+Now    : 6.1
+-------------------code----------------------
+
+The closer Q gets to P, the closer the slope gets to the real slope.
+
+---
+
+# 9. Make Δx Extremely Small
+
+Now let
+
+-------------------code----------------------
+delta = 1e-6
+-------------------code----------------------
+
+Instead of choosing x manually,
+
+-------------------code----------------------
+x2 = x1 + delta
+-------------------code----------------------
+
+-------------------code----------------------
+delta = 1e-6
+
+x2 = x1 + delta
+y2 = f(x2)
+
+m = (y2-y1)/(x2-x1)
+
+print(m)
+-------------------code----------------------
+
+Output
+
+-------------------code----------------------
+6.000001...
+-------------------code----------------------
+
+The slope approaches
+
+-------------------code----------------------
+6
+-------------------code----------------------
+
+This is the actual slope of the curve at
+
+[
+x=2
+]
+
+---
+
+# 10. Why Does This Work?
+
+Initially
+
+-------------------code----------------------
+P ----------- Q
+-------------------code----------------------
+
+The line between them is only an approximation.
+
+Move Q closer
+
+-------------------code----------------------
+P ---Q
+-------------------code----------------------
+
+Even better approximation.
+
+Move Q almost on top of P
+
+-------------------code----------------------
+PQ
+-------------------code----------------------
+
+Now the secant line becomes the **tangent line**.
+
+The tangent line represents the true slope.
+
+---
+
+# 11. Relationship Between Δx and Limits
+
+As
+
+[
+\Delta x
+]
+
+gets smaller,
+
+our approximation improves.
+
+Eventually
+
+[
+\Delta x \rightarrow 0
+]
+
+Notice:
+
+Q never becomes exactly P.
+
+It gets **infinitely close**.
+
+That is exactly why **limits** are needed.
+
+---
+
+# 12. Exercise
+
+The lecture asks students to repeat the same process for
+
+[
+x=-1
+]
+
+Instead of
+
+-------------------code----------------------
+x = 2
+-------------------code----------------------
+
+Set
+
+-------------------code----------------------
+x1 = -1
+-------------------code----------------------
+
+Repeat the exact same calculations.
+
+You should obtain
+
+-------------------code----------------------
+Slope = 0
+-------------------code----------------------
+
+which matches the graph since the curve reaches its minimum there.
+
+---
+
+# 13. Deriving the Derivative Formula
+
+The slope equation is
+
+[
+m=\frac{\Delta y}{\Delta x}
+]
+
+As
+
+[
+\Delta x\rightarrow0
+]
+
+the slope becomes the derivative.
+
+This gives
+
+[
+\frac{dy}{dx}
+=============
+
+\lim_{\Delta x\to0}
+\frac{\Delta y}{\Delta x}
+]
+
+Since
+
+[
+\Delta y=y_2-y_1
+]
+
+the equation becomes
+
+[
+\frac{dy}{dx}
+=============
+
+\lim_{\Delta x\to0}
+\frac{y_2-y_1}{\Delta x}
+]
+
+Replace
+
+[
+y_1=f(x)
+]
+
+and
+
+[
+y_2=f(x+\Delta x)
+]
+
+The final formula is:
+
+This is the **definition of the derivative from first principles**.
+
+---
+
+# 14. Create a General Differentiation Function
+
+Instead of repeating calculations, write a reusable function.
+
+-------------------code----------------------
+def differentiation_demo(f, x, delta):
+    return (f(x + delta) - f(x)) / delta
+-------------------code----------------------
+
+Now test different delta values.
+
+-------------------code----------------------
+deltas = [1, 0.1, 0.01, 0.001, 1e-6]
+
+for d in deltas:
+    print(d, differentiation_demo(f, 2, d))
+-------------------code----------------------
+
+Output (approximately)
+
+-------------------code----------------------
+1       7
+0.1     6.1
+0.01    6.01
+0.001   6.001
+1e-6    6.000001
+-------------------code----------------------
+
+The approximation converges toward
+
+-------------------code----------------------
+6
+-------------------code----------------------
+
+---
+
+# 15. Test Another Point
+
+Now evaluate
+
+-------------------code----------------------
+for d in deltas:
+    print(d, differentiation_demo(f, -1, d))
+-------------------code----------------------
+
+Output
+
+-------------------code----------------------
+1        1
+0.1      0.1
+0.01     0.01
+0.001    0.001
+1e-6     0.000001
+-------------------code----------------------
+
+The derivative approaches
+
+-------------------code----------------------
+0
+-------------------code----------------------
+
+Exactly as expected.
+
+---
+
+# 16. Important Concepts
+
+| Concept      | Meaning                                  |
+| ------------ | ---------------------------------------- |
+| P            | Point where we want the derivative       |
+| Q            | Nearby point                             |
+| Δx           | Difference in x-values                   |
+| Δy           | Difference in y-values                   |
+| Secant Line  | Line through P and Q                     |
+| Tangent Line | Limiting secant line as Q approaches P   |
+| Derivative   | Slope of the tangent line                |
+| Limit        | Mathematical way to let Δx approach zero |
+
+---
+
+# 17. Best Practices
+
+* Always choose a **very small** Δx.
+* Never set Δx exactly equal to zero (division by zero occurs).
+* The smaller Δx becomes, the more accurate the derivative estimate.
+* Understand the geometric meaning before memorizing formulas.
+* The derivative is fundamentally the **limit of secant slopes**.
+
+---
+
+# 18. Full Final Code
+
+-------------------code----------------------
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Function
+def f(x):
+    return x**2 + 2*x + 2
+
+# Plot curve
+x = np.linspace(-10, 10, 1000)
+y = f(x)
+
+plt.plot(x, y)
+
+# Point P
+x1 = 2
+y1 = f(x1)
+
+plt.scatter([x1], [y1])
+
+# Point Q
+delta = 1e-6
+x2 = x1 + delta
+y2 = f(x2)
+
+plt.scatter([x2], [y2])
+
+# Slope
+m = (y2 - y1) / (x2 - x1)
+
+# Line equation
+b = y2 - m * x2
+
+line = m * x + b
+
+plt.plot(x, line)
+
+plt.show()
+
+print("Slope:", m)
+
+# General differentiation function
+def differentiation_demo(func, x, delta):
+    return (func(x + delta) - func(x)) / delta
+
+deltas = [1, 0.1, 0.01, 0.001, 1e-6]
+
+print("\nDerivative at x = 2")
+for d in deltas:
+    print(d, differentiation_demo(f, 2, d))
+
+print("\nDerivative at x = -1")
+for d in deltas:
+    print(d, differentiation_demo(f, -1, d))
+-------------------code----------------------
+
+---
+
+# 19. Summary
+
+* The **Delta Method** estimates the slope using two nearby points.
+* The line connecting these points is called the **secant line**.
+* As the second point moves infinitely close to the first (**Δx → 0**), the secant line becomes the **tangent line**.
+* The slope of the tangent line is the **derivative**.
+* Using limits, we derive the standard derivative formula from first principles.
+* Implementing this process in Python demonstrates how smaller values of Δx produce increasingly accurate approximations of the true derivative.
+
+
+Simple Lecture 
+# Delta Method and Definition of Derivatives - Simple Explanation
+
+---
+
+## Part 1: The Whole Story in One Sentence
+
+You have a curve and you want to know how steep it is at a specific point. You take two very close points, calculate the slope between them, and keep moving them closer until they almost touch. That slope is called the "derivative".
+
+---
+
+## Part 2: Real-Life Analogy
+
+### Imagine you are standing on a hill
+
+| Question | Simple Answer |
+| :--- | :--- |
+| How do you know if the hill is steep or flat? | Look at the ground under your feet |
+| If the ground drops quickly -> steep hill | Large slope |
+| If the ground is flat -> easy hill | Small slope (close to zero) |
+
+---
+
+## Part 3: The Delta Method (With Drawing)
+
+### We have a curve:
+
+-------------------code----------------------
+      *
+     *
+    *
+   *
+  *
+ *
+-------------------code----------------------
+
+### We want to know the slope at the red point:
+
+-------------------code----------------------
+      *
+     *
+    *R
+   *
+  *
+ *
+-------------------code----------------------
+
+### We take a nearby green point:
+
+-------------------code----------------------
+      *
+     *
+    *R
+   *G
+  *
+ *
+-------------------code----------------------
+
+### We calculate the slope between them:
+
+-------------------code----------------------
+Vertical distance (difference in y)
+────────────────────────────────── = Slope
+Horizontal distance (difference in x)
+-------------------code----------------------
+
+### We move the points closer and closer:
+
+-------------------code----------------------
+First try:      *R----*G   (far apart)  -> slope = 5
+Second try:     *R-*G      (closer)     -> slope = 4.5
+Third try:      *R*G       (very close) -> slope = 4.1
+Fourth try:     *RG        (touching)   -> slope = 4
+-------------------code----------------------
+
+The last time, the points are almost touching. This is the true slope = the derivative.
+
+---
+
+## Part 4: Example with Numbers (Very Simple)
+
+### We have a function: f(x) = x²
+
+We want to find the slope at x = 2.
+
+### Try different nearby points:
+
+| Attempt | Second Point | Calculated Slope |
+| :--- | :--- | :--- |
+| 1 | 3 | (9-4) / (3-2) = 5 |
+| 2 | 2.5 | (6.25-4) / (2.5-2) = 4.5 |
+| 3 | 2.1 | (4.41-4) / (2.1-2) = 4.1 |
+| 4 | 2.01 | (4.0401-4) / (2.01-2) = 4.01 |
+| 5 | 2.0001 | (4.0004-4) / (2.0001-2) = 4.0001 |
+
+As we get closer, the slope gets closer to 4.
+The true slope is 4.
+
+---
+
+## Part 5: What is Delta (Δ)?
+
+Delta = the difference (distance between the two points)
+
+-------------------code----------------------
+Δx = difference in x (horizontal distance)
+Δy = difference in y (vertical distance)
+Slope = Δy / Δx
+-------------------code----------------------
+
+Like saying:
+- Δx = "How many steps did you take to the right?"
+- Δy = "How many steps did you take up?"
+- Slope = "How many up for each step to the right?"
+
+---
+
+## Part 6: The Derivative = The True Slope
+
+| Slope | What it is |
+| :--- | :--- |
+| Between two far points | Approximation (not exact) |
+| Between two very close points | Very accurate |
+| Between two touching points (distance = 0) | The derivative (100% exact) |
+
+---
+
+## Part 7: Pizza Analogy
+
+Imagine you have a round pizza and you want to know how curved the edge is.
+
+| Method | Explanation |
+| :--- | :--- |
+| Measure between two far points on the edge | Approximation (not exact) |
+| Measure between two closer points | Better |
+| Measure between two touching points | Exact |
+
+The touching points = the derivative.
+
+---
+
+## Part 8: Running Analogy
+
+You want to know your speed at an exact moment.
+
+| Method | Explanation |
+| :--- | :--- |
+| Measure distance over 10 seconds | Average speed (approximation) |
+| Measure distance over 1 second | Better |
+| Measure distance over 0.0001 seconds | Very accurate |
+| Measure at a moment (time = 0) | Instantaneous speed = the derivative |
+
+---
+
+## Part 9: Summary in the Simplest Words
+
+| Question | Simple Answer |
+| :--- | :--- |
+| What is the Delta Method? | Take two close points and calculate the slope between them |
+| What is slope? | How steep the hill is |
+| What is Δx? | The horizontal distance between the two points |
+| What is Δy? | The vertical distance between the two points |
+| What is the derivative? | The slope when the two points are touching (distance = 0) |
+| How do we get the derivative? | Keep moving the points closer until they touch |
+
+---
+
+## Part 10: The Most Important Sentence
+
+The Delta Method means taking two close points and calculating the slope between them. The closer they get, the more accurate the slope becomes. When they touch, the slope is called the "derivative".
+
+---
+
+## Part 11: Visual Summary
+
+-------------------code----------------------
+The Curve:
+      *
+     *
+    *R---*G  (far apart) -> slope = 5
+   *
+  *
+ *
+
+      *
+     *
+    *R-*G   (closer) -> slope = 4.5
+   *
+  *
+ *
+
+      *
+     *
+    *RG    (touching) -> slope = 4 -> This is the derivative!
+   *
+  *
+ *
+-------------------code----------------------
+
+---
+
+## Part 12: The Derivative Formula (Simple Version)
+
+The slope formula:
+-------------------code----------------------
+Slope = (y2 - y1) / (x2 - x1)
+-------------------code----------------------
+
+When the two points get infinitely close:
+-------------------code----------------------
+Derivative = limit of slope as distance approaches zero
+-------------------code----------------------
+
+In math notation:
+-------------------code----------------------
+        f(x + Δx) - f(x)
+f'(x) = lim ──────────────
+        Δx→0      Δx
+-------------------code----------------------
+
+---
+
+## Part 13: Key Concepts
+
+| Concept | Meaning |
+| :--- | :--- |
+| P | The point where we want the derivative |
+| Q | A nearby point |
+| Δx | The difference in x-values |
+| Δy | The difference in y-values |
+| Secant Line | The line through P and Q |
+| Tangent Line | The line that touches the curve at one point |
+| Derivative | The slope of the tangent line |
+| Limit | The mathematical way to let Δx approach zero |
+
+---
+
+## Part 14: Why This Matters
+
+This idea is the foundation of:
+- All of calculus
+- Finding slopes of curves
+- Optimization problems
+- Machine learning (Gradient Descent)
+- Neural network training
+
+Without this simple idea, modern machine learning would not exist.
+
+---
+
+## Part 15: Final Summary Table
+
+| Question | Answer |
+| :--- | :--- |
+| What is the Delta Method? | Calculating slope using two close points |
+| What is a secant line? | The line between two points on a curve |
+| What is a tangent line? | The line that touches the curve at one point |
+| How do we get the derivative? | Make Δx approach zero (use limits) |
+| What is the derivative formula? | lim [f(x+Δx) - f(x)] / Δx |
+| Why is this important? | It is the foundation of calculus and machine learning |
+
+---
+
+## Part 16: Full Python Code
+
+-------------------code----------------------python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Function
+def f(x):
+    return x**2 + 2*x + 2
+
+# Plot curve
+x = np.linspace(-10, 10, 1000)
+y = f(x)
+
+plt.plot(x, y)
+
+# Point P
+x1 = 2
+y1 = f(x1)
+plt.scatter([x1], [y1])
+
+# Point Q (very close)
+delta = 1e-6
+x2 = x1 + delta
+y2 = f(x2)
+plt.scatter([x2], [y2])
+
+# Slope
+m = (y2 - y1) / (x2 - x1)
+
+# Line equation
+b = y2 - m * x2
+line = m * x + b
+
+plt.plot(x, line)
+plt.show()
+
+print("Slope =", m)
+
+# General differentiation function
+def differentiation_demo(func, x, delta):
+    return (func(x + delta) - func(x)) / delta
+
+deltas = [1, 0.1, 0.01, 0.001, 1e-6]
+
+print("\nDerivative at x = 2")
+for d in deltas:
+    print(f"Δx = {d}: slope = {differentiation_demo(f, 2, d):.6f}")
+
+print("\nDerivative at x = -1")
+for d in deltas:
+    print(f"Δx = {d}: slope = {differentiation_demo(f, -1, d):.6f}")
+-------------------code----------------------
+
+---
+
+## Part 17: Final Thought
+
+> The derivative is simply the slope of a curve at a single point. We find it by taking two points that are infinitely close together and calculating the slope between them. This simple idea is the foundation of all calculus and modern machine learning.
