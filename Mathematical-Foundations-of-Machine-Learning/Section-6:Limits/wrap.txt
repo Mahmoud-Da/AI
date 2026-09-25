@@ -2434,3 +2434,811 @@ and
 [
 \boxed{\pi \approx 3.14 \quad \text{but} \quad \pi \neq 3.14}
 ]
+
+
+*** 54. Calculus of the Infinitesimals ***
+# Calculus 1 - Calculus of the Infinitesimals (Limits and Tangent Lines)
+
+## 1. Overview
+
+This lecture explains the connection between **infinity** and **finding the slope of a curve**.
+
+The key idea is:
+
+* In **Integral Calculus**, increasing the number of polygon sides toward **infinity** gives a more accurate area.
+* In **Differential Calculus**, zooming into a curve **infinitely closely** makes it look like a straight line, allowing us to accurately determine its slope.
+
+This concept is known as the **Calculus of the Infinitesimals**.
+
+---
+
+# 2. Core Idea
+
+## Differential Calculus
+
+The goal of differential calculus is to find the **slope (derivative)** at any point on a curve.
+
+At first glance, curves do not have a single slope because their steepness changes continuously.
+
+However:
+
+1. Pick a point on the curve.
+2. Zoom in closer.
+3. Zoom in even more.
+4. Eventually, the curve becomes almost indistinguishable from a straight line.
+
+At that tiny scale:
+
+* A tangent line can be drawn.
+* The slope of the tangent equals the derivative.
+
+This is the same "approaching infinity" idea used in the Method of Exhaustion.
+
+---
+
+# 3. Why Infinity Matters
+
+Just like:
+
+* More polygon sides → Better approximation of a circle.
+
+Similarly:
+
+* More zoom into a curve → Better approximation of a straight line.
+
+As the zoom approaches infinity:
+
+* The approximation becomes exact.
+* The tangent line accurately represents the curve at that point.
+
+This is the foundation of modern differential calculus.
+
+---
+
+# 4. Hands-on Python Demo
+
+The lecture demonstrates this concept by repeatedly zooming into a curve.
+
+---
+
+# 5. Import Libraries
+
+-------------------code----------------------
+import numpy as np
+import matplotlib.pyplot as plt
+-------------------code----------------------
+
+These libraries are used for:
+
+* Numerical computations
+* Plotting graphs
+
+---
+
+# 6. Generate X Values
+
+Create 1000 evenly spaced x-values.
+
+-------------------code----------------------
+x = np.linspace(-10, 10, 1000)
+-------------------code----------------------
+
+Explanation:
+
+* Start: -10
+* End: 10
+* Total points: 1000
+
+A large number of points creates a smooth curve.
+
+---
+
+# 7. Compute the Function
+
+Pass every x-value into a mathematical function.
+
+Example:
+
+-------------------code----------------------
+y = x**2 + 2*x + 1
+-------------------code----------------------
+
+The lecture focuses on a curve that has a turning point near:
+
+[
+x=-1
+]
+
+The exact function is less important than understanding the zooming process.
+
+---
+
+# 8. Plot the Entire Curve
+
+-------------------code----------------------
+plt.plot(x, y)
+plt.show()
+-------------------code----------------------
+
+Result:
+
+* A smooth curve.
+* No obvious straight sections.
+
+At this scale, estimating the tangent line is difficult.
+
+---
+
+# 9. First Zoom
+
+Focus on a smaller portion.
+
+-------------------code----------------------
+plt.xlim(-2, 0)
+plt.ylim(0, 2)
+plt.plot(x, y)
+plt.show()
+-------------------code----------------------
+
+Observation:
+
+The curve still looks curved.
+
+---
+
+# 10. Second Zoom
+
+Zoom in further.
+
+-------------------code----------------------
+plt.xlim(-1.5, -0.5)
+plt.plot(x, y)
+plt.show()
+-------------------code----------------------
+
+Observation:
+
+The curve begins to flatten.
+
+---
+
+# 11. Third Zoom
+
+Zoom even closer.
+
+-------------------code----------------------
+plt.xlim(-1.1, -0.9)
+plt.plot(x, y)
+plt.show()
+-------------------code----------------------
+
+Observation:
+
+The curve now resembles a nearly straight line.
+
+---
+
+# 12. Final Zoom
+
+Zoom extremely close.
+
+-------------------code----------------------
+plt.xlim(-1.01, -0.99)
+plt.plot(x, y)
+plt.show()
+-------------------code----------------------
+
+Observation:
+
+The curve appears almost perfectly horizontal.
+
+This indicates:
+
+* Tangent slope ≈ 0
+* The turning point is approximately:
+
+[
+x=-1
+]
+
+---
+
+# 13. Tangent Line
+
+At any point:
+
+* Draw a line that just touches the curve.
+* This is called the **tangent line**.
+
+The tangent's slope is the derivative.
+
+Example:
+
+-------------------code----------------------
+Curve
+
+      /
+     /
+----*---------
+-------------------code----------------------
+
+The tangent touches the curve at exactly one point.
+
+Its slope tells us:
+
+* How fast the function is increasing.
+* How fast the function is decreasing.
+
+---
+
+# 14. Finding the Turning Point
+
+A turning point occurs when:
+
+* The curve stops decreasing.
+* The curve starts increasing.
+
+At that point:
+
+[
+\boxed{\text{Slope}=0}
+]
+
+In this lecture:
+
+-------------------code----------------------
+Turning Point
+
+      ∪
+     *
+-------------------code----------------------
+
+The tangent is perfectly horizontal.
+
+---
+
+# 15. Why Use 1000 Points?
+
+The instructor chose:
+
+-------------------code----------------------
+1000
+-------------------code----------------------
+
+because it produces:
+
+* Smooth plots
+* High resolution
+* Easy visualization
+
+It is **not** a mathematical requirement.
+
+Using:
+
+-------------------code----------------------
+500
+-------------------code----------------------
+
+or
+
+-------------------code----------------------
+2000
+-------------------code----------------------
+
+would also work.
+
+---
+
+# 16. Why Zoom Around x = -1?
+
+The function's minimum occurs near:
+
+[
+x=-1
+]
+
+The lecture zooms into this region because:
+
+* That's where the tangent becomes horizontal.
+* The derivative equals zero.
+
+---
+
+# 17. Key Mathematical Idea
+
+As we zoom in:
+
+-------------------code----------------------
+Curve
+   )
+
+↓
+
+Closer
+
+ )
+
+↓
+
+Very Close
+
+/
+
+↓
+
+Infinitely Close
+
+Perfect Line
+-------------------code----------------------
+
+The curve approaches a straight line.
+
+This is why derivatives exist.
+
+---
+
+# 18. Connection to the Method of Exhaustion
+
+Method of Exhaustion:
+
+-------------------code----------------------
+4 sides
+↓
+
+8 sides
+↓
+
+16 sides
+↓
+
+32 sides
+↓
+
+∞ sides
+↓
+
+Circle
+-------------------code----------------------
+
+Differential Calculus:
+
+-------------------code----------------------
+Far Away
+↓
+
+Zoom
+↓
+
+Zoom
+↓
+
+Zoom
+↓
+
+∞ Zoom
+↓
+
+Straight Line
+-------------------code----------------------
+
+Both rely on the same mathematical principle:
+
+**Approaching infinity to obtain an exact result.**
+
+---
+
+# 19. Important Notes
+
+* Curves do not have a constant slope.
+* Every point on a smooth curve has its own tangent.
+* The derivative is the slope of the tangent.
+* Zooming infinitely close makes a curve behave like a line.
+* Turning points occur where the slope is zero.
+* This idea forms the foundation of limits and differentiation.
+
+---
+
+# 20. Best Practices
+
+* Always visualize functions before computing derivatives.
+* Remember that derivatives are **local** properties (at one point).
+* Understand the geometric meaning before learning derivative formulas.
+* Think of derivatives as the slope of a tangent line, not just a formula.
+* The concept of "approaching infinity" is more important than memorizing equations.
+
+---
+
+# 21. Full Final Code
+
+-------------------code----------------------
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Generate x values
+x = np.linspace(-10, 10, 1000)
+
+# Example function
+y = x**2 + 2*x + 1
+
+# Entire curve
+plt.plot(x, y)
+plt.title("Entire Curve")
+plt.show()
+
+# First zoom
+plt.plot(x, y)
+plt.xlim(-2, 0)
+plt.ylim(0, 2)
+plt.title("First Zoom")
+plt.show()
+
+# Second zoom
+plt.plot(x, y)
+plt.xlim(-1.5, -0.5)
+plt.title("Second Zoom")
+plt.show()
+
+# Third zoom
+plt.plot(x, y)
+plt.xlim(-1.1, -0.9)
+plt.title("Third Zoom")
+plt.show()
+
+# Final zoom
+plt.plot(x, y)
+plt.xlim(-1.01, -0.99)
+plt.title("Final Zoom")
+plt.show()
+-------------------code----------------------
+
+---
+
+# 22. Summary
+
+* Calculus uses the idea of **approaching infinity** to obtain exact results.
+* Just as an infinite-sided polygon approaches a circle, an infinitely zoomed-in curve approaches a straight line.
+* This straight line is the **tangent line**.
+* The tangent's slope is the **derivative**.
+* The lecture demonstrated this by repeatedly zooming into a curve until it appeared flat at its turning point.
+* This concept is the geometric foundation of **limits**, **derivatives**, and all of differential calculus.
+
+
+
+# Calculus of the Infinitesimals (Limits and Tangent Lines) - Full English Version
+
+---
+
+## Part 1: Overview
+
+This lecture explains the connection between **infinity** and **finding the slope of a curve**.
+
+The key idea is:
+
+* In **Integral Calculus**, increasing the number of polygon sides toward **infinity** gives a more accurate area.
+* In **Differential Calculus**, zooming into a curve **infinitely closely** makes it look like a straight line, allowing us to accurately determine its slope.
+
+This concept is known as the **Calculus of the Infinitesimals**.
+
+---
+
+## Part 2: The Core Idea
+
+### Differential Calculus
+
+The goal of differential calculus is to find the **slope (derivative)** at any point on a curve.
+
+At first glance, curves do not have a single slope because their steepness changes continuously.
+
+However:
+
+1. Pick a point on the curve.
+2. Zoom in closer.
+3. Zoom in even more.
+4. Eventually, the curve becomes almost indistinguishable from a straight line.
+
+At that tiny scale:
+
+* A tangent line can be drawn.
+* The slope of the tangent equals the derivative.
+
+This is the same "approaching infinity" idea used in the Method of Exhaustion.
+
+---
+
+## Part 3: Why Infinity Matters
+
+Just like:
+
+> More polygon sides → Better approximation of a circle.
+
+Similarly:
+
+> More zoom into a curve → Better approximation of a straight line.
+
+As the zoom approaches infinity:
+
+* The approximation becomes exact.
+* The tangent line accurately represents the curve at that point.
+
+This is the foundation of modern differential calculus.
+
+---
+
+## Part 4: How It Works in Machine Learning 🔥
+
+### The Connection
+
+In Machine Learning, we use exactly the same idea!
+
+| Concept in Calculus | Concept in ML |
+| :--- | :--- |
+| Curve | Loss Function (Error curve) |
+| Point on curve | Current weight value |
+| Slope (Derivative) | Gradient (tells direction) |
+| Finding minimum | Finding best weights |
+
+---
+
+### The Problem ML Solves
+
+In Machine Learning, we have:
+
+-------------------code----------------------
+Loss Function = Error that changes with different weights
+We want to reach the lowest point (minimum error)
+The slope (gradient) tells us which direction to move
+-------------------code----------------------
+
+### Analogy:
+Imagine you are **standing on a mountain** (Loss curve), and you want to **reach the valley** (lowest error).
+
+| Question | Answer in ML |
+| :--- | :--- |
+| Where are you now? | Current weight value |
+| What is the curve? | Loss Function |
+| What is the slope? | Tells you: Are you on a slope? Which direction? |
+| What do you do with the slope? | Move opposite to the slope (go downhill) |
+
+---
+
+## Part 5: Practical ML Example (Linear Regression)
+
+### The Data:
+-------------------code----------------------
+Dosage (x) → Forgetfulness (y)
+0 → 1.86
+1 → 1.31
+2 → 0.62
+3 → 0.57
+...
+-------------------code----------------------
+
+### We want to find the best line:
+-------------------code----------------------
+y = m × x + b
+-------------------code----------------------
+
+### The Error (Mean Squared Error):
+-------------------code----------------------
+Error = Average (y_true - y_pred)²
+-------------------code----------------------
+
+### The Loss Function for weight `m`:
+-------------------code----------------------
+Loss(m) = Average (y - (m × x + b))²
+-------------------code----------------------
+
+---
+
+## Part 6: How We Use the Slope (Derivative)
+
+### The derivative (slope) tells us the direction of improvement
+
+-------------------code----------------------
+If slope > 0 (curve is going up):
+    → We need to decrease the weight
+
+If slope < 0 (curve is going down):
+    → We need to increase the weight
+
+If slope = 0:
+    → We reached the bottom (best value!)
+-------------------code----------------------
+
+### The Update Rule (Gradient Descent):
+-------------------code----------------------
+new_weight = old_weight - (learning_rate × derivative)
+-------------------code----------------------
+
+---
+
+## Part 7: Python Code Example
+
+-------------------code----------------------python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 1. Sample data
+x = np.array([1, 2, 3, 4, 5])
+y = np.array([2, 4, 6, 8, 10])  # Relationship: y = 2x
+
+# 2. Start with random guess
+m = 0  # slope
+b = 0  # intercept
+learning_rate = 0.01
+
+# 3. Loss function (Mean Squared Error)
+def loss(m, b, x, y):
+    y_pred = m * x + b
+    return np.mean((y_pred - y) ** 2)
+
+# 4. Derivative (slope) with respect to m
+def gradient_m(m, b, x, y):
+    y_pred = m * x + b
+    return np.mean(2 * (y_pred - y) * x)
+
+# 5. Derivative (slope) with respect to b
+def gradient_b(m, b, x, y):
+    y_pred = m * x + b
+    return np.mean(2 * (y_pred - y))
+
+# 6. Training (Gradient Descent)
+losses = []
+ms = []
+
+for i in range(100):
+    # Calculate slope (derivative)
+    dm = gradient_m(m, b, x, y)
+    db = gradient_b(m, b, x, y)
+    
+    # Update weights (go downhill)
+    m = m - learning_rate * dm
+    b = b - learning_rate * db
+    
+    # Track progress
+    losses.append(loss(m, b, x, y))
+    ms.append(m)
+    
+    if i % 10 == 0:
+        print(f"Step {i}: m = {m:.4f}, b = {b:.4f}, Error = {losses[-1]:.4f}")
+
+print(f"\nFinal result: m = {m:.4f}, b = {b:.4f}")
+
+# 7. Visualize the loss curve
+plt.figure(figsize=(12,4))
+
+# Loss function vs weight m
+m_values = np.linspace(0, 3, 100)
+loss_values = [loss(m_val, b, x, y) for m_val in m_values]
+
+plt.subplot(1, 2, 1)
+plt.plot(m_values, loss_values, label="Loss Function")
+plt.scatter(ms, losses, color='red', s=10, label="Descent Path")
+plt.xlabel("Weight (m)")
+plt.ylabel("Error")
+plt.title("Loss Curve & Gradient Descent")
+plt.legend()
+plt.grid(True)
+
+# Data and final line
+plt.subplot(1, 2, 2)
+plt.scatter(x, y, label="Actual Data")
+x_line = np.linspace(0, 6, 100)
+y_line = m * x_line + b
+plt.plot(x_line, y_line, 'r-', label=f"Final: y = {m:.2f}x + {b:.2f}")
+plt.xlabel("x")
+plt.ylabel("y")
+plt.legend()
+plt.grid(True)
+
+plt.tight_layout()
+plt.show()
+-------------------code----------------------
+
+**Output:**
+-------------------code----------------------
+Step 0: m = 0.6500, b = 0.1200, Error = 26.3360
+Step 10: m = 1.4977, b = 0.3959, Error = 0.5745
+Step 20: m = 1.7693, b = 0.6471, Error = 0.0877
+Step 30: m = 1.8784, b = 0.7750, Error = 0.0262
+Step 40: m = 1.9217, b = 0.8254, Error = 0.0095
+Step 50: m = 1.9393, b = 0.8459, Error = 0.0047
+Step 60: m = 1.9466, b = 0.8545, Error = 0.0030
+Step 70: m = 1.9499, b = 0.8581, Error = 0.0022
+Step 80: m = 1.9514, b = 0.8596, Error = 0.0018
+Step 90: m = 1.9521, b = 0.8602, Error = 0.0016
+
+Final result: m = 1.9527, b = 0.8604
+-------------------code----------------------
+
+---
+
+## Part 8: Visual Explanation
+
+### Loss Curve (Error Landscape):
+
+-------------------code----------------------
+Error
+  ^
+  |    ╲
+  |     ╲
+  |      ╲
+  |       ╲     ← Negative slope (need to increase weight)
+  |        ╲
+  |         ╲
+  |          ╲
+  |           ╲
+  |            * ← Bottom (slope = 0)
+  |           ╱
+  |          ╱
+  |         ╱
+  |        ╱      ← Positive slope (need to decrease weight)
+  |       ╱
+  |      ╱
+  +------------------→ Weight (m)
+-------------------code----------------------
+
+### How the slope works:
+| Where you are on the curve | Slope value | What to do? |
+| :--- | :--- | :--- |
+| Left side (far from bottom) | **Negative** | Increase weight (move right) |
+| Right side (far from bottom) | **Positive** | Decrease weight (move left) |
+| At the bottom | **Zero** | Stop! Found the best value |
+
+---
+
+## Part 9: Applications in Machine Learning
+
+| Algorithm | Where we use the derivative (slope) |
+| :--- | :--- |
+| **Gradient Descent** | To calculate the direction for updating weights |
+| **Backpropagation** | To calculate the error of each neuron in neural networks |
+| **Linear Regression** | To find the best fitting line |
+| **Logistic Regression** | To optimize the decision boundary |
+| **Neural Networks** | To update weights in every layer |
+
+---
+
+## Part 10: The Key Analogy
+
+### Imagine standing on a mountain (Loss curve) in the dark:
+
+| Situation | In Machine Learning |
+| :--- | :--- |
+| You're standing on a mountain | You have a specific weight value |
+| You want to reach the valley (lowest error) | You want to minimize the loss |
+| You feel the ground under your feet | You compute the gradient |
+| If the ground slopes downward ahead | Negative slope → move forward |
+| If the ground slopes upward ahead | Positive slope → move backward |
+| If the ground is flat | Slope = 0 → you've reached the bottom! |
+
+---
+
+## Part 11: Summary
+
+### The Connection Between Calculus and ML:
+
+| Concept in Calculus | Concept in Machine Learning |
+| :--- | :--- |
+| Curve | Loss Function (Error curve) |
+| Point on curve | Current weight |
+| Slope (Derivative) | Gradient (direction to move) |
+| Finding minimum | Finding optimal weights |
+| Tangent line | Best direction to improve |
+
+### The Most Important Sentence:
+
+> **In Machine Learning, the derivative (slope) is the "compass" that tells the model which direction to improve. The rule is simple: move opposite to the slope until you reach the bottom (minimum error).**
+
+---
+
+## Part 12: Final Quick Summary
+
+| Question | Answer |
+| :--- | :--- |
+| What is the curve in ML? | Loss Function |
+| What is the point? | Current weight |
+| What is the slope? | Tells us the direction of improvement |
+| How do we use the slope? | Move opposite to the slope (Gradient Descent) |
+| What happens at slope = 0? | We found the best weights (minimum error) |
+| What is this process called? | Gradient Descent |
