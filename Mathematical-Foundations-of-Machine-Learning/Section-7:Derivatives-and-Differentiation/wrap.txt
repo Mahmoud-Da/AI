@@ -2836,3 +2836,617 @@ print(derivative(f, 100))
 * In larger equations, standalone constants disappear during differentiation.
 
 * This rule is heavily used in calculus, optimization, and machine learning because many objective and cost functions include constant terms that do not affect the gradient.
+
+
+*** 63. The Power Rule ***
+# Calculus One – Differentiation Rules (Part 1)
+
+## Constant Rule & Power Rule
+
+---
+
+# 1. Introduction
+
+This lecture introduces the **first two differentiation rules**, which are the foundation of almost every derivative you'll calculate later.
+
+They are:
+
+1. Constant Rule
+2. Power Rule
+
+These rules appear constantly in mathematics, physics, engineering, and especially machine learning.
+
+---
+
+# 2. Constant Rule
+
+## Rule
+
+The derivative of a constant is always zero.
+
+Mathematically:
+
+[
+\frac{d}{dx}(C)=0
+]
+
+Where:
+
+* **C** = any constant number
+* Examples:
+
+  * 5
+  * -10
+  * π
+  * 1000
+
+---
+
+## Why?
+
+A constant never changes.
+
+Since derivatives measure **rate of change (slope)**:
+
+* No change
+* No slope
+* Derivative = 0
+
+Imagine a horizontal line:
+
+-------------------code----------------------
+y = 25
+
+25 ───────────────────────────
+-------------------code----------------------
+
+Its slope is always zero.
+
+---
+
+## Examples
+
+### Example 1
+
+[
+\frac{d}{dx}(25)=0
+]
+
+---
+
+### Example 2
+
+[
+\frac{d}{dx}(100)=0
+]
+
+---
+
+### Example 3
+
+[
+\frac{d}{dx}(\pi)=0
+]
+
+---
+
+# 3. Python Example (Constant Rule)
+
+-------------------code----------------------
+constant = 25
+
+print("Derivative =", 0)
+-------------------code----------------------
+
+Output
+
+-------------------code----------------------
+Derivative = 0
+-------------------code----------------------
+
+---
+
+# 4. Power Rule
+
+The **Power Rule** is the most frequently used differentiation rule.
+
+---
+
+## Rule
+
+If
+
+[
+f(x)=x^n
+]
+
+then
+
+---
+
+## Step-by-Step Process
+
+Suppose
+
+[
+x^n
+]
+
+To differentiate:
+
+### Step 1
+
+Take the exponent.
+
+-------------------code----------------------
+n
+-------------------code----------------------
+
+---
+
+### Step 2
+
+Move it in front as a coefficient.
+
+-------------------code----------------------
+n × x
+-------------------code----------------------
+
+---
+
+### Step 3
+
+Subtract 1 from the exponent.
+
+-------------------code----------------------
+n - 1
+-------------------code----------------------
+
+Finished.
+
+---
+
+# 5. Example
+
+Differentiate
+
+[
+x^4
+]
+
+### Step 1
+
+Move 4 to the front.
+
+-------------------code----------------------
+4
+-------------------code----------------------
+
+---
+
+### Step 2
+
+Subtract one from the exponent.
+
+-------------------code----------------------
+4 − 1 = 3
+-------------------code----------------------
+
+Result
+
+[
+\frac{d}{dx}(x^4)=4x^3
+]
+
+---
+
+# 6. More Examples
+
+### Example 1
+
+[
+\frac{d}{dx}(x^5)
+]
+
+Answer
+
+[
+5x^4
+]
+
+---
+
+### Example 2
+
+[
+\frac{d}{dx}(x^3)
+]
+
+Answer
+
+[
+3x^2
+]
+
+---
+
+### Example 3
+
+[
+\frac{d}{dx}(x^2)
+]
+
+Answer
+
+[
+2x
+]
+
+---
+
+### Example 4
+
+[
+\frac{d}{dx}(x)
+]
+
+Remember
+
+[
+x=x^1
+]
+
+Apply the rule
+
+[
+1x^0
+]
+
+Since
+
+[
+x^0=1
+]
+
+Result
+
+[
+1
+]
+
+---
+
+### Example 5
+
+[
+\frac{d}{dx}(x^1)=1
+]
+
+---
+
+# 7. Python Demonstration
+
+-------------------code----------------------
+def derivative_power(coefficient, exponent):
+    new_coefficient = coefficient * exponent
+    new_exponent = exponent - 1
+    return new_coefficient, new_exponent
+
+coef, power = derivative_power(1, 4)
+
+print(f"Derivative: {coef}x^{power}")
+-------------------code----------------------
+
+Output
+
+-------------------code----------------------
+Derivative: 4x^3
+-------------------code----------------------
+
+---
+
+# 8. Important Notes
+
+## Constant Rule
+
+Always remember:
+
+-------------------code----------------------
+Any standalone number disappears.
+-------------------code----------------------
+
+Examples:
+
+-------------------code----------------------
+5   → 0
+
+20  → 0
+
+π   → 0
+-------------------code----------------------
+
+---
+
+## Power Rule
+
+Always:
+
+1. Move exponent to the front.
+2. Decrease exponent by one.
+
+Never forget either step.
+
+---
+
+## Common Mistake
+
+Incorrect
+
+-------------------code----------------------
+d/dx(x⁴)=x³
+-------------------code----------------------
+
+Correct
+
+-------------------code----------------------
+d/dx(x⁴)=4x³
+-------------------code----------------------
+
+The coefficient must remain.
+
+---
+
+# 9. Best Practices
+
+* Memorize the Constant Rule first—it is simple but used constantly.
+* Practice the Power Rule until applying it becomes automatic.
+* Always rewrite (x) as (x^1) before differentiating.
+* Keep both the coefficient and the reduced exponent in the final answer.
+
+---
+
+# 10. Full Final Code
+
+-------------------code----------------------
+def derivative_constant():
+    return 0
+
+
+def derivative_power(coefficient, exponent):
+    new_coefficient = coefficient * exponent
+    new_exponent = exponent - 1
+    return new_coefficient, new_exponent
+
+
+print("Constant Rule")
+print("d/dx(25) =", derivative_constant())
+
+coef, power = derivative_power(1, 4)
+print(f"d/dx(x^4) = {coef}x^{power}")
+
+coef, power = derivative_power(1, 5)
+print(f"d/dx(x^5) = {coef}x^{power}")
+
+coef, power = derivative_power(1, 3)
+print(f"d/dx(x^3) = {coef}x^{power}")
+
+coef, power = derivative_power(1, 2)
+print(f"d/dx(x^2) = {coef}x^{power}")
+
+coef, power = derivative_power(1, 1)
+
+if power == 0:
+    print("d/dx(x) = 1")
+else:
+    print(f"d/dx(x) = {coef}x^{power}")
+-------------------code----------------------
+
+---
+
+# 11. Summary
+
+* A **derivative measures the rate of change (slope)** of a function.
+* **Constant Rule:** The derivative of any constant is **0** because constants never change.
+* **Power Rule:** Move the exponent to the front as a coefficient and subtract **1** from the exponent.
+* The Power Rule is the **most commonly used differentiation rule** and is essential for later topics such as polynomial derivatives, gradient descent, optimization, and machine learning.
+
+# Why is the Derivative of x Equal to 1 and Not 0?
+
+---
+
+## The Core Idea
+
+| Function | Type | Derivative | Reason |
+| :--- | :--- | :--- | :--- |
+| f(x) = 5 | **Constant** (does not change with x) | 0 | No change |
+| f(x) = x | **Variable** (changes with x) | 1 | Change = 1 for each step |
+
+---
+
+## Part 1: The Difference Between a Constant and a Variable
+
+### A Constant: Never Changes
+
+-------------------code----------------------
+f(x) = 5
+
+No matter what x is:
+f(0) = 5
+f(10) = 5
+f(100) = 5
+f(1000) = 5
+
+The value is always 5 -> No change -> Derivative = 0
+-------------------code----------------------
+
+---
+
+### A Variable: Changes with x
+
+-------------------code----------------------
+f(x) = x
+
+Try different values:
+f(0) = 0
+f(1) = 1
+f(2) = 2
+f(3) = 3
+f(4) = 4
+
+Every time x increases by 1, f(x) increases by 1
+-> Constant change = 1 -> Derivative = 1
+-------------------code----------------------
+
+---
+
+## Part 2: Visual Explanation (The Graph)
+
+### Graph of f(x) = 5 (Constant):
+
+-------------------code----------------------
+y
+^
+|
+5  --------------------  <- Horizontal line (slope = 0)
+|
+|
+|
+0  ---------------------> x
+-------------------code----------------------
+
+The line is horizontal -> slope = 0 -> derivative = 0
+
+---
+
+### Graph of f(x) = x (Variable):
+
+-------------------code----------------------
+y
+^
+|  * (4,4)
+| * (3,3)
+|* (2,2)
+| * (1,1)
+|  * (0,0)
+0 ---------------------> x
+-------------------code----------------------
+
+The line is sloped at 45 degrees -> slope = 1 -> derivative = 1
+
+---
+
+## Part 3: Calculating the Slope (Why 1?)
+
+### Slope = Change in y / Change in x
+
+For f(x) = x:
+
+| x1 | x2 | f(x1) | f(x2) | Δx | Δy | Slope |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 0 | 1 | 0 | 1 | 1 | 1 | 1 / 1 = 1 |
+| 1 | 2 | 1 | 2 | 1 | 1 | 1 / 1 = 1 |
+| 2 | 3 | 2 | 3 | 1 | 1 | 1 / 1 = 1 |
+| 3 | 4 | 3 | 4 | 1 | 1 | 1 / 1 = 1 |
+
+Every time x increases by 1, f(x) increases by 1
+Slope = 1
+
+---
+
+## Part 4: Applying the Power Rule
+
+Remember the Power Rule:
+-------------------code----------------------
+d/dx (x^n) = n * x^(n-1)
+-------------------code----------------------
+
+For f(x) = x:
+-------------------code----------------------
+x = x^1
+
+The exponent n = 1
+
+Apply the rule:
+d/dx (x^1) = 1 * x^0 = 1 * 1 = 1
+-------------------code----------------------
+
+Answer: 1
+
+---
+
+## Part 5: Why Do People Make This Mistake?
+
+### Reason: Confusing "Constant" with "Variable"
+
+| Wrong | Correct |
+| :--- | :--- |
+| f(x) = 5 -> derivative = 0 | Correct (constant) |
+| f(x) = x -> derivative = 0 | Wrong (variable) |
+| f(x) = x -> derivative = 1 | Correct |
+
+The golden rule:
+- If the function is just a number (no x) -> derivative = 0
+- If the function contains x -> derivative is NOT 0 (unless the exponent is 0)
+
+---
+
+## Part 6: Simple Analogy
+
+### Analogy: Car Speed
+
+| Situation | Function | Derivative = Speed |
+| :--- | :--- | :--- |
+| Car is parked (not moving) | f(x) = 5 (constant) | 0 |
+| Car is moving at 1 km/hour | f(x) = x (variable) | 1 |
+
+Constant = stopped (speed 0)
+Variable = moving (speed not 0)
+
+---
+
+## Part 7: Quick Comparison Table
+
+| Function | Contains x? | Derivative |
+| :--- | :--- | :--- |
+| 5 | No | 0 |
+| 10 | No | 0 |
+| π | No | 0 |
+| x | Yes | 1 |
+| x^2 | Yes | 2x |
+| x^3 | Yes | 3x^2 |
+
+---
+
+## Part 8: How to Remember Easily
+
+Simple rule to memorize:
+
+> If the function is just a number (constant) -> derivative = 0
+> If the function contains x -> use the Power Rule
+
+Examples:
+-------------------code----------------------
+f(x) = 5   <- Just a number -> 0
+f(x) = x   <- Contains x -> 1
+f(x) = x^2 <- Contains x -> 2x
+-------------------code----------------------
+
+---
+
+## Part 9: Final Summary
+
+| Question | Answer |
+| :--- | :--- |
+| Why is derivative of 5 = 0? | Because it is constant and never changes |
+| Why is derivative of x = 1? | Because it changes at a rate of 1 per unit of x |
+| What is the Power Rule? | d/dx (x^n) = n * x^(n-1) |
+| What is d/dx (x^1)? | 1 * x^0 = 1 |
+| When is the derivative = 0? | When the function is constant (just a number) |
+
+---
+
+## The Most Important Sentence
+
+> The derivative of x is 1 because x changes at a rate of 1 for every change in x. The derivative of 5 is 0 because 5 never changes. The difference is: a constant does not change, but a variable does change.
+
+---
