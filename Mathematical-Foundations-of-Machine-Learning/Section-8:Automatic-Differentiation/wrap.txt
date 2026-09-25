@@ -1665,3 +1665,586 @@ print(x.grad)
 -------------------code----------------------
 
 This simple example is the foundation for using automatic differentiation in much larger machine-learning computational graphs.
+
+*** 75. Autodiff with TensorFlow ***
+# 1. TensorFlow Automatic Differentiation
+
+This lecture demonstrates how to calculate derivatives using **Automatic Differentiation (Autodiff)** in **TensorFlow**.
+
+The problem is the same as in the previous PyTorch lecture:
+
+[
+y=x^2
+]
+
+Find the derivative:
+
+[
+\frac{dy}{dx}
+]
+
+at:
+
+[
+x=5
+]
+
+We already know manually that:
+
+[
+\frac{dy}{dx}=2x
+]
+
+so at (x=5):
+
+-------------------code----------------------
+dy/dx = 10
+-------------------code----------------------
+
+The goal is to make TensorFlow calculate this automatically.
+
+---
+
+# 2. Import TensorFlow
+
+First, import TensorFlow:
+
+-------------------code----------------------
+import tensorflow as tf
+-------------------code----------------------
+
+TensorFlow provides automatic differentiation through its **GradientTape** mechanism.
+
+---
+
+# 3. Create the Input Tensor
+
+Just like in PyTorch, we start by creating a scalar tensor containing `5`.
+
+-------------------code----------------------
+x = tf.Variable(5.0)
+-------------------code----------------------
+
+The important value is:
+
+-------------------code----------------------
+x = 5
+-------------------code----------------------
+
+We will calculate the derivative of `y` with respect to this `x`.
+
+---
+
+# 4. Use `GradientTape`
+
+This is the main difference between TensorFlow and PyTorch.
+
+In PyTorch, we enabled gradient tracking directly on the tensor:
+
+-------------------code----------------------
+x.requires_grad_()
+-------------------code----------------------
+
+TensorFlow instead uses a **gradient tape**:
+
+-------------------code----------------------
+with tf.GradientTape() as tape:
+-------------------code----------------------
+
+The basic structure is:
+
+-------------------code----------------------
+with tf.GradientTape() as tape:
+    # operations whose gradients we want to track
+-------------------code----------------------
+
+The lecture emphasizes that gradient tracking in TensorFlow happens within this block rather than being enabled globally in the same way as PyTorch.
+
+---
+
+# 5. Tell TensorFlow What to Watch
+
+Inside the `GradientTape`, we tell TensorFlow which variable we want to track:
+
+-------------------code----------------------
+tape.watch(x)
+-------------------code----------------------
+
+This is analogous to enabling gradient tracking for `x` in PyTorch.
+
+Conceptually:
+
+-------------------code----------------------
+PyTorch:
+x.requires_grad_()
+
+TensorFlow:
+tape.watch(x)
+-------------------code----------------------
+
+We are telling TensorFlow:
+
+> Track the operations involving `x` so that we can later calculate derivatives with respect to `x`.
+
+---
+
+# 6. Perform the Forward Pass
+
+Now calculate:
+
+[
+y=x^2
+]
+
+Inside the gradient tape:
+
+-------------------code----------------------
+with tf.GradientTape() as tape:
+    tape.watch(x)
+    y = x**2
+-------------------code----------------------
+
+The forward pass is:
+
+-------------------code----------------------
+x → x² → y
+-------------------code----------------------
+
+With:
+
+-------------------code----------------------
+x = 5
+-------------------code----------------------
+
+we get:
+
+-------------------code----------------------
+y = 25
+-------------------code----------------------
+
+TensorFlow's gradient tape records the operations needed to calculate the derivative.
+
+---
+
+# 7. Calculate the Derivative
+
+After the forward calculation, we use:
+
+-------------------code----------------------
+tape.gradient(y, x)
+-------------------code----------------------
+
+This asks TensorFlow to calculate:
+
+[
+\frac{dy}{dx}
+]
+
+The complete operation is:
+
+-------------------code----------------------
+dy_dx = tape.gradient(y, x)
+-------------------code----------------------
+
+The result is:
+
+-------------------code----------------------
+10
+-------------------code----------------------
+
+Therefore:
+
+-------------------code----------------------
+dy/dx = 10
+-------------------code----------------------
+
+This matches:
+
+1. The manual calculation.
+2. The PyTorch calculation.
+
+---
+
+# 8. Complete Step-by-Step Example
+
+## Step 1: Import TensorFlow
+
+-------------------code----------------------
+import tensorflow as tf
+-------------------code----------------------
+
+## Step 2: Create `x`
+
+-------------------code----------------------
+x = tf.Variable(5.0)
+-------------------code----------------------
+
+## Step 3: Create the gradient tape
+
+-------------------code----------------------
+with tf.GradientTape() as tape:
+-------------------code----------------------
+
+## Step 4: Tell the tape to watch `x`
+
+-------------------code----------------------
+    tape.watch(x)
+-------------------code----------------------
+
+## Step 5: Calculate `y`
+
+-------------------code----------------------
+    y = x**2
+-------------------code----------------------
+
+## Step 6: Calculate the derivative
+
+-------------------code----------------------
+dy_dx = tape.gradient(y, x)
+-------------------code----------------------
+
+## Step 7: Display the result
+
+-------------------code----------------------
+print(dy_dx)
+-------------------code----------------------
+
+Expected result:
+
+-------------------code----------------------
+tf.Tensor(10.0, ...)
+-------------------code----------------------
+
+The important value is:
+
+-------------------code----------------------
+10
+-------------------code----------------------
+
+---
+
+# 9. PyTorch vs. TensorFlow
+
+The lecture directly compares the two approaches.
+
+### PyTorch
+
+-------------------code----------------------
+x = torch.tensor(5.0)
+x.requires_grad_()
+
+y = x**2
+
+y.backward()
+
+print(x.grad)
+-------------------code----------------------
+
+The gradient is retrieved from:
+
+-------------------code----------------------
+x.grad
+-------------------code----------------------
+
+### TensorFlow
+
+-------------------code----------------------
+x = tf.Variable(5.0)
+
+with tf.GradientTape() as tape:
+    tape.watch(x)
+    y = x**2
+
+dy_dx = tape.gradient(y, x)
+-------------------code----------------------
+
+The gradient is calculated using:
+
+-------------------code----------------------
+tape.gradient(y, x)
+-------------------code----------------------
+
+---
+
+# 10. Main Conceptual Difference
+
+The key difference to remember from this lecture is **where gradient tracking happens**.
+
+| PyTorch                                         | TensorFlow                                        |
+| ----------------------------------------------- | ------------------------------------------------- |
+| `requires_grad_()`                              | `GradientTape()`                                  |
+| Gradient tracking is associated with the tensor | Gradient tracking happens inside the tape context |
+| `y.backward()`                                  | `tape.gradient(y, x)`                             |
+| Read result with `x.grad`                       | Result returned by `tape.gradient()`              |
+
+A useful mental model:
+
+-------------------code----------------------
+PyTorch
+
+x
+↓
+requires_grad
+↓
+forward pass
+↓
+backward()
+↓
+x.grad
+-------------------code----------------------
+
+TensorFlow:
+
+-------------------code----------------------
+TensorFlow
+
+x
+↓
+GradientTape
+↓
+watch(x)
+↓
+forward pass
+↓
+tape.gradient(y, x)
+↓
+gradient
+-------------------code----------------------
+
+---
+
+# 11. Why `GradientTape` Matters
+
+The tape records the operations performed during the forward pass.
+
+For example:
+
+-------------------code----------------------
+x
+ ↓
+x²
+ ↓
+y
+-------------------code----------------------
+
+TensorFlow records enough information about this computation to later calculate:
+
+-------------------code----------------------
+dy/dx
+-------------------code----------------------
+
+This is the basic mechanism that allows TensorFlow to perform automatic differentiation.
+
+The same concept can be applied to much more complicated computational graphs.
+
+---
+
+# 12. Important Notes and Best Practices
+
+### 12.1 The derivative must be calculated from the tape
+
+The important operation is:
+
+-------------------code----------------------
+tape.gradient(y, x)
+-------------------code----------------------
+
+You specify:
+
+-------------------code----------------------
+target = y
+source = x
+-------------------code----------------------
+
+Meaning:
+
+> Calculate the gradient of `y` with respect to `x`.
+
+---
+
+### 12.2 `watch()` specifies what to differentiate with respect to
+
+-------------------code----------------------
+tape.watch(x)
+-------------------code----------------------
+
+means TensorFlow should track the operations involving `x`.
+
+This is particularly important when working with tensors for which TensorFlow does not automatically track gradients.
+
+---
+
+### 12.3 The forward calculation happens inside the tape
+
+For this example:
+
+-------------------code----------------------
+with tf.GradientTape() as tape:
+    tape.watch(x)
+    y = x**2
+-------------------code----------------------
+
+The operation:
+
+-------------------code----------------------
+y = x**2
+-------------------code----------------------
+
+needs to happen while the tape is recording.
+
+---
+
+### 12.4 Remember the argument order
+
+Use:
+
+-------------------code----------------------
+tape.gradient(y, x)
+-------------------code----------------------
+
+not:
+
+-------------------code----------------------
+tape.gradient(x, y)
+-------------------code----------------------
+
+because we want:
+
+[
+\frac{dy}{dx}
+]
+
+not the reverse.
+
+---
+
+# 13. Why the Lecture Prefers PyTorch
+
+The instructor notes that, personally, **PyTorch feels more intuitive and Pythonic** than TensorFlow.
+
+Therefore, throughout the remainder of the Machine Learning Foundation series, the examples involving Autodiff will primarily use **PyTorch**.
+
+However, TensorFlow remains important, and the lecture encourages using TensorFlow as an exercise after seeing the PyTorch implementation.
+
+The important thing is to understand the underlying concept rather than just memorize one library's syntax.
+
+---
+
+# 14. Connection to the Next Topic
+
+We have now seen Autodiff in both:
+
+-------------------code----------------------
+PyTorch
+TensorFlow
+-------------------code----------------------
+
+The next step is to use automatic differentiation for an actual **machine-learning problem**.
+
+The upcoming example will involve fitting a simple **regression line**.
+
+This will connect:
+
+-------------------code----------------------
+Automatic Differentiation
+        ↓
+Derivatives
+        ↓
+Cost / Loss Functions
+        ↓
+Regression
+        ↓
+Machine Learning
+-------------------code----------------------
+
+This is where the calculus concepts become directly useful for machine learning.
+
+---
+
+# 15. Full Final Code
+
+-------------------code----------------------
+import tensorflow as tf
+
+# Create the input variable
+x = tf.Variable(5.0)
+
+# Track the forward pass
+with tf.GradientTape() as tape:
+    # Tell TensorFlow to track gradients with respect to x
+    tape.watch(x)
+
+    # Forward pass: y = x²
+    y = x**2
+
+# Calculate dy/dx
+dy_dx = tape.gradient(y, x)
+
+# Display the values
+print("x:", x.numpy())
+print("y:", y.numpy())
+print("dy/dx:", dy_dx.numpy())
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+x: 5.0
+y: 25.0
+dy/dx: 10.0
+-------------------code----------------------
+
+---
+
+# 16. Summary
+
+The central idea of this lecture is that **TensorFlow can automatically calculate derivatives using `GradientTape`**.
+
+For:
+
+-------------------code----------------------
+y = x**2
+x = 5
+-------------------code----------------------
+
+TensorFlow calculates:
+
+-------------------code----------------------
+dy/dx = 10
+-------------------code----------------------
+
+The essential TensorFlow pattern is:
+
+-------------------code----------------------
+with tf.GradientTape() as tape:
+    tape.watch(x)
+    y = ...
+
+dy_dx = tape.gradient(y, x)
+-------------------code----------------------
+
+So the three most important pieces to remember are:
+
+-------------------code----------------------
+GradientTape
+    ↓
+watch()
+    ↓
+gradient()
+-------------------code----------------------
+
+Compared with PyTorch:
+
+-------------------code----------------------
+PyTorch                    TensorFlow
+
+requires_grad_()           GradientTape()
+       ↓                         ↓
+forward pass               watch(x)
+       ↓                         ↓
+backward()                 forward pass
+       ↓                         ↓
+x.grad                     tape.gradient()
+-------------------code----------------------
+
+The next major step is applying these derivatives to a **simple regression model and its cost/loss function**, which begins connecting Autodiff directly to machine-learning optimization.
