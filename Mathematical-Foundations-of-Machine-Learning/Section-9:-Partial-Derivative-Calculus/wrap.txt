@@ -3122,3 +3122,868 @@ The three exercises give:
 -------------------code----------------------
 
 **Main lesson:** Manual partial derivatives are important for understanding the mathematics; **automatic differentiation** becomes essential when the number of variables and parameters becomes very large.
+
+*** 81. Calculating Partial Derivatives with Autodiff ***
+# Calculus 2 — Partial Derivatives with PyTorch Automatic Differentiation
+
+This lecture moves from **calculating partial derivatives by hand** to calculating them automatically with **PyTorch**.
+
+The mathematical example remains:
+
+$$
+\boxed{z=x^2-y^2}
+$$
+
+We want PyTorch to automatically calculate:
+
+$$
+\frac{\partial z}{\partial x}
+$$
+
+and
+
+$$
+\frac{\partial z}{\partial y}
+$$
+
+at any chosen point \((x,y)\).
+
+---
+
+# 1. Why Use Automatic Differentiation?
+
+In the previous exercises, we calculated partial derivatives manually.
+
+For:
+
+$$
+z=x^2-y^2
+$$
+
+we derived:
+
+$$
+\frac{\partial z}{\partial x}=2x
+$$
+
+$$
+\frac{\partial z}{\partial y}=-2y
+$$
+
+Doing this by hand is useful for understanding calculus.
+
+However, machine-learning models can have **very large numbers of variables and parameters**.
+
+Manually calculating every derivative would become impractical.
+
+PyTorch's automatic differentiation system allows us to calculate these derivatives automatically.
+
+### Main idea
+
+Instead of manually deriving:
+
+$$
+\frac{\partial z}{\partial x},\quad
+\frac{\partial z}{\partial y}
+$$
+
+we tell PyTorch to track the variables and then let it calculate the gradients.
+
+---
+
+# 2. The Basic PyTorch Workflow
+
+The workflow is:
+
+-------------------code----------------------
+Create x and y
+      ↓
+Enable gradient tracking
+      ↓
+Calculate z
+      ↓
+Call z.backward()
+      ↓
+Read x.grad and y.grad
+-------------------code----------------------
+
+This is the same general automatic-differentiation idea introduced earlier.
+
+---
+
+# 3. Step 1 — Import PyTorch
+
+-------------------code----------------------
+import torch
+-------------------code----------------------
+
+---
+
+# 4. Step 2 — Create X and Y With Gradient Tracking
+
+We need PyTorch to track operations involving \(x\) and \(y\).
+
+We do this with:
+
+-------------------code----------------------
+requires_grad=True
+-------------------code----------------------
+
+For example:
+
+-------------------code----------------------
+x = torch.tensor(0.0, requires_grad=True)
+y = torch.tensor(0.0, requires_grad=True)
+-------------------code----------------------
+
+Now PyTorch knows that we want gradients calculated with respect to both tensors.
+
+---
+
+# 5. Why `requires_grad=True` Is Important
+
+Consider:
+
+-------------------code----------------------
+x = torch.tensor(0.0)
+-------------------code----------------------
+
+PyTorch normally won't track the gradient of `x`.
+
+But:
+
+-------------------code----------------------
+x = torch.tensor(0.0, requires_grad=True)
+-------------------code----------------------
+
+tells PyTorch:
+
+> Track operations involving this tensor because I may need its gradient later.
+
+The lecture describes this tracking as being **contagious**.
+
+That means operations involving `x` and `y` will continue to carry gradient information.
+
+---
+
+# 6. Step 3 — Define the Function
+
+Our function is:
+
+$$
+z=x^2-y^2
+$$
+
+In Python:
+
+-------------------code----------------------
+def f(x, y):
+    return x**2 - y**2
+-------------------code----------------------
+
+---
+
+# 7. Step 4 — Calculate Z
+
+Now pass `x` and `y` through the function:
+
+-------------------code----------------------
+z = f(x, y)
+-------------------code----------------------
+
+With:
+
+-------------------code----------------------
+x = 0
+y = 0
+-------------------code----------------------
+
+we get:
+
+$$
+z=0^2-0^2
+$$
+
+$$
+z=0
+$$
+
+So:
+
+-------------------code----------------------
+print(z)
+-------------------code----------------------
+
+gives a tensor containing zero.
+
+---
+
+# 8. Gradient Tracking Flows Through the Calculation
+
+This is an important concept.
+
+We started with:
+
+-------------------code----------------------
+x = torch.tensor(0.0, requires_grad=True)
+y = torch.tensor(0.0, requires_grad=True)
+-------------------code----------------------
+
+Then:
+
+-------------------code----------------------
+z = f(x, y)
+-------------------code----------------------
+
+Since `z` was calculated using tensors whose gradients are being tracked, `z` also has gradient-tracking information.
+
+Conceptually:
+
+-------------------code----------------------
+x ─────┐
+       ├──> z
+y ─────┘
+-------------------code----------------------
+
+PyTorch remembers the operations used to produce `z`.
+
+This creates the information needed for automatic differentiation.
+
+---
+
+# 9. Step 5 — Call `backward()`
+
+This is the key step:
+
+-------------------code----------------------
+z.backward()
+-------------------code----------------------
+
+`backward()` tells PyTorch to perform automatic differentiation backward through the computational graph.
+
+After this operation, PyTorch has calculated the gradients of `z` with respect to the tracked input tensors.
+
+---
+
+# 10. Step 6 — Read the Gradients
+
+After:
+
+-------------------code----------------------
+z.backward()
+-------------------code----------------------
+
+we can access:
+
+-------------------code----------------------
+x.grad
+-------------------code----------------------
+
+and:
+
+-------------------code----------------------
+y.grad
+-------------------code----------------------
+
+These represent:
+
+$$
+\frac{\partial z}{\partial x}
+$$
+
+and:
+
+$$
+\frac{\partial z}{\partial y}
+$$
+
+respectively.
+
+For:
+
+$$
+x=0,\qquad y=0
+$$
+
+we already know:
+
+$$
+\frac{\partial z}{\partial x}=2x=0
+$$
+
+and:
+
+$$
+\frac{\partial z}{\partial y}=-2y=0
+$$
+
+So PyTorch should give:
+
+-------------------code----------------------
+x.grad = 0
+y.grad = 0
+-------------------code----------------------
+
+---
+
+# 11. Complete Basic Example
+
+-------------------code----------------------
+import torch
+
+
+def f(x, y):
+    return x**2 - y**2
+
+
+x = torch.tensor(0.0, requires_grad=True)
+y = torch.tensor(0.0, requires_grad=True)
+
+z = f(x, y)
+
+z.backward()
+
+print("z =", z)
+print("∂z/∂x =", x.grad)
+print("∂z/∂y =", y.grad)
+-------------------code----------------------
+
+Expected result:
+
+-------------------code----------------------
+z = tensor(0., grad_fn=...)
+∂z/∂x = tensor(0.)
+∂z/∂y = tensor(-0.)
+-------------------code----------------------
+
+The `-0.` is mathematically just zero.
+
+---
+
+# 12. Test Another Point
+
+One of the advantages of automatic differentiation is that we don't need to manually derive the formulas again.
+
+Suppose:
+
+$$
+x=2,\qquad y=3
+$$
+
+Change only the input values:
+
+-------------------code----------------------
+x = torch.tensor(2.0, requires_grad=True)
+y = torch.tensor(3.0, requires_grad=True)
+-------------------code----------------------
+
+Then:
+
+-------------------code----------------------
+z = f(x, y)
+z.backward()
+-------------------code----------------------
+
+PyTorch automatically calculates the derivatives.
+
+We know from the previous exercise that the expected results are:
+
+$$
+z=2^2-3^2=-5
+$$
+
+$$
+\frac{\partial z}{\partial x}=4
+$$
+
+$$
+\frac{\partial z}{\partial y}=-6
+$$
+
+So PyTorch should produce:
+
+-------------------code----------------------
+z = -5
+∂z/∂x = 4
+∂z/∂y = -6
+-------------------code----------------------
+
+---
+
+# 13. Repeating the Previous Three Exercises
+
+The lecture specifically recommends repeating the previous paper-and-pencil exercises using PyTorch.
+
+The three points were:
+
+| Exercise |  X |  Y | Expected Z | Expected X gradient | Expected Y gradient |
+| -------- | -: | -: | ---------: | ------------------: | ------------------: |
+| 1        |  3 |  0 |          9 |                   6 |                   0 |
+| 2        |  2 |  3 |         -5 |                   4 |                  -6 |
+| 3        | -2 | -3 |         -5 |                  -4 |                   6 |
+
+The important part of this exercise is that **you already know the answers** from the manual calculations.
+
+Now you can verify them using automatic differentiation.
+
+---
+
+# 14. A Reusable Function
+
+Instead of rewriting the PyTorch code for every point, we can create a helper function:
+
+-------------------code----------------------
+def calculate_gradients(x_value, y_value):
+    x = torch.tensor(float(x_value), requires_grad=True)
+    y = torch.tensor(float(y_value), requires_grad=True)
+
+    z = f(x, y)
+
+    z.backward()
+
+    return z, x.grad, y.grad
+-------------------code----------------------
+
+Then we can call:
+
+-------------------code----------------------
+z, dx, dy = calculate_gradients(3, 0)
+
+print(z)
+print(dx)
+print(dy)
+-------------------code----------------------
+
+This gives us the values automatically.
+
+---
+
+# 15. Running All Three Exercises
+
+We can now use a loop:
+
+-------------------code----------------------
+points = [
+    (3, 0),
+    (2, 3),
+    (-2, -3)
+]
+
+for x_value, y_value in points:
+    z, dx, dy = calculate_gradients(x_value, y_value)
+
+    print("x =", x_value)
+    print("y =", y_value)
+    print("z =", z.item())
+    print("∂z/∂x =", dx.item())
+    print("∂z/∂y =", dy.item())
+    print()
+-------------------code----------------------
+
+This lets PyTorch perform all three calculations automatically.
+
+---
+
+# 16. What Is Happening Internally?
+
+The important conceptual process is:
+
+### Forward pass
+
+PyTorch calculates:
+
+$$
+x,y \rightarrow z
+$$
+
+For example:
+
+$$
+2,3\rightarrow 2^2-3^2=-5
+$$
+
+### Backward pass
+
+Then:
+
+-------------------code----------------------
+z.backward()
+-------------------code----------------------
+
+causes PyTorch to work backward through the computational graph.
+
+It calculates:
+
+$$
+\frac{\partial z}{\partial x}
+$$
+
+and:
+
+$$
+\frac{\partial z}{\partial y}
+$$
+
+So:
+
+-------------------code----------------------
+Forward:
+x, y
+ ↓
+z
+
+Backward:
+z
+ ↓
+∂z/∂x
+∂z/∂y
+-------------------code----------------------
+
+This backward process is fundamental to how gradients are calculated in machine learning.
+
+---
+
+# 17. Manual vs Automatic Differentiation
+
+## Manual differentiation
+
+We previously derived:
+
+$$
+z=x^2-y^2
+$$
+
+then:
+
+$$
+\frac{\partial z}{\partial x}=2x
+$$
+
+and:
+
+$$
+\frac{\partial z}{\partial y}=-2y
+$$
+
+This is excellent for learning and understanding the mathematics.
+
+## Automatic differentiation
+
+With PyTorch:
+
+-------------------code----------------------
+z.backward()
+-------------------code----------------------
+
+PyTorch calculates the gradients for us.
+
+### Main difference
+
+| Manual                                | PyTorch                                |
+| ------------------------------------- | -------------------------------------- |
+| Derive formulas yourself              | PyTorch calculates them                |
+| Good for learning calculus            | Good for practical ML                  |
+| Becomes difficult with many variables | Scales to complex computational graphs |
+| Must perform the math manually        | Uses automatic differentiation         |
+
+The lecture's main point is **not that manual calculus is unnecessary**.
+
+Rather:
+
+> Manual calculus helps us understand what is happening, while automatic differentiation makes the process practical for complex machine-learning models.
+
+---
+
+# 18. TensorFlow Alternative
+
+The lecture also reminds us that automatic differentiation can be performed with TensorFlow.
+
+The same basic idea was covered earlier using `GradientTape`.
+
+For example:
+
+-------------------code----------------------
+import tensorflow as tf
+
+x = tf.Variable(2.0)
+y = tf.Variable(3.0)
+
+with tf.GradientTape() as tape:
+    z = x**2 - y**2
+
+gradients = tape.gradient(z, [x, y])
+
+print(gradients)
+-------------------code----------------------
+
+The lecture recommends PyTorch for these particular exercises because the PyTorch implementation has already been established in the notebook.
+
+---
+
+# 19. Important Notes and Best Practices
+
+## 19.1 Remember `requires_grad=True`
+
+If you want PyTorch to calculate the gradient with respect to a tensor, that tensor needs gradient tracking enabled.
+
+-------------------code----------------------
+x = torch.tensor(2.0, requires_grad=True)
+-------------------code----------------------
+
+Without it, `x.grad` will not contain the derivative you want.
+
+---
+
+## 19.2 `backward()` calculates gradients
+
+The key command is:
+
+-------------------code----------------------
+z.backward()
+-------------------code----------------------
+
+Afterward:
+
+-------------------code----------------------
+x.grad
+y.grad
+-------------------code----------------------
+
+contain the corresponding gradients.
+
+---
+
+## 19.3 `.grad` corresponds to the variable
+
+For:
+
+-------------------code----------------------
+z = f(x, y)
+-------------------code----------------------
+
+after:
+
+-------------------code----------------------
+z.backward()
+-------------------code----------------------
+
+we have:
+
+-------------------code----------------------
+x.grad
+-------------------code----------------------
+
+corresponding to:
+
+$$
+\frac{\partial z}{\partial x}
+$$
+
+and:
+
+-------------------code----------------------
+y.grad
+-------------------code----------------------
+
+corresponding to:
+
+$$
+\frac{\partial z}{\partial y}
+$$
+
+---
+
+## 19.4 Gradients accumulate
+
+An important PyTorch detail to remember from the earlier automatic-differentiation material is that gradients can accumulate.
+
+When repeatedly performing backward passes on tensors that persist across calculations, you generally need to clear gradients appropriately.
+
+For simple exercises like this, the easiest solution is to **create fresh tensors for every calculation**, as the reusable function above does.
+
+---
+
+# 20. Connection to Machine Learning
+
+This lecture is directly preparing us for later machine-learning topics.
+
+A real model may look conceptually like:
+
+$$
+C=f(w_1,w_2,w_3,\ldots,w_n)
+$$
+
+where \(C\) is the cost.
+
+We want:
+
+$$
+\frac{\partial C}{\partial w_1},
+\frac{\partial C}{\partial w_2},
+\frac{\partial C}{\partial w_3},
+\ldots
+$$
+
+For a model with many parameters, manually calculating all of these would be extremely difficult.
+
+Automatic differentiation allows PyTorch to calculate these gradients through the computational graph.
+
+These gradients are then used in:
+
+* gradient descent
+* optimization
+* backpropagation
+* neural-network training
+
+So this simple example:
+
+$$
+z=x^2-y^2
+$$
+
+is a small-scale version of what happens in much larger machine-learning models.
+
+---
+
+# 21. Full Final Code
+
+-------------------code----------------------
+import torch
+
+
+# ============================================================
+# 1. Define the multivariate function
+# ============================================================
+
+def f(x, y):
+    return x**2 - y**2
+
+
+# ============================================================
+# 2. Function to calculate Z and its partial derivatives
+#    using PyTorch automatic differentiation
+# ============================================================
+
+def calculate_gradients(x_value, y_value):
+
+    # Create fresh tensors for each calculation
+    # and enable gradient tracking.
+    x = torch.tensor(float(x_value), requires_grad=True)
+    y = torch.tensor(float(y_value), requires_grad=True)
+
+    # Forward pass
+    z = f(x, y)
+
+    # Backward pass
+    z.backward()
+
+    # Return the output and both gradients
+    return z, x.grad, y.grad
+
+
+# ============================================================
+# 3. Exercises from the previous lecture
+# ============================================================
+
+points = [
+    (3, 0),
+    (2, 3),
+    (-2, -3)
+]
+
+
+# ============================================================
+# 4. Calculate all exercises automatically
+# ============================================================
+
+for x_value, y_value in points:
+
+    z, dx, dy = calculate_gradients(
+        x_value,
+        y_value
+    )
+
+    print("x =", x_value)
+    print("y =", y_value)
+    print("z =", z.item())
+    print("∂z/∂x =", dx.item())
+    print("∂z/∂y =", dy.item())
+    print("-" * 30)
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+x = 3
+y = 0
+z = 9.0
+∂z/∂x = 6.0
+∂z/∂y = 0.0
+------------------------------
+
+x = 2
+y = 3
+z = -5.0
+∂z/∂x = 4.0
+∂z/∂y = -6.0
+------------------------------
+
+x = -2
+y = -3
+z = -5.0
+∂z/∂x = -4.0
+∂z/∂y = 6.0
+------------------------------
+-------------------code----------------------
+
+# 22. Summary
+
+The main goal of this lecture is to learn how to calculate **partial derivatives automatically with PyTorch**.
+
+For:
+
+$$
+\boxed{z=x^2-y^2}
+$$
+
+we previously derived:
+
+$$
+\frac{\partial z}{\partial x}=2x
+$$
+
+$$
+\frac{\partial z}{\partial y}=-2y
+$$
+
+With PyTorch, we don't need to manually calculate those formulas for every point.
+
+The workflow is:
+
+-------------------code----------------------
+1. Create tensors
+       ↓
+2. requires_grad=True
+       ↓
+3. Calculate z
+       ↓
+4. z.backward()
+       ↓
+5. Read x.grad and y.grad
+-------------------code----------------------
+
+The most important PyTorch pattern to remember from this lecture is:
+
+-------------------code----------------------
+x = torch.tensor(..., requires_grad=True)
+y = torch.tensor(..., requires_grad=True)
+
+z = f(x, y)
+
+z.backward()
+
+print(x.grad)
+print(y.grad)
+-------------------code----------------------
+
+This is the bridge from **learning calculus manually** to using **automatic differentiation in real machine-learning models**.
