@@ -2318,3 +2318,807 @@ For machine learning, this becomes:
 **Partial derivatives → Gradient → Gradient descent → Backpropagation**
 
 The key thing to remember from this lecture is not just the formulas, but the idea that **a multivariable function has different slopes depending on which variable/direction you change**.
+
+*** 80. Partial Derivative Exercises ***
+# Calculus 2 — Partial Derivatives Exercises
+
+This lecture is a practical exercise session. The goal is to strengthen your understanding of partial derivatives by calculating the **output and both partial slopes at specific points**.
+
+The function used throughout is:
+
+-------------------code----------------------
+\boxed{z=x^2-y^2}
+-------------------code----------------------
+
+We already know its partial derivatives:
+
+-------------------code----------------------
+\boxed{\frac{\partial z}{\partial x}=2x}
+-------------------code----------------------
+
+-------------------code----------------------
+\boxed{\frac{\partial z}{\partial y}=-2y}
+-------------------code----------------------
+
+---
+
+# 1. What We Need to Calculate
+
+For every point \((x,y)\), calculate three things:
+
+### 1. Value of \(z\)
+
+Use:
+
+-------------------code----------------------
+z=x^2-y^2
+-------------------code----------------------
+
+### 2. Slope with respect to X
+
+Use:
+
+-------------------code----------------------
+\frac{\partial z}{\partial x}=2x
+-------------------code----------------------
+
+### 3. Slope with respect to Y
+
+Use:
+
+-------------------code----------------------
+\frac{\partial z}{\partial y}=-2y
+-------------------code----------------------
+
+So the general procedure is:
+
+-------------------code----------------------
+Given x and y
+      ↓
+Calculate z = x² - y²
+      ↓
+Calculate ∂z/∂x = 2x
+      ↓
+Calculate ∂z/∂y = -2y
+-------------------code----------------------
+
+---
+
+# 2. Exercise 1
+
+Given:
+
+-------------------code----------------------
+x=3,\qquad y=0
+-------------------code----------------------
+
+We need to calculate:
+
+* \(z\)
+* \(\partial z/\partial x\)
+* \(\partial z/\partial y\)
+
+---
+
+## 2.1 Calculate Z
+
+Start with:
+
+-------------------code----------------------
+z=x^2-y^2
+-------------------code----------------------
+
+Substitute \(x=3\) and \(y=0\):
+
+-------------------code----------------------
+z=3^2-0^2
+-------------------code----------------------
+
+-------------------code----------------------
+z=9-0
+-------------------code----------------------
+
+Therefore:
+
+-------------------code----------------------
+\boxed{z=9}
+-------------------code----------------------
+
+---
+
+## 2.2 Calculate the X Slope
+
+We know:
+
+-------------------code----------------------
+\frac{\partial z}{\partial x}=2x
+-------------------code----------------------
+
+Substitute \(x=3\):
+
+-------------------code----------------------
+\frac{\partial z}{\partial x}=2(3)
+-------------------code----------------------
+
+-------------------code----------------------
+\boxed{\frac{\partial z}{\partial x}=6}
+-------------------code----------------------
+
+So the slope in the X direction is **6**.
+
+---
+
+## 2.3 Calculate the Y Slope
+
+We know:
+
+-------------------code----------------------
+\frac{\partial z}{\partial y}=-2y
+-------------------code----------------------
+
+Substitute \(y=0\):
+
+-------------------code----------------------
+\frac{\partial z}{\partial y}=-2(0)
+-------------------code----------------------
+
+Therefore:
+
+-------------------code----------------------
+\boxed{\frac{\partial z}{\partial y}=0}
+-------------------code----------------------
+
+### Exercise 1 Result
+
+-------------------code----------------------
+\boxed{(x,y,z)=(3,0,9)}
+-------------------code----------------------
+
+and:
+
+-------------------code----------------------
+\boxed{\frac{\partial z}{\partial x}=6}
+-------------------code----------------------
+
+-------------------code----------------------
+\boxed{\frac{\partial z}{\partial y}=0}
+-------------------code----------------------
+
+---
+
+# 3. Exercise 2
+
+Given:
+
+-------------------code----------------------
+x=2,\qquad y=3
+-------------------code----------------------
+
+---
+
+## 3.1 Calculate Z
+
+Use:
+
+-------------------code----------------------
+z=x^2-y^2
+-------------------code----------------------
+
+Substitute:
+
+-------------------code----------------------
+z=2^2-3^2
+-------------------code----------------------
+
+-------------------code----------------------
+z=4-9
+-------------------code----------------------
+
+Therefore:
+
+-------------------code----------------------
+\boxed{z=-5}
+-------------------code----------------------
+
+---
+
+## 3.2 Calculate the X Slope
+
+Use:
+
+-------------------code----------------------
+\frac{\partial z}{\partial x}=2x
+-------------------code----------------------
+
+Substitute \(x=2\):
+
+-------------------code----------------------
+\frac{\partial z}{\partial x}=2(2)
+-------------------code----------------------
+
+-------------------code----------------------
+\boxed{\frac{\partial z}{\partial x}=4}
+-------------------code----------------------
+
+---
+
+## 3.3 Calculate the Y Slope
+
+Use:
+
+-------------------code----------------------
+\frac{\partial z}{\partial y}=-2y
+-------------------code----------------------
+
+Substitute \(y=3\):
+
+-------------------code----------------------
+\frac{\partial z}{\partial y}=-2(3)
+-------------------code----------------------
+
+-------------------code----------------------
+\boxed{\frac{\partial z}{\partial y}=-6}
+-------------------code----------------------
+
+### Exercise 2 Result
+
+-------------------code----------------------
+\boxed{(x,y,z)=(2,3,-5)}
+-------------------code----------------------
+
+and:
+
+-------------------code----------------------
+\boxed{\frac{\partial z}{\partial x}=4}
+-------------------code----------------------
+
+-------------------code----------------------
+\boxed{\frac{\partial z}{\partial y}=-6}
+-------------------code----------------------
+
+---
+
+# 4. Exercise 3
+
+Given:
+
+-------------------code----------------------
+x=-2,\qquad y=-3
+-------------------code----------------------
+
+---
+
+## 4.1 Calculate Z
+
+Use:
+
+-------------------code----------------------
+z=x^2-y^2
+-------------------code----------------------
+
+Substitute:
+
+-------------------code----------------------
+z=(-2)^2-(-3)^2
+-------------------code----------------------
+
+Remember that squaring a negative number produces a positive number:
+
+-------------------code----------------------
+(-2)^2=4
+-------------------code----------------------
+
+-------------------code----------------------
+(-3)^2=9
+-------------------code----------------------
+
+Therefore:
+
+-------------------code----------------------
+z=4-9
+-------------------code----------------------
+
+-------------------code----------------------
+\boxed{z=-5}
+-------------------code----------------------
+
+---
+
+## 4.2 Calculate the X Slope
+
+Use:
+
+-------------------code----------------------
+\frac{\partial z}{\partial x}=2x
+-------------------code----------------------
+
+Substitute \(x=-2\):
+
+-------------------code----------------------
+\frac{\partial z}{\partial x}=2(-2)
+-------------------code----------------------
+
+-------------------code----------------------
+\boxed{\frac{\partial z}{\partial x}=-4}
+-------------------code----------------------
+
+---
+
+## 4.3 Calculate the Y Slope
+
+Use:
+
+-------------------code----------------------
+\frac{\partial z}{\partial y}=-2y
+-------------------code----------------------
+
+Substitute \(y=-3\):
+
+-------------------code----------------------
+\frac{\partial z}{\partial y}=-2(-3)
+-------------------code----------------------
+
+-------------------code----------------------
+\boxed{\frac{\partial z}{\partial y}=6}
+-------------------code----------------------
+
+Notice the two negative signs cancel.
+
+### Exercise 3 Result
+
+-------------------code----------------------
+\boxed{(x,y,z)=(-2,-3,-5)}
+-------------------code----------------------
+
+and:
+
+-------------------code----------------------
+\boxed{\frac{\partial z}{\partial x}=-4}
+-------------------code----------------------
+
+-------------------code----------------------
+\boxed{\frac{\partial z}{\partial y}=6}
+-------------------code----------------------
+
+---
+
+# 5. All Three Exercises Together
+
+| Exercise | \(x\) | \(y\) | \(z=x^2-y^2\) | \(\partial z/\partial x=2x\) | \(\partial z/\partial y=-2y\) |
+| -------- | ----: | ----: | ------------: | ---------------------------: | ----------------------------: |
+| 1        |     3 |     0 |             9 |                            6 |                             0 |
+| 2        |     2 |     3 |            -5 |                            4 |                            -6 |
+| 3        |    -2 |    -3 |            -5 |                           -4 |                             6 |
+
+This table is worth remembering because it shows the entire process at a glance.
+
+---
+
+# 6. Important Pattern to Notice
+
+There are two separate things being calculated.
+
+### The value of Z
+
+-------------------code----------------------
+z=x^2-y^2
+-------------------code----------------------
+
+This tells us **where the point is located on the surface**.
+
+### The partial derivatives
+
+-------------------code----------------------
+\frac{\partial z}{\partial x}=2x
+-------------------code----------------------
+
+and:
+
+-------------------code----------------------
+\frac{\partial z}{\partial y}=-2y
+-------------------code----------------------
+
+These tell us **the slopes at that point in two different directions**.
+
+So a point on the surface has:
+
+-------------------code----------------------
+                    Point
+                      |
+             ┌────────┴────────┐
+             ↓                 ↓
+       X-direction         Y-direction
+          slope                slope
+       ∂z/∂x                  ∂z/∂y
+-------------------code----------------------
+
+This is the important conceptual takeaway from the exercises.
+
+---
+
+# 7. Python Implementation
+
+We can implement the same calculations directly in Python.
+
+## Step 1: Define the function
+
+-------------------code----------------------
+def f(x, y):
+    return x**2 - y**2
+-------------------code----------------------
+
+## Step 2: Define the X partial derivative
+
+-------------------code----------------------
+def del_z_del_x(x, y):
+    return 2 * x
+-------------------code----------------------
+
+## Step 3: Define the Y partial derivative
+
+-------------------code----------------------
+def del_z_del_y(x, y):
+    return -2 * y
+-------------------code----------------------
+
+## Step 4: Calculate an exercise
+
+For Exercise 1:
+
+-------------------code----------------------
+x = 3
+y = 0
+
+z = f(x, y)
+slope_x = del_z_del_x(x, y)
+slope_y = del_z_del_y(x, y)
+
+print(z)
+print(slope_x)
+print(slope_y)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+9
+6
+0
+-------------------code----------------------
+
+---
+
+# 8. Python: Calculate All Three Exercises
+
+We can make the process reusable:
+
+-------------------code----------------------
+points = [
+    (3, 0),
+    (2, 3),
+    (-2, -3)
+]
+
+for x, y in points:
+    z = f(x, y)
+    slope_x = del_z_del_x(x, y)
+    slope_y = del_z_del_y(x, y)
+
+    print("x =", x)
+    print("y =", y)
+    print("z =", z)
+    print("∂z/∂x =", slope_x)
+    print("∂z/∂y =", slope_y)
+    print()
+-------------------code----------------------
+
+Expected result:
+
+-------------------code----------------------
+x = 3
+y = 0
+z = 9
+∂z/∂x = 6
+∂z/∂y = 0
+
+x = 2
+y = 3
+z = -5
+∂z/∂x = 4
+∂z/∂y = -6
+
+x = -2
+y = -3
+z = -5
+∂z/∂x = -4
+∂z/∂y = 6
+-------------------code----------------------
+
+---
+
+# 9. Connection to Automatic Differentiation
+
+The lecture ends with an important connection to machine learning.
+
+Calculating partial derivatives **by hand** is useful because it helps us understand the mathematics.
+
+However, real machine-learning models can have:
+
+* hundreds of variables
+* thousands of parameters
+* millions or more parameters
+
+Calculating every derivative manually would be impractical.
+
+This is where **automatic differentiation** becomes useful.
+
+The previous lectures introduced automatic differentiation with tools such as PyTorch.
+
+For example, PyTorch can calculate derivatives automatically:
+
+-------------------code----------------------
+import torch
+
+x = torch.tensor(3.0, requires_grad=True)
+
+z = x**2
+
+z.backward()
+
+print(x.grad)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+tensor(6.)
+-------------------code----------------------
+
+This corresponds to:
+
+-------------------code----------------------
+\frac{dz}{dx}=2x
+-------------------code----------------------
+
+at \(x=3\):
+
+-------------------code----------------------
+2(3)=6
+-------------------code----------------------
+
+The important distinction is:
+
+> **Manual differentiation teaches us how the derivative is calculated. Automatic differentiation lets the computer calculate these derivatives efficiently for complicated models.**
+
+---
+
+# 10. Important Notes and Best Practices
+
+### 10.1 Don't confuse Z with its derivatives
+
+For Exercise 2:
+
+-------------------code----------------------
+z=-5
+-------------------code----------------------
+
+but:
+
+-------------------code----------------------
+\frac{\partial z}{\partial x}=4
+-------------------code----------------------
+
+and:
+
+-------------------code----------------------
+\frac{\partial z}{\partial y}=-6
+-------------------code----------------------
+
+These are three different quantities.
+
+### 10.2 Be careful with negative numbers
+
+For Exercise 3:
+
+-------------------code----------------------
+(-2)^2=4
+-------------------code----------------------
+
+not \(-4\).
+
+And:
+
+-------------------code----------------------
+-2(-3)=6
+-------------------code----------------------
+
+The parentheses are important.
+
+### 10.3 Memorize the workflow, not just the answers
+
+For:
+
+-------------------code----------------------
+z=x^2-y^2
+-------------------code----------------------
+
+remember:
+
+-------------------code----------------------
+1. Find z
+   ↓
+2. Find ∂z/∂x
+   ↓
+3. Find ∂z/∂y
+-------------------code----------------------
+
+Using:
+
+-------------------code----------------------
+z=x^2-y^2
+-------------------code----------------------
+
+-------------------code----------------------
+\frac{\partial z}{\partial x}=2x
+-------------------code----------------------
+
+-------------------code----------------------
+\frac{\partial z}{\partial y}=-2y
+-------------------code----------------------
+
+### 10.4 Why these exercises matter for ML
+
+In machine learning, instead of only two variables \(x\) and \(y\), we may have a cost function such as:
+
+-------------------code----------------------
+C(w_1,w_2,w_3,\ldots,w_n)
+-------------------code----------------------
+
+We need to know:
+
+-------------------code----------------------
+\frac{\partial C}{\partial w_1},
+\frac{\partial C}{\partial w_2},
+\frac{\partial C}{\partial w_3},
+\ldots
+-------------------code----------------------
+
+These partial derivatives will eventually form the **gradient**, which is used by gradient descent to update model parameters.
+
+---
+
+# 11. Full Final Code
+
+-------------------code----------------------
+# ============================================================
+# Calculus 2 - Partial Derivatives Exercises
+# ============================================================
+
+# ------------------------------------------------------------
+# 1. Define the multivariate function
+# ------------------------------------------------------------
+
+def f(x, y):
+    return x**2 - y**2
+
+
+# ------------------------------------------------------------
+# 2. Partial derivative with respect to X
+#
+# z = x² - y²
+# ∂z/∂x = 2x
+# ------------------------------------------------------------
+
+def del_z_del_x(x, y):
+    return 2 * x
+
+
+# ------------------------------------------------------------
+# 3. Partial derivative with respect to Y
+#
+# z = x² - y²
+# ∂z/∂y = -2y
+# ------------------------------------------------------------
+
+def del_z_del_y(x, y):
+    return -2 * y
+
+
+# ------------------------------------------------------------
+# 4. Exercise points
+# ------------------------------------------------------------
+
+points = [
+    (3, 0),
+    (2, 3),
+    (-2, -3)
+]
+
+
+# ------------------------------------------------------------
+# 5. Calculate and display the results
+# ------------------------------------------------------------
+
+for x, y in points:
+
+    # Calculate Z
+    z = f(x, y)
+
+    # Calculate partial derivative with respect to X
+    slope_x = del_z_del_x(x, y)
+
+    # Calculate partial derivative with respect to Y
+    slope_y = del_z_del_y(x, y)
+
+    print("x =", x)
+    print("y =", y)
+    print("z =", z)
+    print("∂z/∂x =", slope_x)
+    print("∂z/∂y =", slope_y)
+    print("-" * 30)
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+x = 3
+y = 0
+z = 9
+∂z/∂x = 6
+∂z/∂y = 0
+------------------------------
+
+x = 2
+y = 3
+z = -5
+∂z/∂x = 4
+∂z/∂y = -6
+------------------------------
+
+x = -2
+y = -3
+z = -5
+∂z/∂x = -4
+∂z/∂y = 6
+------------------------------
+-------------------code----------------------
+
+# 12. Summary
+
+The entire lecture can be reduced to one function:
+
+-------------------code----------------------
+\boxed{z=x^2-y^2}
+-------------------code----------------------
+
+and two partial derivatives:
+
+-------------------code----------------------
+\boxed{\frac{\partial z}{\partial x}=2x}
+-------------------code----------------------
+
+-------------------code----------------------
+\boxed{\frac{\partial z}{\partial y}=-2y}
+-------------------code----------------------
+
+For every point \((x,y)\):
+
+1. Calculate \(z\).
+2. Substitute \(x\) into \(2x\) to get the X-direction slope.
+3. Substitute \(y\) into \(-2y\) to get the Y-direction slope.
+
+The three exercises give:
+
+-------------------code----------------------
+\boxed{(3,0)\rightarrow z=9,\quad \frac{\partial z}{\partial x}=6,\quad \frac{\partial z}{\partial y}=0}
+-------------------code----------------------
+
+-------------------code----------------------
+\boxed{(2,3)\rightarrow z=-5,\quad \frac{\partial z}{\partial x}=4,\quad \frac{\partial z}{\partial y}=-6}
+-------------------code----------------------
+
+-------------------code----------------------
+\boxed{(-2,-3)\rightarrow z=-5,\quad \frac{\partial z}{\partial x}=-4,\quad \frac{\partial z}{\partial y}=6}
+-------------------code----------------------
+
+**Main lesson:** Manual partial derivatives are important for understanding the mathematics; **automatic differentiation** becomes essential when the number of variables and parameters becomes very large.
