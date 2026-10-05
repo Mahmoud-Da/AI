@@ -3987,3 +3987,1063 @@ print(y.grad)
 -------------------code----------------------
 
 This is the bridge from **learning calculus manually** to using **automatic differentiation in real machine-learning models**.
+
+*** 82. Advanced Partial Derivatives ***
+
+# Calculus 2 — Partial Derivatives of Cylinder Volume
+
+## 1. Lecture Goal
+
+This lecture deepens our understanding of **partial derivatives** through a geometric example: the volume of a cylinder.
+
+The volume of a cylinder is:
+
+-------------------code----------------------
+V=\pi R^2L
+-------------------code----------------------
+
+where:
+
+* \(V\) = volume
+* \(R\) = radius
+* \(L\) = length
+* \(\pi\) = constant
+
+We will calculate:
+
+1. \(\frac{\partial V}{\partial L}\) — how volume changes with respect to length.
+2. \(\frac{\partial V}{\partial R}\) — how volume changes with respect to radius.
+3. Verify both results using **PyTorch automatic differentiation**.
+4. Understand why a partial derivative can represent a local rate of change.
+
+---
+
+# 2. Volume of a Cylinder
+
+The formula is:
+
+-------------------code----------------------
+\boxed{V=\pi R^2L}
+-------------------code----------------------
+
+We can represent this in Python:
+
+-------------------code----------------------
+import math
+
+def cylinder_volume(R, L):
+    return math.pi * R**2 * L
+-------------------code----------------------
+
+For example:
+
+-------------------code----------------------
+R = 3
+L = 5
+
+V = cylinder_volume(R, L)
+print(V)
+-------------------code----------------------
+
+The result is approximately:
+
+-------------------code----------------------
+141.37
+-------------------code----------------------
+
+So a cylinder with radius 3 meters and length 5 meters has a volume of approximately:
+
+$$
+141.4\text{ m}^3
+$$
+
+---
+
+# 3. Partial Derivative with Respect to Length
+
+We first calculate:
+
+$$
+\frac{\partial V}{\partial L}
+$$
+
+Starting with:
+
+$$
+V=\pi R^2L
+$$
+
+Because we are differentiating with respect to \(L\), everything else is treated as a constant.
+
+Therefore:
+
+* \(\pi\) is constant.
+* \(R\) is constant.
+* \(R^2\) is constant.
+
+So:
+
+$$
+\frac{\partial V}{\partial L}
+=
+\pi R^2\frac{\partial L}{\partial L}
+$$
+
+Since:
+
+$$
+\frac{\partial L}{\partial L}=1
+$$
+
+we get:
+
+$$
+\boxed{\frac{\partial V}{\partial L}=\pi R^2}
+$$
+
+---
+
+# 4. Geometric Meaning of \(\frac{\partial V}{\partial L}\)
+
+Notice that:
+
+$$
+\pi R^2
+$$
+
+is the **area of the circular base** of the cylinder.
+
+Therefore:
+
+$$
+\boxed{\frac{\partial V}{\partial L}=\text{base area}}
+$$
+
+This makes intuitive geometric sense.
+
+If we increase the length of the cylinder by one unit while keeping the radius fixed, we are effectively adding one more "slice" of the cylinder.
+
+That slice has volume equal to:
+
+$$
+\text{base area}\times\text{additional length}
+$$
+
+For a one-unit increase in length:
+
+$$
+\Delta V=\pi R^2
+$$
+
+---
+
+# 5. Numerical Example
+
+Suppose:
+
+$$
+R=3
+$$
+
+Then:
+
+$$
+\frac{\partial V}{\partial L}
+=
+\pi(3)^2
+$$
+
+$$
+=9\pi
+$$
+
+Therefore:
+
+$$
+\boxed{\frac{\partial V}{\partial L}\approx28.3}
+$$
+
+So, with a radius of 3 meters:
+
+> A one-unit increase in length corresponds to approximately \(28.3\text{ m}^3\) of additional volume.
+
+---
+
+# 6. Verify the Result Using Actual Volumes
+
+Let's compare a cylinder with:
+
+$$
+R=3,\quad L=5
+$$
+
+against one with:
+
+$$
+R=3,\quad L=6
+$$
+
+### When \(L=5\)
+
+$$
+V_5=\pi(3)^2(5)
+$$
+
+$$
+V_5\approx141.4
+$$
+
+### When \(L=6\)
+
+$$
+V_6=\pi(3)^2(6)
+$$
+
+$$
+V_6\approx169.6
+$$
+
+The difference is approximately:
+
+$$
+169.6-141.4=28.3
+$$
+
+which agrees with:
+
+$$
+\frac{\partial V}{\partial L}=28.3
+$$
+
+We can also compare lengths 6 and 7.
+
+The difference will again be approximately:
+
+$$
+28.3
+$$
+
+because the radius remains fixed.
+
+---
+
+# 7. Why Is the Change Constant with Respect to Length?
+
+Our derivative is:
+
+$$
+\frac{\partial V}{\partial L}=\pi R^2
+$$
+
+Notice that \(L\) is no longer present.
+
+Therefore, once \(R\) is fixed, the rate at which volume changes with length stays constant.
+
+For example, with \(R=3\):
+
+$$
+L=5\rightarrow6
+$$
+
+adds approximately:
+
+$$
+28.3
+$$
+
+and:
+
+$$
+L=6\rightarrow7
+$$
+
+also adds approximately:
+
+$$
+28.3
+$$
+
+This is because every additional unit of length adds another cylinder slice with the same base area.
+
+---
+
+# 8. Partial Derivative with Respect to Radius
+
+Now let's calculate:
+
+$$
+\frac{\partial V}{\partial R}
+$$
+
+Starting with:
+
+$$
+V=\pi R^2L
+$$
+
+This time we differentiate with respect to \(R\).
+
+Therefore:
+
+* \(\pi\) is constant.
+* \(L\) is constant.
+* \(R^2\) is the part we differentiate.
+
+Using the power rule:
+
+$$
+\frac{\partial}{\partial R}R^2=2R
+$$
+
+Therefore:
+
+$$
+\frac{\partial V}{\partial R}
+=
+\pi L(2R)
+$$
+
+So:
+
+$$
+\boxed{\frac{\partial V}{\partial R}=2\pi RL}
+$$
+
+---
+
+# 9. Important Difference Between the Two Derivatives
+
+We now have:
+
+### With respect to length
+
+$$
+\boxed{\frac{\partial V}{\partial L}=\pi R^2}
+$$
+
+### With respect to radius
+
+$$
+\boxed{\frac{\partial V}{\partial R}=2\pi RL}
+$$
+
+There is an important difference.
+
+For:
+
+$$
+\frac{\partial V}{\partial L}
+$$
+
+the variable \(L\) disappears from the derivative.
+
+But for:
+
+$$
+\frac{\partial V}{\partial R}
+$$
+
+the variable \(R\) remains in the derivative.
+
+This means that the effect of changing \(R\) depends on the current value of \(R\).
+
+---
+
+# 10. Numerical Example for the Radius
+
+Suppose:
+
+$$
+R=3,\quad L=5
+$$
+
+Then:
+
+$$
+\frac{\partial V}{\partial R}
+=
+2\pi(3)(5)
+$$
+
+Therefore:
+
+$$
+\boxed{\frac{\partial V}{\partial R}\approx94.3}
+$$
+
+So at the point:
+
+$$
+(R,L)=(3,5)
+$$
+
+the local rate of change of volume with respect to radius is approximately:
+
+$$
+94.3
+$$
+
+---
+
+# 11. Why Is This a Local Rate of Change?
+
+This is one of the most important concepts in the lecture.
+
+For:
+
+$$
+\frac{\partial V}{\partial L}=\pi R^2
+$$
+
+the variable \(L\) does not appear in the result.
+
+But:
+
+$$
+\frac{\partial V}{\partial R}=2\pi RL
+$$
+
+still contains \(R\).
+
+Therefore, the value of the derivative changes as \(R\) changes.
+
+For example:
+
+$$
+R=3,\quad L=5
+$$
+
+gives:
+
+$$
+\frac{\partial V}{\partial R}\approx94.3
+$$
+
+But if \(R\) changes, the derivative changes too.
+
+Therefore, we should interpret the derivative as the rate of change **at the current point**.
+
+---
+
+# 12. Infinitesimally Small Changes
+
+Calculus often deals with extremely small changes.
+
+Suppose:
+
+$$
+R=3
+$$
+
+and we make a very small change:
+
+$$
+\Delta R=10^{-6}
+$$
+
+That is:
+
+-------------------code----------------------
+delta_R = 1e-6
+-------------------code----------------------
+
+We can compare the original cylinder with a cylinder whose radius is slightly larger.
+
+The approximate rate of change is:
+
+$$
+\frac{\Delta V}{\Delta R}
+$$
+
+or:
+
+$$
+\frac{
+V(R+\Delta R,L)-V(R,L)
+}{
+\Delta R
+}
+$$
+
+As:
+
+$$
+\Delta R\rightarrow0
+$$
+
+this approaches the true partial derivative:
+
+$$
+\boxed{
+\frac{\partial V}{\partial R}
+=
+\lim_{\Delta R\rightarrow0}
+\frac{\Delta V}{\Delta R}
+}
+$$
+
+---
+
+# 13. Python Demonstration of a Small Change
+
+-------------------code----------------------
+import math
+
+def cylinder_volume(R, L):
+    return math.pi * R**2 * L
+
+R = 3
+L = 5
+delta_R = 1e-6
+
+V_original = cylinder_volume(R, L)
+V_new = cylinder_volume(R + delta_R, L)
+
+approx_derivative = (V_new - V_original) / delta_R
+
+print(approx_derivative)
+-------------------code----------------------
+
+The result will be very close to:
+
+-------------------code----------------------
+94.2478
+-------------------code----------------------
+
+which is the same as:
+
+$$
+2\pi(3)(5)\approx94.2478
+$$
+
+---
+
+# 14. What Happens If \(\Delta R\) Becomes Larger?
+
+If we make:
+
+-------------------code----------------------
+delta_R = 1
+-------------------code----------------------
+
+instead of:
+
+-------------------code----------------------
+delta_R = 1e-6
+-------------------code----------------------
+
+the result will no longer match the derivative as closely.
+
+Why?
+
+Because:
+
+$$
+\frac{\Delta V}{\Delta R}
+$$
+
+over a large interval represents an **average rate of change**, whereas the derivative represents the rate of change at a specific point.
+
+Therefore:
+
+> The smaller \(\Delta R\) becomes, the closer the finite-difference approximation gets to the true partial derivative.
+
+---
+
+# 15. Using PyTorch Automatic Differentiation
+
+Now we can calculate the same derivatives automatically with PyTorch.
+
+First:
+
+-------------------code----------------------
+import torch
+-------------------code----------------------
+
+Define the cylinder volume function:
+
+-------------------code----------------------
+def cylinder_volume(R, L):
+    return torch.pi * R**2 * L
+-------------------code----------------------
+
+---
+
+# 16. Create the Input Tensors
+
+We use:
+
+$$
+R=3
+$$
+
+and:
+
+$$
+L=5
+$$
+
+Because we want PyTorch to calculate derivatives with respect to both variables, we need:
+
+-------------------code----------------------
+requires_grad=True
+-------------------code----------------------
+
+So:
+
+-------------------code----------------------
+R = torch.tensor(3.0, requires_grad=True)
+L = torch.tensor(5.0, requires_grad=True)
+-------------------code----------------------
+
+This tells PyTorch to track operations involving these tensors.
+
+---
+
+# 17. Forward Pass
+
+Now calculate the volume:
+
+-------------------code----------------------
+V = cylinder_volume(R, L)
+
+print(V)
+-------------------code----------------------
+
+We get approximately:
+
+-------------------code----------------------
+tensor(141.3717, grad_fn=...)
+-------------------code----------------------
+
+This is the **forward pass**:
+
+$$
+R,L\rightarrow V
+$$
+
+The input values flow forward through the function to produce the output.
+
+---
+
+# 18. Backward Pass
+
+Now we can perform automatic differentiation:
+
+-------------------code----------------------
+V.backward()
+-------------------code----------------------
+
+Then inspect the gradients:
+
+-------------------code----------------------
+print(R.grad)
+print(L.grad)
+-------------------code----------------------
+
+We get approximately:
+
+-------------------code----------------------
+tensor(94.2478)
+tensor(28.2743)
+-------------------code----------------------
+
+Therefore:
+
+$$
+\boxed{\frac{\partial V}{\partial R}\approx94.3}
+$$
+
+and:
+
+$$
+\boxed{\frac{\partial V}{\partial L}\approx28.3}
+$$
+
+---
+
+# 19. Verify PyTorch Against the Manual Derivatives
+
+### Derivative with respect to \(L\)
+
+Manual result:
+
+$$
+\frac{\partial V}{\partial L}
+=
+\pi R^2
+$$
+
+With \(R=3\):
+
+$$
+\pi(3)^2
+=
+9\pi
+\approx28.3
+$$
+
+PyTorch gives:
+
+$$
+28.2743
+$$
+
+Same result.
+
+---
+
+### Derivative with respect to \(R\)
+
+Manual result:
+
+$$
+\frac{\partial V}{\partial R}
+=
+2\pi RL
+$$
+
+With \(R=3\) and \(L=5\):
+
+$$
+2\pi(3)(5)
+=
+30\pi
+\approx94.3
+$$
+
+PyTorch gives:
+
+$$
+94.2478
+$$
+
+Again, the same result.
+
+---
+
+# 20. Forward Pass vs. Backward Pass
+
+The entire process can be visualized as:
+
+### Forward pass
+
+$$
+R,L\rightarrow V
+$$
+
+Calculate the cylinder's volume.
+
+### Backward pass
+
+$$
+V\rightarrow
+\frac{\partial V}{\partial R},
+\frac{\partial V}{\partial L}
+$$
+
+Calculate how the output changes with respect to each input.
+
+This is the same fundamental idea used in Machine Learning.
+
+---
+
+# 21. Connection to Machine Learning
+
+In Machine Learning, we often have a function such as:
+
+$$
+C=f(w_1,w_2,w_3,\ldots,w_n)
+$$
+
+where \(C\) is a cost or loss function.
+
+We want to know:
+
+$$
+\frac{\partial C}{\partial w_1},
+\frac{\partial C}{\partial w_2},
+\ldots
+$$
+
+These partial derivatives together form the **gradient**.
+
+The gradient is then used by optimization algorithms such as gradient descent to update model parameters.
+
+The cylinder example is much simpler:
+
+$$
+V=f(R,L)
+$$
+
+and its partial derivatives are:
+
+$$
+\frac{\partial V}{\partial R}
+$$
+
+and:
+
+$$
+\frac{\partial V}{\partial L}
+$$
+
+The underlying mathematical idea is the same.
+
+---
+
+# 22. Important Notes and Best Practices
+
+## 22.1 Always identify the differentiation variable
+
+For:
+
+$$
+V=\pi R^2L
+$$
+
+if differentiating with respect to \(L\):
+
+$$
+R\text{ is treated as a constant}
+$$
+
+If differentiating with respect to \(R\):
+
+$$
+L\text{ is treated as a constant}
+$$
+
+---
+
+## 22.2 Do not confuse a derivative with a large finite change
+
+If:
+
+$$
+\frac{\partial V}{\partial R}=94.3
+$$
+
+at \(R=3,L=5\), this does **not** mean that increasing \(R\) by exactly 1 always increases volume by exactly 94.3.
+
+The derivative describes the **local rate of change**.
+
+---
+
+## 22.3 A variable can remain in its own partial derivative
+
+This is completely normal.
+
+For example:
+
+$$
+\frac{\partial V}{\partial R}=2\pi RL
+$$
+
+contains \(R\).
+
+That tells us that the effect of changing \(R\) depends on the current radius.
+
+---
+
+## 22.4 Automatic differentiation verifies the mathematics
+
+PyTorch can calculate:
+
+-------------------code----------------------
+V.backward()
+-------------------code----------------------
+
+but understanding the underlying mathematics is still important.
+
+You should understand why PyTorch produces:
+
+$$
+\frac{\partial V}{\partial R}=2\pi RL
+$$
+
+rather than simply treating `backward()` as a black box.
+
+---
+
+## 22.5 Gradients can accumulate in PyTorch
+
+PyTorch accumulates gradients when `.backward()` is called multiple times.
+
+During normal model training, gradients should therefore be cleared appropriately, for example:
+
+-------------------code----------------------
+optimizer.zero_grad()
+-------------------code----------------------
+
+For simple experiments like this lecture, creating fresh tensors for each calculation is also an easy approach.
+
+---
+
+# 23. Full Final Code
+
+-------------------code----------------------
+import torch
+
+
+# ----------------------------------------
+# 1. Define the cylinder volume function
+# ----------------------------------------
+
+def cylinder_volume(R, L):
+    return torch.pi * R**2 * L
+
+
+# ----------------------------------------
+# 2. Create input tensors
+# ----------------------------------------
+
+R = torch.tensor(3.0, requires_grad=True)
+L = torch.tensor(5.0, requires_grad=True)
+
+
+# ----------------------------------------
+# 3. Forward pass
+# ----------------------------------------
+
+V = cylinder_volume(R, L)
+
+print("Volume =", V.item())
+
+
+# ----------------------------------------
+# 4. Backward pass
+# ----------------------------------------
+
+V.backward()
+
+print("∂V/∂R =", R.grad.item())
+print("∂V/∂L =", L.grad.item())
+
+
+# ----------------------------------------
+# 5. Manual derivative calculations
+# ----------------------------------------
+
+manual_dV_dR = 2 * torch.pi * R
+manual_dV_dL = torch.pi * R**2
+
+print()
+print("Manual ∂V/∂R =", manual_dV_dR.item())
+print("Manual ∂V/∂L =", manual_dV_dL.item())
+
+
+# ----------------------------------------
+# 6. Compare volumes for different lengths
+# ----------------------------------------
+
+R_value = 3.0
+
+V_length_5 = cylinder_volume(
+    torch.tensor(R_value),
+    torch.tensor(5.0)
+)
+
+V_length_6 = cylinder_volume(
+    torch.tensor(R_value),
+    torch.tensor(6.0)
+)
+
+print()
+print("Volume at L=5 =", V_length_5.item())
+print("Volume at L=6 =", V_length_6.item())
+
+difference = V_length_6 - V_length_5
+
+print("Difference =", difference.item())
+
+
+# ----------------------------------------
+# 7. Approximate ∂V/∂R using a tiny change
+# ----------------------------------------
+
+R_value = 3.0
+L_value = 5.0
+delta_R = 1e-6
+
+V_original = cylinder_volume(
+    torch.tensor(R_value),
+    torch.tensor(L_value)
+)
+
+V_new = cylinder_volume(
+    torch.tensor(R_value + delta_R),
+    torch.tensor(L_value)
+)
+
+approx_dV_dR = (V_new - V_original) / delta_R
+
+print()
+print("Approximate ∂V/∂R =", approx_dV_dR.item())
+print("Autodiff ∂V/∂R =", R.grad.item())
+-------------------code----------------------
+
+# 24. Summary
+
+The main ideas to remember are:
+
+1. **Cylinder volume**
+
+   $$
+   \boxed{V=\pi R^2L}
+   $$
+
+2. **Partial derivative with respect to length**
+
+   $$
+   \boxed{\frac{\partial V}{\partial L}=\pi R^2}
+   $$
+
+3. **Partial derivative with respect to radius**
+
+   $$
+   \boxed{\frac{\partial V}{\partial R}=2\pi RL}
+   $$
+
+4. When calculating a partial derivative, **all other variables are treated as constants**.
+
+5. \(\frac{\partial V}{\partial L}\) represents the effect of changing length while keeping radius fixed.
+
+6. \(\frac{\partial V}{\partial R}\) represents the effect of changing radius while keeping length fixed.
+
+7. Because \(R\) remains in:
+
+   $$
+   \frac{\partial V}{\partial R}=2\pi RL
+   $$
+
+   the rate of change depends on the current value of \(R\).
+
+8. A derivative represents a **local rate of change**, so it is most accurately interpreted for an infinitesimally small change.
+
+9. In PyTorch:
+
+   -------------------code----------------------
+   requires_grad=True
+   -------------------code----------------------
+
+   enables gradient tracking.
+
+10. Then:
+
+-------------------code----------------------
+V.backward()
+-------------------code----------------------
+
+performs automatic differentiation.
+
+11. Finally:
+
+-------------------code----------------------
+R.grad
+L.grad
+-------------------code----------------------
+
+give the partial derivatives with respect to \(R\) and \(L\).
+
+12. The cylinder example is a simple geometric demonstration of the same **forward pass → backward pass → gradients** process that is fundamental to Machine Learning.
