@@ -6203,3 +6203,1181 @@ The key points to remember are:
 7. This notation becomes increasingly useful when dealing with multiple variables, the **chain rule**, gradients, and backpropagation.
 
 The next topic is applying the **chain rule to partial derivatives**.
+
+*** 85. The Chain Rule for Partial Derivatives ***
+# Partial Derivatives: The Chain Rule for Multivariate Functions
+
+## 1. Overview
+
+This lecture extends the **chain rule** from ordinary derivatives to **partial derivatives of multivariate functions**.
+
+The main idea is:
+
+> When a variable depends on several intermediate variables, and those intermediate variables depend on several inputs, the partial derivative is found by following every relevant path through the computational graph and adding the contributions from those paths.
+
+This idea is extremely important in machine learning because neural networks and other models are essentially **large chains of functions**.
+
+---
+
+# 2. Review: The Ordinary Chain Rule
+
+First, consider two nested **univariate** functions:
+
+$$
+u=g(x)
+$$
+
+and
+
+$$
+y=f(u)
+$$
+
+So the dependency is:
+
+-------------------code----------------------
+x → u → y
+-------------------code----------------------
+
+We want to calculate:
+
+$$
+\frac{dy}{dx}
+$$
+
+The chain rule says:
+
+$$
+\boxed{
+\frac{dy}{dx}
+=
+\frac{dy}{du}
+\frac{du}{dx}
+}
+$$
+
+The \(du\) terms cancel conceptually:
+
+$$
+\frac{dy}{du}\frac{du}{dx}
+=
+\frac{dy}{dx}
+$$
+
+### Why this matters in machine learning
+
+A machine-learning model may contain hundreds or thousands of nested operations:
+
+-------------------code----------------------
+input
+  ↓
+function
+  ↓
+function
+  ↓
+function
+  ↓
+...
+  ↓
+output
+-------------------code----------------------
+
+The chain rule allows us to calculate how the final output changes with respect to a deeply nested input.
+
+---
+
+# 3. Full Derivatives vs. Partial Derivatives
+
+If all functions are **univariate**, there is only one input.
+
+For example:
+
+$$
+u=g(x)
+$$
+
+$$
+y=f(u)
+$$
+
+In this case:
+
+$$
+\frac{dy}{dx}
+$$
+
+and
+
+$$
+\frac{\partial y}{\partial x}
+$$
+
+give the same result.
+
+Similarly:
+
+$$
+\frac{du}{dx}
+=
+\frac{\partial u}{\partial x}
+$$
+
+and
+
+$$
+\frac{dy}{du}
+=
+\frac{\partial y}{\partial u}
+$$
+
+However, using partial derivatives becomes much more useful when functions have **multiple inputs**.
+
+---
+
+# 4. Multivariate Chain Rule: One Intermediate Variable
+
+Consider:
+
+$$
+u=g(x,z)
+$$
+
+and:
+
+$$
+y=f(u)
+$$
+
+Now \(u\) has **two inputs**:
+
+$$
+x,\ z
+$$
+
+The dependency graph is:
+
+-------------------code----------------------
+x ──┐
+    ├──→ u ──→ y
+z ──┘
+-------------------code----------------------
+
+Here:
+
+* \(u\) depends on \(x\) and \(z\)
+* \(y\) depends on \(u\)
+
+---
+
+# 5. Calculating \(\partial y/\partial x\)
+
+Suppose we want:
+
+$$
+\frac{\partial y}{\partial x}
+$$
+
+There is one path from \(x\) to \(y\):
+
+-------------------code----------------------
+x → u → y
+-------------------code----------------------
+
+Therefore, multiply the partial derivatives along that path:
+
+$$
+\boxed{
+\frac{\partial y}{\partial x}
+=
+\frac{\partial y}{\partial u}
+\frac{\partial u}{\partial x}
+}
+$$
+
+Conceptually:
+
+$$
+\frac{\partial y}{\partial u}
+\frac{\partial u}{\partial x}
+=
+\frac{\partial y}{\partial x}
+$$
+
+---
+
+# 6. Calculating \(\partial y/\partial z\)
+
+We can do exactly the same thing for \(z\).
+
+The path is:
+
+-------------------code----------------------
+z → u → y
+-------------------code----------------------
+
+Therefore:
+
+$$
+\boxed{
+\frac{\partial y}{\partial z}
+=
+\frac{\partial y}{\partial u}
+\frac{\partial u}{\partial z}
+}
+$$
+
+The important point is that we follow the path from the input to the output.
+
+---
+
+# 7. Why Dependency Trees Are Useful
+
+For multivariate functions, drawing a dependency tree makes the chain rule much easier.
+
+For:
+
+$$
+u=g(x,z)
+$$
+
+$$
+y=f(u)
+$$
+
+we can draw:
+
+-------------------code----------------------
+        y
+        ↑
+        u
+       ↗ ↖
+      x   z
+-------------------code----------------------
+
+This immediately tells us:
+
+* \(y\) depends on \(u\)
+* \(u\) depends on \(x\)
+* \(u\) depends on \(z\)
+
+Therefore:
+
+$$
+\frac{\partial y}{\partial x}
+$$
+
+uses the path:
+
+-------------------code----------------------
+x → u → y
+-------------------code----------------------
+
+and:
+
+$$
+\frac{\partial y}{\partial z}
+$$
+
+uses:
+
+-------------------code----------------------
+z → u → y
+-------------------code----------------------
+
+### Best practice
+
+When dealing with complicated nested functions:
+
+> **Draw the computational/dependency graph first.**
+
+It makes it much easier to determine which derivatives are required.
+
+---
+
+# 8. Multiple Intermediate Variables
+
+Now consider a more interesting situation.
+
+Suppose:
+
+$$
+y=f(u,v)
+$$
+
+and both \(u\) and \(v\) depend on \(x\) and \(z\):
+
+$$
+u=g(x,z)
+$$
+
+$$
+v=h(x,z)
+$$
+
+The dependency graph is:
+
+-------------------code----------------------
+        y
+       ↗ ↖
+      u   v
+     ↗ ↖ ↗ ↖
+    x   z
+-------------------code----------------------
+
+More explicitly:
+
+-------------------code----------------------
+x ──→ u ──→ y
+│      ↑
+│      │
+└────→ v ──→ y
+       ↑
+z ─────┘
+-------------------code----------------------
+
+The important idea is that there are now **multiple paths** from an input to the output.
+
+---
+
+# 9. Calculating \(\partial y/\partial x\)
+
+We want:
+
+$$
+\frac{\partial y}{\partial x}
+$$
+
+There are **two paths** from \(x\) to \(y\):
+
+### Path 1
+
+-------------------code----------------------
+x → u → y
+-------------------code----------------------
+
+Contribution:
+
+$$
+\frac{\partial y}{\partial u}
+\frac{\partial u}{\partial x}
+$$
+
+### Path 2
+
+-------------------code----------------------
+x → v → y
+-------------------code----------------------
+
+Contribution:
+
+$$
+\frac{\partial y}{\partial v}
+\frac{\partial v}{\partial x}
+$$
+
+Because both paths contribute to how \(y\) changes with \(x\), we **add them**:
+
+$$
+\boxed{
+\frac{\partial y}{\partial x}
+=
+\frac{\partial y}{\partial u}
+\frac{\partial u}{\partial x}
++
+\frac{\partial y}{\partial v}
+\frac{\partial v}{\partial x}
+}
+$$
+
+This is the most important idea in this lecture.
+
+---
+
+# 10. Calculating \(\partial y/\partial z\)
+
+The same logic applies to \(z\).
+
+There are two paths:
+
+-------------------code----------------------
+z → u → y
+-------------------code----------------------
+
+and:
+
+-------------------code----------------------
+z → v → y
+-------------------code----------------------
+
+Therefore:
+
+$$
+\boxed{
+\frac{\partial y}{\partial z}
+=
+\frac{\partial y}{\partial u}
+\frac{\partial u}{\partial z}
++
+\frac{\partial y}{\partial v}
+\frac{\partial v}{\partial z}
+}
+$$
+
+Again:
+
+1. Follow every path from the input to the output.
+2. Multiply the derivatives along each path.
+3. Add the contributions from all paths.
+
+---
+
+# 11. A Simple Numerical Example
+
+Let's make the concept concrete.
+
+Suppose:
+
+$$
+u=x+z
+$$
+
+$$
+v=xz
+$$
+
+and:
+
+$$
+y=u^2+3v
+$$
+
+The dependency structure is:
+
+-------------------code----------------------
+        y
+       ↗ ↖
+      u   v
+     ↗ ↖ ↗ ↖
+    x   z
+-------------------code----------------------
+
+We can calculate the derivatives using the chain rule.
+
+First:
+
+$$
+\frac{\partial y}{\partial u}=2u
+$$
+
+and:
+
+$$
+\frac{\partial y}{\partial v}=3
+$$
+
+For \(u\):
+
+$$
+\frac{\partial u}{\partial x}=1
+$$
+
+$$
+\frac{\partial u}{\partial z}=1
+$$
+
+For \(v\):
+
+$$
+\frac{\partial v}{\partial x}=z
+$$
+
+$$
+\frac{\partial v}{\partial z}=x
+$$
+
+Therefore:
+
+$$
+\frac{\partial y}{\partial x}
+=
+\frac{\partial y}{\partial u}
+\frac{\partial u}{\partial x}
++
+\frac{\partial y}{\partial v}
+\frac{\partial v}{\partial x}
+$$
+
+So:
+
+$$
+\boxed{
+\frac{\partial y}{\partial x}
+=
+2u+3z
+}
+$$
+
+Similarly:
+
+$$
+\boxed{
+\frac{\partial y}{\partial z}
+=
+2u+3x
+}
+$$
+
+---
+
+# 12. Python Implementation
+
+We can represent the same mathematical relationships directly in Python.
+
+### Step 1: Define the functions
+
+-------------------code----------------------
+def u_function(x, z):
+    return x + z
+
+
+def v_function(x, z):
+    return x * z
+
+
+def y_function(u, v):
+    return u**2 + 3 * v
+-------------------code----------------------
+
+---
+
+### Step 2: Calculate the intermediate values
+
+For example, let:
+
+-------------------code----------------------
+x = 2
+z = 3
+-------------------code----------------------
+
+Then:
+
+-------------------code----------------------
+u = u_function(x, z)
+v = v_function(x, z)
+y = y_function(u, v)
+
+print("u =", u)
+print("v =", v)
+print("y =", y)
+-------------------code----------------------
+
+The values are:
+
+$$
+u=5
+$$
+
+$$
+v=6
+$$
+
+$$
+y=5^2+3(6)=43
+$$
+
+---
+
+# 13. Calculate the Partial Derivatives Manually
+
+Now implement the individual derivatives.
+
+-------------------code----------------------
+def dy_du(u):
+    return 2 * u
+
+
+def dy_dv():
+    return 3
+
+
+def du_dx():
+    return 1
+
+
+def du_dz():
+    return 1
+
+
+def dv_dx(z):
+    return z
+
+
+def dv_dz(x):
+    return x
+-------------------code----------------------
+
+Then apply the chain rule.
+
+-------------------code----------------------
+partial_y_x = (
+    dy_du(u) * du_dx()
+    + dy_dv() * dv_dx(z)
+)
+
+partial_y_z = (
+    dy_du(u) * du_dz()
+    + dy_dv() * dv_dz(x)
+)
+
+print("∂y/∂x =", partial_y_x)
+print("∂y/∂z =", partial_y_z)
+-------------------code----------------------
+
+For \(x=2,z=3\):
+
+$$
+\frac{\partial y}{\partial x}
+=
+2(5)(1)+3(3)
+=
+19
+$$
+
+and:
+
+$$
+\frac{\partial y}{\partial z}
+=
+2(5)(1)+3(2)
+=
+16
+$$
+
+So:
+
+-------------------code----------------------
+∂y/∂x = 19
+∂y/∂z = 16
+-------------------code----------------------
+
+---
+
+# 14. The General Multivariate Chain Rule
+
+Now generalize the idea.
+
+Suppose:
+
+$$
+y=f(u_1,u_2,\ldots,u_m)
+$$
+
+and every intermediate variable \(u_j\) depends on:
+
+$$
+x_1,x_2,\ldots,x_n
+$$
+
+For example:
+
+$$
+u_j=g_j(x_1,x_2,\ldots,x_n)
+$$
+
+We want the partial derivative of \(y\) with respect to some input \(x_i\).
+
+We need to follow **every path** from \(x_i\) through the intermediate variables to \(y\).
+
+The general formula is:
+
+$$
+\boxed{
+\frac{\partial y}{\partial x_i}
+=
+\sum_{j=1}^{m}
+\frac{\partial y}{\partial u_j}
+\frac{\partial u_j}{\partial x_i}
+}
+$$
+
+In simple terms:
+
+> **Partial derivative = sum of the contributions from every path between the input and output.**
+
+---
+
+# 15. Understanding the General Formula Intuitively
+
+Do not focus too much on memorizing the formula.
+
+Instead, remember this procedure:
+
+### Step 1: Start with the input
+
+For example:
+
+$$
+x
+$$
+
+### Step 2: Find every route from \(x\) to \(y\)
+
+For example:
+
+-------------------code----------------------
+x → u₁ → y
+x → u₂ → y
+x → u₃ → y
+-------------------code----------------------
+
+### Step 3: Multiply derivatives along each route
+
+-------------------code----------------------
+Path 1:
+∂y/∂u₁ × ∂u₁/∂x
+
+Path 2:
+∂y/∂u₂ × ∂u₂/∂x
+
+Path 3:
+∂y/∂u₃ × ∂u₃/∂x
+-------------------code----------------------
+
+### Step 4: Add all paths
+
+$$
+\frac{\partial y}{\partial x}
+=
+\text{Path 1}
++
+\text{Path 2}
++
+\text{Path 3}
+$$
+
+This is the key intuition behind the multivariate chain rule.
+
+---
+
+# 16. Connection to Machine Learning
+
+This concept is fundamental to **backpropagation**.
+
+A neural network can be represented as a computational graph:
+
+-------------------code----------------------
+Input
+  ↓
+Layer
+  ↓
+Layer
+  ↓
+Layer
+  ↓
+Output
+  ↓
+Cost
+-------------------code----------------------
+
+Each node depends on other nodes.
+
+To determine how the final cost changes with respect to a parameter, we need to trace the paths through the graph.
+
+For example:
+
+$$
+\frac{\partial C}{\partial w}
+$$
+
+may require a chain such as:
+
+$$
+\frac{\partial C}{\partial y}
+\frac{\partial y}{\partial u}
+\frac{\partial u}{\partial w}
+$$
+
+If there are multiple paths, their contributions are added.
+
+This is exactly the mathematical foundation behind **backpropagation**.
+
+---
+
+# 17. Connection to Automatic Differentiation
+
+Earlier in the course, PyTorch automatically calculated derivatives.
+
+For example:
+
+-------------------code----------------------
+z.backward()
+-------------------code----------------------
+
+PyTorch performs the chain-rule calculations through the computational graph automatically.
+
+The important distinction is:
+
+### Manual calculus
+
+You explicitly calculate:
+
+$$
+\frac{\partial y}{\partial u}
+\frac{\partial u}{\partial x}
+$$
+
+and add all relevant paths.
+
+### Automatic differentiation
+
+PyTorch constructs/tracks the computational graph and performs these chain-rule operations automatically.
+
+So:
+
+-------------------code----------------------
+z.backward()
+-------------------code----------------------
+
+is effectively carrying out a large number of chain-rule calculations for us.
+
+---
+
+# 18. Important Best Practices
+
+### 18.1 Draw the dependency graph
+
+For complicated nested functions, first identify:
+
+* What is the output?
+* What are the intermediate variables?
+* What are the inputs?
+* Which variables depend on which others?
+
+This prevents missing a path.
+
+### 18.2 Trace every path
+
+If an input reaches the output through multiple branches, **all branches matter**.
+
+Do not calculate only one branch.
+
+### 18.3 Multiply along a path
+
+For:
+
+-------------------code----------------------
+x → u → y
+-------------------code----------------------
+
+the contribution is:
+
+$$
+\frac{\partial y}{\partial u}
+\frac{\partial u}{\partial x}
+$$
+
+### 18.4 Add different paths
+
+If:
+
+-------------------code----------------------
+x → u → y
+x → v → y
+-------------------code----------------------
+
+then:
+
+$$
+\frac{\partial y}{\partial x}
+=
+\frac{\partial y}{\partial u}
+\frac{\partial u}{\partial x}
++
+\frac{\partial y}{\partial v}
+\frac{\partial v}{\partial x}
+$$
+
+### 18.5 Do not confuse a path with the complete derivative
+
+One path gives only **one contribution**.
+
+The complete partial derivative may require several paths.
+
+---
+
+# 19. Common Mistake
+
+A common mistake is to calculate only:
+
+$$
+\frac{\partial y}{\partial u}
+\frac{\partial u}{\partial x}
+$$
+
+and forget that \(x\) may also influence \(y\) through \(v\).
+
+If:
+
+-------------------code----------------------
+       y
+      ↗ ↖
+     u   v
+    ↗ ↖ ↗ ↖
+   x   z
+-------------------code----------------------
+
+then calculating only the \(u\)-branch misses:
+
+-------------------code----------------------
+x → v → y
+-------------------code----------------------
+
+Therefore the result is incomplete.
+
+Always ask:
+
+> **How many paths connect my input to my output?**
+
+---
+
+# 20. Full Final Code
+
+-------------------code----------------------
+# Multivariate Chain Rule Example
+
+# --------------------------------------------------
+# 1. Define the functions
+# --------------------------------------------------
+
+def u_function(x, z):
+    return x + z
+
+
+def v_function(x, z):
+    return x * z
+
+
+def y_function(u, v):
+    return u**2 + 3 * v
+
+
+# --------------------------------------------------
+# 2. Define the individual partial derivatives
+# --------------------------------------------------
+
+# y = u^2 + 3v
+def dy_du(u):
+    return 2 * u
+
+
+def dy_dv():
+    return 3
+
+
+# u = x + z
+def du_dx():
+    return 1
+
+
+def du_dz():
+    return 1
+
+
+# v = xz
+def dv_dx(z):
+    return z
+
+
+def dv_dz(x):
+    return x
+
+
+# --------------------------------------------------
+# 3. Input values
+# --------------------------------------------------
+
+x = 2
+z = 3
+
+
+# --------------------------------------------------
+# 4. Forward pass
+# --------------------------------------------------
+
+u = u_function(x, z)
+v = v_function(x, z)
+y = y_function(u, v)
+
+print("Forward pass")
+print("x =", x)
+print("z =", z)
+print("u =", u)
+print("v =", v)
+print("y =", y)
+
+
+# --------------------------------------------------
+# 5. Apply the multivariate chain rule
+# --------------------------------------------------
+
+# ∂y/∂x
+#
+# There are two paths:
+#
+# x → u → y
+# x → v → y
+
+partial_y_x = (
+    dy_du(u) * du_dx()
+    + dy_dv() * dv_dx(z)
+)
+
+
+# ∂y/∂z
+#
+# There are two paths:
+#
+# z → u → y
+# z → v → y
+
+partial_y_z = (
+    dy_du(u) * du_dz()
+    + dy_dv() * dv_dz(x)
+)
+
+
+# --------------------------------------------------
+# 6. Display results
+# --------------------------------------------------
+
+print()
+print("Partial derivatives")
+print("∂y/∂x =", partial_y_x)
+print("∂y/∂z =", partial_y_z)
+
+
+# --------------------------------------------------
+# 7. Show the individual path contributions
+# --------------------------------------------------
+
+x_to_u_to_y = dy_du(u) * du_dx()
+x_to_v_to_y = dy_dv() * dv_dx(z)
+
+z_to_u_to_y = dy_du(u) * du_dz()
+z_to_v_to_y = dy_dv() * dv_dz(x)
+
+print()
+print("Path contributions")
+
+print("For ∂y/∂x:")
+print("x → u → y =", x_to_u_to_y)
+print("x → v → y =", x_to_v_to_y)
+print("Total =", x_to_u_to_y + x_to_v_to_y)
+
+print()
+print("For ∂y/∂z:")
+print("z → u → y =", z_to_u_to_y)
+print("z → v → y =", z_to_v_to_y)
+print("Total =", z_to_u_to_y + z_to_v_to_y)
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+Forward pass
+x = 2
+z = 3
+u = 5
+v = 6
+y = 43
+
+Partial derivatives
+∂y/∂x = 19
+∂y/∂z = 16
+
+Path contributions
+For ∂y/∂x:
+x → u → y = 10
+x → v → y = 9
+Total = 19
+
+For ∂y/∂z:
+z → u → y = 10
+z → v → y = 6
+Total = 16
+-------------------code----------------------
+
+---
+
+# 21. Summary
+
+The most important ideas from this lecture are:
+
+1. **The chain rule extends naturally to partial derivatives.**
+
+2. For a single path:
+
+$$
+x\rightarrow u\rightarrow y
+$$
+
+we multiply:
+
+$$
+\frac{\partial y}{\partial x}
+=
+\frac{\partial y}{\partial u}
+\frac{\partial u}{\partial x}
+$$
+
+3. When there are **multiple paths**, calculate the contribution of every path and add them.
+
+4. For example:
+
+$$
+x\rightarrow u\rightarrow y
+$$
+
+and
+
+$$
+x\rightarrow v\rightarrow y
+$$
+
+give:
+
+$$
+\frac{\partial y}{\partial x}
+=
+\frac{\partial y}{\partial u}
+\frac{\partial u}{\partial x}
++
+\frac{\partial y}{\partial v}
+\frac{\partial v}{\partial x}
+$$
+
+5. The general form is:
+
+$$
+\boxed{
+\frac{\partial y}{\partial x_i}
+=
+\sum_{j=1}^{m}
+\frac{\partial y}{\partial u_j}
+\frac{\partial u_j}{\partial x_i}
+}
+$$
+
+6. The easiest way to solve complicated problems is:
+
+   * Draw the computational/dependency graph.
+   * Identify the input and output.
+   * Trace every path between them.
+   * Multiply derivatives along each path.
+   * Add all path contributions.
+
+7. This is the mathematical foundation of **backpropagation** and explains what automatic differentiation frameworks such as PyTorch are doing internally.
+
+**Key sentence to remember:**
+
+> **Multiply derivatives along each path, then add the contributions from all paths.**
