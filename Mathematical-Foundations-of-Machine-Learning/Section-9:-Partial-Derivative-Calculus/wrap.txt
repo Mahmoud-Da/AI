@@ -5636,3 +5636,570 @@ V=x2y−z3V=x^2y-z^3V=x2y−z3
 ∂V∂z=−3z2\boxed{\frac{\partial V}{\partial z}=-3z^2}∂z∂V=−3z2
 
 The key takeaway: Choose the variable you are differentiating with respect to, treat every other variable as a constant, apply the power rule, and simplify. These same principles are essential for understanding gradients and backpropagation in Machine Learning.
+
+*** 84. Partial Derivative Notation ***
+# Calculus 2 — Partial Derivative Notation
+
+## 1. Lecture Overview
+
+This lecture is a short introduction to the different ways **partial derivatives** can be written.
+
+The main goal is not to learn a new mathematical technique, but to recognize the common notation you will encounter in textbooks, papers, lectures, and Machine Learning materials.
+
+The lecture focuses on the partial derivative of a function \(z=f(x,y)\) with respect to \(x\).
+
+The important point is:
+
+> Several different notations can represent exactly the same partial derivative.
+
+---
+
+# 2. Basic Setup
+
+Suppose we have a function:
+
+$$
+z=f(x,y)
+$$
+
+where:
+
+* \(x\) and \(y\) are the input variables.
+* \(z\) is the output.
+* \(f\) represents the function.
+
+Suppose we want to differentiate the output with respect to \(x\).
+
+In other words, we want:
+
+$$
+\frac{\partial z}{\partial x}
+$$
+
+This means:
+
+> How does the output \(z\) change when \(x\) changes, while the other variables are treated as constants?
+
+---
+
+# 3. Notation 1 — \(\frac{\partial z}{\partial x}\)
+
+The most direct notation is:
+
+$$
+\boxed{\frac{\partial z}{\partial x}}
+$$
+
+This is the notation emphasized in the lecture.
+
+The symbol \(\partial\) is the curly "d" used for partial derivatives.
+
+For example:
+
+$$
+z=x^2+y^2
+$$
+
+Then:
+
+$$
+\frac{\partial z}{\partial x}=2x
+$$
+
+because \(y\) is treated as a constant.
+
+---
+
+# 4. Notation 2 — \(\frac{\partial f}{\partial x}\)
+
+Another common notation is:
+
+$$
+\boxed{\frac{\partial f}{\partial x}}
+$$
+
+Here, instead of focusing on the output \(z\), we focus on the function \(f\).
+
+If:
+
+$$
+z=f(x,y)
+$$
+
+then:
+
+$$
+\boxed{
+\frac{\partial z}{\partial x}
+=
+\frac{\partial f}{\partial x}
+}
+$$
+
+They represent the same partial derivative.
+
+### Example
+
+If:
+
+$$
+f(x,y)=x^2+y^2
+$$
+
+then:
+
+$$
+\frac{\partial f}{\partial x}=2x
+$$
+
+---
+
+# 5. Notation 3 — \(f_x\)
+
+A shorter notation is:
+
+$$
+\boxed{f_x}
+$$
+
+The subscript \(x\) tells us that we are differentiating the function with respect to \(x\).
+
+For example:
+
+$$
+f(x,y)=x^2+y^2
+$$
+
+Then:
+
+$$
+\boxed{f_x=2x}
+$$
+
+The \(x\) appears as a subscript because it identifies the variable with respect to which we are differentiating.
+
+Similarly:
+
+$$
+f_y
+$$
+
+means the partial derivative with respect to \(y\).
+
+For the same function:
+
+$$
+f_y=2y
+$$
+
+---
+
+# 6. Notation 4 — \(D_x f\)
+
+Another notation is:
+
+$$
+\boxed{D_xf}
+$$
+
+This can be understood as:
+
+> Apply the differentiation operator with respect to \(x\) to the function \(f\).
+
+The \(x\) indicates the variable of differentiation.
+
+For example:
+
+$$
+f(x,y)=x^2+y^2
+$$
+
+then:
+
+$$
+D_xf=2x
+$$
+
+---
+
+# 7. The Four Equivalent Notations
+
+For a function:
+
+$$
+z=f(x,y)
+$$
+
+the following can all represent the same partial derivative:
+
+$$
+\boxed{
+\frac{\partial z}{\partial x}
+=
+\frac{\partial f}{\partial x}
+=
+f_x
+=
+D_xf
+}
+$$
+
+These are different ways of writing the same mathematical operation.
+
+---
+
+# 8. Which Notation Should You Prefer?
+
+The lecturer's preferred notation is:
+
+$$
+\boxed{\frac{\partial z}{\partial x}}
+$$
+
+The reason is that it makes both pieces of information immediately visible:
+
+* \(z\) tells us the output being differentiated.
+* \(x\) tells us the variable we are differentiating with respect to.
+
+This can be especially useful when working with multiple partial derivatives.
+
+For example:
+
+$$
+\frac{\partial z}{\partial x}
+$$
+
+and:
+
+$$
+\frac{\partial z}{\partial y}
+$$
+
+make it immediately clear which variable is being used for differentiation.
+
+---
+
+# 9. Why Notation Matters in Machine Learning
+
+Machine Learning models often have many variables or parameters.
+
+For example, imagine:
+
+$$
+C=f(w_1,w_2,w_3)
+$$
+
+where \(C\) is a cost function.
+
+We might need:
+
+$$
+\frac{\partial C}{\partial w_1}
+$$
+
+$$
+\frac{\partial C}{\partial w_2}
+$$
+
+$$
+\frac{\partial C}{\partial w_3}
+$$
+
+The notation makes it clear which parameter we are differentiating with respect to.
+
+This becomes particularly important when we start working with:
+
+* gradients
+* the chain rule
+* backpropagation
+* optimization
+* many model parameters
+
+---
+
+# 10. Simple Python Example
+
+The lecture itself is focused on mathematical notation rather than programming, so there is no specific Python implementation introduced.
+
+However, we can represent the mathematical example in Python to reinforce the concept.
+
+Consider:
+
+$$
+z=x^2+y^2
+$$
+
+We can define the function:
+
+-------------------code----------------------
+def f(x, y):
+    return x**2 + y**2
+-------------------code----------------------
+
+The manually derived partial derivatives are:
+
+-------------------code----------------------
+def dz_dx(x, y):
+    return 2 * x
+
+def dz_dy(x, y):
+    return 2 * y
+-------------------code----------------------
+
+For example:
+
+-------------------code----------------------
+x = 3
+y = 4
+
+print("z =", f(x, y))
+print("∂z/∂x =", dz_dx(x, y))
+print("∂z/∂y =", dz_dy(x, y))
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+z = 25
+∂z/∂x = 6
+∂z/∂y = 8
+-------------------code----------------------
+
+The important point is that these mathematical derivatives could be written as:
+
+$$
+\frac{\partial z}{\partial x}
+$$
+
+or:
+
+$$
+\frac{\partial f}{\partial x}
+$$
+
+or:
+
+$$
+f_x
+$$
+
+or:
+
+$$
+D_xf
+$$
+
+All four describe the same derivative.
+
+---
+
+# 11. Important Notes
+
+## 11.1 The notation changes, but the mathematics does not
+
+These:
+
+$$
+\frac{\partial z}{\partial x}
+$$
+
+$$
+\frac{\partial f}{\partial x}
+$$
+
+$$
+f_x
+$$
+
+$$
+D_xf
+$$
+
+are simply different notational conventions.
+
+Do not interpret them as four different mathematical operations.
+
+---
+
+## 11.2 The subscript identifies the variable
+
+When you see:
+
+$$
+f_x
+$$
+
+the subscript \(x\) means:
+
+> Partial derivative of \(f\) with respect to \(x\).
+
+Similarly:
+
+$$
+f_y
+$$
+
+means:
+
+> Partial derivative of \(f\) with respect to \(y\).
+
+---
+
+## 11.3 \(\partial\) indicates a partial derivative
+
+Compare:
+
+### Ordinary derivative
+
+$$
+\frac{dy}{dx}
+$$
+
+### Partial derivative
+
+$$
+\frac{\partial z}{\partial x}
+$$
+
+The curly \(\partial\) symbol tells us that we are dealing with a partial derivative.
+
+---
+
+## 11.4 Choose notation that makes relationships clear
+
+When working with multiple variables, notation such as:
+
+$$
+\frac{\partial z}{\partial x},
+\qquad
+\frac{\partial z}{\partial y}
+$$
+
+can be particularly easy to read because both the output and differentiation variable are explicit.
+
+This will become increasingly useful when studying the **partial derivative chain rule** next.
+
+---
+
+# 12. Quick Review Table
+
+| Notation                          | Meaning                                                          |
+| --------------------------------- | ---------------------------------------------------------------- |
+| \(\frac{\partial z}{\partial x}\) | Partial derivative of \(z\) with respect to \(x\)                |
+| \(\frac{\partial f}{\partial x}\) | Partial derivative of \(f\) with respect to \(x\)                |
+| \(f_x\)                           | Partial derivative of \(f\) with respect to \(x\)                |
+| \(D_xf\)                          | Differentiation operator with respect to \(x\), applied to \(f\) |
+
+For:
+
+$$
+z=f(x,y)
+$$
+
+all four are equivalent:
+
+$$
+\boxed{
+\frac{\partial z}{\partial x}
+=
+\frac{\partial f}{\partial x}
+=
+f_x
+=
+D_xf
+}
+$$
+
+---
+
+# 13. Full Final Code
+
+The lecture is primarily about notation, so the following code is only a simple reinforcement example.
+
+-------------------code----------------------
+# Example function:
+# z = x^2 + y^2
+
+def f(x, y):
+    return x**2 + y**2
+
+
+# Partial derivative with respect to x:
+# ∂z/∂x = 2x
+
+def dz_dx(x, y):
+    return 2 * x
+
+
+# Partial derivative with respect to y:
+# ∂z/∂y = 2y
+
+def dz_dy(x, y):
+    return 2 * y
+
+
+# Example input values
+x = 3
+y = 4
+
+
+# Calculate the function
+z = f(x, y)
+
+
+# Calculate the partial derivatives
+partial_x = dz_dx(x, y)
+partial_y = dz_dy(x, y)
+
+
+# Display results
+print("z =", z)
+print("∂z/∂x =", partial_x)
+print("∂z/∂y =", partial_y)
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+z = 25
+∂z/∂x = 6
+∂z/∂y = 8
+-------------------code----------------------
+
+---
+
+# 14. Summary
+
+The lecture introduces the most common ways to write a partial derivative.
+
+For:
+
+$$
+z=f(x,y)
+$$
+
+the partial derivative with respect to \(x\) can be written as:
+
+$$
+\boxed{
+\frac{\partial z}{\partial x}
+=
+\frac{\partial f}{\partial x}
+=
+f_x
+=
+D_xf
+}
+$$
+
+The key points to remember are:
+
+1. **\(\frac{\partial z}{\partial x}\)** — explicitly shows the output and the differentiation variable.
+2. **\(\frac{\partial f}{\partial x}\)** — focuses on the function itself.
+3. **\(f_x\)** — compact notation using a subscript.
+4. **\(D_xf\)** — treats differentiation as an operator.
+5. All four notations represent the **same partial derivative**.
+6. The lecturer prefers \(\frac{\partial z}{\partial x}\) because it makes the relationship between the output and differentiation variable especially clear.
+7. This notation becomes increasingly useful when dealing with multiple variables, the **chain rule**, gradients, and backpropagation.
+
+The next topic is applying the **chain rule to partial derivatives**.
