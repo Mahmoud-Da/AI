@@ -5047,3 +5047,592 @@ L.grad
 give the partial derivatives with respect to \(R\) and \(L\).
 
 12. The cylinder example is a simple geometric demonstration of the same **forward pass → backward pass → gradients** process that is fundamental to Machine Learning.
+
+*** 83. Advanced Partial-Derivative Exercises ***
+# Calculus 2 — Partial Derivatives: Geometric Exercises
+
+## 1. Lecture Overview
+
+This lecture provides three exercises to reinforce the understanding of partial derivatives.
+
+The goal is to calculate every partial derivative for each given multivariable function.
+
+The three examples are:
+
+1. A polynomial function involving xxx and yyy.
+
+2. The surface area of a cylinder.
+
+3. The volume of a geometric solid described by three variables.
+
+The main rule throughout the lecture is:
+
+> When differentiating with respect to one variable, treat all other variables as constants.
+
+# 2. Exercise 1 — A Multivariable Polynomial
+
+We are given:
+
+z=y3+5xyz=y^3+5xyz=y3+5xy
+
+The function has two input variables, xxx and yyy. Therefore, we need two partial derivatives:
+
+∂z∂xand∂z∂y\frac{\partial z}{\partial x} \qquad\text{and}\qquad \frac{\partial z}{\partial y}∂x∂zand∂y∂z
+
+## 2.1 Partial Derivative with Respect to xxx
+
+We want to calculate:
+
+∂z∂x\frac{\partial z}{\partial x}∂x∂z
+
+Starting with:
+
+z=y3+5xyz=y^3+5xyz=y3+5xy
+
+When differentiating with respect to xxx, treat yyy as a constant.
+
+### Step 1: Differentiate the first term
+
+The term y3y^3y3 contains no xxx.
+
+Therefore, it is constant with respect to xxx, and its derivative is zero:
+
+∂∂x(y3)=0\frac{\partial}{\partial x}(y^3)=0∂x∂(y3)=0
+
+### Step 2: Differentiate the second term
+
+In 5xy5xy5xy, treat 5y5y5y as a constant:
+
+∂∂x(5xy)=5y∂x∂x\frac{\partial}{\partial x}(5xy) = 5y\frac{\partial x}{\partial x}∂x∂(5xy)=5y∂x∂x
+
+Since:
+
+∂x∂x=1\frac{\partial x}{\partial x}=1∂x∂x=1
+
+we obtain:
+
+∂∂x(5xy)=5y\frac{\partial}{\partial x}(5xy)=5y∂x∂(5xy)=5y
+
+### Final result
+
+∂z∂x=5y\boxed{\frac{\partial z}{\partial x}=5y}∂x∂z=5y
+
+## 2.2 Partial Derivative with Respect to yyy
+
+Now calculate:
+
+∂z∂y\frac{\partial z}{\partial y}∂y∂z
+
+Starting with:
+
+z=y3+5xyz=y^3+5xyz=y3+5xy
+
+This time, treat xxx as a constant.
+
+### Step 1: Differentiate the first term
+
+Using the power rule:
+
+∂∂y(y3)=3y2\frac{\partial}{\partial y}(y^3)=3y^2∂y∂(y3)=3y2
+
+### Step 2: Differentiate the second term
+
+Treat 5x5x5x as a constant:
+
+∂∂y(5xy)=5x∂y∂y\frac{\partial}{\partial y}(5xy) = 5x\frac{\partial y}{\partial y}∂y∂(5xy)=5x∂y∂y
+
+Since the derivative of yyy with respect to itself is 1:
+
+∂∂y(5xy)=5x\frac{\partial}{\partial y}(5xy)=5x∂y∂(5xy)=5x
+
+### Final result
+
+∂z∂y=3y2+5x\boxed{\frac{\partial z}{\partial y}=3y^2+5x}∂y∂z=3y2+5x
+
+## 2.3 Exercise 1 — Python Implementation
+
+We can define the function and its partial derivatives directly.
+
+-------------------code----------------------
+def f(x, y):
+    return y**3 + 5*x*y
+
+
+def dz_dx(x, y):
+    return 5*y
+
+
+def dz_dy(x, y):
+    return 3*y**2 + 5*x
+-------------------code----------------------
+
+For example, evaluate the function at x=2x=2x=2 and y=3y=3y=3:
+
+-------------------code----------------------
+x = 2
+y = 3
+
+print("z =", f(x, y))
+print("∂z/∂x =", dz_dx(x, y))
+print("∂z/∂y =", dz_dy(x, y))
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+z = 57
+∂z/∂x = 15
+∂z/∂y = 37
+-------------------code----------------------
+
+# 3. Exercise 2 — Surface Area of a Cylinder
+
+The surface area of a closed cylinder is:
+
+A=2πR2+2πRHA=2\pi R^2+2\pi RHA=2πR2+2πRH
+
+where:
+
+* AAA = total surface area
+
+* RRR = radius
+
+* HHH = height
+
+* π\piπ = constant
+
+We need to calculate:
+
+∂A∂Rand∂A∂H\frac{\partial A}{\partial R} \qquad\text{and}\qquad \frac{\partial A}{\partial H}∂R∂Aand∂H∂A
+
+## 3.1 Partial Derivative with Respect to Height
+
+We begin with:
+
+A=2πR2+2πRHA=2\pi R^2+2\pi RHA=2πR2+2πRH
+
+We want:
+
+∂A∂H\frac{\partial A}{\partial H}∂H∂A
+
+Treat RRR as a constant.
+
+### Step 1: Differentiate the first term
+
+The term 2πR22\pi R^22πR2 contains no HHH.
+
+Therefore:
+
+∂∂H(2πR2)=0\frac{\partial}{\partial H}(2\pi R^2)=0∂H∂(2πR2)=0
+
+### Step 2: Differentiate the second term
+
+Treat 2πR2\pi R2πR as a constant:
+
+∂∂H(2πRH)=2πR∂H∂H\frac{\partial}{\partial H}(2\pi RH) = 2\pi R\frac{\partial H}{\partial H}∂H∂(2πRH)=2πR∂H∂H
+
+Since the derivative of HHH with respect to itself is 1:
+
+∂∂H(2πRH)=2πR\frac{\partial}{\partial H}(2\pi RH)=2\pi R∂H∂(2πRH)=2πR
+
+### Final result
+
+∂A∂H=2πR\boxed{\frac{\partial A}{\partial H}=2\pi R}∂H∂A=2πR
+
+The rate of change of surface area with respect to height is proportional to the radius.
+
+## 3.2 Partial Derivative with Respect to Radius
+
+Now calculate:
+
+∂A∂R\frac{\partial A}{\partial R}∂R∂A
+
+Starting with:
+
+A=2πR2+2πRHA=2\pi R^2+2\pi RHA=2πR2+2πRH
+
+Treat HHH as a constant.
+
+### Step 1: Differentiate the first term
+
+Using the power rule:
+
+∂∂R(R2)=2R\frac{\partial}{\partial R}(R^2)=2R∂R∂(R2)=2R
+
+Therefore:
+
+∂∂R(2πR2)=4πR\frac{\partial}{\partial R}(2\pi R^2)=4\pi R∂R∂(2πR2)=4πR
+
+### Step 2: Differentiate the second term
+
+Treat 2πH2\pi H2πH as a constant:
+
+∂∂R(2πRH)=2πH\frac{\partial}{\partial R}(2\pi RH) = 2\pi H∂R∂(2πRH)=2πH
+
+### Final result
+
+Combining both terms:
+
+∂A∂R=4πR+2πH\boxed{\frac{\partial A}{\partial R}=4\pi R+2\pi H}∂R∂A=4πR+2πH
+
+## 3.3 Exercise 2 — Python Implementation
+
+-------------------code----------------------
+import math
+
+
+def cylinder_surface_area(R, H):
+    return 2 * math.pi * R**2 + 2 * math.pi * R * H
+
+
+def dA_dR(R, H):
+    return 4 * math.pi * R + 2 * math.pi * H
+
+
+def dA_dH(R, H):
+    return 2 * math.pi * R
+-------------------code----------------------
+
+Example:
+
+-------------------code----------------------
+R = 3
+H = 5
+
+print("Surface area =", cylinder_surface_area(R, H))
+print("∂A/∂R =", dA_dR(R, H))
+print("∂A/∂H =", dA_dH(R, H))
+-------------------code----------------------
+
+Expected output, approximately:
+
+-------------------code----------------------
+Surface area = 150.7964
+∂A/∂R = 62.8319
+∂A/∂H = 18.8496
+-------------------code----------------------
+
+# 4. Exercise 3 — Volume of a Geometric Solid
+
+The third exercise gives the function:
+
+V=x2y−z3V=x^2y-z^3V=x2y−z3
+
+We need three partial derivatives because the function depends on three variables:
+
+∂V∂x,∂V∂y,∂V∂z\frac{\partial V}{\partial x}, \qquad \frac{\partial V}{\partial y}, \qquad \frac{\partial V}{\partial z}∂x∂V,∂y∂V,∂z∂V
+
+The important skill is to differentiate with respect to one variable while treating the other two as constants.
+
+## 4.1 Partial Derivative with Respect to xxx
+
+We want:
+
+∂V∂x\frac{\partial V}{\partial x}∂x∂V
+
+Starting with:
+
+V=x2y−z3V=x^2y-z^3V=x2y−z3
+
+Treat yyy and zzz as constants.
+
+### Step 1: Differentiate the first term
+
+Treat yyy as a constant:
+
+∂∂x(x2y)=y(2x)=2xy\frac{\partial}{\partial x}(x^2y) = y(2x) = 2xy∂x∂(x2y)=y(2x)=2xy
+
+### Step 2: Differentiate the second term
+
+The term −z3-z^3−z3 contains no xxx, so its derivative is zero:
+
+∂∂x(−z3)=0\frac{\partial}{\partial x}(-z^3)=0∂x∂(−z3)=0
+
+### Final result
+
+∂V∂x=2xy\boxed{\frac{\partial V}{\partial x}=2xy}∂x∂V=2xy
+
+## 4.2 Partial Derivative with Respect to yyy
+
+We want:
+
+∂V∂y\frac{\partial V}{\partial y}∂y∂V
+
+Treat xxx and zzz as constants.
+
+### Step 1: Differentiate the first term
+
+Since x2x^2x2 is constant:
+
+∂∂y(x2y)=x2∂y∂y=x2\frac{\partial}{\partial y}(x^2y) = x^2\frac{\partial y}{\partial y} = x^2∂y∂(x2y)=x2∂y∂y=x2
+
+### Step 2: Differentiate the second term
+
+The term −z3-z^3−z3 contains no yyy, so its derivative is zero.
+
+### Final result
+
+∂V∂y=x2\boxed{\frac{\partial V}{\partial y}=x^2}∂y∂V=x2
+
+## 4.3 Partial Derivative with Respect to zzz
+
+We want:
+
+∂V∂z\frac{\partial V}{\partial z}∂z∂V
+
+Treat xxx and yyy as constants.
+
+### Step 1: Differentiate the first term
+
+The term x2yx^2yx2y contains no zzz, so its derivative is zero.
+
+### Step 2: Differentiate the second term
+
+Using the power rule:
+
+∂∂z(−z3)=−3z2\frac{\partial}{\partial z}(-z^3) = -3z^2∂z∂(−z3)=−3z2
+
+### Final result
+
+∂V∂z=−3z2\boxed{\frac{\partial V}{\partial z}=-3z^2}∂z∂V=−3z2
+
+## 4.4 Exercise 3 — Python Implementation
+
+-------------------code----------------------
+def solid_volume(x, y, z):
+    return x**2 * y - z**3
+
+
+def dV_dx(x, y, z):
+    return 2 * x * y
+
+
+def dV_dy(x, y, z):
+    return x**2
+
+
+def dV_dz(x, y, z):
+    return -3 * z**2
+-------------------code----------------------
+
+Example:
+
+-------------------code----------------------
+x = 2
+y = 3
+z = 1
+
+print("V =", solid_volume(x, y, z))
+print("∂V/∂x =", dV_dx(x, y, z))
+print("∂V/∂y =", dV_dy(x, y, z))
+print("∂V/∂z =", dV_dz(x, y, z))
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+V = 11
+∂V/∂x = 12
+∂V/∂y = 4
+∂V/∂z = -3
+-------------------code----------------------
+
+# 5. All Results at a Glance
+
+| Function                                 | Partial derivative                    | Result                      |
+| ---------------------------------------- | ------------------------------------- | --------------------------- |
+| z=y3+5xyz=y^3+5xyz=y3+5xy                | ∂z∂x\frac{\partial z}{\partial x}∂x∂z | 5y5y5y                      |
+| z=y3+5xyz=y^3+5xyz=y3+5xy                | ∂z∂y\frac{\partial z}{\partial y}∂y∂z | 3y2+5x3y^2+5x3y2+5x         |
+| A=2πR2+2πRHA=2\pi R^2+2\pi RHA=2πR2+2πRH | ∂A∂R\frac{\partial A}{\partial R}∂R∂A | 4πR+2πH4\pi R+2\pi H4πR+2πH |
+| A=2πR2+2πRHA=2\pi R^2+2\pi RHA=2πR2+2πRH | ∂A∂H\frac{\partial A}{\partial H}∂H∂A | 2πR2\pi R2πR                |
+| V=x2y−z3V=x^2y-z^3V=x2y−z3               | ∂V∂x\frac{\partial V}{\partial x}∂x∂V | 2xy2xy2xy                   |
+| V=x2y−z3V=x^2y-z^3V=x2y−z3               | ∂V∂y\frac{\partial V}{\partial y}∂y∂V | x2x^2x2                     |
+| V=x2y−z3V=x^2y-z^3V=x2y−z3               | ∂V∂z\frac{\partial V}{\partial z}∂z∂V | −3z2-3z^2−3z2               |
+
+# 6. Important Notes and Best Practices
+
+## 6.1 Treat other variables as constants
+
+This is the most important rule.
+
+For example, given:
+
+z=y3+5xyz=y^3+5xyz=y3+5xy
+
+When differentiating with respect to xxx, treat yyy as constant:
+
+∂z∂x=5y\frac{\partial z}{\partial x}=5y∂x∂z=5y
+
+When differentiating with respect to yyy, treat xxx as constant:
+
+∂z∂y=3y2+5x\frac{\partial z}{\partial y}=3y^2+5x∂y∂z=3y2+5x
+
+## 6.2 A term without the differentiation variable becomes zero
+
+For example:
+
+∂∂x(y3)=0\frac{\partial}{\partial x}(y^3)=0∂x∂(y3)=0
+
+because y3y^3y3 does not depend on xxx.
+
+Similarly:
+
+∂∂z(x2y)=0\frac{\partial}{\partial z}(x^2y)=0∂z∂(x2y)=0
+
+because x2yx^2yx2y does not depend on zzz.
+
+## 6.3 Apply the power rule carefully
+
+The power rule is:
+
+ddxxn=nxn−1\frac{d}{dx}x^n=nx^{n-1}dxdxn=nxn−1
+
+Examples:
+
+ddxx2=2x\frac{d}{dx}x^2=2xdxdx2=2x
+
+ddyy3=3y2\frac{d}{dy}y^3=3y^2dydy3=3y2
+
+Remember to keep any other variables as constant multipliers.
+
+## 6.4 Keep track of negative signs
+
+For the third exercise:
+
+V=x2y−z3V=x^2y-z^3V=x2y−z3
+
+The derivative with respect to zzz is:
+
+∂V∂z=−3z2\frac{\partial V}{\partial z}=-3z^2∂z∂V=−3z2
+
+The negative sign remains because the original term is −z3-z^3−z3.
+
+## 6.5 The number of partial derivatives depends on the number of variables
+
+* Two variables → two first-order partial derivatives.
+
+* Three variables → three first-order partial derivatives.
+
+In general, a function of nnn independent variables has nnn first-order partial derivatives.
+
+# 7. Full Final Code
+
+The following program combines all three exercises into one complete, runnable Python script.
+
+-------------------code----------------------
+import math
+
+
+# ============================================================
+# Exercise 1: z = y^3 + 5xy
+# ============================================================
+
+def f1(x, y):
+    return y**3 + 5 * x * y
+
+
+def dz_dx(x, y):
+    return 5 * y
+
+
+def dz_dy(x, y):
+    return 3 * y**2 + 5 * x
+
+
+# Example values
+x1 = 2
+y1 = 3
+
+print("EXERCISE 1")
+print("z =", f1(x1, y1))
+print("∂z/∂x =", dz_dx(x1, y1))
+print("∂z/∂y =", dz_dy(x1, y1))
+
+
+# ============================================================
+# Exercise 2: A = 2πR² + 2πRH
+# ============================================================
+
+def cylinder_surface_area(R, H):
+    return 2 * math.pi * R**2 + 2 * math.pi * R * H
+
+
+def dA_dR(R, H):
+    return 4 * math.pi * R + 2 * math.pi * H
+
+
+def dA_dH(R, H):
+    return 2 * math.pi * R
+
+
+# Example values
+R = 3
+H = 5
+
+print("\nEXERCISE 2")
+print("Surface area =", cylinder_surface_area(R, H))
+print("∂A/∂R =", dA_dR(R, H))
+print("∂A/∂H =", dA_dH(R, H))
+
+
+# ============================================================
+# Exercise 3: V = x²y - z³
+# ============================================================
+
+def solid_volume(x, y, z):
+    return x**2 * y - z**3
+
+
+def dV_dx(x, y, z):
+    return 2 * x * y
+
+
+def dV_dy(x, y, z):
+    return x**2
+
+
+def dV_dz(x, y, z):
+    return -3 * z**2
+
+
+# Example values
+x3 = 2
+y3 = 3
+z3 = 1
+
+print("\nEXERCISE 3")
+print("V =", solid_volume(x3, y3, z3))
+print("∂V/∂x =", dV_dx(x3, y3, z3))
+print("∂V/∂y =", dV_dy(x3, y3, z3))
+print("∂V/∂z =", dV_dz(x3, y3, z3))
+-------------------code----------------------
+
+# 8. Summary
+
+The lecture reinforces the fundamental rules of partial differentiation through three examples.
+
+### Exercise 1
+
+z=y3+5xyz=y^3+5xyz=y3+5xy
+
+∂z∂x=5y∂z∂y=3y2+5x\boxed{\frac{\partial z}{\partial x}=5y} \qquad \boxed{\frac{\partial z}{\partial y}=3y^2+5x}∂x∂z=5y∂y∂z=3y2+5x
+
+### Exercise 2
+
+A=2πR2+2πRHA=2\pi R^2+2\pi RHA=2πR2+2πRH
+
+∂A∂R=4πR+2πH\boxed{\frac{\partial A}{\partial R}=4\pi R+2\pi H}∂R∂A=4πR+2πH
+
+∂A∂H=2πR\boxed{\frac{\partial A}{\partial H}=2\pi R}∂H∂A=2πR
+
+### Exercise 3
+
+V=x2y−z3V=x^2y-z^3V=x2y−z3
+
+∂V∂x=2xy\boxed{\frac{\partial V}{\partial x}=2xy}∂x∂V=2xy
+
+∂V∂y=x2\boxed{\frac{\partial V}{\partial y}=x^2}∂y∂V=x2
+
+∂V∂z=−3z2\boxed{\frac{\partial V}{\partial z}=-3z^2}∂z∂V=−3z2
+
+The key takeaway: Choose the variable you are differentiating with respect to, treat every other variable as a constant, apply the power rule, and simplify. These same principles are essential for understanding gradients and backpropagation in Machine Learning.
