@@ -7381,3 +7381,926 @@ $$
 **Key sentence to remember:**
 
 > **Multiply derivatives along each path, then add the contributions from all paths.**
+
+*** 86. Exercises on the Multivariate Chain Rule ***
+# Chain Rule for Multivariate Functions — Exercises
+
+## 1. Overview
+
+This lecture contains **three exercises** designed to test the multivariate chain rule.
+
+The main skill is learning to look at a **dependency tree** and determine:
+
+1. Which variables influence the output \(y\).
+2. Which paths connect an input to \(y\).
+3. Which partial derivatives belong to each path.
+4. Whether the path contributions should be **multiplied** or **summed**.
+
+The core rule is:
+
+> **Multiply the derivatives along each path, then add the contributions from all paths.**
+
+This prepares us for understanding **gradient descent**, because gradients are built from partial derivatives.
+
+---
+
+# 2. Exercise 1 — Two Independent Paths
+
+The structure is:
+
+$$
+y=f(u,v)
+$$
+
+where:
+
+$$
+u=g(x)
+$$
+
+and:
+
+$$
+v=h(z)
+$$
+
+The dependency tree is:
+
+-------------------code----------------------
+        y
+       / \
+      u   v
+      ↑   ↑
+      x   z
+-------------------code----------------------
+
+So:
+
+* \(y\) depends on \(u\) and \(v\)
+* \(u\) depends only on \(x\)
+* \(v\) depends only on \(z\)
+
+---
+
+## 2.1 Find \(\partial y/\partial x\)
+
+We want:
+
+$$
+\frac{\partial y}{\partial x}
+$$
+
+There is only one path from \(x\) to \(y\):
+
+-------------------code----------------------
+x → u → y
+-------------------code----------------------
+
+Therefore:
+
+$$
+\boxed{
+\frac{\partial y}{\partial x}
+=
+\frac{\partial y}{\partial u}
+\frac{\partial u}{\partial x}
+}
+$$
+
+The intermediate \(u\) cancels conceptually:
+
+$$
+\frac{\partial y}{\partial u}
+\frac{\partial u}{\partial x}
+=
+\frac{\partial y}{\partial x}
+$$
+
+### Key idea
+
+Because there is only **one path**, there is nothing to add.
+
+---
+
+## 2.2 Find \(\partial y/\partial z\)
+
+Now consider \(z\).
+
+The path is:
+
+-------------------code----------------------
+z → v → y
+-------------------code----------------------
+
+Therefore:
+
+$$
+\boxed{
+\frac{\partial y}{\partial z}
+=
+\frac{\partial y}{\partial v}
+\frac{\partial v}{\partial z}
+}
+$$
+
+Again, there is only one path.
+
+---
+
+## 2.3 Exercise 1 — General Python Structure
+
+We can represent the relationships with Python functions.
+
+-------------------code----------------------
+def u_function(x):
+    return g(x)
+
+
+def v_function(z):
+    return h(z)
+
+
+def y_function(u, v):
+    return f(u, v)
+-------------------code----------------------
+
+The important part is the derivative structure:
+
+-------------------code----------------------
+dy_dx = dy_du * du_dx
+dy_dz = dy_dv * dv_dz
+-------------------code----------------------
+
+---
+
+# 3. Exercise 2 — One Input Has Two Paths
+
+Now the structure changes.
+
+We have:
+
+$$
+y=f(u,v)
+$$
+
+$$
+u=g(x)
+$$
+
+and:
+
+$$
+v=h(x,z)
+$$
+
+The dependency tree is:
+
+-------------------code----------------------
+          y
+         / \
+        u   v
+        ↑  ↗ ↖
+        x  x   z
+-------------------code----------------------
+
+Notice something important:
+
+* \(u\) depends on \(x\)
+* \(v\) depends on both \(x\) and \(z\)
+* Therefore, \(x\) can reach \(y\) through **two different paths**
+
+---
+
+# 4. Exercise 2 — Calculate \(\partial y/\partial z\)
+
+First consider \(z\).
+
+There is only one path:
+
+-------------------code----------------------
+z → v → y
+-------------------code----------------------
+
+Therefore:
+
+$$
+\boxed{
+\frac{\partial y}{\partial z}
+=
+\frac{\partial y}{\partial v}
+\frac{\partial v}{\partial z}
+}
+$$
+
+There is no \(u\)-path because \(u\) does not depend on \(z\).
+
+---
+
+# 5. Exercise 2 — Calculate \(\partial y/\partial x\)
+
+Now consider \(x\).
+
+There are **two paths**:
+
+### Path 1
+
+-------------------code----------------------
+x → u → y
+-------------------code----------------------
+
+Contribution:
+
+$$
+\frac{\partial y}{\partial u}
+\frac{\partial u}{\partial x}
+$$
+
+### Path 2
+
+-------------------code----------------------
+x → v → y
+-------------------code----------------------
+
+Contribution:
+
+$$
+\frac{\partial y}{\partial v}
+\frac{\partial v}{\partial x}
+$$
+
+Because both paths influence \(y\), we add them:
+
+$$
+\boxed{
+\frac{\partial y}{\partial x}
+=
+\frac{\partial y}{\partial u}
+\frac{\partial u}{\partial x}
++
+\frac{\partial y}{\partial v}
+\frac{\partial v}{\partial x}
+}
+$$
+
+This is an important pattern.
+
+---
+
+# 6. Exercise 2 — Python Structure
+
+The derivative calculation can be represented as:
+
+-------------------code----------------------
+dy_dx = (
+    dy_du * du_dx
+    + dy_dv * dv_dx
+)
+
+dy_dz = (
+    dy_dv * dv_dz
+)
+-------------------code----------------------
+
+The important distinction is:
+
+-------------------code----------------------
+One path  → multiply
+Multiple paths → multiply each path, then add
+-------------------code----------------------
+
+---
+
+# 7. Exercise 3 — Three Paths
+
+The third exercise looks more complicated, but the dependency tree makes it straightforward.
+
+We have:
+
+$$
+y=f(u,v,w)
+$$
+
+and:
+
+$$
+u=g(x)
+$$
+
+$$
+v=h(x)
+$$
+
+$$
+w=j(x)
+$$
+
+The dependency tree is:
+
+-------------------code----------------------
+             y
+          /  |  \
+         u   v   w
+         ↑   ↑   ↑
+         |   |   |
+         └── x ──┘
+-------------------code----------------------
+
+In other words:
+
+* \(y\) depends on \(u,v,w\)
+* \(u\) depends on \(x\)
+* \(v\) depends on \(x\)
+* \(w\) depends on \(x\)
+
+Therefore, there are **three separate paths** from \(x\) to \(y\).
+
+---
+
+# 8. Exercise 3 — Calculate \(\partial y/\partial x\)
+
+### Path 1
+
+-------------------code----------------------
+x → u → y
+-------------------code----------------------
+
+Contribution:
+
+$$
+\frac{\partial y}{\partial u}
+\frac{\partial u}{\partial x}
+$$
+
+### Path 2
+
+-------------------code----------------------
+x → v → y
+-------------------code----------------------
+
+Contribution:
+
+$$
+\frac{\partial y}{\partial v}
+\frac{\partial v}{\partial x}
+$$
+
+### Path 3
+
+-------------------code----------------------
+x → w → y
+-------------------code----------------------
+
+Contribution:
+
+$$
+\frac{\partial y}{\partial w}
+\frac{\partial w}{\partial x}
+$$
+
+Now add all three:
+
+$$
+\boxed{
+\frac{\partial y}{\partial x}
+=
+\frac{\partial y}{\partial u}
+\frac{\partial u}{\partial x}
++
+\frac{\partial y}{\partial v}
+\frac{\partial v}{\partial x}
++
+\frac{\partial y}{\partial w}
+\frac{\partial w}{\partial x}
+}
+$$
+
+---
+
+# 9. Important Observation: Partial Derivative vs. Full Derivative
+
+There is an interesting point in Exercise 3.
+
+The output \(y\) depends **only on \(x\)**.
+
+There are no other independent inputs.
+
+Therefore:
+
+$$
+\boxed{
+\frac{\partial y}{\partial x}
+=
+\frac{dy}{dx}
+}
+$$
+
+So although we can describe the calculation using the multivariate chain rule, the final result is also the ordinary **full derivative**.
+
+### Why?
+
+Partial derivatives are useful when a function has multiple independent inputs.
+
+Here, \(x\) is the only independent input to the entire system.
+
+---
+
+# 10. The Three Exercises Compared
+
+| Exercise | Structure                            | Paths for \(x\) | Result                  |
+| -------- | ------------------------------------ | --------------: | ----------------------- |
+| 1        | \(y=f(u,v), u=g(x), v=h(z)\)         |               1 | Multiply                |
+| 2        | \(y=f(u,v), u=g(x), v=h(x,z)\)       |               2 | Multiply each, then add |
+| 3        | \(y=f(u,v,w), u=g(x),v=h(x),w=j(x)\) |               3 | Multiply each, then add |
+
+The pattern becomes very clear:
+
+### One path
+
+$$
+\boxed{\text{Multiply}}
+$$
+
+### Multiple paths
+
+$$
+\boxed{\text{Multiply each path, then add}}
+$$
+
+---
+
+# 11. General Problem-Solving Method
+
+Whenever you encounter a multivariate chain-rule problem, use this process.
+
+## Step 1 — Identify the output
+
+Start with:
+
+$$
+y
+$$
+
+Ask:
+
+> What variables does \(y\) depend on?
+
+---
+
+## Step 2 — Draw the dependency tree
+
+For example:
+
+-------------------code----------------------
+       y
+      / \
+     u   v
+    / \   \
+   x   z   x
+-------------------code----------------------
+
+This makes the relationships explicit.
+
+---
+
+## Step 3 — Choose the input derivative
+
+Suppose you want:
+
+$$
+\frac{\partial y}{\partial x}
+$$
+
+Start at \(x\).
+
+---
+
+## Step 4 — Trace every path to \(y\)
+
+Do not stop after finding the first path.
+
+For example:
+
+-------------------code----------------------
+x → u → y
+x → v → y
+-------------------code----------------------
+
+means there are two contributions.
+
+---
+
+## Step 5 — Multiply derivatives along each path
+
+For example:
+
+$$
+x\rightarrow u\rightarrow y
+$$
+
+gives:
+
+$$
+\frac{\partial y}{\partial u}
+\frac{\partial u}{\partial x}
+$$
+
+---
+
+## Step 6 — Add all path contributions
+
+If there are two paths:
+
+$$
+\frac{\partial y}{\partial x}
+=
+\text{Path 1}
++
+\text{Path 2}
+$$
+
+If there are three:
+
+$$
+\frac{\partial y}{\partial x}
+=
+\text{Path 1}
++
+\text{Path 2}
++
+\text{Path 3}
+$$
+
+---
+
+# 12. Python Representation of All Three Patterns
+
+## Exercise 1
+
+-------------------code----------------------
+dy_dx = dy_du * du_dx
+
+dy_dz = dy_dv * dv_dz
+-------------------code----------------------
+
+## Exercise 2
+
+-------------------code----------------------
+dy_dx = (
+    dy_du * du_dx
+    + dy_dv * dv_dx
+)
+
+dy_dz = (
+    dy_dv * dv_dz
+)
+-------------------code----------------------
+
+## Exercise 3
+
+-------------------code----------------------
+dy_dx = (
+    dy_du * du_dx
+    + dy_dv * dv_dx
+    + dy_dw * dw_dx
+)
+-------------------code----------------------
+
+These expressions directly mirror the dependency trees.
+
+---
+
+# 13. Connection to Machine Learning
+
+This lecture completes the core theory needed to understand gradients.
+
+In machine learning, a model can be represented as a computational graph:
+
+-------------------code----------------------
+Input
+  ↓
+Intermediate variables
+  ↓
+More intermediate variables
+  ↓
+Output
+  ↓
+Cost
+-------------------code----------------------
+
+A parameter can influence the final cost through multiple paths.
+
+The chain rule allows us to calculate:
+
+$$
+\frac{\partial C}{\partial w}
+$$
+
+by:
+
+1. tracing paths through the computational graph,
+2. multiplying derivatives along each path,
+3. adding contributions from all paths.
+
+These partial derivatives form the **gradient**.
+
+The gradient is then used by **gradient descent** to update model parameters.
+
+This is the mathematical foundation behind **backpropagation**.
+
+---
+
+# 14. Best Practices
+
+### 14.1 Always draw the tree first
+
+For complicated expressions, do not immediately start manipulating equations.
+
+First determine:
+
+-------------------code----------------------
+What depends on what?
+-------------------code----------------------
+
+### 14.2 Count the paths
+
+Ask:
+
+> How many different paths connect my input to the output?
+
+This tells you how many terms you will need.
+
+### 14.3 One path = one product
+
+For:
+
+-------------------code----------------------
+x → u → y
+-------------------code----------------------
+
+write:
+
+$$
+\frac{\partial y}{\partial u}
+\frac{\partial u}{\partial x}
+$$
+
+### 14.4 Multiple paths = sum of products
+
+For:
+
+-------------------code----------------------
+x → u → y
+x → v → y
+-------------------code----------------------
+
+write:
+
+$$
+\frac{\partial y}{\partial u}
+\frac{\partial u}{\partial x}
++
+\frac{\partial y}{\partial v}
+\frac{\partial v}{\partial x}
+$$
+
+### 14.5 Don't forget indirect paths
+
+An input may influence the output through several intermediate variables.
+
+Missing one path produces an incomplete derivative.
+
+### 14.6 Look for the special univariate case
+
+If the entire system has only one independent input, then:
+
+$$
+\frac{\partial y}{\partial x}
+=
+\frac{dy}{dx}
+$$
+
+---
+
+# 15. Full Final Code
+
+The lecture itself focuses on the mathematical dependency structures rather than a specific numerical programming example. The following code mirrors all three exercises symbolically using Python variables representing the individual derivative components.
+
+-------------------code----------------------
+# Chain Rule for Multivariate Functions
+# Three exercise patterns from the lecture
+
+
+# ============================================================
+# Exercise 1
+# ============================================================
+#
+# y = f(u, v)
+# u = g(x)
+# v = h(z)
+#
+# Dependency tree:
+#
+#        y
+#       / \
+#      u   v
+#      |   |
+#      x   z
+#
+# There is one path from x to y
+# and one path from z to y.
+
+
+# Partial derivative components
+dy_du = 2.0
+du_dx = 3.0
+
+dy_dv = 4.0
+dv_dz = 5.0
+
+
+# Chain rule
+dy_dx_ex1 = dy_du * du_dx
+dy_dz_ex1 = dy_dv * dv_dz
+
+
+print("Exercise 1")
+print("∂y/∂x =", dy_dx_ex1)
+print("∂y/∂z =", dy_dz_ex1)
+print()
+
+
+# ============================================================
+# Exercise 2
+# ============================================================
+#
+# y = f(u, v)
+# u = g(x)
+# v = h(x, z)
+#
+# Dependency tree:
+#
+#          y
+#         / \
+#        u   v
+#        |  / \
+#        x x   z
+#
+# x has TWO paths to y:
+#
+# x → u → y
+# x → v → y
+#
+# z has ONE path:
+#
+# z → v → y
+
+
+# Partial derivative components
+dy_du = 2.0
+du_dx = 3.0
+
+dy_dv = 4.0
+dv_dx = 5.0
+dv_dz = 6.0
+
+
+# ∂y/∂x has two paths
+path_x_through_u = dy_du * du_dx
+path_x_through_v = dy_dv * dv_dx
+
+dy_dx_ex2 = (
+    path_x_through_u
+    + path_x_through_v
+)
+
+
+# ∂y/∂z has one path
+dy_dz_ex2 = dy_dv * dv_dz
+
+
+print("Exercise 2")
+print("x → u → y =", path_x_through_u)
+print("x → v → y =", path_x_through_v)
+print("∂y/∂x =", dy_dx_ex2)
+print("∂y/∂z =", dy_dz_ex2)
+print()
+
+
+# ============================================================
+# Exercise 3
+# ============================================================
+#
+# y = f(u, v, w)
+# u = g(x)
+# v = h(x)
+# w = j(x)
+#
+# Dependency tree:
+#
+#             y
+#          /  |  \
+#         u   v   w
+#         |   |   |
+#         x   x   x
+#
+# x has THREE paths to y:
+#
+# x → u → y
+# x → v → y
+# x → w → y
+
+
+# Partial derivative components
+dy_du = 2.0
+du_dx = 3.0
+
+dy_dv = 4.0
+dv_dx = 5.0
+
+dy_dw = 6.0
+dw_dx = 7.0
+
+
+# Calculate each path contribution
+path_x_through_u = dy_du * du_dx
+path_x_through_v = dy_dv * dv_dx
+path_x_through_w = dy_dw * dw_dx
+
+
+# Add all three paths
+dy_dx_ex3 = (
+    path_x_through_u
+    + path_x_through_v
+    + path_x_through_w
+)
+
+
+print("Exercise 3")
+print("x → u → y =", path_x_through_u)
+print("x → v → y =", path_x_through_v)
+print("x → w → y =", path_x_through_w)
+print("∂y/∂x =", dy_dx_ex3)
+
+
+# Because x is the only independent input in Exercise 3:
+# ∂y/∂x is also equal to the full derivative dy/dx.
+print("dy/dx =", dy_dx_ex3)
+-------------------code----------------------
+
+---
+
+# 16. Final Summary
+
+The entire lecture can be reduced to one powerful idea:
+
+> **Follow every path from the input to the output. Multiply the derivatives along each path, then add all path contributions.**
+
+### Exercise 1
+
+One path:
+
+$$
+\boxed{
+\frac{\partial y}{\partial x}
+=
+\frac{\partial y}{\partial u}
+\frac{\partial u}{\partial x}
+}
+$$
+
+### Exercise 2
+
+Two paths:
+
+$$
+\boxed{
+\frac{\partial y}{\partial x}
+=
+\frac{\partial y}{\partial u}
+\frac{\partial u}{\partial x}
++
+\frac{\partial y}{\partial v}
+\frac{\partial v}{\partial x}
+}
+$$
+
+### Exercise 3
+
+Three paths:
+
+$$
+\boxed{
+\frac{\partial y}{\partial x}
+=
+\frac{\partial y}{\partial u}
+\frac{\partial u}{\partial x}
++
+\frac{\partial y}{\partial v}
+\frac{\partial v}{\partial x}
++
+\frac{\partial y}{\partial w}
+\frac{\partial w}{\partial x}
+}
+$$
+
+This completes the core theory of **partial derivatives and the multivariate chain rule** needed for the upcoming discussion of **gradients and gradient descent**.
