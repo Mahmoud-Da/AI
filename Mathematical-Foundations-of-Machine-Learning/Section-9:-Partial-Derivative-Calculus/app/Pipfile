@@ -9,6 +9,7 @@ matplotlib = "*"
 torch = "*"
 tensorflow = "*"
 scikit-learn = "*"
+sympy = "*"
 
 [dev-packages]
 

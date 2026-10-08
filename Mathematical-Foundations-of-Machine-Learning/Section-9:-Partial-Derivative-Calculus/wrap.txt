@@ -12336,3 +12336,740 @@ This example is illustrative. It uses synthetic data and a small neural network 
 * In PyTorch, `loss.backward()` calculates gradients and `optimizer.step()` updates parameters.
 
 The key takeaway: Backpropagation extends the partial-derivative calculations you already learned to complex neural networks. The network becomes larger, but the underlying mathematical principle remains the same.
+
+*** 92. Higher-Order Partial Derivatives ***
+# Machine Learning Foundations: Higher-Order Partial Derivatives
+
+## 1. Overview
+
+This lecture introduces higher-order partial derivatives, focusing on second-order derivatives, their notation, and their relationship to machine learning optimization.
+
+A first-order derivative describes how a function changes. A second-order derivative describes how its first derivative changes.
+
+The lecture covers:
+
+1. First derivatives and their relationship to speed.
+
+2. Second derivatives and their relationship to acceleration.
+
+3. Unmixed second-order partial derivatives.
+
+4. Mixed second-order partial derivatives.
+
+5. The equality of mixed partial derivatives under certain conditions.
+
+6. Common notation for higher-order partial derivatives.
+
+7. How these concepts connect to machine learning gradients and optimization.
+
+## 2. Understanding Derivatives Through Distance, Speed, and Acceleration
+
+The lecture begins with a car traveling away from home toward a convenience store.
+
+Imagine that the car starts stationary, accelerates, and eventually travels at a constant speed.
+
+### 2.1 Distance as a function of time
+
+Let the car's distance from home be represented by a function of time:
+
+d=f(t)d=f(t)d=f(t)
+
+A graph of distance against time shows how far the car has traveled at each moment.
+
+The slope between two points is:
+
+Slope=ΔdΔt\text{Slope}=\frac{\Delta d}{\Delta t}Slope=ΔtΔd
+
+This represents the average speed over that interval.
+
+The slope of the tangent line at a particular point represents the instantaneous rate of change of distance.
+
+### 2.2 First derivative: speed
+
+The first derivative of distance with respect to time is speed:
+
+v(t)=dddtv(t)=\frac{dd}{dt}v(t)=dtdd
+
+For example, if the distance function is:
+
+d(t)=t2d(t)=t^2d(t)=t2
+
+then its first derivative is:
+
+v(t)=dddt=2tv(t)=\frac{dd}{dt}=2tv(t)=dtdd=2t
+
+At t=3t=3t=3, the instantaneous speed is v(3)=6v(3)=6v(3)=6 distance units per time unit.
+
+A simple Python example:
+
+-------------------code----------------------
+def distance(t):
+    return t**2
+
+def speed(t):
+    return 2 * t
+
+t = 3
+
+print("Distance:", distance(t))
+print("Speed:", speed(t))
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+Distance: 9
+Speed: 6
+-------------------code----------------------
+
+The speed increases as time increases, so the car is accelerating.
+
+### 2.3 Second derivative: acceleration
+
+Acceleration describes the rate of change of speed with respect to time.
+
+Since speed is the first derivative of distance, acceleration is the second derivative:
+
+a(t)=dvdt=d2ddt2a(t)=\frac{dv}{dt}=\frac{d^2d}{dt^2}a(t)=dtdv=dt2d2d
+
+For our example:
+
+d(t)=t2d(t)=t^2d(t)=t2
+
+The first derivative is:
+
+dddt=2t\frac{dd}{dt}=2tdtdd=2t
+
+Differentiating again:
+
+d2ddt2=2\frac{d^2d}{dt^2}=2dt2d2d=2
+
+Therefore, acceleration is constant at 2 distance units per time unit squared.
+
+Python example:
+
+-------------------code----------------------
+def acceleration(t):
+    return 2
+
+t = 3
+
+print("Acceleration:", acceleration(t))
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+Acceleration: 2
+-------------------code----------------------
+
+Key idea: A second derivative tells us how the first derivative changes. In the car example, the first derivative is speed and the second derivative is acceleration.
+
+## 3. Applying Higher-Order Derivatives to Partial Derivatives
+
+In machine learning, we often work with functions that depend on multiple variables.
+
+For example:
+
+z=f(x,y)=x2+5xy+2y2z=f(x,y)=x^2+5xy+2y^2z=f(x,y)=x2+5xy+2y2
+
+Here, zzz depends on both xxx and yyy.
+
+A partial derivative measures how zzz changes with respect to one variable while treating the other variable as constant.
+
+A second-order partial derivative is obtained by differentiating a first-order partial derivative again.
+
+There are two main types:
+
+* Unmixed partial derivatives: Differentiate twice with respect to the same variable.
+
+* Mixed partial derivatives: Differentiate with respect to one variable, then differentiate with respect to the other.
+
+## 4. Step 1 — Calculate the First-Order Partial Derivatives
+
+Before calculating second-order derivatives, we first need the first-order derivatives of:
+
+z=x2+5xy+2y2z=x^2+5xy+2y^2z=x2+5xy+2y2
+
+### 4.1 Differentiate with respect to xxx
+
+We write:
+
+∂z∂x\frac{\partial z}{\partial x}∂x∂z
+
+Treat yyy as a constant.
+
+Differentiate each term separately:
+
+1. x2x^2x2 becomes 2x2x2x.
+
+2. 5xy5xy5xy becomes 5y5y5y, because yyy is constant.
+
+3. 2y22y^22y2 becomes 000, because it contains no xxx.
+
+Therefore:
+
+∂z∂x=2x+5y\boxed{\frac{\partial z}{\partial x}=2x+5y}∂x∂z=2x+5y
+
+### 4.2 Differentiate with respect to yyy
+
+Now calculate:
+
+∂z∂y\frac{\partial z}{\partial y}∂y∂z
+
+Treat xxx as a constant.
+
+1. x2x^2x2 becomes 000.
+
+2. 5xy5xy5xy becomes 5x5x5x.
+
+3. 2y22y^22y2 becomes 4y4y4y.
+
+Therefore:
+
+∂z∂y=5x+4y\boxed{\frac{\partial z}{\partial y}=5x+4y}∂y∂z=5x+4y
+
+### 4.3 Verify the first derivatives with Python
+
+We can use SymPy, a Python library for symbolic mathematics, to check the results.
+
+-------------------code----------------------
+import sympy as sp
+
+x, y = sp.symbols("x y")
+
+z = x**2 + 5*x*y + 2*y**2
+
+dz_dx = sp.diff(z, x)
+dz_dy = sp.diff(z, y)
+
+print("dz/dx =", dz_dx)
+print("dz/dy =", dz_dy)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+dz/dx = 2*x + 5*y
+dz/dy = 5*x + 4*y
+-------------------code----------------------
+
+These are the first-order partial derivatives needed for the next step.
+
+## 5. Step 2 — Unmixed Second-Order Partial Derivatives
+
+Unmixed second-order partial derivatives are calculated by differentiating twice with respect to the same variable.
+
+There are two in this example:
+
+∂2z∂x2∂2z∂y2\frac{\partial^2 z}{\partial x^2} \qquad \frac{\partial^2 z}{\partial y^2}∂x2∂2z∂y2∂2z
+
+### 5.1 Differentiate twice with respect to xxx
+
+We already found:
+
+∂z∂x=2x+5y\frac{\partial z}{\partial x}=2x+5y∂x∂z=2x+5y
+
+Differentiate this expression with respect to xxx again.
+
+* 2x2x2x becomes 222.
+
+* 5y5y5y becomes 000, because yyy is constant.
+
+Therefore:
+
+∂2z∂x2=2\boxed{\frac{\partial^2 z}{\partial x^2}=2}∂x2∂2z=2
+
+The notation indicates that we differentiate with respect to xxx twice.
+
+### 5.2 Differentiate twice with respect to yyy
+
+We already found:
+
+∂z∂y=5x+4y\frac{\partial z}{\partial y}=5x+4y∂y∂z=5x+4y
+
+Differentiate with respect to yyy again.
+
+* 5x5x5x becomes 000.
+
+* 4y4y4y becomes 444.
+
+Therefore:
+
+∂2z∂y2=4\boxed{\frac{\partial^2 z}{\partial y^2}=4}∂y2∂2z=4
+
+### 5.3 Verify the unmixed derivatives
+
+-------------------code----------------------
+d2z_dx2 = sp.diff(z, x, 2)
+d2z_dy2 = sp.diff(z, y, 2)
+
+print("d²z/dx² =", d2z_dx2)
+print("d²z/dy² =", d2z_dy2)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+d²z/dx² = 2
+d²z/dy² = 4
+-------------------code----------------------
+
+Remember: Unmixed means that the same variable is used for both differentiations.
+
+## 6. Step 3 — Mixed Second-Order Partial Derivatives
+
+Mixed second-order partial derivatives use different variables for the two differentiations.
+
+For a function of xxx and yyy, we calculate:
+
+∂∂x(∂z∂y)\frac{\partial}{\partial x} \left(\frac{\partial z}{\partial y}\right)∂x∂(∂y∂z)
+
+and:
+
+∂∂y(∂z∂x)\frac{\partial}{\partial y} \left(\frac{\partial z}{\partial x}\right)∂y∂(∂x∂z)
+
+In other words, we differentiate once with respect to one variable and then with respect to the other.
+
+### 6.1 Differentiate with respect to yyy, then xxx
+
+Start with the first derivative:
+
+∂z∂y=5x+4y\frac{\partial z}{\partial y}=5x+4y∂y∂z=5x+4y
+
+Now differentiate that expression with respect to xxx.
+
+* 5x5x5x becomes 555.
+
+* 4y4y4y becomes 000.
+
+Therefore:
+
+∂∂x(∂z∂y)=5\boxed{ \frac{\partial}{\partial x} \left(\frac{\partial z}{\partial y}\right)=5 }∂x∂(∂y∂z)=5
+
+### 6.2 Differentiate with respect to xxx, then yyy
+
+Start with:
+
+∂z∂x=2x+5y\frac{\partial z}{\partial x}=2x+5y∂x∂z=2x+5y
+
+Now differentiate with respect to yyy.
+
+* 2x2x2x becomes 000.
+
+* 5y5y5y becomes 555.
+
+Therefore:
+
+∂∂y(∂z∂x)=5\boxed{ \frac{\partial}{\partial y} \left(\frac{\partial z}{\partial x}\right)=5 }∂y∂(∂x∂z)=5
+
+### 6.3 Verify the mixed derivatives
+
+-------------------code----------------------
+d2z_dydx = sp.diff(sp.diff(z, y), x)
+d2z_dxdy = sp.diff(sp.diff(z, x), y)
+
+print("Differentiate y, then x:", d2z_dydx)
+print("Differentiate x, then y:", d2z_dxdy)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+Differentiate y, then x: 5
+Differentiate x, then y: 5
+-------------------code----------------------
+
+Both mixed derivatives equal 5 in this example.
+
+## 7. Why Are the Mixed Partial Derivatives Equal?
+
+In the example, we found:
+
+∂∂x(∂z∂y)=∂∂y(∂z∂x)=5\frac{\partial}{\partial x} \left(\frac{\partial z}{\partial y}\right) = \frac{\partial}{\partial y} \left(\frac{\partial z}{\partial x}\right) =5∂x∂(∂y∂z)=∂y∂(∂x∂z)=5
+
+This equality is not a coincidence.
+
+Under suitable conditions, the order of mixed second-order partial differentiation does not affect the result. This result is commonly known as Clairaut's theorem or the equality of mixed partial derivatives.
+
+For a sufficiently smooth function:
+
+∂2z∂x ∂y=∂2z∂y ∂x\boxed{ \frac{\partial^2 z}{\partial x\,\partial y} = \frac{\partial^2 z}{\partial y\,\partial x} }∂x∂y∂2z=∂y∂x∂2z
+
+The lecture mentions the mathematicians Clairaut, Schwarz, and Young in connection with this result.
+
+### 7.1 Why the conditions matter
+
+The equality is not guaranteed for every possible function at every point. The usual theorem requires appropriate regularity conditions, such as continuity of the relevant second-order partial derivatives in a neighborhood of the point.
+
+For the polynomial function used in this lecture, those conditions hold, so the mixed derivatives are equal.
+
+### 7.2 Check the result in Python
+
+-------------------code----------------------
+mixed_derivatives_equal = sp.simplify(
+    d2z_dydx - d2z_dxdy
+) == 0
+
+print("Are the mixed derivatives equal?",
+      mixed_derivatives_equal)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+Are the mixed derivatives equal? True
+-------------------code----------------------
+
+## 8. Notation for Second-Order Partial Derivatives
+
+The lecture introduces several equivalent ways to represent second-order partial derivatives. Recognizing them is important when reading mathematical literature.
+
+### 8.1 Unmixed derivatives
+
+For a function z=f(x,y)z=f(x,y)z=f(x,y), the second derivative with respect to xxx can be written as:
+
+| Notation style        | Second derivative with respect to xxx                       |
+| --------------------- | ----------------------------------------------------------- |
+| Leibniz notation      | ∂2z∂x2\displaystyle \frac{\partial^2 z}{\partial x^2}∂x2∂2z |
+| Function notation     | fxx(x,y)\displaystyle f\_{xx}(x,y)fxx(x,y)                  |
+| Subscript notation    | fxx\displaystyle f\_{xx}fxx                                 |
+| Differential operator | ∂xxf\displaystyle \partial\_{xx}f∂xxf                       |
+
+These notations express the same mathematical operation in the conventions used by the lecture.
+
+Similarly, the second derivative with respect to yyy can be written as:
+
+∂2z∂y2fyy(x,y)fyy∂yyf\frac{\partial^2 z}{\partial y^2} \qquad f_{yy}(x,y) \qquad f_{yy} \qquad \partial_{yy}f∂y2∂2zfyy(x,y)fyy∂yyf
+
+### 8.2 Mixed derivatives
+
+For mixed derivatives, the order in Leibniz notation can be less intuitive.
+
+For example:
+
+∂∂x(∂z∂y)\frac{\partial}{\partial x} \left(\frac{\partial z}{\partial y}\right)∂x∂(∂y∂z)
+
+means:
+
+1. Differentiate zzz with respect to yyy.
+
+2. Differentiate the result with respect to xxx.
+
+It can be written as:
+
+∂2z∂x ∂y\frac{\partial^2 z}{\partial x\,\partial y}∂x∂y∂2z
+
+Other common notations include:
+
+fxy(x,y),fxy,∂xyff_{xy}(x,y), \qquad f_{xy}, \qquad \partial_{xy}ffxy(x,y),fxy,∂xyf
+
+By contrast, some subscript conventions list the variables in the order in which differentiation is performed. Under that convention, the first differentiation is listed first, so the order of the subscripts can appear reversed relative to Leibniz notation.
+
+Best practice: When using mixed-derivative notation, follow the convention established by the textbook, instructor, or library you are using. If there is any ambiguity, write the derivatives as nested operations to make the order explicit.
+
+## 9. How Higher-Order Derivatives Connect to Machine Learning
+
+Higher-order partial derivatives matter because machine learning optimization is about understanding how a cost function changes as model parameters change.
+
+### 9.1 First-order derivatives: gradient descent
+
+Suppose a model has parameters collected in a vector:
+
+θ=\(θ1θ2⋮θn\)\boldsymbol{\theta} = \begin{bmatrix} \theta_1\\ \theta_2\\ \vdots\\ \theta_n \end{bmatrix}θ=θ1θ2⋮θn
+
+The gradient of the cost function CCC is:
+
+∇C(θ)=\(∂C∂θ1∂C∂θ2⋮∂C∂θn\)\nabla C(\boldsymbol{\theta}) = \begin{bmatrix} \frac{\partial C}{\partial \theta_1}\\ \frac{\partial C}{\partial \theta_2}\\ \vdots\\ \frac{\partial C}{\partial \theta_n} \end{bmatrix}∇C(θ)=∂θ1∂C∂θ2∂C⋮∂θn∂C
+
+Gradient descent uses this gradient to update the parameters:
+
+θnew=θold−η∇C(θold)\boldsymbol{\theta}_{\text{new}} = \boldsymbol{\theta}_{\text{old}} -\eta\nabla C(\boldsymbol{\theta}_{\text{old}})θnew=θold−η∇C(θold)
+
+Here, η\etaη is the learning rate.
+
+### 9.2 Second-order derivatives: curvature
+
+First-order derivatives tell us the direction and local rate of change of the cost. Second-order derivatives provide information about how those first derivatives change.
+
+This gives information about the curvature of the cost function.
+
+For a one-dimensional function:
+
+* A positive second derivative indicates upward curvature locally.
+
+* A negative second derivative indicates downward curvature locally.
+
+* A zero second derivative means the second derivative alone does not reveal curvature at that point.
+
+For example:
+
+C(θ)=θ2C(\theta)=\theta^2C(θ)=θ2
+
+Its first derivative is:
+
+dCdθ=2θ\frac{dC}{d\theta}=2\thetadθdC=2θ
+
+Its second derivative is:
+
+d2Cdθ2=2\frac{d^2C}{d\theta^2}=2dθ2d2C=2
+
+The positive second derivative indicates that the graph curves upward.
+
+Python verification:
+
+-------------------code----------------------
+theta = sp.symbols("theta")
+C = theta**2
+
+first_derivative = sp.diff(C, theta)
+second_derivative = sp.diff(C, theta, 2)
+
+print("First derivative:", first_derivative)
+print("Second derivative:", second_derivative)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+First derivative: 2*theta
+Second derivative: 2
+-------------------code----------------------
+
+### 9.3 The Hessian matrix
+
+For a cost function that depends on multiple parameters, all second-order partial derivatives can be arranged into a matrix called the Hessian.
+
+For C(x,y)C(x,y)C(x,y):
+
+H=\(∂2C∂x2∂2C∂x ∂y∂2C∂y ∂x∂2C∂y2\)H= \begin{bmatrix} \frac{\partial^2 C}{\partial x^2} & \frac{\partial^2 C}{\partial x\,\partial y} \\\(6pt\) \frac{\partial^2 C}{\partial y\,\partial x} & \frac{\partial^2 C}{\partial y^2} \end{bmatrix}H=∂x2∂2C∂y∂x∂2C∂x∂y∂2C∂y2∂2C
+
+For the lecture's example z=x2+5xy+2y2z=x^2+5xy+2y^2z=x2+5xy+2y2, the Hessian is:
+
+H=\(2554\)H= \begin{bmatrix} 2 & 5\\ 5 & 4 \end{bmatrix}H=\(25​54​\)
+
+The diagonal entries are the unmixed second derivatives. The off-diagonal entries are the mixed derivatives.
+
+Python example:
+
+-------------------code----------------------
+variables = (x, y)
+
+hessian = sp.hessian(z, variables)
+
+print(hessian)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+Matrix([[2, 5], [5, 4]])
+-------------------code----------------------
+
+### 9.4 Why this matters for optimization
+
+Some optimization algorithms use second-order information to improve parameter updates. Newton's method is one example, and the Hessian plays an important role in its formulation.
+
+However, the lecture only introduces the motivation here; it says that the application of higher-order derivatives to accelerating gradient descent will be covered in more detail in the optimization subject.
+
+Second-order methods can be computationally expensive for very large models, so ordinary gradient-based methods remain widely used in deep learning.
+
+## 10. Important Notes and Best Practices
+
+1. Differentiate one variable at a time. When finding a partial derivative with respect to xxx, treat yyy as a constant, and vice versa.
+
+2. Use first-order derivatives before second-order derivatives. Calculate the first derivatives correctly, then differentiate those expressions again.
+
+3. Distinguish unmixed and mixed derivatives.
+
+   * Unmixed: the same variable is used twice.
+
+   * Mixed: different variables are used.
+
+4. Do not assume mixed derivatives are always equal. Their equality depends on appropriate mathematical conditions.
+
+5. Learn the different notations. You may encounter Leibniz notation, function subscripts, and differential-operator notation in different resources.
+
+6. Connect derivatives to optimization. First-order derivatives describe local changes, while second-order derivatives provide information about curvature.
+
+7. Use symbolic tools to check your work. SymPy can verify derivatives, but understanding the differentiation process is still essential.
+
+## 11. Summary
+
+* The first derivative of distance with respect to time represents speed.
+
+* The second derivative of distance with respect to time represents acceleration.
+
+* Higher-order partial derivatives are obtained by differentiating partial derivatives again.
+
+* Unmixed second-order derivatives differentiate with respect to the same variable twice.
+
+* Mixed second-order derivatives differentiate with respect to different variables.
+
+* Under suitable smoothness conditions, mixed second-order partial derivatives are equal.
+
+* The Hessian matrix collects all second-order partial derivatives of a multivariable function.
+
+* First-order derivatives are central to gradient descent, while second-order derivatives provide curvature information useful for certain optimization algorithms.
+
+For the lecture's example,
+
+z=x2+5xy+2y2z=x^2+5xy+2y^2z=x2+5xy+2y2
+
+the complete set of second-order partial derivatives is:
+
+∂2z∂x2=2,∂2z∂y2=4\frac{\partial^2 z}{\partial x^2}=2, \qquad \frac{\partial^2 z}{\partial y^2}=4∂x2∂2z=2,∂y2∂2z=4
+
+∂2z∂x ∂y=5,∂2z∂y ∂x=5\frac{\partial^2 z}{\partial x\,\partial y}=5, \qquad \frac{\partial^2 z}{\partial y\,\partial x}=5∂x∂y∂2z=5,∂y∂x∂2z=5
+
+The most important takeaway is that second-order partial derivatives describe how first-order derivatives change, and this information helps characterize the curvature of functions used in machine learning optimization.
+
+## 12. Full Final Code
+
+The following script combines the lecture's main mathematical examples and verifies them using SymPy.
+
+Install SymPy first if needed:
+
+Bash
+
+-------------------code----------------------
+pip install sympy
+-------------------code----------------------
+
+-------------------code----------------------
+import sympy as sp
+
+# ============================================================
+# Step 1: Define symbolic variables
+# ============================================================
+
+x, y, t, theta = sp.symbols("x y t theta")
+
+# ============================================================
+# Step 2: Demonstrate distance, speed, and acceleration
+# ============================================================
+
+distance = t**2
+
+speed = sp.diff(distance, t)
+acceleration = sp.diff(distance, t, 2)
+
+print("DISTANCE, SPEED, AND ACCELERATION")
+print("Distance function:", distance)
+print("Speed function:", speed)
+print("Acceleration function:", acceleration)
+
+time_value = 3
+
+print("Distance at t=3:", distance.subs(t, time_value))
+print("Speed at t=3:", speed.subs(t, time_value))
+print(
+    "Acceleration at t=3:",
+    acceleration.subs(t, time_value)
+)
+
+# ============================================================
+# Step 3: Define the multivariable function
+# z = x^2 + 5xy + 2y^2
+# ============================================================
+
+z = x**2 + 5*x*y + 2*y**2
+
+print("\nMULTIVARIABLE FUNCTION")
+print("z =", z)
+
+# ============================================================
+# Step 4: Calculate first-order partial derivatives
+# ============================================================
+
+dz_dx = sp.diff(z, x)
+dz_dy = sp.diff(z, y)
+
+print("\nFIRST-ORDER PARTIAL DERIVATIVES")
+print("dz/dx =", dz_dx)
+print("dz/dy =", dz_dy)
+
+# ============================================================
+# Step 5: Calculate unmixed second-order partial derivatives
+# ============================================================
+
+d2z_dx2 = sp.diff(z, x, 2)
+d2z_dy2 = sp.diff(z, y, 2)
+
+print("\nUNMIXED SECOND-ORDER PARTIAL DERIVATIVES")
+print("d²z/dx² =", d2z_dx2)
+print("d²z/dy² =", d2z_dy2)
+
+# ============================================================
+# Step 6: Calculate mixed second-order partial derivatives
+# ============================================================
+
+# Differentiate with respect to y, then x
+d2z_dydx = sp.diff(sp.diff(z, y), x)
+
+# Differentiate with respect to x, then y
+d2z_dxdy = sp.diff(sp.diff(z, x), y)
+
+print("\nMIXED SECOND-ORDER PARTIAL DERIVATIVES")
+print("Differentiate y, then x:", d2z_dydx)
+print("Differentiate x, then y:", d2z_dxdy)
+
+# ============================================================
+# Step 7: Verify equality of the mixed derivatives
+# ============================================================
+
+mixed_derivatives_equal = sp.simplify(
+    d2z_dydx - d2z_dxdy
+) == 0
+
+print("\nMIXED DERIVATIVE CHECK")
+print("Are they equal?", mixed_derivatives_equal)
+
+# ============================================================
+# Step 8: Calculate the Hessian matrix
+# ============================================================
+
+variables = (x, y)
+
+hessian = sp.hessian(z, variables)
+
+print("\nHESSIAN MATRIX")
+sp.pprint(hessian)
+
+# ============================================================
+# Step 9: Demonstrate second-order differentiation of a cost
+# C(theta) = theta^2
+# ============================================================
+
+cost = theta**2
+
+first_derivative = sp.diff(cost, theta)
+second_derivative = sp.diff(cost, theta, 2)
+
+print("\nCOST FUNCTION EXAMPLE")
+print("Cost:", cost)
+print("First derivative:", first_derivative)
+print("Second derivative:", second_derivative)
+
+# ============================================================
+# Step 10: Final verification
+# ============================================================
+
+assert dz_dx == 2*x + 5*y
+assert dz_dy == 5*x + 4*y
+
+assert d2z_dx2 == 2
+assert d2z_dy2 == 4
+
+assert d2z_dydx == 5
+assert d2z_dxdy == 5
+
+assert mixed_derivatives_equal
+
+assert hessian == sp.Matrix([
+    [2, 5],
+    [5, 4]
+])
+
+print("\nAll derivative checks passed.")
+-------------------code----------------------
