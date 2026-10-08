@@ -10467,3 +10467,621 @@ $$
 $$
 
 Understanding this is essential before moving on to **gradient descent and backpropagation**.
+
+*** 89. Descending the Gradient of Cost ***
+# Machine Learning Foundations — Gradient Descent and Batch Regression
+
+## 1. Lecture Overview
+
+This lecture explains how gradient descent works when a model has multiple parameters and introduces batch regression using mean squared error (MSE).
+
+In the previous lectures, we learned how to calculate the gradient of quadratic cost for a single data point. Now, we extend that process to a batch containing multiple data points.
+
+The main topics are:
+
+1. Understanding gradient descent in multiple dimensions.
+
+2. Understanding how the gradient guides parameter updates.
+
+3. Calculating predictions for a batch of data.
+
+4. Calculating mean squared error (MSE).
+
+5. Using PyTorch to calculate the gradient of MSE.
+
+6. Preparing to derive the MSE gradients manually in the next lecture.
+
+## 2. The Four-Step Machine Learning Process
+
+The lecture uses the same four-step process introduced in earlier lessons.
+
+### Step 1: Forward pass
+
+Use the input xxx and model parameters mmm and bbb to calculate a prediction.
+
+y^=mx+b\boxed{\hat{y}=mx+b}y^=mx+b
+
+* xxx: input
+
+* mmm: slope
+
+* bbb: y-intercept
+
+* y^\hat{y}y^: predicted output
+
+Code:
+
+-------------------code----------------------
+def regression(x, m, b):
+    return m * x + b
+
+y_hat = regression(x, m, b)
+-------------------code----------------------
+
+### Step 2: Calculate cost
+
+Compare the predicted value with the true value yyy.
+
+For multiple data points, the lecture uses mean squared error:
+
+MSE=1N∑i=1N(y^i−yi)2\boxed{MSE=\frac{1}{N}\sum_{i=1}^{N}(\hat{y}_i-y_i)^2}MSE=N1i=1∑N(y^i−yi)2
+
+Here, NNN is the number of data points.
+
+Code:
+
+-------------------code----------------------
+def mse(y_hat, y):
+    squared_errors = (y_hat - y) ** 2
+    return squared_errors.sum() / len(y)
+-------------------code----------------------
+
+### Step 3: Calculate the gradient
+
+Calculate the partial derivatives of the cost with respect to every model parameter:
+
+∇C=\(∂C∂b∂C∂m\)\nabla C = \begin{bmatrix} \frac{\partial C}{\partial b}\\ \frac{\partial C}{\partial m} \end{bmatrix}∇C=\(∂b∂C​∂m∂C​​\)
+
+These derivatives indicate how the cost changes when each parameter changes.
+
+Code:
+
+-------------------code----------------------
+cost.backward()
+
+print("Gradient with respect to m:", m.grad)
+print("Gradient with respect to b:", b.grad)
+-------------------code----------------------
+
+### Step 4: Update the parameters
+
+Adjust the parameters in the direction that reduces the cost.
+
+Conceptually:
+
+New parameter=Old parameter−Learning rate×Gradient\boxed{\text{New parameter}=\text{Old parameter}-\text{Learning rate}\times\text{Gradient}}New parameter=Old parameter−Learning rate×Gradient
+
+For example:
+
+-------------------code----------------------
+with torch.no_grad():
+    m -= learning_rate * m.grad
+    b -= learning_rate * b.grad
+-------------------code----------------------
+
+This is the basic idea behind gradient descent. In practice, PyTorch optimizers can perform these updates for us.
+
+## 3. Understanding Gradient Descent with One Parameter
+
+Imagine a model with only one parameter ppp.
+
+The cost depends on the value of that parameter:
+
+C=C(p)C=C(p)C=C(p)
+
+We can visualize the relationship as a curve.
+
+* The horizontal axis represents the parameter ppp.
+
+* The vertical axis represents the cost CCC.
+
+* The slope of the curve is the derivative dCdp\frac{dC}{dp}dpdC.
+
+### Step-by-step process
+
+1. Start with an initial parameter value.
+
+2. Calculate the cost.
+
+3. Calculate the gradient at the current position.
+
+4. Move the parameter in the direction that reduces the cost.
+
+5. Repeat until the cost stops improving sufficiently.
+
+If the gradient is positive, increasing the parameter locally increases the cost, so gradient descent moves it downward.
+
+If the gradient is negative, decreasing the parameter locally increases the cost, so gradient descent moves it upward.
+
+At a smooth minimum, the gradient is zero.
+
+dCdp=0\boxed{\frac{dC}{dp}=0}dpdC=0
+
+Important: A zero gradient identifies a stationary point, not necessarily a global minimum in every possible cost function. The lecture's simple illustration assumes a curve where the minimum can be found by following the gradient downhill.
+
+## 4. Gradient Descent with Multiple Parameters
+
+Realistic machine learning models usually have more than one parameter.
+
+Even our simple regression model has two:
+
+y^=mx+b\hat{y}=mx+by^=mx+b
+
+The parameters are:
+
+* mmm: slope
+
+* bbb: y-intercept
+
+The cost therefore depends on both parameters:
+
+C=C(m,b)C=C(m,b)C=C(m,b)
+
+Instead of a two-dimensional cost curve, we can visualize a three-dimensional surface:
+
+* Horizontal axis 1: slope mmm
+
+* Horizontal axis 2: intercept bbb
+
+* Vertical axis: cost CCC
+
+Each combination of mmm and bbb produces a particular cost.
+
+The goal is to find the combination of parameters that minimizes this cost.
+
+### The gradient in two dimensions
+
+The gradient is:
+
+∇C=\(∂C∂b∂C∂m\)\boxed{ \nabla C= \begin{bmatrix} \frac{\partial C}{\partial b}\\ \frac{\partial C}{\partial m} \end{bmatrix} }∇C=\(∂b∂C​∂m∂C​​\)
+
+Each component describes how the cost changes with respect to one parameter.
+
+Gradient descent uses both components to determine how to update the parameters.
+
+## 5. The Blind Hiker Analogy
+
+The lecturer uses a blind trilobite hiking through a mountainous cost surface to illustrate gradient descent.
+
+Imagine the trilobite starts at a random position on a mountain.
+
+It cannot see the lowest point, but it can feel the ground around it.
+
+1. It checks the nearby directions.
+
+2. It determines which direction leads downhill.
+
+3. It takes a step in that direction.
+
+4. At its new position, it checks the surrounding slopes again.
+
+5. It repeats the process until it reaches a low point.
+
+In machine learning:
+
+| Hiker analogy            | Machine learning         |
+| ------------------------ | ------------------------ |
+| Position on the mountain | Current parameter values |
+| Height of the ground     | Cost                     |
+| Local slope              | Gradient                 |
+| Step downhill            | Parameter update         |
+| Valley bottom            | Cost minimum             |
+
+The important insight is that the model does not need to know the entire cost surface in advance. It repeatedly uses local gradient information to choose its next update.
+
+## 6. Gradient Descent in Very Large Models
+
+A simple regression model has only two parameters, so its cost surface can be illustrated in three dimensions.
+
+However, machine learning models may have hundreds, thousands, millions, or billions of parameters.
+
+For a model with NNN parameters:
+
+∇C∈RN\boxed{\nabla C\in\mathbb{R}^{N}}∇C∈RN
+
+The gradient contains one partial derivative for every parameter.
+
+Although we cannot easily visualize a cost surface with millions of dimensions, the mathematical principle remains the same:
+
+1. Calculate the cost.
+
+2. Calculate the gradient with respect to the parameters.
+
+3. Update the parameters to reduce the cost.
+
+4. Repeat.
+
+This is why gradient descent is useful for both simple regression and large neural networks.
+
+## 7. Single-Point Regression vs. Batch Regression
+
+The previous notebook used one data point at a time. This lecture introduces a batch containing all eight data points.
+
+### Single-point regression
+
+For one input:
+
+y^=mx+b\hat{y}=mx+by^=mx+b
+
+The cost is:
+
+C=(y^−y)2C=(\hat{y}-y)^2C=(y^−y)2
+
+Code:
+
+-------------------code----------------------
+y_hat = regression(x, m, b)
+cost = (y_hat - y) ** 2
+-------------------code----------------------
+
+### Batch regression
+
+For multiple inputs, xxx and y^\hat{y}y^ are vectors.
+
+For eight data points:
+
+x=\(x1,x2,…,x8\)\mathbf{x}=\(x\_1,x\_2,\\ldots,x\_8\)x=\(x1​,x2​,…,x8​\)
+
+The model produces eight predictions:
+
+y^=\(y^1,y^2,…,y^8\)\hat{\mathbf{y}}=\(\\hat{y}\_1,\\hat{y}\_2,\\ldots,\\hat{y}\_8\)y^=\(y^​1​,y^​2​,…,y^​8​\)
+
+The cost is the average squared error across all eight points.
+
+Code:
+
+-------------------code----------------------
+y_hat = regression(xs, m, b)
+cost = mse(y_hat, ys)
+-------------------code----------------------
+
+Why use batches?
+
+The lecturer explains that using batches is generally more practical than performing gradient descent on individual data points because it makes better use of the machine's computing and memory resources.
+
+A batch can contain all the training data or a smaller subset. This lecture's example uses all eight data points.
+
+## 8. Understanding Mean Squared Error
+
+Mean squared error averages the squared prediction errors.
+
+MSE=1N∑i=1N(y^i−yi)2\boxed{ MSE=\frac{1}{N}\sum_{i=1}^{N}(\hat{y}_i-y_i)^2 }MSE=N1i=1∑N(y^i−yi)2
+
+The calculation has three stages.
+
+### Step 1: Calculate the prediction errors
+
+ei=y^i−yie_i=\hat{y}_i-y_iei=y^i−yi
+
+-------------------code----------------------
+errors = y_hat - ys
+-------------------code----------------------
+
+### Step 2: Square the errors
+
+ei2=(y^i−yi)2e_i^2=(\hat{y}_i-y_i)^2ei2=(y^i−yi)2
+
+-------------------code----------------------
+squared_errors = errors ** 2
+-------------------code----------------------
+
+### Step 3: Calculate their average
+
+MSE=∑iei2NMSE=\frac{\sum_i e_i^2}{N}MSE=N∑iei2
+
+-------------------code----------------------
+cost = squared_errors.sum() / len(ys)
+-------------------code----------------------
+
+The result is a single scalar representing the average squared prediction error across the batch.
+
+In the lecture's notebook, the initial MSE is approximately 20.
+
+This value depends on the initial parameter values and the exact data used.
+
+## 9. Prepare the Data and Model in PyTorch
+
+The lecture uses the same fictional dataset as the previous single-point regression example.
+
+The inputs represent hypothetical Alzheimer's drug dosages, and the outputs represent fictional patient forgetfulness values. Generally, the example assumes that higher dosage corresponds to lower forgetfulness.
+
+These are illustrative, artificial data, not real medical evidence.
+
+The model is:
+
+y^=mx+b\hat{y}=mx+by^=mx+b
+
+Code:
+
+-------------------code----------------------
+import torch
+import matplotlib.pyplot as plt
+
+# Example data structure: replace these illustrative
+# values with the exact data from the course notebook.
+xs = torch.tensor(
+    [0., 1., 2., 3., 4., 5., 6., 7.]
+)
+
+ys = torch.tensor(
+    [2.1, 1.6, 0.9, 0.4, -0.2, -0.7, -1.0, -1.377]
+)
+
+# Initial model parameters
+m = torch.tensor(0.9, requires_grad=True)
+b = torch.tensor(0.1, requires_grad=True)
+
+def regression(x, m, b):
+    return m * x + b
+-------------------code----------------------
+
+The parameter values are initialized before training. In the course, the same initial values are reused to make it easier to reproduce the notebook's results.
+
+## 10. Perform the Forward Pass on the Entire Batch
+
+Previously, the model received one input xxx.
+
+Now, it receives the complete vector `xs`.
+
+Because PyTorch supports tensor operations, it calculates all predictions in one operation.
+
+-------------------code----------------------
+y_hat = regression(xs, m, b)
+
+print("Predictions:", y_hat)
+print("Number of predictions:", len(y_hat))
+-------------------code----------------------
+
+Since there are eight input values, there should be eight predictions.
+
+Each prediction follows the same equation:
+
+y^i=mxi+b\hat{y}_i=mx_i+by^i=mxi+b
+
+The parameters mmm and bbb are shared across all eight predictions.
+
+## 11. Calculate Batch Mean Squared Error
+
+Define the MSE function:
+
+-------------------code----------------------
+def mse(y_hat, y):
+    squared_errors = (y_hat - y) ** 2
+    return squared_errors.sum() / len(y)
+-------------------code----------------------
+
+Calculate the cost:
+
+-------------------code----------------------
+cost = mse(y_hat, ys)
+
+print("Mean squared error:", cost.item())
+-------------------code----------------------
+
+The `.item()` method converts a single-value PyTorch tensor into a regular Python number for display.
+
+At this stage, the model has completed:
+
+* Step 1: Forward pass
+
+* Step 2: Cost calculation
+
+The next task is to calculate the gradient.
+
+## 12. Calculate the MSE Gradient Automatically
+
+In previous lectures, we used `cost.backward()` to calculate the derivatives of the cost with respect to the model parameters.
+
+The same method works with batch MSE.
+
+-------------------code----------------------
+cost.backward()
+
+print("dC/dm:", m.grad.item())
+print("dC/db:", b.grad.item())
+-------------------code----------------------
+
+The lecture reports approximate results for its notebook:
+
+∂C∂m≈36\boxed{\frac{\partial C}{\partial m}\approx36}∂m∂C≈36
+
+∂C∂b≈6\boxed{\frac{\partial C}{\partial b}\approx6}∂b∂C≈6
+
+These are the gradients for the lecture's initial settings, not universal values. Your results depend on the precise dataset, parameter initialization, and cost definition.
+
+PyTorch automatically tracks the operations used to calculate the predictions and cost, then applies differentiation to calculate the gradients.
+
+The next lecture will derive these MSE gradients manually using partial derivatives, just as we did for single-point quadratic cost.
+
+## 13. Important Notes and Best Practices
+
+### 13.1 Distinguish quadratic cost from MSE
+
+For one data point:
+
+C=(y^−y)2C=(\hat{y}-y)^2C=(y^−y)2
+
+For a batch:
+
+MSE=1N∑i=1N(y^i−yi)2MSE=\frac{1}{N}\sum_{i=1}^{N}(\hat{y}_i-y_i)^2MSE=N1i=1∑N(y^i−yi)2
+
+MSE is the average of the individual quadratic costs.
+
+### 13.2 Remember that gradients depend on the current parameters
+
+The gradient changes as mmm and bbb change. It must be recalculated during training after each parameter update.
+
+### 13.3 Clear gradients before each training iteration
+
+PyTorch accumulates gradients by default. When implementing a training loop, clear the old gradients before calculating new ones:
+
+-------------------code----------------------
+optimizer.zero_grad()
+-------------------code----------------------
+
+Then calculate the cost and backpropagate:
+
+-------------------code----------------------
+cost.backward()
+optimizer.step()
+-------------------code----------------------
+
+### 13.4 Use the correct tensor shapes
+
+The input and target tensors must contain the same number of examples.
+
+-------------------code----------------------
+print(xs.shape)
+print(ys.shape)
+print(y_hat.shape)
+-------------------code----------------------
+
+For this example, each should have eight elements.
+
+### 13.5 Do not confuse the gradient with the cost
+
+* Cost: one number measuring prediction error.
+
+* Gradient: a vector describing how the cost changes with respect to each parameter.
+
+A model can have a high cost with a small gradient, or a relatively low cost with a large gradient. They measure different things.
+
+## 14. Full Final Code
+
+The following is a complete, runnable example of batch regression, MSE calculation, and automatic differentiation. The dataset is illustrative; use the exact notebook data if you need to reproduce the lecture's numerical results.
+
+-------------------code----------------------
+import torch
+import matplotlib.pyplot as plt
+
+
+# --------------------------------------------------
+# 1. Prepare the data
+# --------------------------------------------------
+
+xs = torch.tensor(
+    [0., 1., 2., 3., 4., 5., 6., 7.]
+)
+
+ys = torch.tensor(
+    [2.1, 1.6, 0.9, 0.4, -0.2, -0.7, -1.0, -1.377]
+)
+
+
+# --------------------------------------------------
+# 2. Initialize the model parameters
+# --------------------------------------------------
+
+m = torch.tensor(0.9, requires_grad=True)
+b = torch.tensor(0.1, requires_grad=True)
+
+
+# --------------------------------------------------
+# 3. Define the regression model
+# --------------------------------------------------
+
+def regression(x, m, b):
+    return m * x + b
+
+
+# --------------------------------------------------
+# 4. Define mean squared error
+# --------------------------------------------------
+
+def mse(y_hat, y):
+    squared_errors = (y_hat - y) ** 2
+    return squared_errors.sum() / len(y)
+
+
+# --------------------------------------------------
+# 5. Step 1: Forward pass
+# --------------------------------------------------
+
+y_hat = regression(xs, m, b)
+
+print("Predictions:")
+print(y_hat.detach())
+
+print("\nNumber of input examples:", len(xs))
+print("Number of predictions:", len(y_hat))
+
+
+# --------------------------------------------------
+# 6. Step 2: Calculate cost
+# --------------------------------------------------
+
+cost = mse(y_hat, ys)
+
+print("\nMean squared error:")
+print(cost.item())
+
+
+# --------------------------------------------------
+# 7. Step 3: Calculate gradients
+# --------------------------------------------------
+
+cost.backward()
+
+print("\nGradients from automatic differentiation:")
+print("dC/dm:", m.grad.item())
+print("dC/db:", b.grad.item())
+
+
+# --------------------------------------------------
+# 8. Visualize the predictions
+# --------------------------------------------------
+
+with torch.no_grad():
+    predictions = regression(xs, m, b)
+
+plt.scatter(xs.numpy(), ys.numpy(), label="True data")
+plt.plot(
+    xs.numpy(),
+    predictions.numpy(),
+    label="Model predictions"
+)
+
+plt.xlabel("Input (x)")
+plt.ylabel("Output (y)")
+plt.title("Batch Linear Regression")
+plt.legend()
+plt.show()
+-------------------code----------------------
+
+Code note: This code demonstrates the forward pass, MSE calculation, and gradient calculation. It does not perform a parameter update yet. Also, the gradient values will not necessarily match the lecture's reported values because the example data above are illustrative.
+
+## 15. Summary
+
+This lecture extends gradient descent from a single parameter to a model with multiple parameters and introduces batch regression.
+
+Key points:
+
+1. Gradient descent repeatedly adjusts parameters in the direction that reduces cost.
+
+2. A model with two parameters, mmm and bbb, has a two-component gradient.
+
+3. The gradient generalizes to models with thousands or millions of parameters.
+
+4. Batch regression calculates predictions for multiple data points at once.
+
+5. Mean squared error averages the squared prediction errors across the batch.
+
+6. PyTorch calculates the gradients automatically using `cost.backward()`.
+
+7. The next step is to derive the gradients of MSE manually using partial derivatives.
+
+The core training loop remains:
+
+Forward pass→Calculate cost→Calculate gradient→Update parameters\boxed{ \text{Forward pass} \rightarrow \text{Calculate cost} \rightarrow \text{Calculate gradient} \rightarrow \text{Update parameters} }Forward pass→Calculate cost→Calculate gradient→Update parameters
+
+This process is the foundation of training both simple regression models and much larger neural networks.
