@@ -11920,3 +11920,419 @@ The practical training process is:
 5. Repeat over many epochs.
 
 The key takeaway is that gradient descent uses the derivatives of cost to adjust model parameters and progressively improve predictions. Manual calculus explains why the gradients work, PyTorch automates their calculation, and visualization helps us observe the training process.
+
+*** ***
+# Machine Learning Foundations: Partial Derivatives and Backpropagation
+
+## 1. Overview
+
+Backpropagation is the application of the chain rule to calculate how the cost function changes with respect to the parameters of a neural network.
+
+The lecture connects the partial derivatives learned through simple linear regression to the training of deep neural networks.
+
+In linear regression, we used two parameters:
+
+y^=mx+b\hat{y}=mx+by^=mx+b
+
+* mmm: slope
+
+* bbb: intercept
+
+* y^\hat{y}y^: predicted output
+
+A neural network may have millions or billions of parameters across many layers, but the underlying mathematical principle is the same: use partial derivatives and the chain rule to determine how each parameter affects the cost.
+
+## 2. What Is Backpropagation?
+
+Backpropagation is a method for calculating the gradient of a model's cost function with respect to its parameters.
+
+A gradient tells us how the cost changes when each parameter changes. This information allows gradient descent to adjust the parameters and improve the model's predictions.
+
+### 2.1 The connection to partial derivatives
+
+For our linear regression model:
+
+y^=mx+b\hat{y}=mx+by^=mx+b
+
+we calculate derivatives such as:
+
+∂C∂m∂C∂b\frac{\partial C}{\partial m} \qquad \frac{\partial C}{\partial b}∂m∂C∂b∂C
+
+These describe how the cost CCC changes with respect to the slope and intercept.
+
+For a neural network, we calculate the same kind of derivative for every trainable parameter:
+
+∂C∂θj\frac{\partial C}{\partial \theta_j}∂θj∂C
+
+Here, θj\theta_jθj represents any individual model parameter.
+
+### 2.2 Why the chain rule matters
+
+A neural network consists of functions nested inside one another. The output of one layer becomes the input to the next layer.
+
+The chain rule allows us to calculate how a change in an early parameter affects the final cost by multiplying derivatives along the path through the network.
+
+For example, if:
+
+z=f(y),y=g(x)z=f(y),\qquad y=g(x)z=f(y),y=g(x)
+
+then:
+
+dzdx=dzdydydx\frac{dz}{dx} = \frac{dz}{dy}\frac{dy}{dx}dxdz=dydzdxdy
+
+The same principle extends to networks with many layers. Backpropagation applies it efficiently to compute gradients throughout the network.
+
+## 3. From Linear Regression to Deep Learning
+
+The theory remains the same even as a model becomes more complex.
+
+| Model                | Parameters and structure                                               |
+| -------------------- | ---------------------------------------------------------------------- |
+| Linear regression    | Two parameters: mmm and bbb                                            |
+| Small neural network | Multiple layers and trainable parameters                               |
+| Deep neural network  | Potentially thousands of layers and millions or billions of parameters |
+
+The lecture uses a simple regression model to teach the mathematics before applying it to deep learning.
+
+The important point is that you do not need a new calculus principle for every additional layer. The same chain rule is applied repeatedly across the network.
+
+## 4. The Four Steps of Neural Network Training
+
+The lecture presents neural network training as four repeated steps.
+
+## 1
+
+Forward pass
+
+Send input data through the network to calculate predictions, y^\hat{y}y^.
+
+## 2
+
+Calculate the cost
+
+Compare the predictions with the correct target values using a loss or cost function.
+
+## 3
+
+Backpropagation
+
+Use automatic differentiation to calculate the cost gradient with respect to the model parameters.
+
+## 4
+
+Gradient descent
+
+Update the model parameters using the calculated gradients.
+
+### 4.1 Step 1 — Forward pass
+
+In the regression example, the forward pass is simply:
+
+-------------------code----------------------
+y_hat = m * x + b
+-------------------code----------------------
+
+In a neural network, the input passes through multiple layers of neurons before producing a prediction.
+
+A simplified PyTorch example:
+
+-------------------code----------------------
+import torch
+import torch.nn as nn
+
+model = nn.Sequential(
+    nn.Linear(3, 8),
+    nn.ReLU(),
+    nn.Linear(8, 1)
+)
+
+x = torch.tensor([[1.0, 2.0, 3.0]])
+
+y_hat = model(x)
+print(y_hat)
+-------------------code----------------------
+
+Here, the network receives three input features, processes them through a hidden layer with eight neurons, and produces one output.
+
+### 4.2 Step 2 — Calculate the cost
+
+The cost function measures how different the prediction is from the correct target.
+
+For regression, the lecture has used mean squared error (MSE):
+
+C=1N∑i=1N(y^i−yi)2C=\frac{1}{N}\sum_{i=1}^{N}(\hat{y}_i-y_i)^2C=N1i=1∑N(y^i−yi)2
+
+In PyTorch:
+
+-------------------code----------------------
+criterion = nn.MSELoss()
+
+y = torch.tensor([[2.0]])
+cost = criterion(y_hat, y)
+
+print(cost)
+-------------------code----------------------
+
+A lower MSE generally means that predictions are closer to the target values.
+
+### 4.3 Step 3 — Backpropagation
+
+In PyTorch, `cost.backward()` calculates gradients for the model's trainable parameters.
+
+-------------------code----------------------
+cost.backward()
+
+for name, parameter in model.named_parameters():
+    print(name, parameter.grad)
+-------------------code----------------------
+
+The gradients describe how the cost changes with respect to each parameter.
+
+For a deep neural network, this process applies the chain rule through the network's connected layers. PyTorch handles the derivative calculations automatically.
+
+### 4.4 Step 4 — Gradient descent
+
+Once gradients have been calculated, an optimizer can update the parameters.
+
+-------------------code----------------------
+optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
+
+optimizer.step()
+-------------------code----------------------
+
+The stochastic gradient descent (SGD) optimizer updates the parameters using their gradients and the learning rate.
+
+The learning rate controls the size of each update.
+
+Important: In a complete training loop, clear old gradients before calculating new ones. PyTorch accumulates gradients by default.
+
+-------------------code----------------------
+optimizer.zero_grad()
+-------------------code----------------------
+
+## 5. Forward Propagation vs. Backpropagation
+
+These terms describe two different directions of computation.
+
+| Concept             | Direction                                 | Purpose                  |
+| ------------------- | ----------------------------------------- | ------------------------ |
+| Forward propagation | Input to output                           | Calculate predictions    |
+| Cost calculation    | Uses predictions and targets              | Measure prediction error |
+| Backpropagation     | Output-side cost back through the network | Calculate gradients      |
+| Gradient descent    | Updates parameters using gradients        | Reduce the cost          |
+
+A useful way to remember the distinction:
+
+* Forward: What does the model predict?
+
+* Cost: How far is the prediction from the target?
+
+* Backward: How does each parameter contribute to the cost?
+
+* Update: How should the parameters change?
+
+Backpropagation calculates gradients; it does not itself perform the parameter update. The optimizer performs that update.
+
+## 6. Weights and Biases
+
+The lecture identifies two common types of neural network parameters.
+
+* Weights: Control how strongly input values contribute to a neuron's calculation.
+
+* Biases: Provide an adjustable offset in a neuron's calculation.
+
+For a simple neuron, the calculation can be written as:
+
+z=w1x1+w2x2+bz=w_1x_1+w_2x_2+bz=w1x1+w2x2+b
+
+where w1,w2w_1,w_2w1,w2 are weights and bbb is the bias.
+
+A neural network contains many such parameters. Backpropagation calculates gradients for them, and gradient descent updates them.
+
+In PyTorch, a linear layer creates weights and a bias automatically:
+
+-------------------code----------------------
+layer = nn.Linear(in_features=3, out_features=8)
+
+print(layer.weight)
+print(layer.bias)
+-------------------code----------------------
+
+You do not normally need to calculate each derivative manually when training a network with a modern deep learning framework.
+
+## 7. Mini-Batches and Large Datasets
+
+Deep learning often uses large datasets containing thousands or millions of examples. Rather than processing the entire dataset in one training step, the data is commonly divided into smaller groups called mini-batches.
+
+The lecture introduces mini-batching as a way to handle large datasets and notes that it will be covered in more detail later in the course.
+
+The general process is:
+
+1. Select a mini-batch of input and target examples.
+
+2. Perform a forward pass on that batch.
+
+3. Calculate the batch cost.
+
+4. Calculate gradients using backpropagation.
+
+5. Update the parameters.
+
+6. Repeat with subsequent batches.
+
+Illustrative PyTorch code:
+
+-------------------code----------------------
+from torch.utils.data import TensorDataset, DataLoader
+
+dataset = TensorDataset(X, Y)
+
+loader = DataLoader(
+    dataset,
+    batch_size=32,
+    shuffle=True
+)
+-------------------code----------------------
+
+Here, `X` and `Y` represent your complete input and target tensors. Each iteration over `loader` provides a batch of up to 32 examples.
+
+The batch size determines how many examples are processed together in each training step.
+
+## 8. Complete Training Loop
+
+The following example combines all four steps into one training loop.
+
+-------------------code----------------------
+import torch
+import torch.nn as nn
+from torch.utils.data import TensorDataset, DataLoader
+
+# 1. Create sample regression data
+torch.manual_seed(42)
+
+X = torch.randn(100, 3)
+Y = (
+    2 * X[:, 0:1]
+    - 3 * X[:, 1:2]
+    + 0.5 * X[:, 2:3]
+    + 1
+)
+
+# 2. Create a neural network
+model = nn.Sequential(
+    nn.Linear(3, 8),
+    nn.ReLU(),
+    nn.Linear(8, 1)
+)
+
+# 3. Define the cost function and optimizer
+criterion = nn.MSELoss()
+optimizer = torch.optim.SGD(
+    model.parameters(),
+    lr=0.01
+)
+
+# 4. Divide the dataset into mini-batches
+dataset = TensorDataset(X, Y)
+
+loader = DataLoader(
+    dataset,
+    batch_size=16,
+    shuffle=True
+)
+
+# 5. Train the model
+epochs = 100
+
+for epoch in range(epochs):
+    total_loss = 0.0
+
+    for x_batch, y_batch in loader:
+
+        # Step 1: Clear previous gradients
+        optimizer.zero_grad()
+
+        # Step 2: Forward pass
+        y_hat = model(x_batch)
+
+        # Step 3: Calculate cost
+        loss = criterion(y_hat, y_batch)
+
+        # Step 4: Backpropagation
+        loss.backward()
+
+        # Step 5: Update parameters
+        optimizer.step()
+
+        total_loss += loss.item() * len(x_batch)
+
+    average_loss = total_loss / len(dataset)
+
+    if (epoch + 1) % 10 == 0:
+        print(
+            f"Epoch {epoch + 1}/{epochs}, "
+            f"Loss: {average_loss:.4f}"
+        )
+
+# 6. Make a prediction after training
+with torch.no_grad():
+    sample = X[:1]
+    prediction = model(sample)
+
+print("Prediction:", prediction.item())
+print("Actual value:", Y[0].item())
+-------------------code----------------------
+
+### Understanding the code
+
+* `nn.Sequential(...)` defines the network layers.
+
+* `DataLoader` divides the dataset into mini-batches.
+
+* `optimizer.zero_grad()` clears gradients from the previous training step.
+
+* `model(x_batch)` performs the forward pass.
+
+* `criterion(...)` calculates the loss.
+
+* `loss.backward()` performs backpropagation and calculates gradients.
+
+* `optimizer.step()` updates the weights and biases.
+
+* `torch.no_grad()` disables gradient tracking during the final prediction because no training update is needed.
+
+This example is illustrative. It uses synthetic data and a small neural network to demonstrate the workflow, rather than reproduce a particular numerical result from the lecture.
+
+## 9. Important Notes and Best Practices
+
+1. Understand the chain rule first. Backpropagation applies the partial-derivative concepts learned in the regression examples to a larger network.
+
+2. Do not confuse gradients with updates. Backpropagation calculates gradients; gradient descent uses them to update parameters.
+
+3. Clear gradients every training step. PyTorch accumulates gradients, so forgetting `optimizer.zero_grad()` can lead to incorrect updates.
+
+4. Use mini-batches for large datasets. Mini-batches let you process portions of the dataset instead of all examples in a single step.
+
+5. Choose the learning rate carefully. A rate that is too large may cause unstable training, while one that is too small may make learning slow.
+
+6. Use automatic differentiation. Frameworks such as PyTorch and TensorFlow handle the derivative calculations, allowing you to focus on the model and training process.
+
+7. Remember that a low cost is the objective, not a guarantee. A low training loss does not necessarily mean the model will perform well on unseen data.
+
+## 10. Summary
+
+* Backpropagation calculates the gradient of the cost with respect to every trainable parameter in a neural network.
+
+* Its mathematical foundation is the chain rule of partial derivatives.
+
+* The same principle applies to simple linear regression and deep neural networks, even when the latter have many layers and millions of parameters.
+
+* Training follows four main steps: forward pass → cost calculation → backpropagation → gradient descent.
+
+* Weights and biases are both trainable parameters.
+
+* Mini-batches allow large datasets to be processed in smaller groups.
+
+* In PyTorch, `loss.backward()` calculates gradients and `optimizer.step()` updates parameters.
+
+The key takeaway: Backpropagation extends the partial-derivative calculations you already learned to complex neural networks. The network becomes larger, but the underlying mathematical principle remains the same.
