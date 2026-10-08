@@ -137,6 +137,7 @@ dw_dx = 7.0
 path_x_through_u = dy_du * du_dx
 path_x_through_v = dy_dv * dv_dx
 path_x_through_w = dy_dw * dw_dx
+c
 
 
 # Add all three paths

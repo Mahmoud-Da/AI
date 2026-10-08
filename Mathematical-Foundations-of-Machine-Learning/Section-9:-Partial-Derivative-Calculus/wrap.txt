@@ -8304,3 +8304,1037 @@ $$
 $$
 
 This completes the core theory of **partial derivatives and the multivariate chain rule** needed for the upcoming discussion of **gradients and gradient descent**.
+
+*** 87. Point-by-Point Regression ***
+# Gradients of Cost with Respect to Model Parameters
+
+## 1. Overview
+
+This lecture introduces the **simplest machine-learning model** that allows us to derive a machine-learning gradient by hand.
+
+The model is a simple linear regression:
+
+$$
+\boxed{\hat{y}=mx+b}
+$$
+
+where:
+
+* \(x\) = input
+* \(\hat{y}\) = model prediction
+* \(m\) = slope
+* \(b\) = y-intercept
+
+The main goal of this lecture is to prepare for the next step:
+
+> **Derive \(\partial C/\partial m\) and \(\partial C/\partial b\) manually using partial derivatives and the chain rule.**
+
+Until now, PyTorch has calculated these derivatives automatically. From this lecture onward, we begin understanding how those gradients are actually calculated.
+
+---
+
+# 2. The Four-Step Machine Learning Loop
+
+The lecture repeatedly uses the same four-step machine-learning process.
+
+### Step 1 — Forward Pass
+
+Use the input and model parameters:
+
+$$
+x,m,b
+$$
+
+to calculate the prediction:
+
+$$
+\boxed{\hat{y}=mx+b}
+$$
+
+### Step 2 — Calculate Cost
+
+Compare the prediction \(\hat{y}\) with the true value \(y\).
+
+This produces a cost \(C\), which measures how wrong the model is.
+
+### Step 3 — Calculate the Gradient
+
+Calculate how the cost changes when the model parameters change:
+
+$$
+\boxed{
+\frac{\partial C}{\partial m}
+}
+$$
+
+and:
+
+$$
+\boxed{
+\frac{\partial C}{\partial b}
+}
+$$
+
+Together, these form the gradient with respect to the model parameters.
+
+### Step 4 — Update the Parameters
+
+Use the gradient to adjust \(m\) and \(b\) so that the cost decreases.
+
+Then repeat the four steps.
+
+-------------------code----------------------
+Input
+  ↓
+1. Forward pass
+  ↓
+Prediction ŷ
+  ↓
+2. Calculate cost C
+  ↓
+3. Calculate gradients
+  ↓
+4. Update m and b
+  ↓
+Repeat
+-------------------code----------------------
+
+---
+
+# 3. The Simple Linear Regression Model
+
+The computational graph is extremely simple:
+
+$$
+\boxed{\hat{y}=mx+b}
+$$
+
+The graph can be represented as:
+
+-------------------code----------------------
+x ──┐
+    × ──→ mx ──┐
+m ──┘          +
+               ├──→ ŷ
+b ─────────────┘
+-------------------code----------------------
+
+There are only two model parameters:
+
+* \(m\)
+* \(b\)
+
+Therefore, when calculating the gradient, we need two partial derivatives:
+
+$$
+\frac{\partial C}{\partial m}
+$$
+
+and:
+
+$$
+\frac{\partial C}{\partial b}
+$$
+
+---
+
+# 4. Gradient Descent Intuition
+
+Imagine plotting:
+
+* horizontal axis = a model parameter \(P\)
+* vertical axis = cost \(C\)
+
+You might get a curve like:
+
+-------------------code----------------------
+Cost
+ ↑
+ |          /
+ |        /
+ |      /
+ |    /
+ |  /
+ | /
+ +----------------→ Parameter
+-------------------code----------------------
+
+At any particular parameter value, the slope of this curve tells us how the cost changes.
+
+That slope is:
+
+$$
+\frac{\partial C}{\partial P}
+$$
+
+This is the gradient with respect to that parameter.
+
+---
+
+# 5. What Does the Gradient Tell Us?
+
+Suppose:
+
+$$
+\frac{\partial C}{\partial P}>0
+$$
+
+This means the cost increases as \(P\) increases.
+
+Therefore, to reduce the cost, we should move \(P\) in the opposite direction:
+
+$$
+P \rightarrow \text{smaller value}
+$$
+
+Conversely, if:
+
+$$
+\frac{\partial C}{\partial P}<0
+$$
+
+then increasing \(P\) can move us toward lower cost.
+
+This is the intuition behind **gradient descent**.
+
+---
+
+# 6. Repeating Gradient Descent
+
+The machine-learning loop repeats:
+
+1. Calculate prediction.
+2. Calculate cost.
+3. Calculate gradient.
+4. Move parameters toward lower cost.
+5. Repeat.
+
+Eventually, under common conditions, the parameter can approach a point where:
+
+$$
+\boxed{
+\frac{\partial C}{\partial P}\approx0
+}
+$$
+
+This corresponds to a flat point on the cost curve.
+
+In the common simple convex case discussed here, this point is the **global minimum**.
+
+---
+
+# 7. Why We Are Learning the Derivatives Manually
+
+Previously, we used PyTorch automatic differentiation.
+
+For example:
+
+-------------------code----------------------
+cost.backward()
+-------------------code----------------------
+
+PyTorch automatically calculates:
+
+$$
+\frac{\partial C}{\partial m}
+$$
+
+and:
+
+$$
+\frac{\partial C}{\partial b}
+$$
+
+This is convenient, but it hides the mathematics.
+
+The purpose of the next few lectures is to understand:
+
+> **How does the machine-learning gradient actually come from partial derivatives and the chain rule?**
+
+This is important because gradients are fundamental to:
+
+* gradient descent
+* optimization
+* neural networks
+* backpropagation
+* automatic differentiation
+
+---
+
+# 8. The Single-Point Regression Setup
+
+The lecture now simplifies the problem further.
+
+Instead of calculating the cost over all eight data points, we work with **one data point at a time**.
+
+Why?
+
+Because it keeps the partial derivatives as simple as possible.
+
+The model remains:
+
+$$
+\boxed{\hat{y}=mx+b}
+$$
+
+But instead of using all data points simultaneously, we select one pair:
+
+$$
+(x,y)
+$$
+
+---
+
+# 9. The Example Dataset
+
+The lecture uses eight artificial data points.
+
+The input values are:
+
+$$
+x=0,1,2,3,4,5,6,7
+$$
+
+They represent fictional drug dosage values.
+
+The output represents fictional forgetfulness measurements.
+
+The relationship is approximately:
+
+-------------------code----------------------
+Higher dosage → Lower forgetfulness
+-------------------code----------------------
+
+The lecture emphasizes that these are **contrived/artificial data**, not real medical data.
+
+---
+
+# 10. Selecting One Data Point
+
+The lecture chooses the final data point.
+
+Because Python uses zero-based indexing:
+
+-------------------code----------------------
+i = 7
+-------------------code----------------------
+
+selects the eighth data point.
+
+Conceptually:
+
+-------------------code---------------------- id="s6k5zj"
+x = xs[i]
+y = ys[i]
+-------------------code----------------------
+
+The selected values are approximately:
+
+$$
+x=7
+$$
+
+and:
+
+$$
+y\approx-1.37
+$$
+
+---
+
+# 11. Initialize the Model Parameters
+
+The parameters \(m\) and \(b\) are initialized with small near-zero values.
+
+For reproducibility, the lecture uses fixed values rather than generating new random values every time.
+
+For example:
+
+-------------------code---------------------- id="n4ay8f"
+m = torch.tensor(0.9, requires_grad=True)
+b = torch.tensor(0.1, requires_grad=True)
+-------------------code----------------------
+
+The exact initialization can be changed.
+
+The important idea is:
+
+> Start with reasonable near-zero parameter values and let optimization learn the line.
+
+---
+
+# 12. Step 1 — Forward Pass
+
+The first step is to calculate the model prediction:
+
+$$
+\boxed{\hat{y}=mx+b}
+$$
+
+In Python:
+
+-------------------code---------------------- id="5zjzh5"
+y_hat = m * x + b
+-------------------code----------------------
+
+For the lecture's selected data point, the initial prediction is approximately:
+
+$$
+\hat{y}=6.4
+$$
+
+while the true value is approximately:
+
+$$
+y=-1.4
+$$
+
+So the prediction is very far from the target.
+
+---
+
+# 13. Step 2 — Calculate Quadratic Cost
+
+For a single data point, the lecture uses **quadratic cost**:
+
+$$
+\boxed{
+C=(\hat{y}-y)^2
+}
+$$
+
+This is closely related to mean squared error.
+
+The difference is that with a single data point, there is no need to average across multiple examples.
+
+---
+
+# 14. Why Square the Error?
+
+There are two important reasons.
+
+### Reason 1 — Cost is always positive
+
+Suppose:
+
+$$
+\hat{y}-y=-5
+$$
+
+Squaring gives:
+
+$$
+(-5)^2=25
+$$
+
+Likewise:
+
+$$
+5^2=25
+$$
+
+So both positive and negative errors produce positive cost.
+
+### Reason 2 — Large errors are penalized more strongly
+
+For example:
+
+$$
+1^2=1
+$$
+
+but:
+
+$$
+10^2=100
+$$
+
+Therefore, large prediction errors produce much larger costs.
+
+---
+
+# 15. Implement the Quadratic Cost
+
+The lecture defines the squared-error function as:
+
+-------------------code---------------------- id="ddh4ka"
+def squared_error(y_hat, y):
+    return (y_hat - y) ** 2
+-------------------code----------------------
+
+Then:
+
+-------------------code---------------------- id="o5z8gy"
+cost = squared_error(y_hat, y)
+-------------------code----------------------
+
+For approximately:
+
+$$
+\hat{y}=6.4
+$$
+
+and:
+
+$$
+y=-1.4
+$$
+
+the error is approximately:
+
+$$
+6.4-(-1.4)=7.8
+$$
+
+and therefore:
+
+$$
+C\approx7.8^2\approx60.8
+$$
+
+The lecture rounds this to approximately **60**.
+
+---
+
+# 16. Quadratic Cost vs. Mean Squared Error
+
+This distinction is important.
+
+### Single data point
+
+Use:
+
+$$
+\boxed{
+C=(\hat{y}-y)^2
+}
+$$
+
+### Multiple data points
+
+Mean squared error averages the squared errors:
+
+$$
+\boxed{
+MSE=\frac{1}{n}\sum_{i=1}^{n}(\hat{y}_i-y_i)^2
+}
+$$
+
+Therefore:
+
+> **Quadratic cost is the squared error for one example; MSE averages this idea across multiple examples.**
+
+The lecture uses the single-example version specifically to make the upcoming derivative calculations easier.
+
+---
+
+# 17. Step 3 — Calculate the Gradient
+
+Now we reach the main purpose of the lecture.
+
+We want to calculate:
+
+$$
+\boxed{
+\frac{\partial C}{\partial m}
+}
+$$
+
+and:
+
+$$
+\boxed{
+\frac{\partial C}{\partial b}
+}
+$$
+
+These tell us how the cost changes when:
+
+* \(m\) changes
+* \(b\) changes
+
+Together they form the gradient:
+
+$$
+\boxed{
+\nabla C=
+\left[
+\frac{\partial C}{\partial m},
+\frac{\partial C}{\partial b}
+\right]
+}
+$$
+
+---
+
+# 18. What PyTorch Gives Us Automatically
+
+If we let PyTorch calculate the derivatives, we can write:
+
+-------------------code---------------------- id="6qwm5h"
+cost.backward()
+-------------------code----------------------
+
+Then:
+
+-------------------code---------------------- id="ysv7xj"
+print(m.grad)
+print(b.grad)
+-------------------code----------------------
+
+The lecture obtains approximately:
+
+$$
+\frac{\partial C}{\partial m}\approx109
+$$
+
+and:
+
+$$
+\frac{\partial C}{\partial b}\approx15.5
+$$
+
+The exact values depend on the exact numerical values used in the notebook.
+
+---
+
+# 19. Why These Gradients Make Sense
+
+The prediction is:
+
+$$
+\hat{y}=mx+b
+$$
+
+So:
+
+* changing \(m\) changes \(\hat{y}\)
+* changing \(b\) also changes \(\hat{y}\)
+
+The cost depends on \(\hat{y}\):
+
+$$
+C=(\hat{y}-y)^2
+$$
+
+Therefore:
+
+-------------------code----------------------
+m ──→ ŷ ──→ C
+b ──→ ŷ ──→ C
+-------------------code----------------------
+
+This is exactly where the **chain rule** enters.
+
+For \(m\):
+
+$$
+m\rightarrow\hat{y}\rightarrow C
+$$
+
+For \(b\):
+
+$$
+b\rightarrow\hat{y}\rightarrow C
+$$
+
+Therefore, the upcoming derivation will use:
+
+$$
+\frac{\partial C}{\partial m}
+=
+\frac{\partial C}{\partial\hat{y}}
+\frac{\partial\hat{y}}{\partial m}
+$$
+
+and:
+
+$$
+\frac{\partial C}{\partial b}
+=
+\frac{\partial C}{\partial\hat{y}}
+\frac{\partial\hat{y}}{\partial b}
+$$
+
+This is the key connection between the previous lectures on the chain rule and machine-learning gradients.
+
+---
+
+# 20. Computational Graph
+
+The complete computational graph for this example is:
+
+-------------------code----------------------
+        m ─────┐
+               × ──→ m x ──┐
+        x ─────┘           +
+                            ├──→ ŷ ──→ (ŷ - y)² ──→ C
+        b ──────────────────┘
+-------------------code----------------------
+
+The derivative paths are therefore:
+
+### For \(m\)
+
+-------------------code----------------------
+m → ŷ → C
+-------------------code----------------------
+
+### For \(b\)
+
+-------------------code----------------------
+b → ŷ → C
+-------------------code----------------------
+
+This makes the upcoming chain-rule derivation straightforward.
+
+---
+
+# 21. The Important Transition
+
+This lecture does **not yet derive** the formulas for:
+
+$$
+\frac{\partial C}{\partial m}
+$$
+
+and:
+
+$$
+\frac{\partial C}{\partial b}
+$$
+
+Instead, it establishes the setup.
+
+The next lecture will derive them manually using the chain rule.
+
+That is an important transition:
+
+-------------------code----------------------
+Previous lectures
+        ↓
+Partial derivatives
+        ↓
+Multivariate chain rule
+        ↓
+This lecture
+        ↓
+Set up simple ML gradient
+        ↓
+Next lecture
+        ↓
+Derive ∂C/∂m and ∂C/∂b by hand
+        ↓
+Gradient descent
+-------------------code----------------------
+
+---
+
+# 22. Important Notes
+
+### Note 1 — \(y\) vs. \(\hat{y}\)
+
+Do not confuse:
+
+$$
+y
+$$
+
+with:
+
+$$
+\hat{y}
+$$
+
+* \(y\) = true value
+* \(\hat{y}\) = model prediction
+
+The cost measures the difference between them.
+
+---
+
+### Note 2 — \(m\) and \(b\) are parameters
+
+In:
+
+$$
+\hat{y}=mx+b
+$$
+
+* \(m\) = slope parameter
+* \(b\) = intercept parameter
+
+These are the values that machine learning tries to learn.
+
+---
+
+### Note 3 — Cost is not the same as gradient
+
+The cost tells us:
+
+> How wrong is the model?
+
+The gradient tells us:
+
+> How does the cost change if I change the parameters?
+
+For example:
+
+$$
+C=60
+$$
+
+is a cost.
+
+But:
+
+$$
+\frac{\partial C}{\partial m}=109
+$$
+
+is a gradient component.
+
+---
+
+### Note 4 — The gradient has multiple components
+
+Because the model has two parameters:
+
+$$
+m,b
+$$
+
+the gradient contains two partial derivatives:
+
+$$
+\nabla C=
+\left[
+\frac{\partial C}{\partial m},
+\frac{\partial C}{\partial b}
+\right]
+$$
+
+---
+
+### Note 5 — Single-point regression is for learning
+
+Real machine-learning models generally use many training examples.
+
+The lecture intentionally uses one data point because it makes the calculus much easier to understand.
+
+---
+
+# 23. Full Final Code
+
+The following code reproduces the main hands-on concepts from the lecture: loading PyTorch, defining the regression model, selecting one data point, performing the forward pass, calculating quadratic cost, and using PyTorch autodiff to obtain the gradient.
+
+-------------------code---------------------- id="8k4v2m"
+import torch
+
+
+# ============================================================
+# 1. Data
+# ============================================================
+
+# Artificial data used in the lecture.
+# The values represent:
+# x = drug dosage
+# y = forgetfulness
+
+xs = torch.tensor([
+    0.0,
+    1.0,
+    2.0,
+    3.0,
+    4.0,
+    5.0,
+    6.0,
+    7.0
+])
+
+ys = torch.tensor([
+    2.1,
+    1.6,
+    0.9,
+    0.4,
+    -0.2,
+    -0.7,
+    -1.0,
+    -1.377
+])
+
+
+# ============================================================
+# 2. Model parameters
+# ============================================================
+
+# Near-zero initialization.
+# requires_grad=True tells PyTorch to track operations
+# involving these parameters.
+
+m = torch.tensor(0.9, requires_grad=True)
+b = torch.tensor(0.1, requires_grad=True)
+
+
+# ============================================================
+# 3. Select one data point
+# ============================================================
+
+# Python uses zero-based indexing.
+# Index 7 is the eighth and final data point.
+
+i = 7
+
+x = xs[i]
+y = ys[i]
+
+
+print("Selected data point")
+print("x =", x.item())
+print("y =", y.item())
+
+
+# ============================================================
+# 4. Step 1 — Forward pass
+# ============================================================
+
+# Linear regression model:
+#
+# ŷ = mx + b
+
+y_hat = m * x + b
+
+print()
+print("Step 1 — Forward pass")
+print("ŷ =", y_hat.item())
+
+
+# ============================================================
+# 5. Step 2 — Quadratic cost
+# ============================================================
+
+def squared_error(y_hat, y):
+    return (y_hat - y) ** 2
+
+
+cost = squared_error(y_hat, y)
+
+print()
+print("Step 2 — Quadratic cost")
+print("Cost =", cost.item())
+
+
+# ============================================================
+# 6. Step 3 — Automatic differentiation
+# ============================================================
+
+# PyTorch calculates:
+#
+# ∂C/∂m
+# ∂C/∂b
+
+cost.backward()
+
+print()
+print("Step 3 — Gradient")
+print("∂C/∂m =", m.grad.item())
+print("∂C/∂b =", b.grad.item())
+
+
+# ============================================================
+# 7. Gradient
+# ============================================================
+
+gradient = torch.tensor([
+    m.grad.item(),
+    b.grad.item()
+])
+
+print()
+print("Gradient =", gradient)
+-------------------code----------------------
+
+---
+
+# 24. Summary
+
+The main purpose of this lecture is to connect the **multivariate chain rule** we just learned with an actual machine-learning gradient.
+
+The model is:
+
+$$
+\boxed{\hat{y}=mx+b}
+$$
+
+The cost for one data point is:
+
+$$
+\boxed{C=(\hat{y}-y)^2}
+$$
+
+The two gradients we want are:
+
+$$
+\boxed{
+\frac{\partial C}{\partial m}
+}
+$$
+
+and:
+
+$$
+\boxed{
+\frac{\partial C}{\partial b}
+}
+$$
+
+The computational graph is:
+
+-------------------code----------------------
+m ──→ ŷ ──→ C
+b ──→ ŷ ──→ C
+-------------------code----------------------
+
+Therefore, the chain rule will allow us to calculate:
+
+$$
+\boxed{
+\frac{\partial C}{\partial m}
+=
+\frac{\partial C}{\partial\hat{y}}
+\frac{\partial\hat{y}}{\partial m}
+}
+$$
+
+and:
+
+$$
+\boxed{
+\frac{\partial C}{\partial b}
+=
+\frac{\partial C}{\partial\hat{y}}
+\frac{\partial\hat{y}}{\partial b}
+}
+$$
+
+PyTorch can calculate these automatically with:
+
+-------------------code----------------------
+cost.backward()
+-------------------code----------------------
+
+but the goal of the next lecture is to **derive these gradients ourselves**.
+
+The key progression is:
+
+$$
+\boxed{
+\text{Partial derivatives}
+\rightarrow
+\text{Chain rule}
+\rightarrow
+\text{ML gradient}
+\rightarrow
+\text{Gradient descent}
+}
+$$
