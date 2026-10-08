@@ -11085,3 +11085,838 @@ The core training loop remains:
 Forward pass→Calculate cost→Calculate gradient→Update parameters\boxed{ \text{Forward pass} \rightarrow \text{Calculate cost} \rightarrow \text{Calculate gradient} \rightarrow \text{Update parameters} }Forward pass→Calculate cost→Calculate gradient→Update parameters
 
 This process is the foundation of training both simple regression models and much larger neural networks.
+
+
+*** 90. The Gradient of Mean Squared Error ***
+
+# Machine Learning Foundations — Deriving MSE Gradients and Visualizing Gradient Descent
+
+## 1. Lecture Overview
+
+This lecture connects the calculus we learned in previous lessons with the practical process of training a machine learning model.
+
+We will learn how to:
+
+1. Derive the gradients of mean squared error (MSE) manually.
+
+2. Verify the mathematical formulas using PyTorch automatic differentiation.
+
+3. Construct the gradient vector.
+
+4. Visualize the regression line and its cost.
+
+5. Use stochastic gradient descent (SGD) to update model parameters.
+
+6. Repeat training over multiple epochs until the cost becomes small.
+
+The model is still simple linear regression:
+
+y^=mx+b\boxed{\hat{y}=mx+b}y^=mx+b
+
+where mmm is the slope and bbb is the y-intercept.
+
+The main difference from previous lectures is that we now calculate cost across multiple data points instead of just one.
+
+## 2. The Four-Step Machine Learning Process
+
+Every training iteration follows four steps.
+
+Step 1: Forward pass
+
+Calculate predictions using y^=mx+b\hat{y}=mx+by^=mx+b.
+
+Step 2: Calculate cost
+
+Compare predictions with true values using MSE.
+
+Step 3: Calculate gradients
+
+Find how cost changes with respect to mmm and bbb.
+
+Step 4: Update parameters
+
+Use gradient descent to move toward lower cost.
+
+We repeat these steps many times to improve the model.
+
+## 3. Define Mean Squared Error
+
+For NNN training examples, mean squared error is:
+
+C=MSE=1N∑i=1N(y^i−yi)2\boxed{ C=MSE=\frac{1}{N}\sum_{i=1}^{N}(\hat{y}_i-y_i)^2 }C=MSE=N1i=1∑N(y^i−yi)2
+
+Where:
+
+* NNN: number of training examples.
+
+* xix_ixi: input for example iii.
+
+* yiy_iyi: true output.
+
+* y^i=mxi+b\hat{y}_i=mx_i+by^i=mxi+b: predicted output.
+
+* CCC: average squared prediction error.
+
+The calculation consists of three operations:
+
+1. Subtract each true value from its prediction.
+
+2. Square each error.
+
+3. Sum the squared errors and divide by NNN.
+
+### Code
+
+-------------------code----------------------
+def mse(y_hat, y):
+    squared_errors = (y_hat - y) ** 2
+    return squared_errors.sum() / len(y)
+-------------------code----------------------
+
+In this lecture, there are eight data points, so N=8N=8N=8.
+
+## 4. Derive the Gradient of MSE Manually
+
+Our goal is to calculate:
+
+∂C∂mand∂C∂b\frac{\partial C}{\partial m} \qquad\text{and}\qquad \frac{\partial C}{\partial b}∂m∂Cand∂b∂C
+
+We begin with the MSE equation:
+
+C=1N∑i=1N(y^i−yi)2C=\frac{1}{N}\sum_{i=1}^{N}(\hat{y}_i-y_i)^2C=N1i=1∑N(y^i−yi)2
+
+Because the model parameters affect the cost through the predictions, we use the chain rule.
+
+### 4.1 Calculate ∂ui∂y^i\frac{\partial u_i}{\partial \hat{y}_i}∂y^i∂ui
+
+Define an intermediate variable:
+
+ui=y^i−yiu_i=\hat{y}_i-y_iui=y^i−yi
+
+Differentiate with respect to the prediction y^i\hat{y}_iy^i. The true value yiy_iyi is a constant.
+
+∂ui∂y^i=1\boxed{\frac{\partial u_i}{\partial\hat{y}_i}=1}∂y^i∂ui=1
+
+Code illustrating the intermediate function:
+
+-------------------code----------------------
+def error(y_hat, y):
+    return y_hat - y
+-------------------code----------------------
+
+### 4.2 Calculate ∂C∂ui\frac{\partial C}{\partial u_i}∂ui∂C
+
+The cost can be expressed as:
+
+C=1N∑i=1Nui2C=\frac{1}{N}\sum_{i=1}^{N}u_i^2C=N1i=1∑Nui2
+
+When differentiating with respect to one particular uiu_iui, the other examples' terms are constants. The derivative of ui2u_i^2ui2 is 2ui2u_i2ui.
+
+Therefore:
+
+∂C∂ui=2Nui\boxed{\frac{\partial C}{\partial u_i}=\frac{2}{N}u_i}∂ui∂C=N2ui
+
+Substitute ui=y^i−yiu_i=\hat{y}_i-y_iui=y^i−yi:
+
+∂C∂ui=2N(y^i−yi)\boxed{ \frac{\partial C}{\partial u_i} =\frac{2}{N}(\hat{y}_i-y_i) }∂ui∂C=N2(y^i−yi)
+
+### 4.3 Calculate ∂C∂y^i\frac{\partial C}{\partial\hat{y}_i}∂y^i∂C
+
+Apply the chain rule:
+
+∂C∂y^i=∂C∂ui∂ui∂y^i\frac{\partial C}{\partial\hat{y}_i} = \frac{\partial C}{\partial u_i} \frac{\partial u_i}{\partial\hat{y}_i}∂y^i∂C=∂ui∂C∂y^i∂ui
+
+Substitute the two derivatives:
+
+∂C∂y^i=2N(y^i−yi)(1)\frac{\partial C}{\partial\hat{y}_i} = \frac{2}{N}(\hat{y}_i-y_i)(1)∂y^i∂C=N2(y^i−yi)(1)
+
+Thus:
+
+∂C∂y^i=2N(y^i−yi)\boxed{ \frac{\partial C}{\partial\hat{y}_i} = \frac{2}{N}(\hat{y}_i-y_i) }∂y^i∂C=N2(y^i−yi)
+
+This is the first important result: the derivative of MSE with respect to an individual prediction is its prediction error multiplied by 2/N2/N2/N.
+
+### 4.4 Calculate ∂y^i∂b\frac{\partial\hat{y}_i}{\partial b}∂b∂y^i
+
+Recall the regression model:
+
+y^i=mxi+b\hat{y}_i=mx_i+by^i=mxi+b
+
+Differentiate with respect to bbb. Since mximx_imxi is constant with respect to bbb:
+
+∂y^i∂b=1\boxed{\frac{\partial\hat{y}_i}{\partial b}=1}∂b∂y^i=1
+
+### 4.5 Calculate ∂y^i∂m\frac{\partial\hat{y}_i}{\partial m}∂m∂y^i
+
+Differentiate the same equation with respect to mmm:
+
+y^i=mxi+b\hat{y}_i=mx_i+by^i=mxi+b
+
+Here, xix_ixi is constant and the derivative of bbb is zero.
+
+∂y^i∂m=xi\boxed{\frac{\partial\hat{y}_i}{\partial m}=x_i}∂m∂y^i=xi
+
+These two results were derived in the previous lecture for single-point quadratic cost. They also apply to the prediction function used by MSE.
+
+## 5. Derive the Gradient with Respect to the Intercept bbb
+
+We now have the three derivatives needed for the chain rule:
+
+∂C∂ui=2N(y^i−yi)\frac{\partial C}{\partial u_i} =\frac{2}{N}(\hat{y}_i-y_i)∂ui∂C=N2(y^i−yi)
+
+∂ui∂y^i=1\frac{\partial u_i}{\partial\hat{y}_i}=1∂y^i∂ui=1
+
+∂y^i∂b=1\frac{\partial\hat{y}_i}{\partial b}=1∂b∂y^i=1
+
+For an individual data point, the chain rule gives:
+
+∂C∂b=∂C∂ui∂ui∂y^i∂y^i∂b\frac{\partial C}{\partial b} = \frac{\partial C}{\partial u_i} \frac{\partial u_i}{\partial\hat{y}_i} \frac{\partial\hat{y}_i}{\partial b}∂b∂C=∂ui∂C∂y^i∂ui∂b∂y^i
+
+Because the total cost includes every data point, we sum the contributions:
+
+∂C∂b=∑i=1N2N(y^i−yi)(1)(1)\frac{\partial C}{\partial b} = \sum_{i=1}^{N} \frac{2}{N}(\hat{y}_i-y_i)(1)(1)∂b∂C=i=1∑NN2(y^i−yi)(1)(1)
+
+Therefore, the final formula is:
+
+∂C∂b=2N∑i=1N(y^i−yi)\boxed{ \frac{\partial C}{\partial b} = \frac{2}{N}\sum_{i=1}^{N}(\hat{y}_i-y_i) }∂b∂C=N2i=1∑N(y^i−yi)
+
+Interpretation: the gradient with respect to bbb depends on the average prediction error across the batch, multiplied by two.
+
+### Python implementation
+
+-------------------code----------------------
+dC_db = 2 / len(ys) * (y_hat - ys).sum()
+-------------------code----------------------
+
+## 6. Derive the Gradient with Respect to the Slope mmm
+
+The chain rule follows the same path, but the final derivative is now:
+
+∂y^i∂m=xi\frac{\partial\hat{y}_i}{\partial m}=x_i∂m∂y^i=xi
+
+Therefore:
+
+∂C∂m=∑i=1N2N(y^i−yi)(1)xi\frac{\partial C}{\partial m} = \sum_{i=1}^{N} \frac{2}{N}(\hat{y}_i-y_i)(1)x_i∂m∂C=i=1∑NN2(y^i−yi)(1)xi
+
+Simplifying:
+
+∂C∂m=2N∑i=1Nxi(y^i−yi)\boxed{ \frac{\partial C}{\partial m} = \frac{2}{N}\sum_{i=1}^{N}x_i(\hat{y}_i-y_i) }∂m∂C=N2i=1∑Nxi(y^i−yi)
+
+### Python implementation
+
+-------------------code----------------------
+dC_dm = 2 / len(ys) * (xs * (y_hat - ys)).sum()
+-------------------code----------------------
+
+Notice the difference between the two gradients:
+
+* The intercept gradient sums the errors.
+
+* The slope gradient sums the errors multiplied by their corresponding inputs.
+
+The input values matter when determining how changing the slope affects the predictions.
+
+## 7. Important Note: What Does the Subscript iii Mean?
+
+The subscript iii identifies a particular training example.
+
+For example:
+
+xi,yi,y^ix_i,\quad y_i,\quad \hat{y}_ixi,yi,y^i
+
+refer to the input, true output, and predicted output for example iii.
+
+The summation symbol:
+
+∑i=1N\sum_{i=1}^{N}i=1∑N
+
+means we calculate the contribution from each of the NNN examples and add them together.
+
+This distinction is important because MSE is calculated over a batch, whereas the earlier quadratic-cost example used just one data point.
+
+## 8. Verify the Manual Gradients with PyTorch
+
+The lecture compares the manually derived formulas against PyTorch automatic differentiation.
+
+The reported values are:
+
+| Gradient                        | Manual calculation | PyTorch autodiff   |
+| ------------------------------- | ------------------ | ------------------ |
+| ∂C/∂m\partial C/\partial m∂C/∂m | 36.305             | Approximately 36.3 |
+| ∂C/∂b\partial C/\partial b∂C/∂b | 6.265              | Approximately 6.3  |
+
+The agreement confirms the manual derivation.
+
+### Step 1: Calculate predictions and cost
+
+-------------------code----------------------
+y_hat = regression(xs, m, b)
+cost = mse(y_hat, ys)
+-------------------code----------------------
+
+### Step 2: Calculate gradients automatically
+
+-------------------code----------------------
+cost.backward()
+
+print("PyTorch dC/dm:", m.grad.item())
+print("PyTorch dC/db:", b.grad.item())
+-------------------code----------------------
+
+### Step 3: Calculate gradients manually
+
+-------------------code----------------------
+errors = y_hat.detach() - ys
+
+dC_dm = 2 / len(ys) * (xs * errors).sum()
+dC_db = 2 / len(ys) * errors.sum()
+
+print("Manual dC/dm:", dC_dm.item())
+print("Manual dC/db:", dC_db.item())
+-------------------code----------------------
+
+The `.detach()` method prevents the manual calculation from being connected to the original autograd graph. We use it here because we are simply checking the formulas.
+
+Important: exact numerical results depend on the precise dataset and initial parameters. The values above are those reported in the lecture, not guaranteed outputs for every illustrative dataset.
+
+## 9. Construct the Gradient Vector
+
+The gradient contains one partial derivative for each model parameter.
+
+Our model has two parameters, bbb and mmm. Following the lecture's alphabetical parameter order:
+
+∇C=\(∂C∂b∂C∂m\)\boxed{ \nabla C= \begin{bmatrix} \frac{\partial C}{\partial b}\\\(4pt\) \frac{\partial C}{\partial m} \end{bmatrix} }∇C=\(∂b∂C​∂m∂C​​\)
+
+### Python implementation
+
+-------------------code----------------------
+gradient = torch.tensor([
+    dC_db.item(),
+    dC_dm.item()
+])
+
+gradient = gradient.reshape(-1, 1)
+
+print(gradient)
+-------------------code----------------------
+
+The result is a column vector with two elements.
+
+This explicit gradient tensor is not necessary for the optimizer in this notebook, because PyTorch already stores the gradients in `b.grad` and `m.grad`. The lecture constructs it to reinforce the concept and prepare for later optimization topics.
+
+## 10. Visualize the Regression Model
+
+The lecture introduces a plotting function to display several useful pieces of information together:
+
+* The original training data.
+
+* The current regression line.
+
+* The current cost.
+
+* The values of the parameters mmm and bbb.
+
+* Optionally, the gradients.
+
+This lets us see how training changes the model.
+
+### Example plotting function
+
+-------------------code----------------------
+import matplotlib.pyplot as plt
+
+def labeled_regression_plot(
+    xs, ys, m, b, cost, dC_dm=None, dC_db=None
+):
+    x_values = xs.detach().numpy()
+    y_values = ys.detach().numpy()
+
+    with torch.no_grad():
+        predictions = regression(xs, m, b)
+
+    plt.figure(figsize=(8, 5))
+    plt.scatter(x_values, y_values, label="Training data")
+    plt.plot(
+        x_values,
+        predictions.numpy(),
+        label="Regression line"
+    )
+
+    title = (
+        f"Cost: {cost.item():.4f} | "
+        f"m: {m.item():.4f} | b: {b.item():.4f}"
+    )
+
+    if dC_dm is not None and dC_db is not None:
+        title += (
+            f"\ndC/dm: {dC_dm:.4f} | "
+            f"dC/db: {dC_db:.4f}"
+        )
+
+    plt.title(title)
+    plt.xlabel("Input (x)")
+    plt.ylabel("Output (y)")
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.show()
+-------------------code----------------------
+
+The function shows the current state of the model. When called repeatedly during training, it makes the effect of gradient descent easier to understand.
+
+## 11. Perform One Gradient Descent Update
+
+Once the gradients have been calculated, we can update the parameters.
+
+The lecture uses PyTorch's stochastic gradient descent optimizer:
+
+-------------------code----------------------
+optimizer = torch.optim.SGD([m, b], lr=0.01)
+-------------------code----------------------
+
+Here:
+
+* `[m, b]` specifies the parameters to optimize.
+
+* `lr=0.01` is the learning rate.
+
+The learning rate controls the size of each update.
+
+### Step 1: Calculate predictions and cost
+
+-------------------code----------------------
+y_hat = regression(xs, m, b)
+cost = mse(y_hat, ys)
+-------------------code----------------------
+
+### Step 2: Calculate the gradients
+
+-------------------code----------------------
+optimizer.zero_grad()
+cost.backward()
+-------------------code----------------------
+
+`zero_grad()` clears gradients from the previous iteration. This matters because PyTorch accumulates gradients by default.
+
+### Step 3: Update the parameters
+
+-------------------code----------------------
+optimizer.step()
+-------------------code----------------------
+
+The optimizer adjusts both parameters using their gradients.
+
+The basic update rule is:
+
+mnew=mold−η∂C∂mm_{\text{new}}=m_{\text{old}}-\eta\frac{\partial C}{\partial m}mnew=mold−η∂m∂C
+
+bnew=bold−η∂C∂bb_{\text{new}}=b_{\text{old}}-\eta\frac{\partial C}{\partial b}bnew=bold−η∂b∂C
+
+where η\etaη is the learning rate.
+
+### Step 4: Recalculate the cost
+
+-------------------code----------------------
+with torch.no_grad():
+    updated_predictions = regression(xs, m, b)
+    updated_cost = mse(updated_predictions, ys)
+
+print("Updated cost:", updated_cost.item())
+-------------------code----------------------
+
+In the lecture's example, the cost decreases from almost 20 to approximately 8.5 after the first update. The slope falls from 0.90.90.9 to around 0.50.50.5, and the intercept decreases slightly.
+
+This illustrates how the gradient guides the model toward a better fit.
+
+## 12. Repeat Training Over Multiple Epochs
+
+A single update usually does not produce the best model. We repeat the four-step process many times.
+
+An epoch is one complete pass through the training dataset. In this notebook, one epoch means processing all eight data points and performing a parameter update.
+
+### Training loop
+
+-------------------code----------------------
+optimizer = torch.optim.SGD([m, b], lr=0.01)
+
+for epoch in range(9):
+    optimizer.zero_grad()
+
+    # Step 1: Forward pass
+    y_hat = regression(xs, m, b)
+
+    # Step 2: Calculate MSE
+    cost = mse(y_hat, ys)
+
+    # Step 3: Calculate gradients
+    cost.backward()
+
+    # Step 4: Update parameters
+    optimizer.step()
+-------------------code----------------------
+
+The lecture examines nine additional rounds of training after the first update, plotting the model and its gradients along the way.
+
+### What happens during training?
+
+As the model improves:
+
+* The cost generally decreases.
+
+* The slope mmm changes to better match the trend in the data.
+
+* The intercept bbb changes to improve the vertical position of the line.
+
+* The gradients change because they are recalculated at the updated parameter values.
+
+The lecture observes that the gradients become smaller as the regression line fits the data better.
+
+## 13. Understanding Positive and Negative Gradients
+
+The sign of a gradient tells us which direction locally increases the cost.
+
+### Positive gradient
+
+If:
+
+∂C∂b&gt;0\frac{\partial C}{\partial b}>0∂b∂C&gt;0
+
+then increasing bbb locally increases the cost. Gradient descent therefore reduces bbb.
+
+### Negative gradient
+
+If:
+
+∂C∂b<0\frac{\partial C}{\partial b}<0∂b∂C<0
+
+then decreasing bbb locally increases the cost. Gradient descent therefore increases bbb.
+
+This explains an important observation in the lecture: at first, the intercept decreases, but later it becomes negative and the gradient with respect to bbb becomes negative. The optimizer then increases bbb to reduce the cost.
+
+The same principle applies to the slope mmm.
+
+Remember: the gradient sign determines the local direction of the update. A negative parameter value does not automatically mean its gradient is negative.
+
+## 14. Train for Many Epochs
+
+The lecture explains that training can be continued for hundreds or thousands of epochs.
+
+The model may approach a line with approximately:
+
+m=−0.468,b=1.75\boxed{m=-0.468,\qquad b=1.75}m=−0.468,b=1.75
+
+These are the approximate parameter values reported in the lecture for its dataset.
+
+The final cost becomes very small, although it cannot generally reach zero when the training points do not all lie exactly on a single line.
+
+### Why the gradients approach zero
+
+Near a smooth minimum, small changes in the parameters no longer produce a substantial reduction in cost. The gradient approaches zero:
+
+∂C∂m≈0\frac{\partial C}{\partial m}\approx0∂m∂C≈0
+
+∂C∂b≈0\frac{\partial C}{\partial b}\approx0∂b∂C≈0
+
+This suggests that the model is approaching a stationary point of the cost function.
+
+A small gradient is a useful convergence signal, but it does not alone prove that a global minimum has been found.
+
+## 15. Best Practices and Important Notes
+
+### 15.1 Clear gradients during each iteration
+
+Always clear the previous gradients before computing new ones:
+
+-------------------code----------------------
+optimizer.zero_grad()
+-------------------code----------------------
+
+Otherwise, PyTorch accumulates gradients across iterations.
+
+### 15.2 Recalculate the predictions and cost after updating parameters
+
+The predictions and cost calculated before an update correspond to the old parameter values. To inspect the updated model, run the forward pass again.
+
+### 15.3 Choose an appropriate learning rate
+
+A learning rate that is too large may cause the cost to oscillate or increase. A rate that is too small may make training unnecessarily slow.
+
+The lecture uses `0.01` for this particular example.
+
+### 15.4 Plot selectively during long training runs
+
+Generating a plot after every epoch is useful for learning, but can slow down long runs and consume resources. For longer training, plot only at selected intervals or after training.
+
+### 15.5 Distinguish training examples from model predictions
+
+The scatter plot shows the actual training points. The regression line shows the model's current predictions. Training attempts to position the line so that its predictions have low average squared error.
+
+### 15.6 Understand the role of automatic differentiation
+
+The manual derivation helps us understand the mathematics, while `cost.backward()` performs the differentiation automatically. Both calculate the same gradient when applied to the same cost function and parameter values.
+
+## 16. Full Final Code
+
+This complete example combines the manual gradient formulas, PyTorch automatic differentiation, gradient-vector construction, SGD training, and visualization.
+
+The data below are illustrative values. Use the exact dataset from the course notebook if you need to reproduce its reported numerical results.
+
+-------------------code----------------------
+import torch
+import matplotlib.pyplot as plt
+
+
+# ==================================================
+# 1. Prepare the training data
+# ==================================================
+
+xs = torch.tensor(
+    [0., 1., 2., 3., 4., 5., 6., 7.]
+)
+
+ys = torch.tensor(
+    [2.1, 1.6, 0.9, 0.4, -0.2, -0.7, -1.0, -1.377]
+)
+
+N = len(xs)
+
+
+# ==================================================
+# 2. Define the regression model and MSE
+# ==================================================
+
+def regression(x, m, b):
+    return m * x + b
+
+
+def mse(y_hat, y):
+    squared_errors = (y_hat - y) ** 2
+    return squared_errors.sum() / len(y)
+
+
+# ==================================================
+# 3. Initialize model parameters
+# ==================================================
+
+m = torch.tensor(0.9, requires_grad=True)
+b = torch.tensor(0.1, requires_grad=True)
+
+
+# ==================================================
+# 4. Initial forward pass and cost
+# ==================================================
+
+y_hat = regression(xs, m, b)
+cost = mse(y_hat, ys)
+
+print("Initial cost:", cost.item())
+print("Initial slope m:", m.item())
+print("Initial intercept b:", b.item())
+
+
+# ==================================================
+# 5. Calculate gradients with PyTorch autodiff
+# ==================================================
+
+cost.backward()
+
+autodiff_dm = m.grad.detach().clone()
+autodiff_db = b.grad.detach().clone()
+
+print("\nAutomatic differentiation:")
+print("dC/dm:", autodiff_dm.item())
+print("dC/db:", autodiff_db.item())
+
+
+# ==================================================
+# 6. Calculate gradients manually
+# ==================================================
+
+with torch.no_grad():
+    errors = regression(xs, m, b) - ys
+
+    dC_dm = (2 / N) * (xs * errors).sum()
+    dC_db = (2 / N) * errors.sum()
+
+print("\nManual gradients:")
+print("dC/dm:", dC_dm.item())
+print("dC/db:", dC_db.item())
+
+
+# ==================================================
+# 7. Compare manual gradients with autodiff
+# ==================================================
+
+print("\nGradient comparison:")
+
+print(
+    "dC/dm matches:",
+    torch.allclose(autodiff_dm, dC_dm)
+)
+
+print(
+    "dC/db matches:",
+    torch.allclose(autodiff_db, dC_db)
+)
+
+
+# ==================================================
+# 8. Construct the gradient column vector
+#    Parameter order: [b, m]
+# ==================================================
+
+gradient = torch.stack([
+    dC_db,
+    dC_dm
+]).reshape(-1, 1)
+
+print("\nGradient vector:")
+print(gradient)
+
+
+# ==================================================
+# 9. Define a plotting function
+# ==================================================
+
+def plot_regression(xs, ys, m, b, cost, epoch):
+    with torch.no_grad():
+        predictions = regression(xs, m, b)
+
+    plt.figure(figsize=(8, 5))
+
+    plt.scatter(
+        xs.numpy(),
+        ys.numpy(),
+        label="Training data"
+    )
+
+    plt.plot(
+        xs.numpy(),
+        predictions.numpy(),
+        label="Regression line"
+    )
+
+    plt.title(
+        f"Epoch {epoch} | "
+        f"MSE: {cost.item():.4f} | "
+        f"m: {m.item():.4f} | "
+        f"b: {b.item():.4f}"
+    )
+
+    plt.xlabel("Input (x)")
+    plt.ylabel("Output (y)")
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.show()
+
+
+# Plot the initial model
+plot_regression(xs, ys, m, b, cost, epoch=0)
+
+
+# ==================================================
+# 10. Initialize the SGD optimizer
+# ==================================================
+
+learning_rate = 0.01
+
+optimizer = torch.optim.SGD(
+    [m, b],
+    lr=learning_rate
+)
+
+
+# ==================================================
+# 11. Train the model
+# ==================================================
+
+num_epochs = 1000
+
+for epoch in range(1, num_epochs + 1):
+
+    # Step 1: Clear previous gradients
+    optimizer.zero_grad()
+
+    # Step 2: Forward pass
+    y_hat = regression(xs, m, b)
+
+    # Step 3: Calculate MSE
+    cost = mse(y_hat, ys)
+
+    # Step 4: Calculate gradients
+    cost.backward()
+
+    # Step 5: Update parameters
+    optimizer.step()
+
+    # Display progress at selected intervals
+    if epoch % 100 == 0:
+        with torch.no_grad():
+            current_predictions = regression(xs, m, b)
+            current_cost = mse(current_predictions, ys)
+
+        print(
+            f"Epoch {epoch:4d} | "
+            f"Cost: {current_cost.item():.6f} | "
+            f"m: {m.item():.6f} | "
+            f"b: {b.item():.6f}"
+        )
+
+
+# ==================================================
+# 12. Evaluate and plot the final model
+# ==================================================
+
+with torch.no_grad():
+    final_predictions = regression(xs, m, b)
+    final_cost = mse(final_predictions, ys)
+
+print("\nFinal results:")
+print("Final MSE:", final_cost.item())
+print("Final slope m:", m.item())
+print("Final intercept b:", b.item())
+
+plot_regression(
+    xs,
+    ys,
+    m,
+    b,
+    final_cost,
+    epoch=num_epochs
+)
+-------------------code----------------------
+
+## 17. Summary
+
+This lecture completes the connection between partial derivatives, gradients, and practical gradient descent.
+
+The essential formulas are:
+
+Mean squared error
+
+C=1N∑i=1N(y^i−yi)2C=\frac{1}{N}\sum_{i=1}^{N}(\hat{y}_i-y_i)^2C=N1i=1∑N(y^i−yi)2
+
+Gradient with respect to the intercept
+
+∂C∂b=2N∑i=1N(y^i−yi)\boxed{ \frac{\partial C}{\partial b} = \frac{2}{N}\sum_{i=1}^{N}(\hat{y}_i-y_i) }∂b∂C=N2i=1∑N(y^i−yi)
+
+Gradient with respect to the slope
+
+∂C∂m=2N∑i=1Nxi(y^i−yi)\boxed{ \frac{\partial C}{\partial m} = \frac{2}{N}\sum_{i=1}^{N}x_i(\hat{y}_i-y_i) }∂m∂C=N2i=1∑Nxi(y^i−yi)
+
+Gradient vector
+
+∇C=\(∂C/∂b∂C/∂m\)\boxed{ \nabla C= \begin{bmatrix} \partial C/\partial b\\ \partial C/\partial m \end{bmatrix} }∇C=\(∂C/∂b∂C/∂m​\)
+
+The practical training process is:
+
+1. Calculate predictions.
+
+2. Calculate MSE.
+
+3. Calculate gradients using `cost.backward()`.
+
+4. Update the parameters using `optimizer.step()`.
+
+5. Repeat over many epochs.
+
+The key takeaway is that gradient descent uses the derivatives of cost to adjust model parameters and progressively improve predictions. Manual calculus explains why the gradients work, PyTorch automates their calculation, and visualization helps us observe the training process.
