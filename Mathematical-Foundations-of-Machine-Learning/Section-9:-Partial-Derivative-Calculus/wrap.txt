@@ -9338,3 +9338,1132 @@ $$
 \text{Gradient descent}
 }
 $$
+
+*** 88. The Gradient of Quadratic Cost ***
+# Lecture Notes: Deriving the Gradient of Quadratic Cost by Hand
+
+## 1. Lecture Objective
+
+In the previous lecture, we used **automatic differentiation in PyTorch** to calculate the partial derivatives of the cost with respect to the model parameters:
+
+$$
+\frac{\partial C}{\partial m}
+\qquad\text{and}\qquad
+\frac{\partial C}{\partial b}
+$$
+
+In this lecture, we do the same thing **manually using calculus and the chain rule**.
+
+The goal is to understand that automatic differentiation is not magic. PyTorch is performing the same mathematical operations that we can derive ourselves.
+
+The model is:
+
+$$
+\boxed{\hat{y}=mx+b}
+$$
+
+The quadratic cost for one data point is:
+
+$$
+\boxed{C=(\hat{y}-y)^2}
+$$
+
+---
+
+# 2. Where This Fits in the ML Process
+
+The lecture uses the four-step machine learning process:
+
+### Step 1 — Forward pass
+
+Calculate the prediction:
+
+$$
+\hat{y}=mx+b
+$$
+
+### Step 2 — Calculate cost
+
+Compare the prediction with the true value:
+
+$$
+C=(\hat{y}-y)^2
+$$
+
+### Step 3 — Calculate gradients
+
+Find:
+
+$$
+\frac{\partial C}{\partial m}
+\qquad
+\frac{\partial C}{\partial b}
+$$
+
+### Step 4 — Update parameters
+
+Use the gradients to adjust \(m\) and \(b\).
+
+This lecture focuses mainly on **Step 3**.
+
+---
+
+# 3. The Quadratic Cost Function
+
+For one training example:
+
+$$
+\boxed{C=(\hat{y}-y)^2}
+$$
+
+Where:
+
+* \(C\) = cost
+* \(\hat{y}\) = model prediction
+* \(y\) = true value
+
+The goal is to determine how the cost changes when we change the model parameters \(m\) and \(b\).
+
+The important relationship is:
+
+$$
+m,b \rightarrow \hat{y} \rightarrow C
+$$
+
+So the parameters affect the cost **indirectly through \(\hat{y}\)**.
+
+---
+
+# 4. Break the Cost into Nested Functions
+
+The easiest way to differentiate the cost is to split it into simpler functions.
+
+Start with:
+
+$$
+C=(\hat{y}-y)^2
+$$
+
+Define an intermediate variable:
+
+$$
+u=\hat{y}-y
+$$
+
+Then:
+
+$$
+C=u^2
+$$
+
+So we now have two nested functions:
+
+$$
+\boxed{u=\hat{y}-y}
+$$
+
+and
+
+$$
+\boxed{C=u^2}
+$$
+
+This makes the chain rule easier to apply.
+
+---
+
+# 5. Calculate \(\frac{\partial u}{\partial \hat{y}}\)
+
+We have:
+
+$$
+u=\hat{y}-y
+$$
+
+We want:
+
+$$
+\frac{\partial u}{\partial \hat{y}}
+$$
+
+When taking a partial derivative with respect to \(\hat{y}\), everything else is treated as a constant.
+
+Therefore:
+
+$$
+\frac{\partial}{\partial\hat{y}}(-y)=0
+$$
+
+And:
+
+$$
+\frac{\partial}{\partial\hat{y}}\hat{y}=1
+$$
+
+Therefore:
+
+$$
+\boxed{\frac{\partial u}{\partial\hat{y}}=1}
+$$
+
+---
+
+# 6. Calculate \(\frac{\partial C}{\partial u}\)
+
+We have:
+
+$$
+C=u^2
+$$
+
+Using the power rule:
+
+$$
+\frac{d}{du}u^2=2u
+$$
+
+Therefore:
+
+$$
+\boxed{\frac{\partial C}{\partial u}=2u}
+$$
+
+Since:
+
+$$
+u=\hat{y}-y
+$$
+
+we substitute:
+
+$$
+\boxed{\frac{\partial C}{\partial u}=2(\hat{y}-y)}
+$$
+
+---
+
+# 7. Use the Chain Rule to Find \(\frac{\partial C}{\partial\hat{y}}\)
+
+We now have:
+
+$$
+\frac{\partial C}{\partial u}=2(\hat{y}-y)
+$$
+
+and:
+
+$$
+\frac{\partial u}{\partial\hat{y}}=1
+$$
+
+Using the chain rule:
+
+$$
+\frac{\partial C}{\partial\hat{y}}
+=
+\frac{\partial C}{\partial u}
+\frac{\partial u}{\partial\hat{y}}
+$$
+
+Therefore:
+
+$$
+\frac{\partial C}{\partial\hat{y}}
+=
+2(\hat{y}-y)(1)
+$$
+
+So:
+
+$$
+\boxed{\frac{\partial C}{\partial\hat{y}}=2(\hat{y}-y)}
+$$
+
+This is our first important result.
+
+---
+
+# 8. Differentiate the Regression Model
+
+Our prediction is:
+
+$$
+\hat{y}=mx+b
+$$
+
+We need two derivatives:
+
+$$
+\frac{\partial\hat{y}}{\partial m}
+$$
+
+and:
+
+$$
+\frac{\partial\hat{y}}{\partial b}
+$$
+
+because \(m\) and \(b\) are our model parameters.
+
+---
+
+# 9. Calculate \(\frac{\partial\hat{y}}{\partial b}\)
+
+Start with:
+
+$$
+\hat{y}=mx+b
+$$
+
+Differentiate with respect to \(b\):
+
+$$
+\frac{\partial\hat{y}}{\partial b}
+$$
+
+The term \(mx\) does not contain \(b\), so it is treated as a constant:
+
+$$
+\frac{\partial(mx)}{\partial b}=0
+$$
+
+And:
+
+$$
+\frac{\partial b}{\partial b}=1
+$$
+
+Therefore:
+
+$$
+\boxed{\frac{\partial\hat{y}}{\partial b}=1}
+$$
+
+---
+
+# 10. Calculate \(\frac{\partial\hat{y}}{\partial m}\)
+
+Again:
+
+$$
+\hat{y}=mx+b
+$$
+
+Differentiate with respect to \(m\):
+
+$$
+\frac{\partial\hat{y}}{\partial m}
+$$
+
+The \(b\) term is constant with respect to \(m\):
+
+$$
+\frac{\partial b}{\partial m}=0
+$$
+
+For \(mx\), \(x\) is treated as a constant:
+
+$$
+\frac{\partial(mx)}{\partial m}=x
+$$
+
+Therefore:
+
+$$
+\boxed{\frac{\partial\hat{y}}{\partial m}=x}
+$$
+
+---
+
+# 11. Calculate \(\frac{\partial C}{\partial m}\)
+
+We now have:
+
+$$
+\frac{\partial C}{\partial\hat{y}}
+=
+2(\hat{y}-y)
+$$
+
+and:
+
+$$
+\frac{\partial\hat{y}}{\partial m}=x
+$$
+
+Apply the chain rule:
+
+$$
+\frac{\partial C}{\partial m}
+=
+\frac{\partial C}{\partial\hat{y}}
+\frac{\partial\hat{y}}{\partial m}
+$$
+
+Substitute:
+
+$$
+\frac{\partial C}{\partial m}
+=
+2(\hat{y}-y)x
+$$
+
+Therefore:
+
+$$
+\boxed{
+\frac{\partial C}{\partial m}
+=
+2x(\hat{y}-y)
+}
+$$
+
+This tells us how much the cost changes when we change the slope \(m\).
+
+---
+
+# 12. Calculate \(\frac{\partial C}{\partial b}\)
+
+We have:
+
+$$
+\frac{\partial C}{\partial\hat{y}}
+=
+2(\hat{y}-y)
+$$
+
+and:
+
+$$
+\frac{\partial\hat{y}}{\partial b}=1
+$$
+
+Using the chain rule:
+
+$$
+\frac{\partial C}{\partial b}
+=
+\frac{\partial C}{\partial\hat{y}}
+\frac{\partial\hat{y}}{\partial b}
+$$
+
+Therefore:
+
+$$
+\frac{\partial C}{\partial b}
+=
+2(\hat{y}-y)(1)
+$$
+
+So:
+
+$$
+\boxed{
+\frac{\partial C}{\partial b}
+=
+2(\hat{y}-y)
+}
+$$
+
+---
+
+# 13. Final Gradient Formulas
+
+For the model:
+
+$$
+\hat{y}=mx+b
+$$
+
+with quadratic cost:
+
+$$
+C=(\hat{y}-y)^2
+$$
+
+the manually derived gradients are:
+
+$$
+\boxed{
+\frac{\partial C}{\partial m}
+=
+2x(\hat{y}-y)
+}
+$$
+
+and:
+
+$$
+\boxed{
+\frac{\partial C}{\partial b}
+=
+2(\hat{y}-y)
+}
+$$
+
+These are the key formulas from this lecture.
+
+---
+
+# 14. Why the Chain Rule Works Here
+
+The computational structure is:
+
+--------------------------------------------------
+m ──┐
+    ├──> ŷ ───> C
+b ──┘
+--------------------------------------------------
+
+For \(m\):
+
+--------------------------------------------------
+m → ŷ → C
+--------------------------------------------------
+
+Therefore:
+
+$$
+\frac{\partial C}{\partial m}
+=
+\frac{\partial C}{\partial\hat{y}}
+\frac{\partial\hat{y}}{\partial m}
+$$
+
+For \(b\):
+
+--------------------------------------------------
+b → ŷ → C
+--------------------------------------------------
+
+Therefore:
+
+$$
+\frac{\partial C}{\partial b}
+=
+\frac{\partial C}{\partial\hat{y}}
+\frac{\partial\hat{y}}{\partial b}
+$$
+
+The intermediate \(\hat{y}\) effectively cancels:
+
+$$
+\frac{\partial C}{\partial\hat{y}}
+\frac{\partial\hat{y}}{\partial m}
+\rightarrow
+\frac{\partial C}{\partial m}
+$$
+
+This is the fundamental idea behind **backpropagation**.
+
+---
+
+# 15. Verify the Manual Derivation with PyTorch
+
+The lecture then compares the hand-derived results with PyTorch's automatic differentiation.
+
+The previous notebook produced approximately:
+
+$$
+\frac{\partial C}{\partial m}=108.78
+$$
+
+and:
+
+$$
+\frac{\partial C}{\partial b}=15.54
+$$
+
+We can calculate the same values manually:
+
+--------------------------------------------------
+dC_dm = 2 * x * (y_hat - y)
+dC_db = 2 * (y_hat - y)
+
+print("dC/dm =", dC_dm)
+print("dC/db =", dC_db)
+--------------------------------------------------
+
+The results should match the values obtained from:
+
+--------------------------------------------------
+cost.backward()
+--------------------------------------------------
+
+This demonstrates that:
+
+**Manual calculus and automatic differentiation produce the same gradients.**
+
+---
+
+# 16. Automatic Differentiation vs Manual Differentiation
+
+### Manual differentiation
+
+We explicitly derive:
+
+$$
+\frac{\partial C}{\partial m}
+=
+2x(\hat{y}-y)
+$$
+
+$$
+\frac{\partial C}{\partial b}
+=
+2(\hat{y}-y)
+$$
+
+### Automatic differentiation
+
+PyTorch constructs the computational graph and calculates the derivatives automatically:
+
+--------------------------------------------------
+cost.backward()
+--------------------------------------------------
+
+The important point is that PyTorch is not using a different kind of mathematics.
+
+It is automating the same differentiation process.
+
+---
+
+# 17. What Is the Gradient?
+
+The lecture now formally defines the **gradient**.
+
+The gradient is commonly written as:
+
+$$
+\boxed{\nabla C}
+$$
+
+The symbol \(\nabla\) is called **nabla**.
+
+It looks like an upside-down delta:
+
+$$
+\nabla
+$$
+
+The gradient is a vector containing the partial derivative of the cost with respect to **every model parameter**.
+
+---
+
+# 18. Gradient for This Model
+
+Our model has two parameters:
+
+* \(b\)
+* \(m\)
+
+Therefore, the gradient contains two values:
+
+$$
+\nabla C
+=
+\begin{bmatrix}
+\frac{\partial C}{\partial b}\\
+\frac{\partial C}{\partial m}
+\end{bmatrix}
+$$
+
+Using our formulas:
+
+$$
+\boxed{
+\nabla C=
+\begin{bmatrix}
+2(\hat{y}-y)\\
+2x(\hat{y}-y)
+\end{bmatrix}
+}
+$$
+
+The lecture chooses alphabetical parameter order, so \(b\) comes before \(m\).
+
+---
+
+# 19. General Definition of the Gradient
+
+If a model has \(N\) parameters:
+
+$$
+p_1,p_2,\ldots,p_N
+$$
+
+then the gradient contains \(N\) partial derivatives:
+
+$$
+\boxed{
+\nabla C=
+\begin{bmatrix}
+\frac{\partial C}{\partial p_1}\\
+\frac{\partial C}{\partial p_2}\\
+\vdots\\
+\frac{\partial C}{\partial p_N}
+\end{bmatrix}
+}
+$$
+
+Therefore:
+
+> **Number of model parameters = number of elements in the gradient vector.**
+
+For example:
+
+| Model parameters | Gradient size |
+| ---------------- | ------------: |
+| 2                |             2 |
+| 10               |            10 |
+| 100              |           100 |
+| 1,000,000        |     1,000,000 |
+
+This becomes extremely important in neural networks, where a model can have millions or billions of parameters.
+
+---
+
+# 20. Representing the Gradient in PyTorch
+
+We can create the gradient manually as a tensor:
+
+--------------------------------------------------
+gradient = torch.tensor([
+    dC_db,
+    dC_dm
+])
+--------------------------------------------------
+
+This initially gives a row-like 1D tensor.
+
+The lecture then transposes it to represent the gradient as a column vector:
+
+--------------------------------------------------
+gradient = gradient.reshape(-1, 1)
+--------------------------------------------------
+
+or equivalently:
+
+--------------------------------------------------
+gradient = gradient.unsqueeze(1)
+--------------------------------------------------
+
+Conceptually:
+
+--------------------------------------------------
+[
+    dC/db
+    dC/dm
+]
+--------------------------------------------------
+
+---
+
+# 21. Why the Gradient Matters for Gradient Descent
+
+Now the meaning of **gradient descent** becomes clearer.
+
+The gradient tells us how the cost changes with respect to each parameter.
+
+For example:
+
+$$
+\nabla C=
+\begin{bmatrix}
+\frac{\partial C}{\partial b}\\
+\frac{\partial C}{\partial m}
+\end{bmatrix}
+$$
+
+Each element tells us the direction in which the cost increases.
+
+Gradient descent moves the parameters in the **opposite direction of the gradient**.
+
+Conceptually:
+
+--------------------------------------------------
+Gradient → direction of increasing cost
+              ↓
+Gradient descent → move in the opposite direction
+--------------------------------------------------
+
+This is why the gradient is central to optimization.
+
+---
+
+# 22. Important Notes and Best Practices
+
+### 22.1 Identify the computational path
+
+Before applying the chain rule, write:
+
+--------------------------------------------------
+parameter → prediction → cost
+--------------------------------------------------
+
+For this model:
+
+--------------------------------------------------
+m → ŷ → C
+b → ŷ → C
+--------------------------------------------------
+
+This makes it much easier to determine which derivatives need to be multiplied.
+
+---
+
+### 22.2 Treat other variables as constants
+
+When calculating:
+
+$$
+\frac{\partial C}{\partial m}
+$$
+
+everything except \(m\) is treated appropriately as constant.
+
+For example:
+
+$$
+\frac{\partial(mx)}{\partial m}=x
+$$
+
+because \(x\) is treated as a constant.
+
+---
+
+### 22.3 Break complicated functions into smaller functions
+
+Instead of immediately differentiating:
+
+$$
+C=(\hat{y}-y)^2
+$$
+
+define:
+
+$$
+u=\hat{y}-y
+$$
+
+then:
+
+$$
+C=u^2
+$$
+
+This makes the chain rule much easier to follow.
+
+---
+
+### 22.4 Multiply derivatives along the path
+
+For:
+
+$$
+m\rightarrow\hat{y}\rightarrow C
+$$
+
+we calculate:
+
+$$
+\frac{\partial C}{\partial m}
+=
+\frac{\partial C}{\partial\hat{y}}
+\frac{\partial\hat{y}}{\partial m}
+$$
+
+This "multiply along the path" idea becomes extremely important when studying neural-network backpropagation.
+
+---
+
+### 22.5 The gradient contains one derivative per parameter
+
+If your model has 50 parameters, the gradient has 50 components.
+
+If your neural network has 10 million parameters, its gradient contains 10 million corresponding derivatives.
+
+---
+
+### 22.6 Match parameter ordering
+
+The order of parameters in the gradient vector must be consistent.
+
+For example, if you choose:
+
+--------------------------------------------------
+[b, m]
+--------------------------------------------------
+
+then the gradient should be:
+
+--------------------------------------------------
+[dC/db, dC/dm]
+--------------------------------------------------
+
+Do not accidentally mix the ordering.
+
+---
+
+# 23. Full Final Code
+
+The following code demonstrates the complete process: prediction, quadratic cost, PyTorch autodiff, manual derivatives, and the gradient vector.
+
+--------------------------------------------------
+import torch
+
+
+# --------------------------------------------------
+# 1. Define the regression model
+# --------------------------------------------------
+
+def regression(x, m, b):
+    return m * x + b
+
+
+# --------------------------------------------------
+# 2. Define quadratic cost for one data point
+# --------------------------------------------------
+
+def quadratic_cost(y_hat, y):
+    return (y_hat - y) ** 2
+
+
+# --------------------------------------------------
+# 3. Example values
+# --------------------------------------------------
+
+# These should be replaced with the exact x, y,
+# m, and b values from the lecture notebook.
+
+x = torch.tensor(7.0)
+y = torch.tensor(-1.4)
+
+m = torch.tensor(0.9, requires_grad=True)
+b = torch.tensor(0.1, requires_grad=True)
+
+
+# --------------------------------------------------
+# 4. Forward pass
+# --------------------------------------------------
+
+y_hat = regression(x, m, b)
+
+print("Prediction (y_hat):", y_hat.item())
+
+
+# --------------------------------------------------
+# 5. Calculate quadratic cost
+# --------------------------------------------------
+
+cost = quadratic_cost(y_hat, y)
+
+print("Cost:", cost.item())
+
+
+# --------------------------------------------------
+# 6. Calculate gradients automatically with PyTorch
+# --------------------------------------------------
+
+cost.backward()
+
+print("\nPyTorch automatic differentiation:")
+print("dC/dm:", m.grad.item())
+print("dC/db:", b.grad.item())
+
+
+# --------------------------------------------------
+# 7. Calculate gradients manually
+# --------------------------------------------------
+
+dC_dm = 2 * x * (y_hat.detach() - y)
+dC_db = 2 * (y_hat.detach() - y)
+
+print("\nManual derivatives:")
+print("dC/dm:", dC_dm.item())
+print("dC/db:", dC_db.item())
+
+
+# --------------------------------------------------
+# 8. Compare the results
+# --------------------------------------------------
+
+print("\nComparison:")
+print(
+    "dC/dm match:",
+    torch.allclose(m.grad, dC_dm)
+)
+
+print(
+    "dC/db match:",
+    torch.allclose(b.grad, dC_db)
+)
+
+
+# --------------------------------------------------
+# 9. Construct the gradient vector
+# --------------------------------------------------
+
+# Parameter order:
+# [b, m]
+
+gradient = torch.tensor([
+    dC_db.item(),
+    dC_dm.item()
+])
+
+print("\nGradient vector:")
+print(gradient)
+
+
+# --------------------------------------------------
+# 10. Convert to a column vector
+# --------------------------------------------------
+
+gradient_column = gradient.reshape(-1, 1)
+
+print("\nGradient as a column vector:")
+print(gradient_column)
+--------------------------------------------------
+
+**Important:** the lecture's exact notebook values produced approximately `108.78` for \(\partial C/\partial m\) and `15.54` for \(\partial C/\partial b\). The `y = -1.4` above is a rounded illustrative value; for an exact reproduction, use the precise \(x,y,m,b\) values from the lecture notebook.
+
+---
+
+# 24. Key Formulas to Memorize
+
+### Model
+
+$$
+\boxed{\hat{y}=mx+b}
+$$
+
+### Quadratic cost
+
+$$
+\boxed{C=(\hat{y}-y)^2}
+$$
+
+### Cost derivative with respect to prediction
+
+$$
+\boxed{
+\frac{\partial C}{\partial\hat{y}}
+=
+2(\hat{y}-y)
+}
+$$
+
+### Prediction derivative with respect to slope
+
+$$
+\boxed{
+\frac{\partial\hat{y}}{\partial m}=x
+}
+$$
+
+### Prediction derivative with respect to intercept
+
+$$
+\boxed{
+\frac{\partial\hat{y}}{\partial b}=1
+}
+$$
+
+### Cost derivative with respect to slope
+
+$$
+\boxed{
+\frac{\partial C}{\partial m}
+=
+2x(\hat{y}-y)
+}
+$$
+
+### Cost derivative with respect to intercept
+
+$$
+\boxed{
+\frac{\partial C}{\partial b}
+=
+2(\hat{y}-y)
+}
+$$
+
+### Gradient
+
+$$
+\boxed{
+\nabla C=
+\begin{bmatrix}
+\frac{\partial C}{\partial b}\\
+\frac{\partial C}{\partial m}
+\end{bmatrix}
+}
+$$
+
+---
+
+# 25. Summary
+
+This lecture connects **partial derivatives + chain rule + machine learning gradients**.
+
+The main flow is:
+
+--------------------------------------------------
+m ──┐
+    ├──> ŷ ───> C
+b ──┘
+--------------------------------------------------
+
+Starting with:
+
+$$
+\hat{y}=mx+b
+$$
+
+and:
+
+$$
+C=(\hat{y}-y)^2
+$$
+
+we manually derive:
+
+$$
+\frac{\partial C}{\partial m}
+=
+2x(\hat{y}-y)
+$$
+
+and:
+
+$$
+\frac{\partial C}{\partial b}
+=
+2(\hat{y}-y)
+$$
+
+These are exactly the values that PyTorch obtains using:
+
+--------------------------------------------------
+cost.backward()
+--------------------------------------------------
+
+The most important conceptual takeaway is:
+
+> **Automatic differentiation is automating the same chain-rule calculations that we can perform manually.**
+
+Finally, the **gradient** is simply the vector containing all partial derivatives of the cost with respect to the model's parameters:
+
+$$
+\boxed{
+\nabla C=
+\begin{bmatrix}
+\partial C/\partial b\\
+\partial C/\partial m
+\end{bmatrix}
+}
+$$
+
+Understanding this is essential before moving on to **gradient descent and backpropagation**.
