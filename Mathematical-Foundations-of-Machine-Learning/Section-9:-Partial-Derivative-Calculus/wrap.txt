@@ -13073,3 +13073,350 @@ assert hessian == sp.Matrix([
 
 print("\nAll derivative checks passed.")
 -------------------code----------------------
+
+*** 93. Exercise on Higher-Order Partial Derivatives ***
+# Machine Learning Foundations: Exercise on Higher-Order Partial Derivatives
+
+## 1. Exercise Overview
+
+The goal of this exercise is to calculate all four second-order partial derivatives of the following function:
+
+z=x3+2xyz=x^3+2xyz=x3+2xy
+
+Because the function depends on two variables, xxx and yyy, we need to calculate:
+
+1. The unmixed second derivative with respect to xxx.
+
+2. The unmixed second derivative with respect to yyy.
+
+3. The mixed derivative by differentiating with respect to yyy, then xxx.
+
+4. The mixed derivative by differentiating with respect to xxx, then yyy.
+
+The key rule is to calculate the first-order partial derivatives first, then differentiate them again.
+
+## 2. Step 1 — Calculate the First-Order Partial Derivatives
+
+Our function is:
+
+z=x3+2xyz=x^3+2xyz=x3+2xy
+
+### 2.1 Differentiate with respect to yyy
+
+We want to find:
+
+∂z∂y\frac{\partial z}{\partial y}∂y∂z
+
+Treat xxx as a constant.
+
+* x3x^3x3 contains no yyy, so its derivative is 000.
+
+* In 2xy2xy2xy, treat 2x2x2x as a constant. The derivative of yyy is 111.
+
+Therefore:
+
+∂z∂y=0+2x(1)\frac{\partial z}{\partial y} =0+2x(1)∂y∂z=0+2x(1)
+
+∂z∂y=2x\boxed{\frac{\partial z}{\partial y}=2x}∂y∂z=2x
+
+### 2.2 Differentiate with respect to xxx
+
+Now calculate:
+
+∂z∂x\frac{\partial z}{\partial x}∂x∂z
+
+Treat yyy as a constant.
+
+* The power rule gives ∂∂x(x3)=3x2\frac{\partial}{\partial x}(x^3)=3x^2∂x∂(x3)=3x2.
+
+* In 2xy2xy2xy, treat 2y2y2y as a constant. The derivative of xxx is 111.
+
+Therefore:
+
+∂z∂x=3x2+2y(1)\frac{\partial z}{\partial x} =3x^2+2y(1)∂x∂z=3x2+2y(1)
+
+∂z∂x=3x2+2y\boxed{\frac{\partial z}{\partial x}=3x^2+2y}∂x∂z=3x2+2y
+
+### 2.3 Verify the first derivatives with Python
+
+We can use SymPy to check our calculations.
+
+-------------------code----------------------
+import sympy as sp
+
+x, y = sp.symbols("x y")
+
+z = x**3 + 2*x*y
+
+dz_dx = sp.diff(z, x)
+dz_dy = sp.diff(z, y)
+
+print("dz/dx =", dz_dx)
+print("dz/dy =", dz_dy)
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+dz/dx = 3*x**2 + 2*y
+dz/dy = 2*x
+-------------------code----------------------
+
+## 3. Step 2 — Unmixed Second-Order Partial Derivatives
+
+Unmixed derivatives are calculated by differentiating twice with respect to the same variable.
+
+### 3.1 Differentiate twice with respect to xxx
+
+We already calculated:
+
+∂z∂x=3x2+2y\frac{\partial z}{\partial x}=3x^2+2y∂x∂z=3x2+2y
+
+Differentiate this expression with respect to xxx again.
+
+* 3x23x^23x2 becomes 6x6x6x, using the power rule.
+
+* 2y2y2y becomes 000, because yyy is treated as a constant.
+
+Therefore:
+
+∂2z∂x2=6x+0\frac{\partial^2 z}{\partial x^2} =6x+0∂x2∂2z=6x+0
+
+∂2z∂x2=6x\boxed{\frac{\partial^2 z}{\partial x^2}=6x}∂x2∂2z=6x
+
+### 3.2 Differentiate twice with respect to yyy
+
+We already calculated:
+
+∂z∂y=2x\frac{\partial z}{\partial y}=2x∂y∂z=2x
+
+Differentiate with respect to yyy again.
+
+Since 2x2x2x contains no yyy, it is constant with respect to yyy. Its derivative is zero.
+
+Therefore:
+
+∂2z∂y2=0\boxed{\frac{\partial^2 z}{\partial y^2}=0}∂y2∂2z=0
+
+### 3.3 Verify the unmixed derivatives
+
+-------------------code----------------------
+d2z_dx2 = sp.diff(z, x, 2)
+d2z_dy2 = sp.diff(z, y, 2)
+
+print("d²z/dx² =", d2z_dx2)
+print("d²z/dy² =", d2z_dy2)
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+d²z/dx² = 6*x
+d²z/dy² = 0
+-------------------code----------------------
+
+## 4. Step 3 — Mixed Second-Order Partial Derivatives
+
+Mixed derivatives use different variables for the two differentiations.
+
+### 4.1 Differentiate with respect to yyy, then xxx
+
+Start with the first derivative with respect to yyy:
+
+∂z∂y=2x\frac{\partial z}{\partial y}=2x∂y∂z=2x
+
+Now differentiate this result with respect to xxx.
+
+- The derivative of 2x2x2x with respect to xxx is 222.
+
+Therefore:
+
+∂∂x(∂z∂y)=2\boxed{ \frac{\partial}{\partial x} \left(\frac{\partial z}{\partial y}\right)=2 }∂x∂(∂y∂z)=2
+
+Equivalently, in Leibniz notation:
+
+∂2z∂x ∂y=2\boxed{\frac{\partial^2 z}{\partial x\,\partial y}=2}∂x∂y∂2z=2
+
+### 4.2 Differentiate with respect to xxx, then yyy
+
+Start with the first derivative with respect to xxx:
+
+∂z∂x=3x2+2y\frac{\partial z}{\partial x}=3x^2+2y∂x∂z=3x2+2y
+
+Now differentiate this result with respect to yyy.
+
+* 3x23x^23x2 becomes 000, because it contains no yyy.
+
+* 2y2y2y becomes 222.
+
+Therefore:
+
+∂∂y(∂z∂x)=2\boxed{ \frac{\partial}{\partial y} \left(\frac{\partial z}{\partial x}\right)=2 }∂y∂(∂x∂z)=2
+
+Equivalently:
+
+∂2z∂y ∂x=2\boxed{\frac{\partial^2 z}{\partial y\,\partial x}=2}∂y∂x∂2z=2
+
+### 4.3 Verify the mixed derivatives
+
+-------------------code----------------------
+d2z_dydx = sp.diff(sp.diff(z, y), x)
+d2z_dxdy = sp.diff(sp.diff(z, x), y)
+
+print("Differentiate y, then x:", d2z_dydx)
+print("Differentiate x, then y:", d2z_dxdy)
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+Differentiate y, then x: 2
+Differentiate x, then y: 2
+-------------------code----------------------
+
+Both mixed derivatives equal 222.
+
+## 5. Step 4 — Collect All Four Answers
+
+For the function
+
+z=x3+2xyz=x^3+2xyz=x3+2xy
+
+the four second-order partial derivatives are:
+
+| Type                         | Derivative                                                                                            | Result |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------- | ------ |
+| Unmixed, with respect to xxx | ∂2z∂x2\displaystyle \frac{\partial^2 z}{\partial x^2}∂x2∂2z                                           | 6x6x6x |
+| Unmixed, with respect to yyy | ∂2z∂y2\displaystyle \frac{\partial^2 z}{\partial y^2}∂y2∂2z                                           | 000    |
+| Mixed, first yyy, then xxx   | ∂∂x(∂z∂y)\displaystyle \frac{\partial}{\partial x}\left(\frac{\partial z}{\partial y}\right)∂x∂(∂y∂z) | 222    |
+| Mixed, first xxx, then yyy   | ∂∂y(∂z∂x)\displaystyle \frac{\partial}{\partial y}\left(\frac{\partial z}{\partial x}\right)∂y∂(∂x∂z) | 222    |
+
+The results can be summarized as:
+
+∂2z∂x2=6x,∂2z∂y2=0\boxed{ \frac{\partial^2 z}{\partial x^2}=6x,\quad \frac{\partial^2 z}{\partial y^2}=0 }∂x2∂2z=6x,∂y2∂2z=0
+
+∂2z∂x ∂y=2,∂2z∂y ∂x=2\boxed{ \frac{\partial^2 z}{\partial x\,\partial y}=2,\quad \frac{\partial^2 z}{\partial y\,\partial x}=2 }∂x∂y∂2z=2,∂y∂x∂2z=2
+
+Notice that the two mixed derivatives are equal, consistent with the equality of mixed partial derivatives for this polynomial function.
+
+## 6. Important Notes and Best Practices
+
+1. Treat the other variable as a constant. When differentiating with respect to xxx, treat yyy as constant. When differentiating with respect to yyy, treat xxx as constant.
+
+2. Apply the power rule carefully.
+
+   \\( \\frac{d}{dx}x^n=nx^{n-1} \\\)
+
+   For example, x3x^3x3 becomes 3x23x^23x2, then differentiating 3x23x^23x2 gives 6x6x6x.
+
+3. Calculate first-order derivatives before second-order derivatives. This makes the process systematic and reduces mistakes.
+
+4. Remember that a constant's derivative is zero. This is why ∂(2x)/∂y=0\partial(2x)/\partial y=0∂(2x)/∂y=0 and ∂(x3)/∂y=0\partial(x^3)/\partial y=0∂(x3)/∂y=0.
+
+5. Check both mixed derivatives. In this example, both equal 222. For sufficiently smooth functions, mixed second-order partial derivatives are equal.
+
+6. Use symbolic Python as a verification tool. SymPy can confirm your answers, but you should still understand each differentiation step.
+
+## 7. Summary
+
+For the function z=x3+2xyz=x^3+2xyz=x3+2xy:
+
+* First-order derivatives:
+
+  \\( \\frac{\\partial z}{\\partial x}=3x^2+2y \\\)
+
+  \\( \\frac{\\partial z}{\\partial y}=2x \\\)
+
+* Unmixed second-order derivatives:
+
+  \\( \\frac{\\partial^2 z}{\\partial x^2}=6x \\\)
+
+  \\( \\frac{\\partial^2 z}{\\partial y^2}=0 \\\)
+
+* Mixed second-order derivatives:
+
+  \\( \\frac{\\partial^2 z}{\\partial x,\\partial y}=2 \\\)
+
+  \\( \\frac{\\partial^2 z}{\\partial y,\\partial x}=2 \\\)
+
+The main lesson is to differentiate once, then differentiate the result again, keeping track of which variable is being used at each step.
+
+## 8. Full Final Code
+
+The following script calculates and verifies all first-order and second-order partial derivatives from the exercise.
+
+-------------------code----------------------
+import sympy as sp
+
+# ============================================================
+# Step 1: Define the symbolic variables and function
+# ============================================================
+
+x, y = sp.symbols("x y")
+
+z = x**3 + 2*x*y
+
+print("Original function:")
+print("z =", z)
+
+# ============================================================
+# Step 2: Calculate first-order partial derivatives
+# ============================================================
+
+dz_dx = sp.diff(z, x)
+dz_dy = sp.diff(z, y)
+
+print("\nFirst-order partial derivatives:")
+print("dz/dx =", dz_dx)
+print("dz/dy =", dz_dy)
+
+# ============================================================
+# Step 3: Calculate unmixed second-order partial derivatives
+# ============================================================
+
+d2z_dx2 = sp.diff(z, x, 2)
+d2z_dy2 = sp.diff(z, y, 2)
+
+print("\nUnmixed second-order partial derivatives:")
+print("d²z/dx² =", d2z_dx2)
+print("d²z/dy² =", d2z_dy2)
+
+# ============================================================
+# Step 4: Calculate mixed second-order partial derivatives
+# ============================================================
+
+# First differentiate with respect to y, then x
+d2z_dydx = sp.diff(sp.diff(z, y), x)
+
+# First differentiate with respect to x, then y
+d2z_dxdy = sp.diff(sp.diff(z, x), y)
+
+print("\nMixed second-order partial derivatives:")
+print("Differentiate y, then x:", d2z_dydx)
+print("Differentiate x, then y:", d2z_dxdy)
+
+# ============================================================
+# Step 5: Check that the mixed derivatives are equal
+# ============================================================
+
+mixed_equal = sp.simplify(d2z_dydx - d2z_dxdy) == 0
+
+print("\nAre the mixed derivatives equal?", mixed_equal)
+
+# ============================================================
+# Step 6: Verify the expected answers
+# ============================================================
+
+assert dz_dx == 3*x**2 + 2*y
+assert dz_dy == 2*x
+
+assert d2z_dx2 == 6*x
+assert d2z_dy2 == 0
+
+assert d2z_dydx == 2
+assert d2z_dxdy == 2
+
+assert mixed_equal
+
+print("\nAll derivative checks passed.")
+-------------------code----------------------
