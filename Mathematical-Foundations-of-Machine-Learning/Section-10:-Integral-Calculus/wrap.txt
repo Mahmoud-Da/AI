@@ -346,3 +346,748 @@ if FPR is not None:
 -------------------code----------------------
 
 Final takeaway: The upcoming lessons will build a complete path from classification results to an ROC curve and then use integration to measure the area under that curve.
+
+*** 95. Binary Classification ***
+# Machine Learning Foundations — Binary Classification and the Limitations of Accuracy
+
+## 1. Overview of the Lecture
+
+This lecture introduces binary classification, a type of supervised learning in which a model predicts one of two possible classes.
+
+The main objectives are to understand:
+
+1. The difference between supervised learning, regression, and classification.
+2. The difference between binary and multiclass classification.
+3. How binary classification models produce outputs between 0 and 1.
+4. How a classification threshold converts model outputs into class predictions.
+5. Why using a single threshold can hide important differences between models.
+6. Why the ROC curve and Area Under the Curve (ROC AUC) provide a different way to evaluate binary classifiers.
+
+The lecture ends by introducing the confusion matrix as the next step toward understanding ROC AUC.
+
+## 2. Supervised Learning
+
+Supervised learning is a machine learning approach in which a model learns to map an input \\(X\\) to a target outcome \\(Y\\).
+
+The objective is to learn a function that approximates the relationship between them:
+
+\\[ \hat{Y}=f(X) \\]
+
+Where:
+
+- \\(X\\): The input features provided to the model.
+- \\(Y\\): The actual target or outcome.
+- \\(\hat{Y}\\): The model's prediction.
+- \\(f\\): The function learned by the model.
+
+For example, a model might use information about a patient and a drug dosage to predict an outcome related to forgetfulness.
+
+Supervised learning has two major problem categories: regression and classification.
+
+## 3. Regression vs. Classification
+
+### 3.1 Regression
+
+Regression predicts a numerical value.
+
+Examples from the lecture include:
+
+- Medical outcomes: Predicting a numerical measure of a patient's forgetfulness based on an Alzheimer's drug dosage.
+- Product sales: Predicting whether a product will generate 10,000 or 15,000 sales next quarter.
+- Asset valuation: Predicting the future price of a stock, house, or other asset.
+
+The target is a numerical quantity rather than a category.
+
+Example code:
+
+-------------------code----------------------
+# Example: regression prediction
+
+# Input feature: drug dosage
+drug_dosage = 5.0
+
+# Simplified example of a regression model
+def predict_forgetfulness(dosage):
+    return 20.0 - 2.0 * dosage
+
+prediction = predict_forgetfulness(drug_dosage)
+
+print("Predicted forgetfulness:", prediction)
+-------------------code----------------------
+
+This simplified example predicts a number. The function is illustrative and is not a trained medical model.
+
+### 3.2 Classification
+
+Classification predicts which category an input belongs to.
+
+Examples include:
+
+- Determining whether a movie review is positive or negative.
+- Identifying which handwritten digit appears in an image.
+- Determining whether a food image contains a hot dog.
+
+Unlike regression, classification predicts a class rather than a continuous numerical target.
+
+Example code:
+
+-------------------code----------------------
+# Example: classification prediction
+
+review_sentiment = "This movie was excellent!"
+
+def classify_review(review):
+    if "excellent" in review.lower():
+        return "positive"
+    return "negative"
+
+prediction = classify_review(review_sentiment)
+
+print("Predicted class:", prediction)
+-------------------code----------------------
+
+This is a simple rule-based illustration of classification, not a machine learning model trained on review data.
+
+## 4. Types of Classification Problems
+
+The lecture divides classification into two main categories.
+
+### 4.1 Multiclass classification
+
+Multiclass classification predicts one class from more than two possible classes.
+
+Examples from the lecture:
+
+- Handwritten digit recognition: Predicting one of ten digits, from 0 through 9.
+- ImageNet image classification: Predicting an image category from a large set of possible classes. The lecture cites approximately 21,000 classes.
+
+Example code:
+
+-------------------code----------------------
+# Example: multiclass classification
+
+digit_names = {
+    0: "zero",
+    1: "one",
+    2: "two",
+    3: "three",
+    4: "four",
+    5: "five",
+    6: "six",
+    7: "seven",
+    8: "eight",
+    9: "nine",
+}
+
+predicted_digit = 7
+
+print("Predicted digit:", digit_names[predicted_digit])
+-------------------code----------------------
+
+This example assumes the model has already predicted the digit `7`.
+
+### 4.2 Binary classification
+
+Binary classification predicts one of exactly two classes.
+
+Examples from the lecture include:
+
+- Movie sentiment: Positive or negative.
+- Hot dog detection: Hot dog or not a hot dog.
+
+Example code:
+
+-------------------code----------------------
+# Example: binary classification
+
+predicted_class = "hot dog"
+
+if predicted_class == "hot dog":
+    print("The image contains a hot dog.")
+else:
+    print("The image does not contain a hot dog.")
+-------------------code----------------------
+
+The defining feature of binary classification is that there are only two possible classes.
+
+## 5. Model Outputs and Classification Thresholds
+
+### 5.1 Understanding outputs between 0 and 1
+
+Many binary classification models produce a score between 0 and 1. When the output is interpreted as a probability, it represents the model's estimated probability that the input belongs to the positive class.
+
+For the hot dog example:
+
+| Model output | Interpretation                              |
+| ------------ | ------------------------------------------- |
+| 0.01         | Very low estimated probability of a hot dog |
+| 0.30         | Relatively low estimated probability        |
+| 0.50         | Estimated probability of 50%                |
+| 0.90         | High estimated probability                  |
+| 0.99         | Very high estimated probability             |
+
+These interpretations assume the output is a probability estimate. Not every model score is automatically a well-calibrated probability.
+
+### 5.2 Converting an output into a class
+
+A threshold converts a continuous score into a discrete class prediction.
+
+The lecture uses the common threshold of \\(0.5\\):
+
+\\[ \hat{y}= \begin{cases} 1 & \text{if } p\geq 0.5\\\ 0 & \text{if } p<0.5 \end{cases} \\]
+
+Here:
+
+- \\(p\\) is the model's output for the positive class.
+- Class `1` represents the positive class, such as “hot dog.”
+- Class `0` represents the negative class, such as “not a hot dog.”
+
+Example code:
+
+-------------------code----------------------
+# Step 1: Define the classification threshold
+threshold = 0.5
+
+# Step 2: Supply example model outputs
+predictions = [0.05, 0.30, 0.49, 0.51, 0.90, 0.99]
+
+# Step 3: Convert each score into a class prediction
+for probability in predictions:
+    if probability >= threshold:
+        predicted_class = "hot dog"
+    else:
+        predicted_class = "not a hot dog"
+
+    print(
+        f"Score: {probability:.2f} -> "
+        f"Prediction: {predicted_class}"
+    )
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+Score: 0.05 -> Prediction: not a hot dog
+Score: 0.30 -> Prediction: not a hot dog
+Score: 0.49 -> Prediction: not a hot dog
+Score: 0.51 -> Prediction: hot dog
+Score: 0.90 -> Prediction: hot dog
+Score: 0.99 -> Prediction: hot dog
+-------------------code----------------------
+
+The threshold simplifies the model's output into a class. However, it also discards information about how far the score is from the threshold.
+
+## 6. Limitation 1: A Single Threshold Hides Information
+
+Consider two models that classify the same dataset.
+
+- Model A produces many scores close to 0.5.
+- Model B produces more scores close to 0 and 1.
+
+Model B appears more confident in its predictions because its scores are more extreme.
+
+For example:
+
+-------------------code----------------------
+# Step 1: Example outputs from two models
+model_a = [0.45, 0.52, 0.48, 0.55, 0.40]
+model_b = [0.05, 0.95, 0.10, 0.90, 0.02]
+
+# Step 2: Apply the same threshold to both models
+threshold = 0.5
+
+def classify(scores):
+    return [1 if score >= threshold else 0 for score in scores]
+
+# Step 3: Display the resulting class predictions
+print("Model A scores:", model_a)
+print("Model A classes:", classify(model_a))
+
+print("Model B scores:", model_b)
+print("Model B classes:", classify(model_b))
+-------------------code----------------------
+
+The resulting class predictions are:
+
+-------------------code----------------------
+Model A classes: [0, 1, 0, 1, 0]
+Model B classes: [0, 1, 0, 1, 0]
+-------------------code----------------------
+
+Both models produce exactly the same class predictions at the threshold of 0.5, even though their output scores differ substantially.
+
+This demonstrates the lecture's main point: evaluating only the thresholded predictions can hide differences in the models' output scores.
+
+An important qualification is that more extreme scores do not automatically mean a model is better. The scores must be evaluated against the actual labels and the model's behavior across different thresholds.
+
+## 7. Limitation 2: Predictions Near the Threshold Are Treated Abruptly
+
+Suppose the actual class is positive, meaning the image really does contain a hot dog.
+
+Compare these model outputs:
+
+- Model output of `0.49`: classified as negative.
+- Model output of `0.51`: classified as positive.
+- Model output of `0.99`: classified as positive.
+
+With a threshold of 0.5, the first prediction is counted as incorrect, while the other two are counted as correct.
+
+However, the scores `0.49` and `0.51` are extremely close. A small difference in the score produces a different class prediction.
+
+Meanwhile, `0.51` and `0.99` both receive the same class label, despite expressing very different estimated probabilities.
+
+Example code:
+
+-------------------code----------------------
+# Step 1: Define the actual class
+actual_class = 1  # Positive class
+
+# Step 2: Define three model scores
+scores = [0.49, 0.51, 0.99]
+threshold = 0.5
+
+# Step 3: Convert scores into predicted classes
+for score in scores:
+    predicted_class = 1 if score >= threshold else 0
+
+    # Step 4: Compare prediction with the actual class
+    correct = predicted_class == actual_class
+
+    print(
+        f"Score: {score:.2f}, "
+        f"Predicted class: {predicted_class}, "
+        f"Correct: {correct}"
+    )
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+Score: 0.49, Predicted class: 0, Correct: False
+Score: 0.51, Predicted class: 1, Correct: True
+Score: 0.99, Predicted class: 1, Correct: True
+-------------------code----------------------
+
+The threshold makes a binary decision, but that decision alone does not express the degree of confidence represented by the score.
+
+This is another reason to examine the model's performance using more than a single threshold.
+
+## 8. The Solution: ROC AUC
+
+The lecture introduces ROC AUC as an alternative metric for evaluating binary classification models.
+
+ROC AUC stands for the Area Under the Receiver Operating Characteristic Curve.
+
+The key idea is to evaluate model performance across a range of classification thresholds rather than relying exclusively on one threshold, such as 0.5.
+
+### 8.1 What is the ROC curve?
+
+The ROC curve plots two quantities at different thresholds:
+
+- True Positive Rate (TPR): The proportion of actual positive examples correctly identified.
+- False Positive Rate (FPR): The proportion of actual negative examples incorrectly classified as positive.
+
+Their formulas are:
+
+\\[ TPR=\frac{TP}{TP+FN} \\]
+
+\\[ FPR=\frac{FP}{FP+TN} \\]
+
+Where:
+
+- \\(TP\\): True positives.
+- \\(FN\\): False negatives.
+- \\(FP\\): False positives.
+- \\(TN\\): True negatives.
+
+The following code calculates these rates for a single threshold. It does not yet generate the full ROC curve.
+
+-------------------code----------------------
+# Step 1: Define the confusion-matrix counts
+TP = 80
+FN = 20
+FP = 10
+TN = 90
+
+# Step 2: Calculate the true positive rate
+TPR = TP / (TP + FN)
+
+# Step 3: Calculate the false positive rate
+FPR = FP / (FP + TN)
+
+# Step 4: Display the results
+print(f"True Positive Rate: {TPR:.2f}")
+print(f"False Positive Rate: {FPR:.2f}")
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+True Positive Rate: 0.80
+False Positive Rate: 0.10
+-------------------code----------------------
+
+These rates represent one operating point on an ROC curve. A full ROC curve requires evaluating the model at multiple thresholds.
+
+### 8.2 What does AUC measure?
+
+AUC summarizes the area under the ROC curve into a single value.
+
+Conceptually:
+
+- A higher AUC generally indicates better discrimination between the positive and negative classes.
+- An AUC of 1.0 represents perfect discrimination.
+- An AUC of approximately 0.5 indicates discrimination comparable to random ranking under the usual binary-classification interpretation.
+
+The lecture will explain how to construct the ROC curve and calculate its area in subsequent videos.
+
+For now, the important distinction is:
+
+A single-threshold metric evaluates predictions at one decision threshold, while ROC AUC summarizes ranking performance across thresholds.
+
+## 9. Important Notes and Best Practices
+
+1. Identify the problem type first.
+   - Regression predicts numerical values.
+   - Multiclass classification predicts one of several classes.
+   - Binary classification predicts one of two classes.
+2. Understand what a model score represents. A score between 0 and 1 can be interpreted as a probability when the model is designed to produce probability estimates. High confidence does not guarantee correctness.
+3. Remember that the threshold is a decision rule. A threshold of 0.5 is common, but it is not always the best threshold for every application.
+4. Do not evaluate a model using only its score distribution. More extreme scores do not prove better performance. Compare predictions against actual labels and evaluate performance appropriately.
+5. Distinguish class predictions from model scores. Converting a score into a class discards information about how close the score is to the decision threshold.
+6. Understand the ROC curve before studying AUC. The confusion matrix provides the counts needed to calculate TPR and FPR. These rates are used to construct the ROC curve.
+7. Use the appropriate metric for the problem. ROC AUC is useful for comparing discrimination across thresholds, but it does not replace every other evaluation metric or determine the best decision threshold by itself.
+
+## 10. Summary
+
+The lecture establishes the foundations of binary classification evaluation.
+
+- Supervised learning maps inputs \\(X\\) to target outcomes \\(Y\\).
+- Regression predicts numerical values, while classification predicts categories.
+- Classification problems can be multiclass or binary.
+- Binary classification models often produce scores between 0 and 1.
+- A threshold, commonly 0.5, converts these scores into class predictions.
+- A single threshold can hide differences between models and treats scores on opposite sides of the threshold as different classes, even when their values are very close.
+- ROC AUC addresses this limitation by summarizing discrimination performance across classification thresholds.
+- The confusion matrix is the next essential step toward understanding ROC AUC.
+
+## 11. Full Final Code
+
+The following complete script brings together the main concepts from the lecture. It demonstrates regression, multiclass and binary classification, threshold-based decisions, the limitations of a single threshold, confusion-matrix calculations, and a basic ROC AUC calculation.
+
+It uses Python's standard library only.
+
+-------------------code----------------------
+# ============================================================
+# Machine Learning Foundations
+# Topic: Binary Classification and ROC AUC
+# ============================================================
+
+
+# ============================================================
+# Step 1: Supervised learning and regression
+# ============================================================
+
+def predict_forgetfulness(dosage):
+    """
+    Simplified illustrative regression function.
+    This is not a trained medical model.
+    """
+    return 20.0 - 2.0 * dosage
+
+
+drug_dosage = 5.0
+forgetfulness_prediction = predict_forgetfulness(drug_dosage)
+
+print("STEP 1: Regression")
+print("Drug dosage:", drug_dosage)
+print("Predicted forgetfulness:", forgetfulness_prediction)
+
+
+# ============================================================
+# Step 2: Multiclass classification
+# ============================================================
+
+digit_names = {
+    0: "zero",
+    1: "one",
+    2: "two",
+    3: "three",
+    4: "four",
+    5: "five",
+    6: "six",
+    7: "seven",
+    8: "eight",
+    9: "nine",
+}
+
+predicted_digit = 7
+
+print("\nSTEP 2: Multiclass classification")
+print("Predicted digit:", digit_names[predicted_digit])
+
+
+# ============================================================
+# Step 3: Binary classification with a threshold
+# ============================================================
+
+threshold = 0.5
+
+# Illustrative model scores for the positive class
+scores = [0.05, 0.30, 0.49, 0.51, 0.90, 0.99]
+
+print("\nSTEP 3: Threshold-based classification")
+
+for score in scores:
+    predicted_class = 1 if score >= threshold else 0
+
+    class_name = (
+        "hot dog"
+        if predicted_class == 1
+        else "not a hot dog"
+    )
+
+    print(
+        f"Score: {score:.2f} -> "
+        f"Predicted class: {class_name}"
+    )
+
+
+# ============================================================
+# Step 4: Demonstrate the limitations of a single threshold
+# ============================================================
+
+model_a = [0.45, 0.52, 0.48, 0.55, 0.40]
+model_b = [0.05, 0.95, 0.10, 0.90, 0.02]
+
+
+def classify(scores, threshold=0.5):
+    """Convert model scores into binary class predictions."""
+    return [
+        1 if score >= threshold else 0
+        for score in scores
+    ]
+
+
+print("\nSTEP 4: Comparing two models")
+
+print("Model A scores:", model_a)
+print("Model A predictions:", classify(model_a, threshold))
+
+print("Model B scores:", model_b)
+print("Model B predictions:", classify(model_b, threshold))
+
+print(
+    "Note: Different scores can produce identical "
+    "class predictions at the same threshold."
+)
+
+
+# ============================================================
+# Step 5: Calculate TPR and FPR from a confusion matrix
+# ============================================================
+
+TP = 80
+FN = 20
+FP = 10
+TN = 90
+
+print("\nSTEP 5: Confusion matrix")
+print("True Positives:", TP)
+print("False Negatives:", FN)
+print("False Positives:", FP)
+print("True Negatives:", TN)
+
+positive_total = TP + FN
+negative_total = FP + TN
+
+if positive_total > 0:
+    TPR = TP / positive_total
+else:
+    TPR = None
+
+if negative_total > 0:
+    FPR = FP / negative_total
+else:
+    FPR = None
+
+print("\nTrue Positive Rate (TPR):", TPR)
+print("False Positive Rate (FPR):", FPR)
+
+
+# ============================================================
+# Step 6: Calculate ROC points at multiple thresholds
+# ============================================================
+
+# Example actual labels:
+# 1 = positive class
+# 0 = negative class
+
+actual_labels = [
+    1, 1, 1, 1, 0, 0, 0, 0
+]
+
+# Example model scores for the positive class
+model_scores = [
+    0.95, 0.85, 0.70, 0.40,
+    0.80, 0.60, 0.30, 0.10
+]
+
+
+def calculate_roc_points(labels, scores):
+    """
+    Calculate ROC points by testing thresholds from high
+    to low. The input scores are assumed to represent
+    the positive class.
+    """
+    if len(labels) != len(scores):
+        raise ValueError(
+            "Labels and scores must have the same length."
+        )
+
+    if not labels:
+        raise ValueError("The dataset must not be empty.")
+
+    if any(label not in (0, 1) for label in labels):
+        raise ValueError("Labels must be 0 or 1.")
+
+    if any(not 0 <= score <= 1 for score in scores):
+        raise ValueError("Scores must be between 0 and 1.")
+
+    total_positive = sum(labels)
+    total_negative = len(labels) - total_positive
+
+    if total_positive == 0 or total_negative == 0:
+        raise ValueError(
+            "ROC calculation requires both positive "
+            "and negative examples."
+        )
+
+    # Include thresholds that produce the all-negative
+    # and all-positive predictions.
+    thresholds = (
+        [float("inf")]
+        + sorted(set(scores), reverse=True)
+        + [float("-inf")]
+    )
+
+    roc_points = []
+
+    for threshold_value in thresholds:
+        predictions = [
+            1 if score >= threshold_value else 0
+            for score in scores
+        ]
+
+        TP_count = sum(
+            actual == 1 and predicted == 1
+            for actual, predicted in zip(labels, predictions)
+        )
+
+        FN_count = sum(
+            actual == 1 and predicted == 0
+            for actual, predicted in zip(labels, predictions)
+        )
+
+        FP_count = sum(
+            actual == 0 and predicted == 1
+            for actual, predicted in zip(labels, predictions)
+        )
+
+        TN_count = sum(
+            actual == 0 and predicted == 0
+            for actual, predicted in zip(labels, predictions)
+        )
+
+        TPR_value = TP_count / (TP_count + FN_count)
+        FPR_value = FP_count / (FP_count + TN_count)
+
+        roc_points.append(
+            (FPR_value, TPR_value, threshold_value)
+        )
+
+    return roc_points
+
+
+roc_points = calculate_roc_points(
+    actual_labels,
+    model_scores
+)
+
+print("\nSTEP 6: ROC points")
+
+for fpr, tpr, threshold_value in roc_points:
+    print(
+        f"Threshold: {threshold_value:>5}, "
+        f"FPR: {fpr:.2f}, "
+        f"TPR: {tpr:.2f}"
+    )
+
+
+# ============================================================
+# Step 7: Calculate ROC AUC using the trapezoidal rule
+# ============================================================
+
+def calculate_auc(roc_points):
+    """
+    Calculate the area under the ROC curve using
+    the trapezoidal rule.
+
+    Each ROC point has the form:
+        (false_positive_rate, true_positive_rate, threshold)
+    """
+    # Sort points from lowest to highest FPR.
+    points = sorted(
+        (fpr, tpr) for fpr, tpr, _ in roc_points
+    )
+
+    area = 0.0
+
+    for i in range(1, len(points)):
+        previous_fpr, previous_tpr = points[i - 1]
+        current_fpr, current_tpr = points[i]
+
+        width = current_fpr - previous_fpr
+        average_height = (
+            previous_tpr + current_tpr
+        ) / 2.0
+
+        area += width * average_height
+
+    return area
+
+
+auc = calculate_auc(roc_points)
+
+print("\nSTEP 7: ROC AUC")
+print(f"Area Under the ROC Curve: {auc:.4f}")
+
+
+# ============================================================
+# Step 8: Interpret the result
+# ============================================================
+
+print("\nSTEP 8: Interpretation")
+
+if auc > 0.5:
+    print(
+        "The model demonstrates better-than-random "
+        "ranking on this example dataset."
+    )
+elif auc == 0.5:
+    print(
+        "The model's ranking performance is equivalent "
+        "to random ranking on this example dataset."
+    )
+else:
+    print(
+        "The model's ranking is worse than random "
+        "on this example dataset."
+    )
+
+print(
+    "\nReminder: This is a small illustrative dataset. "
+    "Real model evaluation requires representative data "
+    "and additional appropriate metrics."
+)
+-------------------code----------------------
