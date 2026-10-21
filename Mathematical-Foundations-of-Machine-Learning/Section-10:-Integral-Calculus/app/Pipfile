@@ -10,6 +10,8 @@ torch = "*"
 tensorflow = "*"
 scikit-learn = "*"
 sympy = "*"
+scipy = "*"
+pandas = "*"
 
 [dev-packages]
 
