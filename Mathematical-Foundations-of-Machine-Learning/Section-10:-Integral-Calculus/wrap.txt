@@ -1091,3 +1091,349 @@ print(
     "and additional appropriate metrics."
 )
 -------------------code----------------------
+
+*** 96. The Confusion Matrix ***
+# Machine Learning Foundations — The Confusion Matrix
+
+## 1. Overview
+
+A confusion matrix is a table used to evaluate a classification model by comparing its predictions with the actual outcomes.
+
+It helps us identify:
+
+- Correct positive predictions.
+- Correct negative predictions.
+- False positive predictions.
+- False negative predictions.
+
+The lecture uses a simple example: determining whether an image contains a hot dog.
+
+The model can predict one of two classes:
+
+- `1` = Hot dog.
+- `0` = Not a hot dog.
+
+The confusion matrix shows whether the model's predictions match reality.
+
+## 2. Understand Actual vs. Predicted Values
+
+Before constructing a confusion matrix, we must distinguish between actual outcomes and predicted outcomes.
+
+- Actual \\(Y\\): What is really true in the real world.
+- Predicted \\(\hat{Y}\\): What the model predicts.
+
+For example:
+
+| Actual value | Predicted value | Interpretation                                  |
+| ------------ | --------------- | ----------------------------------------------- |
+| 1            | 1               | Model predicts a hot dog, and one is present.   |
+| 1            | 0               | Model predicts no hot dog, but one is present.  |
+| 0            | 1               | Model predicts a hot dog, but none is present.  |
+| 0            | 0               | Model predicts no hot dog, and none is present. |
+
+The model is correct when the actual and predicted values match. It is incorrect when they differ.
+
+## 3. The Four Outcomes of a Confusion Matrix
+
+## Confusion Matrix
+
+Rows = actual class · Columns = predicted class
+
+Predicted 1
+
+Predicted 0
+
+Actual 1
+
+## TP
+
+True Positive
+
+Correct
+
+## FN
+
+False Negative
+
+Incorrect
+
+Actual 0
+
+## FP
+
+False Positive
+
+Incorrect
+
+## TN
+
+True Negative
+
+Correct
+
+### 3.1 True Positive (TP)
+
+The actual class is positive (`1`), and the model predicts positive (`1`).
+
+Example: The image contains a hot dog, and the model correctly identifies it.
+
+### 3.2 True Negative (TN)
+
+The actual class is negative (`0`), and the model predicts negative (`0`).
+
+Example: The image contains a pizza, and the model correctly predicts “not a hot dog.”
+
+### 3.3 False Positive (FP)
+
+The actual class is negative (`0`), but the model predicts positive (`1`).
+
+Example: The image contains a pizza, but the model incorrectly identifies it as a hot dog.
+
+### 3.4 False Negative (FN)
+
+The actual class is positive (`1`), but the model predicts negative (`0`).
+
+Example: The image contains a hot dog, but the model fails to identify it.
+
+## 4. Step-by-Step: Build a Confusion Matrix with Python
+
+We can represent the actual labels and model predictions as two lists.
+
+### Step 1: Define the data
+
+-------------------code----------------------
+# Actual classes: 1 = hot dog, 0 = not a hot dog
+y_actual = [1, 0, 1, 1, 0, 0, 1, 0]
+
+# Model predictions
+y_predicted = [1, 0, 0, 1, 1, 0, 1, 0]
+-------------------code----------------------
+
+Each position represents the same image in both lists.
+
+For example, the third image has an actual label of `1`, but the model predicted `0`.
+
+### Step 2: Count the four outcomes
+
+-------------------code----------------------
+TP = 0
+TN = 0
+FP = 0
+FN = 0
+
+for actual, predicted in zip(y_actual, y_predicted):
+    if actual == 1 and predicted == 1:
+        TP += 1
+    elif actual == 0 and predicted == 0:
+        TN += 1
+    elif actual == 0 and predicted == 1:
+        FP += 1
+    elif actual == 1 and predicted == 0:
+        FN += 1
+
+print("True Positives:", TP)
+print("True Negatives:", TN)
+print("False Positives:", FP)
+print("False Negatives:", FN)
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+True Positives: 3
+True Negatives: 3
+False Positives: 1
+False Negatives: 1
+-------------------code----------------------
+
+### Step 3: Organize the results into a matrix
+
+Using the counts above:
+
+| Actual \ Predicted | Positive (1) | Negative (0) |
+| ------------------ | ------------ | ------------ |
+| Positive (1)       | TP = 3       | FN = 1       |
+| Negative (0)       | FP = 1       | TN = 3       |
+
+This matrix summarizes the model's correct and incorrect classifications.
+
+### Step 4: Calculate accuracy
+
+Although the lecture focuses on the four outcomes, we can use them to calculate accuracy:
+
+\\[ \text{Accuracy}=\frac{TP+TN}{TP+TN+FP+FN} \\]
+
+In this example:
+
+\\[ \text{Accuracy}=\frac{3+3}{3+3+1+1}=0.75 \\]
+
+The model correctly classified 75% of the images.
+
+-------------------code----------------------
+total = TP + TN + FP + FN
+
+accuracy = (TP + TN) / total if total > 0 else 0
+
+print(f"Accuracy: {accuracy:.2%}")
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+Accuracy: 75.00%
+-------------------code----------------------
+
+Accuracy is useful, but it does not tell us everything about a model's performance. The relative costs of false positives and false negatives may be very different.
+
+## 5. Important Notes and Best Practices
+
+- Remember the actual-versus-predicted distinction. The actual class represents reality; the predicted class represents the model's decision.
+- “True” and “false” refer to correctness. “Positive” and “negative” refer to the class predicted or observed.
+- False positives and false negatives are different errors. In medical screening, for example, a false negative may mean missing a disease, while a false positive may mean incorrectly flagging a healthy person.
+- The positive class must be defined. In this lecture, positive means “hot dog,” but in other problems it could mean fraud, disease, or spam.
+- Keep the label order consistent. When implementing the matrix in code, ensure the actual labels and predictions correspond to the same observations.
+- Accuracy can be misleading on imbalanced datasets. A model can achieve high accuracy by predicting the majority class while missing many minority-class examples.
+
+## 6. Summary
+
+The confusion matrix compares a model's predictions with actual outcomes in a classification problem.
+
+The four outcomes are:
+
+- TP: Correctly predicts positive.
+- TN: Correctly predicts negative.
+- FP: Predicts positive incorrectly.
+- FN: Predicts negative incorrectly.
+
+In the hot dog example, the confusion matrix tells us how often the model correctly identifies hot dogs, correctly rejects other foods, mistakenly labels other foods as hot dogs, or misses actual hot dogs.
+
+The next step is to use these four counts to calculate the true positive rate and false positive rate, which are essential for constructing the Receiver Operating Characteristic (ROC) curve and calculating ROC AUC.
+
+## 7. Full Final Code
+
+-------------------code----------------------
+# ============================================================
+# Machine Learning Foundations
+# Topic: The Confusion Matrix
+# ============================================================
+
+
+# Step 1: Define actual labels and model predictions
+# 1 = hot dog
+# 0 = not a hot dog
+
+y_actual = [1, 0, 1, 1, 0, 0, 1, 0]
+y_predicted = [1, 0, 0, 1, 1, 0, 1, 0]
+
+
+# Step 2: Validate the input data
+
+if len(y_actual) != len(y_predicted):
+    raise ValueError(
+        "Actual labels and predictions must have equal lengths."
+    )
+
+if any(label not in (0, 1) for label in y_actual):
+    raise ValueError("Actual labels must be either 0 or 1.")
+
+if any(label not in (0, 1) for label in y_predicted):
+    raise ValueError("Predictions must be either 0 or 1.")
+
+
+# Step 3: Initialize the confusion-matrix counts
+
+TP = 0  # True Positive
+TN = 0  # True Negative
+FP = 0  # False Positive
+FN = 0  # False Negative
+
+
+# Step 4: Compare actual labels with predictions
+
+for actual, predicted in zip(y_actual, y_predicted):
+
+    if actual == 1 and predicted == 1:
+        TP += 1
+
+    elif actual == 0 and predicted == 0:
+        TN += 1
+
+    elif actual == 0 and predicted == 1:
+        FP += 1
+
+    elif actual == 1 and predicted == 0:
+        FN += 1
+
+
+# Step 5: Display the four outcomes
+
+print("CONFUSION MATRIX COUNTS")
+print("-----------------------")
+print("True Positives (TP):", TP)
+print("True Negatives (TN):", TN)
+print("False Positives (FP):", FP)
+print("False Negatives (FN):", FN)
+
+
+# Step 6: Display the confusion matrix
+# Rows represent actual labels.
+# Columns represent predicted labels.
+
+print("\nCONFUSION MATRIX")
+print("----------------")
+print("                 Predicted 1   Predicted 0")
+print(f"Actual 1 (Positive)     {TP:>5}          {FN:>5}")
+print(f"Actual 0 (Negative)     {FP:>5}          {TN:>5}")
+
+
+# Step 7: Calculate accuracy
+
+total = TP + TN + FP + FN
+
+if total > 0:
+    accuracy = (TP + TN) / total
+    print(f"\nAccuracy: {accuracy:.2%}")
+else:
+    print("\nAccuracy cannot be calculated: no observations.")
+
+
+# Step 8: Calculate the True Positive Rate (Recall)
+
+actual_positives = TP + FN
+
+if actual_positives > 0:
+    TPR = TP / actual_positives
+    print(f"True Positive Rate (Recall): {TPR:.2%}")
+else:
+    TPR = None
+    print("TPR is undefined: there are no actual positives.")
+
+
+# Step 9: Calculate the False Positive Rate
+
+actual_negatives = FP + TN
+
+if actual_negatives > 0:
+    FPR = FP / actual_negatives
+    print(f"False Positive Rate: {FPR:.2%}")
+else:
+    FPR = None
+    print("FPR is undefined: there are no actual negatives.")
+
+
+# Step 10: Final interpretation
+
+print("\nINTERPRETATION")
+print("--------------")
+print(f"The model evaluated {total} observations.")
+print(f"It correctly classified {TP + TN} observations.")
+print(f"It made {FP + FN} classification errors.")
+
+print(f"False positive errors: {FP}")
+print(f"False negative errors: {FN}")
+
+print(
+    "\nThe TPR and FPR can be used to construct ROC points "
+    "at different classification thresholds."
+)
+-------------------code----------------------
