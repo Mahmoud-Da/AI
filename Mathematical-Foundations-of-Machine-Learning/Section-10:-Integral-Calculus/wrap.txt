@@ -2454,3 +2454,493 @@ expected_value = sp.integrate(
 print("\nEXPECTED VALUE")
 print("E[X] =", expected_value)
 -------------------code----------------------
+
+*** 99. The Integral Calculus Rules ***
+# Lecture Notes: Three Fundamental Rules of Integration
+
+## 1. Introduction to Integration
+
+Integration is the reverse process of differentiation. While differentiation measures the rate of change of a function, integration helps us recover the original function or calculate accumulated quantities.
+
+For example, if:
+
+\\[ f(x)=x^4 \\]
+
+Differentiation gives:
+
+\\[ \frac{d}{dx}x^4=4x^3 \\]
+
+Integration works in the opposite direction:
+
+\\[ \int 4x^3\\,dx=x^4+C \\]
+
+The \\(C\\) represents an arbitrary constant, which is necessary because the derivative of any constant is zero.
+
+This lecture covers three fundamental integration rules:
+
+1. The power rule
+2. The constant multiple rule
+3. The sum rule
+
+## 2. Rule One: The Power Rule
+
+The power rule is used to integrate a variable raised to a power.
+
+### 2.1 Formula
+
+For any real exponent \\(n\neq -1\\):
+
+\\[ \boxed{\int x^n\\,dx=\frac{x^{n+1}}{n+1}+C} \\]
+
+The steps are:
+
+1. Add \\(1\\) to the exponent.
+2. Divide by the new exponent.
+3. Add the constant of integration \\(C\\).
+
+### 2.2 Step-by-step example
+
+Integrate:
+
+\\[ \int x^4\\,dx \\]
+
+Step 1: Add \\(1\\) to the exponent.
+
+\\[ 4+1=5 \\]
+
+Step 2: Divide by the new exponent.
+
+\\[ \frac{x^5}{5} \\]
+
+Step 3: Add the constant of integration.
+
+\\[ \boxed{\int x^4\\,dx=\frac{x^5}{5}+C} \\]
+
+### 2.3 Python example
+
+We can define the original function and its antiderivative in Python.
+
+```
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Original function
+def f(x):
+    return x**4
+
+# Antiderivative using the power rule
+def F(x):
+    return x**5 / 5
+
+x = np.linspace(0, 2, 100)
+
+plt.plot(x, f(x), label="f(x) = x^4")
+plt.plot(x, F(x), label="F(x) = x^5 / 5")
+plt.xlabel("x")
+plt.ylabel("y")
+plt.title("Power Rule of Integration")
+plt.grid(True)
+plt.legend()
+plt.show()
+```
+
+The function `F(x)` is an antiderivative of `f(x)` because differentiating \\(x^5/5\\) gives \\(x^4\\).
+
+### 2.4 Important limitation: The exponent \\(-1\\)
+
+The power rule cannot be applied directly when \\(n=-1\\), because the denominator becomes zero:
+
+\\[ \frac{x^{-1+1}}{-1+1}=\frac{x^0}{0} \\]
+
+Division by zero is undefined.
+
+Instead, use the special rule:
+
+\\[ \boxed{\int \frac{1}{x}\\,dx=\ln|x|+C} \\]
+
+This formula applies on intervals where \\(x\neq 0\\).
+
+## 3. Rule Two: The Constant Multiple Rule
+
+The constant multiple rule applies when a function is multiplied by a constant.
+
+### 3.1 Formula
+
+If \\(a\\) is a constant, then:
+
+\\[ \boxed{\int a f(x)\\,dx=a\int f(x)\\,dx} \\]
+
+In simple terms:
+
+1. Keep the constant outside the integral.
+2. Integrate the remaining function.
+3. Multiply by the original constant.
+4. Include \\(C\\).
+
+### 3.2 Step-by-step example
+
+Integrate:
+
+\\[ \int 9x^2\\,dx \\]
+
+Step 1: Move the constant \\(9\\) outside the integral.
+
+\\[ 9\int x^2\\,dx \\]
+
+Step 2: Apply the power rule.
+
+\\[ 9\left(\frac{x^3}{3}\right)+C \\]
+
+Step 3: Simplify.
+
+\\[ \boxed{\int 9x^2\\,dx=3x^3+C} \\]
+
+### 3.3 Python example
+
+```
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Original function
+def f(x):
+    return 9 * x**2
+
+# Antiderivative
+def F(x):
+    return 3 * x**3
+
+x = np.linspace(0, 2, 100)
+
+plt.plot(x, f(x), label="f(x) = 9x²")
+plt.plot(x, F(x), label="F(x) = 3x³")
+plt.xlabel("x")
+plt.ylabel("y")
+plt.title("Constant Multiple Rule")
+plt.grid(True)
+plt.legend()
+plt.show()
+```
+
+To verify the answer, differentiate \\(3x^3\\):
+
+\\[ \frac{d}{dx}(3x^3)=9x^2 \\]
+
+This recovers the original function.
+
+## 4. Rule Three: The Sum Rule
+
+The sum rule allows us to integrate a sum of separate terms individually.
+
+### 4.1 Formula
+
+\\[ \boxed{\int [f(x)+g(x)]\\,dx =\int f(x)\\,dx+\int g(x)\\,dx} \\]
+
+The same principle applies to subtraction:
+
+\\[ \int [f(x)-g(x)]\\,dx =\int f(x)\\,dx-\int g(x)\\,dx \\]
+
+### 4.2 Step-by-step example
+
+Integrate:
+
+\\[ \int (x^4+9x^2)\\,dx \\]
+
+Step 1: Separate the terms.
+
+\\[ \int x^4\\,dx+\int 9x^2\\,dx \\]
+
+Step 2: Integrate the first term using the power rule.
+
+\\[ \int x^4\\,dx=\frac{x^5}{5} \\]
+
+Step 3: Integrate the second term using the constant multiple rule and power rule.
+
+\\[ \int 9x^2\\,dx=3x^3 \\]
+
+Step 4: Combine the results and add the constant.
+
+\\[ \boxed{\int (x^4+9x^2)\\,dx =\frac{x^5}{5}+3x^3+C} \\]
+
+### 4.3 Python example
+
+```
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Original function
+def f(x):
+    return x**4 + 9 * x**2
+
+# Antiderivative
+def F(x):
+    return x**5 / 5 + 3 * x**3
+
+x = np.linspace(0, 2, 100)
+
+plt.plot(x, f(x), label="f(x) = x⁴ + 9x²")
+plt.plot(x, F(x), label="F(x) = x⁵/5 + 3x³")
+plt.xlabel("x")
+plt.ylabel("y")
+plt.title("Sum Rule of Integration")
+plt.grid(True)
+plt.legend()
+plt.show()
+```
+
+## 5. Verify Integration by Differentiation
+
+A reliable way to check an indefinite integral is to differentiate your answer. You should recover the original integrand.
+
+For example:
+
+\\[ F(x)=\frac{x^5}{5}+3x^3+C \\]
+
+Differentiate each term:
+
+\\[ F'(x)=x^4+9x^2+0 \\]
+
+Therefore:
+
+\\[ \boxed{F'(x)=x^4+9x^2} \\]
+
+The result matches the original function.
+
+### Python verification
+
+We can check the formulas numerically by approximating the derivative with finite differences.
+
+```
+import numpy as np
+
+def f(x):
+    return x**4 + 9 * x**2
+
+def F(x):
+    return x**5 / 5 + 3 * x**3
+
+# Test points
+x_values = np.array([0.5, 1.0, 1.5, 2.0])
+
+# Small step for numerical differentiation
+h = 1e-5
+
+for x in x_values:
+    numerical_derivative = (F(x + h) - F(x - h)) / (2 * h)
+    original_value = f(x)
+
+    print(f"x = {x:.1f}")
+    print(f"Original function:      {original_value:.6f}")
+    print(f"Numerical derivative:   {numerical_derivative:.6f}")
+    print()
+```
+
+The numerical derivative should be very close to the original function's value. Small differences occur because of floating-point arithmetic and the finite approximation step.
+
+## 6. Important Notes and Best Practices
+
+### 6.1 Always include the constant \\(C\\)
+
+For indefinite integrals, include \\(+C\\):
+
+\\[ \int x^2\\,dx=\frac{x^3}{3}+C \\]
+
+This is necessary because differentiation removes constants.
+
+### 6.2 Do not confuse differentiation and integration
+
+| Operation       | Power rule                                                        |
+| --------------- | ----------------------------------------------------------------- |
+| Differentiation | Multiply by the exponent, then subtract \\(1\\) from the exponent |
+| Integration     | Add \\(1\\) to the exponent, then divide by the new exponent      |
+
+For example:
+
+\\[ \frac{d}{dx}x^4=4x^3 \\]
+
+\\[ \int x^3\\,dx=\frac{x^4}{4}+C \\]
+
+### 6.3 Apply the rules together
+
+Many expressions require more than one rule. For example:
+
+\\[ \int (5x^3+2x)\\,dx \\]
+
+Separate the terms, apply the constant multiple rule, and then apply the power rule:
+
+\\[ =\frac{5x^4}{4}+x^2+C \\]
+
+### 6.4 Remember the exception
+
+The standard power rule requires \\(n\neq -1\\). For \\(x^{-1}=1/x\\), use the logarithm rule instead.
+
+### 6.5 Use Python appropriately
+
+Python can help you plot functions, test calculations, and approximate derivatives or integrals. However, the mathematical rules determine the exact symbolic result. For these examples, NumPy and Matplotlib are sufficient; SciPy is not required.
+
+## 7. Full Final Code
+
+The following script combines all three integration rules and verifies the final antiderivative numerically. It also plots the original function and its antiderivative.
+
+```
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+# ============================================================
+# 1. Power Rule
+# Integral of x^4 = x^5 / 5 + C
+# ============================================================
+
+def power_function(x):
+    return x**4
+
+
+def power_antiderivative(x):
+    return x**5 / 5
+
+
+# ============================================================
+# 2. Constant Multiple Rule
+# Integral of 9x^2 = 3x^3 + C
+# ============================================================
+
+def constant_multiple_function(x):
+    return 9 * x**2
+
+
+def constant_multiple_antiderivative(x):
+    return 3 * x**3
+
+
+# ============================================================
+# 3. Sum Rule
+# Integral of x^4 + 9x^2
+# = x^5 / 5 + 3x^3 + C
+# ============================================================
+
+def combined_function(x):
+    return x**4 + 9 * x**2
+
+
+def combined_antiderivative(x):
+    return x**5 / 5 + 3 * x**3
+
+
+# ============================================================
+# 4. Plot the Functions
+# ============================================================
+
+x_values = np.linspace(0, 2, 200)
+
+plt.figure(figsize=(15, 4))
+
+# Power rule
+plt.subplot(1, 3, 1)
+plt.plot(
+    x_values,
+    power_function(x_values),
+    label="f(x) = x^4"
+)
+plt.plot(
+    x_values,
+    power_antiderivative(x_values),
+    label="F(x) = x^5 / 5"
+)
+plt.title("Power Rule")
+plt.xlabel("x")
+plt.ylabel("y")
+plt.grid(True, alpha=0.3)
+plt.legend()
+
+# Constant multiple rule
+plt.subplot(1, 3, 2)
+plt.plot(
+    x_values,
+    constant_multiple_function(x_values),
+    label="f(x) = 9x^2"
+)
+plt.plot(
+    x_values,
+    constant_multiple_antiderivative(x_values),
+    label="F(x) = 3x^3"
+)
+plt.title("Constant Multiple Rule")
+plt.xlabel("x")
+plt.ylabel("y")
+plt.grid(True, alpha=0.3)
+plt.legend()
+
+# Sum rule
+plt.subplot(1, 3, 3)
+plt.plot(
+    x_values,
+    combined_function(x_values),
+    label="f(x) = x^4 + 9x^2"
+)
+plt.plot(
+    x_values,
+    combined_antiderivative(x_values),
+    label="F(x) = x^5/5 + 3x^3"
+)
+plt.title("Sum Rule")
+plt.xlabel("x")
+plt.ylabel("y")
+plt.grid(True, alpha=0.3)
+plt.legend()
+
+plt.tight_layout()
+plt.show()
+
+
+# ============================================================
+# 5. Numerical Verification
+# Differentiate the antiderivative approximately and compare
+# it with the original function.
+# ============================================================
+
+print("Numerical Verification")
+print("=" * 60)
+
+test_points = [0.5, 1.0, 1.5, 2.0]
+h = 1e-5
+
+for x in test_points:
+    numerical_derivative = (
+        combined_antiderivative(x + h)
+        - combined_antiderivative(x - h)
+    ) / (2 * h)
+
+    original_value = combined_function(x)
+
+    print(f"\nx = {x:.1f}")
+    print(f"Original function:    {original_value:.6f}")
+    print(f"Numerical derivative: {numerical_derivative:.6f}")
+
+    assert np.isclose(
+        numerical_derivative,
+        original_value,
+        rtol=1e-5,
+        atol=1e-5
+    )
+
+print("\nAll numerical verification tests passed!")
+```
+
+## 8. Summary
+
+The lecture introduces three essential rules for symbolic integration.
+
+| Rule                   | Formula                                           | Example                                     |
+| ---------------------- | ------------------------------------------------- | ------------------------------------------- |
+| Power rule             | \\(\int x^n dx=\frac{x^{n+1}}{n+1}+C,\ n\neq-1\\) | \\(\int x^4 dx=\frac{x^5}{5}+C\\)           |
+| Constant multiple rule | \\(\int af(x)dx=a\int f(x)dx\\)                   | \\(\int 9x^2dx=3x^3+C\\)                    |
+| Sum rule               | \\(\int(f+g)dx=\int fdx+\int gdx\\)               | \\(\int(x^4+9x^2)dx=\frac{x^5}{5}+3x^3+C\\) |
+
+Key takeaways:
+
+1. For the power rule, add \\(1\\) to the exponent and divide by the new exponent.
+2. Constants can be moved outside an integral.
+3. Sums and differences can be integrated term by term.
+4. Include \\(C\\) for indefinite integrals.
+5. The ordinary power rule does not work for an exponent of \\(-1\\).
+6. Differentiate your result to check whether you recovered the original integrand.
