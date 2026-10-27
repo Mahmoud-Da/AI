@@ -3339,3 +3339,345 @@ Key takeaways:
 5. Verify the result by differentiating it.
 
 The next topic is definite integrals, which evaluate the accumulated value of a function between two specified limits. Unlike indefinite integrals, definite integrals produce a numerical result and do not require a final \\(+C\\).
+*** 101. Definite Integrals ***
+
+# Lecture Notes: Definite Integrals
+
+## 1. Introduction to Definite Integrals
+
+In previous lessons, we studied indefinite integrals, which find an antiderivative of a function. This lecture introduces definite integrals, which calculate the accumulated value of a function over a specific interval.
+
+For a function \\(f(x)\\), a definite integral is written as:
+
+\\[ \boxed{\int_a^b f(x)\\,dx} \\]
+
+Each part has a specific meaning:
+
+- \\(f(x)\\): the function being integrated.
+- \\(dx\\): indicates that we integrate with respect to \\(x\\).
+- \\(a\\): the lower limit of integration.
+- \\(b\\): the upper limit of integration.
+
+The limits \\(a\\) and \\(b\\) define the interval over which we calculate the integral.
+
+### 1.1 Indefinite vs. definite integrals
+
+| Indefinite integral                        | Definite integral                                                      |
+| ------------------------------------------ | ---------------------------------------------------------------------- |
+| Finds an antiderivative                    | Evaluates accumulated value over an interval                           |
+| Has no limits                              | Has lower and upper limits                                             |
+| Includes the constant \\(C\\)              | Produces a numerical result; no \\(+C\\) is needed in the final answer |
+| Example: \\(\int x\\,dx=\frac{x^2}{2}+C\\) | Example: \\(\int_1^2 x\\,dx=\frac{3}{2}\\)                             |
+
+Important: A definite integral represents signed area. When the function is above the \\(x\\)-axis, its contribution is positive; when it is below the \\(x\\)-axis, its contribution is negative. In this lecture's example, the function stays above the \\(x\\)-axis, so the integral equals the ordinary area under the curve.
+
+## 2. The Example: \\(y=\frac{x}{2}\\)
+
+We want to calculate the area under the line
+
+\\[ f(x)=\frac{x}{2} \\]
+
+between \\(x=1\\) and \\(x=2\\).
+
+The required integral is:
+
+\\[ \boxed{\int_1^2 \frac{x}{2}\\,dx} \\]
+
+This represents the area between the graph and the \\(x\\)-axis, from \\(x=1\\) to \\(x=2\\).
+
+[TEMA 4: Cálculo Integral | Notas para la asignatura de Matemáticas I , UCM Somosaguas](https://images.openai.com/static-rsc-4/BQLU7KaKOvrdPnUJh1FdnyRBkM2P0ApBAQfbDN8HiNh2oZ0ayioRElNV2HhkhBbhsqXl_BpsY95SdMGOvEBB9mBSceMteCOrbBZqHBFyJnFH1Up56ZGkGPRTn1OFW0gWbY61R-wJkj-yXDQ6cPAi24hgtOx7V-S0iVQJhgjCQ2c?purpose=inline)
+
+[bookdown.org](https://bookdown.org/jorherre/MATEMATICAS1_UCM/tema-4-c%C3%A1lculo-integral.html?utm_source=chatgpt.com)
+
+We can calculate this using the Fundamental Theorem of Calculus.
+
+## 3. Step 1: Find the Indefinite Integral
+
+The first step in evaluating a definite integral is to find the antiderivative of the function.
+
+Start with:
+
+\\[ \int \frac{x}{2}\\,dx \\]
+
+### 3.1 Apply the constant multiple rule
+
+Move the constant \\(\frac12\\) outside the integral:
+
+\\[ \int \frac{x}{2}\\,dx =\frac12\int x\\,dx \\]
+
+### 3.2 Apply the power rule
+
+Recall the power rule:
+
+\\[ \int x^n\\,dx=\frac{x^{n+1}}{n+1}+C \\]
+
+Since \\(x=x^1\\):
+
+\\[ \int x\\,dx=\frac{x^2}{2}+C \\]
+
+Substitute this result:
+
+\\[ \frac12\left(\frac{x^2}{2}\right)+C \\]
+
+### 3.3 Simplify
+
+Multiply the two fractions:
+
+\\[ \boxed{F(x)=\frac{x^2}{4}+C} \\]
+
+This is the indefinite integral of \\(x/2\\).
+
+### Python code for Step 1
+
+-------------------code----------------------
+def antiderivative(x):
+    return x**2 / 4
+
+# Example: evaluate the antiderivative at x = 1
+print(antiderivative(1))  # 0.25
+-------------------code----------------------
+
+The Python function returns the antiderivative with \\(C=0\\). We do not need to explicitly include \\(C\\) when computing the definite integral because the constant cancels when we subtract the endpoint values.
+
+## 4. Step 2: Evaluate the Antiderivative at the Lower Limit
+
+The lower limit is \\(x=1\\).
+
+Substitute \\(x=1\\) into the antiderivative:
+
+\\[ F(1)=\frac{1^2}{4} \\]
+
+Since \\(1^2=1\\):
+
+\\[ \boxed{F(1)=\frac14} \\]
+
+This is the value of the antiderivative at the lower boundary.
+
+### Python code for Step 2
+
+-------------------code----------------------
+lower_limit = 1
+
+lower_value = antiderivative(lower_limit)
+
+print("F(1) =", lower_value)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+F(1) = 0.25
+-------------------code----------------------
+
+## 5. Step 3: Evaluate the Antiderivative at the Upper Limit
+
+The upper limit is \\(x=2\\).
+
+Substitute \\(x=2\\):
+
+\\[ F(2)=\frac{2^2}{4} \\]
+
+Since \\(2^2=4\\):
+
+\\[ \boxed{F(2)=1} \\]
+
+### Python code for Step 3
+
+-------------------code----------------------
+upper_limit = 2
+
+upper_value = antiderivative(upper_limit)
+
+print("F(2) =", upper_value)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+F(2) = 1.0
+-------------------code----------------------
+
+## 6. Step 4: Subtract the Lower Value from the Upper Value
+
+The Fundamental Theorem of Calculus states that if \\(F'(x)=f(x)\\), then:
+
+\\[ \boxed{\int_a^b f(x)\\,dx=F(b)-F(a)} \\]
+
+In other words:
+
+1. Find the antiderivative.
+2. Evaluate it at the upper limit.
+3. Evaluate it at the lower limit.
+4. Subtract the lower value from the upper value.
+
+For our example:
+
+\\[ \int_1^2 \frac{x}{2}\\,dx=F(2)-F(1) \\]
+
+Substitute the values:
+
+\\[ =1-\frac14 \\]
+
+Therefore:
+
+\\[ \boxed{\int_1^2 \frac{x}{2}\\,dx=\frac34=0.75} \\]
+
+The area under the curve between \\(x=1\\) and \\(x=2\\) is 0.75 square units.
+
+### 6.1 Why does the constant \\(C\\) disappear?
+
+If we keep the constant in the antiderivative, the calculation becomes:
+
+\\[ \left(1+C\right)-\left(\frac14+C\right) \\]
+
+Expanding the subtraction:
+
+\\[ 1+C-\frac14-C \\]
+
+The constants cancel:
+
+\\[ C-C=0 \\]
+
+Leaving:
+
+\\[ 1-\frac14=\frac34 \\]
+
+This explains why the final result of a definite integral does not require \\(+C\\).
+
+### Python code for Step 4
+
+-------------------code----------------------
+lower_limit = 1
+upper_limit = 2
+
+area = (
+    antiderivative(upper_limit)
+    - antiderivative(lower_limit)
+)
+
+print("Definite integral =", area)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+Definite integral = 0.75
+-------------------code----------------------
+
+## 7. Visualize the Definite Integral in Python
+
+We can plot the function \\(f(x)=x/2\\) and shade the area between \\(x=1\\) and \\(x=2\\).
+
+The shaded region corresponds to the integral being calculated.
+
+Area under \\(f(x)=x/2\\)
+
+The integral is evaluated by subtracting the antiderivative at the two limits: \\(F(2)-F(1)=0.75\\).
+
+### Complete plotting and calculation code
+
+-------------------code----------------------
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 1. Define the original function
+def f(x):
+    return x / 2
+
+
+# 2. Define its antiderivative
+def F(x):
+    return x**2 / 4
+
+
+# 3. Set the integration limits
+a = 1
+b = 2
+
+
+# 4. Evaluate the antiderivative at each limit
+lower_value = F(a)
+upper_value = F(b)
+
+
+# 5. Calculate the definite integral
+area = upper_value - lower_value
+
+print("Definite Integral")
+print("-" * 30)
+print(f"Lower limit: F({a}) = {lower_value}")
+print(f"Upper limit: F({b}) = {upper_value}")
+print(f"Area: F({b}) - F({a}) = {area}")
+
+
+# 6. Generate points for plotting
+x = np.linspace(0, 3, 200)
+x_shaded = np.linspace(a, b, 100)
+
+
+# 7. Plot the function and shade the area
+plt.figure(figsize=(8, 5))
+
+plt.plot(x, f(x), label="f(x) = x / 2")
+plt.fill_between(
+    x_shaded,
+    f(x_shaded),
+    0,
+    alpha=0.3,
+    label=f"Area = {area}"
+)
+
+plt.axvline(a, linestyle="--", alpha=0.6)
+plt.axvline(b, linestyle="--", alpha=0.6)
+
+plt.xlabel("x")
+plt.ylabel("f(x)")
+plt.title("Definite Integral from x = 1 to x = 2")
+plt.grid(True, alpha=0.3)
+plt.legend()
+plt.show()
+-------------------code----------------------
+
+Expected numerical result:
+
+-------------------code----------------------
+Definite Integral
+------------------------------
+Lower limit: F(1) = 0.25
+Upper limit: F(2) = 1.0
+Area: F(2) - F(1) = 0.75
+-------------------code----------------------
+
+## 8. Important Notes and Best Practices
+
+1. Always find the antiderivative first. Use the integration rules you learned in previous lessons.
+2. Subtract in the correct order. Always calculate \\(F(b)-F(a)\\), meaning upper limit minus lower limit.
+3. Do not include \\(+C\\) in the final definite integral. The constants cancel when you subtract the endpoint values.
+4. Distinguish signed area from geometric area. If a function crosses below the \\(x\\)-axis, the definite integral can be negative or can combine positive and negative contributions. To calculate total geometric area, you may need to split the interval or integrate the absolute value.
+5. Use Python to verify your calculations. For a simple function, the antiderivative method gives the exact mathematical result, while numerical methods may produce approximations.
+
+## 9. Summary
+
+A definite integral calculates the accumulated value of a function over a specified interval.
+
+For this lecture's example:
+
+\\[ \int_1^2 \frac{x}{2}\\,dx \\]
+
+First, find the antiderivative:
+
+\\[ F(x)=\frac{x^2}{4} \\]
+
+Then evaluate the upper and lower limits:
+
+\\[ F(2)=1,\qquad F(1)=\frac14 \\]
+
+Finally, subtract:
+
+\\[ \boxed{\int_1^2 \frac{x}{2}\\,dx=\frac34=0.75} \\]
+
+The main formula to remember is:
+
+\\[ \boxed{\int_a^b f(x)\\,dx=F(b)-F(a)} \\]
+
+where \\(F'(x)=f(x)\\). This formula is the foundation for evaluating definite integrals by hand and in Python.
