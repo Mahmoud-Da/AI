@@ -2520,7 +2520,7 @@ Step 3: Add the constant of integration.
 
 We can define the original function and its antiderivative in Python.
 
-```
+-------------------code----------------------
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -2542,7 +2542,7 @@ plt.title("Power Rule of Integration")
 plt.grid(True)
 plt.legend()
 plt.show()
-```
+-------------------code----------------------
 
 The function `F(x)` is an antiderivative of `f(x)` because differentiating \\(x^5/5\\) gives \\(x^4\\).
 
@@ -2597,7 +2597,7 @@ Step 3: Simplify.
 
 ### 3.3 Python example
 
-```
+-------------------code----------------------
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -2619,7 +2619,7 @@ plt.title("Constant Multiple Rule")
 plt.grid(True)
 plt.legend()
 plt.show()
-```
+-------------------code----------------------
 
 To verify the answer, differentiate \\(3x^3\\):
 
@@ -2663,7 +2663,7 @@ Step 4: Combine the results and add the constant.
 
 ### 4.3 Python example
 
-```
+-------------------code----------------------
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -2685,7 +2685,7 @@ plt.title("Sum Rule of Integration")
 plt.grid(True)
 plt.legend()
 plt.show()
-```
+-------------------code----------------------
 
 ## 5. Verify Integration by Differentiation
 
@@ -2709,7 +2709,7 @@ The result matches the original function.
 
 We can check the formulas numerically by approximating the derivative with finite differences.
 
-```
+-------------------code----------------------
 import numpy as np
 
 def f(x):
@@ -2732,7 +2732,7 @@ for x in x_values:
     print(f"Original function:      {original_value:.6f}")
     print(f"Numerical derivative:   {numerical_derivative:.6f}")
     print()
-```
+-------------------code----------------------
 
 The numerical derivative should be very close to the original function's value. Small differences occur because of floating-point arithmetic and the finite approximation step.
 
@@ -2781,7 +2781,7 @@ Python can help you plot functions, test calculations, and approximate derivativ
 
 The following script combines all three integration rules and verifies the final antiderivative numerically. It also plots the original function and its antiderivative.
 
-```
+-------------------code----------------------
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -2924,7 +2924,7 @@ for x in test_points:
     )
 
 print("\nAll numerical verification tests passed!")
-```
+-------------------code----------------------
 
 ## 8. Summary
 
@@ -2944,3 +2944,398 @@ Key takeaways:
 4. Include \\(C\\) for indefinite integrals.
 5. The ordinary power rule does not work for an exponent of \\(-1\\).
 6. Differentiate your result to check whether you recovered the original integrand.
+
+*** 100. Indefinite Integral Exercises ***
+# Integral Calculus: Three Practice Exercises
+
+## 1. Overview
+
+This lecture reviews the three fundamental integration rules by solving three exercises.
+
+1. The power rule
+2. The constant multiple rule
+3. The sum and difference rule
+
+The goal is to integrate each expression step by step and simplify the final answer.
+
+Remember: integration reverses differentiation. To verify an indefinite integral, differentiate your answer and check that you recover the original function.
+
+## 2. Exercise 1: Integrate \\(x^5\\)
+
+We need to calculate:
+
+\\[ \int x^5\\,dx \\]
+
+### Step 1: Apply the power rule
+
+The power rule is:
+
+\\[ \int x^n\\,dx=\frac{x^{n+1}}{n+1}+C \\]
+
+Add \\(1\\) to the exponent:
+
+\\[ 5+1=6 \\]
+
+### Step 2: Divide by the new exponent
+
+\\[ \int x^5\\,dx=\frac{x^6}{6}+C \\]
+
+Final answer:
+
+\\[ \boxed{\frac{x^6}{6}+C} \\]
+
+### Python implementation
+
+-------------------code----------------------
+def integrate_x5(x):
+    return x**6 / 6
+
+print(integrate_x5(2))
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+10.666666666666666
+-------------------code----------------------
+
+This evaluates the antiderivative at \\(x=2\\), assuming the integration constant is \\(C=0\\).
+
+## 3. Exercise 2: Integrate \\(12x^5\\)
+
+We need to calculate:
+
+\\[ \int 12x^5\\,dx \\]
+
+This exercise uses both the constant multiple rule and the power rule.
+
+### Step 1: Move the constant outside
+
+The constant multiple rule states:
+
+\\[ \int af(x)\\,dx=a\int f(x)\\,dx \\]
+
+Therefore:
+
+\\[ \int 12x^5\\,dx=12\int x^5\\,dx \\]
+
+### Step 2: Apply the power rule
+
+From Exercise 1:
+
+\\[ \int x^5\\,dx=\frac{x^6}{6} \\]
+
+Substitute this result:
+
+\\[ 12\left(\frac{x^6}{6}\right)+C \\]
+
+### Step 3: Simplify
+
+Since \\(12/6=2\\):
+
+\\[ \boxed{\int 12x^5\\,dx=2x^6+C} \\]
+
+### Python implementation
+
+-------------------code----------------------
+def integrate_12x5(x):
+    return 2 * x**6
+
+print(integrate_12x5(2))
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+128
+-------------------code----------------------
+
+Again, this evaluates the antiderivative at \\(x=2\\) with \\(C=0\\).
+
+## 4. Exercise 3: Integrate \\(12x^5-x\\)
+
+We need to calculate:
+
+\\[ \int (12x^5-x)\\,dx \\]
+
+This exercise combines the constant multiple rule, power rule, and difference rule.
+
+### Step 1: Separate the terms
+
+The difference rule allows us to integrate each term separately:
+
+\\[ \int (12x^5-x)\\,dx = \int 12x^5\\,dx-\int x\\,dx \\]
+
+### Step 2: Integrate the first term
+
+Using Exercise 2:
+
+\\[ \int 12x^5\\,dx=2x^6 \\]
+
+### Step 3: Integrate the second term
+
+Remember that \\(x=x^1\\).
+
+Apply the power rule:
+
+\\[ \int x\\,dx=\frac{x^{1+1}}{1+1} \\]
+
+Simplify:
+
+\\[ \int x\\,dx=\frac{x^2}{2} \\]
+
+Because the original expression contains \\(-x\\), this term remains negative.
+
+### Step 4: Combine the results
+
+\\[ \int (12x^5-x)\\,dx = 2x^6-\frac{x^2}{2}+C \\]
+
+Final answer:
+
+\\[ \boxed{2x^6-\frac{x^2}{2}+C} \\]
+
+### Python implementation
+
+-------------------code----------------------
+def integrate_12x5_minus_x(x):
+    return 2 * x**6 - x**2 / 2
+
+print(integrate_12x5_minus_x(2))
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+126
+-------------------code----------------------
+
+## 5. Verify the Answers Using Differentiation
+
+Differentiation is a useful way to check whether an indefinite integral is correct.
+
+### 5.1 Verify Exercise 1
+
+\\[ F(x)=\frac{x^6}{6}+C \\]
+
+Differentiate:
+
+\\[ F'(x)=\frac{6x^5}{6}=x^5 \\]
+
+The original function is recovered.
+
+### 5.2 Verify Exercise 2
+
+\\[ F(x)=2x^6+C \\]
+
+Differentiate:
+
+\\[ F'(x)=12x^5 \\]
+
+The original function is recovered.
+
+### 5.3 Verify Exercise 3
+
+\\[ F(x)=2x^6-\frac{x^2}{2}+C \\]
+
+Differentiate each term:
+
+\\[ F'(x)=12x^5-x \\]
+
+The original function is recovered.
+
+### Python verification
+
+We can approximate the derivative numerically using the central difference formula:
+
+\\[ F'(x)\approx\frac{F(x+h)-F(x-h)}{2h} \\]
+
+-------------------code----------------------
+import numpy as np
+
+def original_function(x):
+    return 12 * x**5 - x
+
+def antiderivative(x):
+    return 2 * x**6 - x**2 / 2
+
+h = 1e-5
+test_points = [0.5, 1.0, 1.5, 2.0]
+
+for x in test_points:
+    numerical_derivative = (
+        antiderivative(x + h) - antiderivative(x - h)
+    ) / (2 * h)
+
+    expected_value = original_function(x)
+
+    print(f"x = {x}")
+    print(f"Original function:    {expected_value:.6f}")
+    print(f"Numerical derivative: {numerical_derivative:.6f}")
+    print()
+
+    assert np.isclose(
+        numerical_derivative,
+        expected_value,
+        rtol=1e-5,
+        atol=1e-5
+    )
+
+print("All verification tests passed!")
+-------------------code----------------------
+
+Small numerical differences are normal because the derivative is approximated rather than calculated symbolically.
+
+## 6. Important Notes and Best Practices
+
+### 6.1 Remember the three rules
+
+| Rule                   | Formula                                                                    |
+| ---------------------- | -------------------------------------------------------------------------- |
+| Power rule             | \\(\displaystyle \int x^n dx=\frac{x^{n+1}}{n+1}+C\\), where \\(n\neq-1\\) |
+| Constant multiple rule | \\(\displaystyle \int af(x)dx=a\int f(x)dx\\)                              |
+| Difference rule        | \\(\displaystyle \int(f-g)dx=\int fdx-\int gdx\\)                          |
+
+### 6.2 Do not forget the integration constant
+
+Every indefinite integral includes \\(+C\\), because differentiating a constant gives zero.
+
+For example:
+
+\\[ \int x^5\\,dx=\frac{x^6}{6}+C \\]
+
+In the Python examples, the functions return only the part that depends on \\(x\\), effectively choosing \\(C=0\\).
+
+### 6.3 Keep the negative sign
+
+When integrating \\(12x^5-x\\), the second term must remain negative:
+
+\\[ 2x^6-\frac{x^2}{2}+C \\]
+
+### 6.4 Simplify the final answer
+
+For Exercise 2, the expression
+
+\\[ \frac{12x^6}{6}+C \\]
+
+should be simplified to:
+
+\\[ 2x^6+C \\]
+
+### 6.5 Check your answer
+
+Differentiate your final expression. If the result matches the original integrand, your antiderivative is correct.
+
+## 7. Full Final Code
+
+This script combines all three exercises, prints their antiderivative values at \\(x=2\\), and verifies the third answer numerically.
+
+-------------------code----------------------
+import numpy as np
+
+
+# ============================================================
+# 1. Exercise 1: Integrate x^5
+# Integral: x^6 / 6 + C
+# ============================================================
+
+def integrate_x5(x):
+    return x**6 / 6
+
+
+# ============================================================
+# 2. Exercise 2: Integrate 12x^5
+# Integral: 2x^6 + C
+# ============================================================
+
+def integrate_12x5(x):
+    return 2 * x**6
+
+
+# ============================================================
+# 3. Exercise 3: Integrate 12x^5 - x
+# Integral: 2x^6 - x^2 / 2 + C
+# ============================================================
+
+def original_function(x):
+    return 12 * x**5 - x
+
+
+def integrate_12x5_minus_x(x):
+    return 2 * x**6 - x**2 / 2
+
+
+# ============================================================
+# 4. Display the Results at x = 2
+# These functions use C = 0.
+# ============================================================
+
+x = 2
+
+print("Integration Exercises")
+print("=" * 45)
+
+print("\nExercise 1: Integral of x^5")
+print("Antiderivative: x^6 / 6 + C")
+print(f"Value at x = {x}: {integrate_x5(x)}")
+
+print("\nExercise 2: Integral of 12x^5")
+print("Antiderivative: 2x^6 + C")
+print(f"Value at x = {x}: {integrate_12x5(x)}")
+
+print("\nExercise 3: Integral of 12x^5 - x")
+print("Antiderivative: 2x^6 - x^2 / 2 + C")
+print(f"Value at x = {x}: {integrate_12x5_minus_x(x)}")
+
+
+# ============================================================
+# 5. Verify Exercise 3 Numerically
+# Approximate the derivative of the antiderivative.
+# ============================================================
+
+print("\nNumerical Verification")
+print("=" * 45)
+
+h = 1e-5
+test_points = [0.5, 1.0, 1.5, 2.0]
+
+for x in test_points:
+    numerical_derivative = (
+        integrate_12x5_minus_x(x + h)
+        - integrate_12x5_minus_x(x - h)
+    ) / (2 * h)
+
+    expected_value = original_function(x)
+
+    print(f"\nx = {x}")
+    print(f"Original function:    {expected_value:.6f}")
+    print(f"Numerical derivative: {numerical_derivative:.6f}")
+
+    assert np.isclose(
+        numerical_derivative,
+        expected_value,
+        rtol=1e-5,
+        atol=1e-5
+    )
+
+print("\nAll verification tests passed!")
+-------------------code----------------------
+
+## 8. Summary
+
+The three exercises demonstrate how to apply the integration rules progressively.
+
+| Exercise | Integral                  | Final answer                             |
+| -------- | ------------------------- | ---------------------------------------- |
+| 1        | \\(\int x^5\\,dx\\)       | \\(\displaystyle \frac{x^6}{6}+C\\)      |
+| 2        | \\(\int 12x^5\\,dx\\)     | \\(2x^6+C\\)                             |
+| 3        | \\(\int (12x^5-x)\\,dx\\) | \\(\displaystyle 2x^6-\frac{x^2}{2}+C\\) |
+
+Key takeaways:
+
+1. Add \\(1\\) to the exponent and divide by the new exponent.
+2. Move constant multipliers outside the integral.
+3. Integrate each term of a sum or difference separately.
+4. Include the integration constant \\(C\\).
+5. Verify the result by differentiating it.
+
+The next topic is definite integrals, which evaluate the accumulated value of a function between two specified limits. Unlike indefinite integrals, definite integrals produce a numerical result and do not require a final \\(+C\\).
