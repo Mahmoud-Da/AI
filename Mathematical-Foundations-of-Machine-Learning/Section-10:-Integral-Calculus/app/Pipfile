@@ -10,7 +10,7 @@ torch = "*"
 tensorflow = "*"
 scikit-learn = "*"
 sympy = "*"
-scipy = "*"
+scipy = "1.15.3"
 pandas = "*"
 
 [dev-packages]

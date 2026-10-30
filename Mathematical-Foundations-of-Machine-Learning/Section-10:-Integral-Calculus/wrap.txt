@@ -3681,3 +3681,385 @@ The main formula to remember is:
 \\[ \boxed{\int_a^b f(x)\\,dx=F(b)-F(a)} \\]
 
 where \\(F'(x)=f(x)\\). This formula is the foundation for evaluating definite integrals by hand and in Python.
+
+*** 102. Numeric Integration with Python ***
+# Machine Learning Foundations – Calculating Definite Integrals with Python
+
+## 1. Introduction
+
+In the previous lecture, we learned how to calculate definite integrals manually using symbolic integration rules.
+
+In this lecture, we learn how to calculate the same integrals automatically using Python.
+
+There are two main approaches to integration:
+
+1. Symbolic integration: Solving an integral mathematically using integration rules.
+2. Numerical integration: Using computational methods to approximate the value of an integral.
+
+The lecture uses Python's `scipy.integrate.quad()` function to perform numerical integration.
+
+## 2. Review: Definite Integrals
+
+A definite integral calculates the area under a function over a specific interval.
+
+Its general notation is:
+
+\\[ \int_a^b f(x)\\,dx \\]
+
+Where:
+
+- \\(f(x)\\): The function being integrated.
+- \\(x\\): The integration variable.
+- \\(a\\): The lower integration limit.
+- \\(b\\): The upper integration limit.
+
+### 2.1 Example from the Previous Lecture
+
+We want to calculate:
+
+\\[ \int_1^2 \frac{x}{2}\\,dx \\]
+
+First, we integrate the function symbolically:
+
+\\[ \int \frac{x}{2}\\,dx \\]
+
+Using the power rule:
+
+\\[ \int x^n dx = \frac{x^{n+1}}{n+1}+C \\]
+
+We get:
+
+\\[ F(x)=\frac{x^2}{4}+C \\]
+
+Next, substitute the upper and lower limits:
+
+\\[ F(2)-F(1) \\]
+
+\\[ =\frac{2^2}{4}-\frac{1^2}{4} \\]
+
+\\[ =1-\frac{1}{4} \\]
+
+\\[ \boxed{\frac{3}{4}=0.75} \\]
+
+The area under the curve between 1 and 2 is therefore 0.75 square units.
+
+## 3. Symbolic Integration vs. Numerical Integration
+
+These approaches solve the same general problem but work differently.
+
+| Symbolic Integration                     | Numerical Integration                           |
+| ---------------------------------------- | ----------------------------------------------- |
+| Uses mathematical rules                  | Uses computational algorithms                   |
+| Produces an analytical expression        | Produces a numerical approximation              |
+| Can provide an exact result              | May contain a small numerical error             |
+| Often requires mathematical manipulation | Usually requires defining a function and limits |
+
+For example:
+
+Symbolic result:
+
+\\[ \int_1^2 \frac{x}{2}\\,dx=\frac{3}{4} \\]
+
+Numerical result:
+
+-------------------code----------------------
+0.75
+-------------------code----------------------
+
+Both approaches give the same result in this example.
+
+## 4. Import the Numerical Integration Function
+
+Python provides numerical integration through the SciPy library.
+
+We use:
+
+-------------------code----------------------
+from scipy.integrate import quad
+-------------------code----------------------
+
+The `quad` function performs numerical integration using a quadrature method.
+
+A quadrature method estimates the area under a curve by evaluating the function at selected points.
+
+Important: Numerical integration is different from symbolic integration. It calculates an approximation rather than deriving an algebraic expression.
+
+## 5. Define the Function
+
+Before integrating, we need to define the mathematical function.
+
+Our example is:
+
+\\[ f(x)=\frac{x}{2} \\]
+
+In Python:
+
+-------------------code----------------------
+def g(x):
+    return x / 2
+-------------------code----------------------
+
+Explanation:
+
+- `def g(x)` creates a function called `g`.
+- `x` is the input variable.
+- `return x / 2` calculates half of the input value.
+
+We can test it:
+
+-------------------code----------------------
+print(g(2))
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+1.0
+-------------------code----------------------
+
+## 6. Calculate the Definite Integral Using `quad()`
+
+The `quad()` function accepts three main arguments in this example:
+
+-------------------code----------------------
+quad(function, lower_limit, upper_limit)
+-------------------code----------------------
+
+For our example:
+
+-------------------code----------------------
+result = quad(g, 1, 2)print(result)
+-------------------code----------------------
+
+Output will be approximately:
+
+-------------------code----------------------
+(0.75, 8.326672684688674e-15)
+-------------------code----------------------
+
+The function returns a tuple containing two values.
+
+### 6.1 First Value: Integration Result
+
+-------------------code----------------------
+result[0]
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+0.75
+-------------------code----------------------
+
+This is the estimated value of the definite integral.
+
+Mathematically:
+
+\\[ 0.75=\frac{3}{4} \\]
+
+### 6.2 Second Value: Estimated Numerical Error
+
+-------------------code----------------------
+result[1]
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+8.326672684688674e-15
+-------------------code----------------------
+
+This represents the estimated absolute error in the numerical integration.
+
+The error is extremely small, so the result is highly accurate for this example.
+
+## 7. Display the Results Clearly
+
+We can combine everything and print the result in a more readable format.
+
+-------------------code----------------------
+from scipy.integrate import quad
+
+def g(x):
+    return x / 2
+
+result, error = quad(g, 1, 2)
+
+print("Integration Result:", result)
+print("Estimated Error:", error)
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+Integration Result: 0.75
+Estimated Error: 8.326672684688674e-15
+-------------------code----------------------
+
+This approach makes it easier to understand the output because we give each returned value a meaningful variable name.
+
+## 8. Important Notes and Best Practices
+
+### 8.1 Understand the Function Before Integrating
+
+Always define the mathematical function correctly.
+
+For example:
+
+-------------------code----------------------
+def g(x):
+    return x / 2
+-------------------code----------------------
+
+This represents:
+
+\\[ f(x)=\frac{x}{2} \\]
+
+### 8.2 Check the Integration Limits
+
+The second and third arguments determine the integration interval.
+
+-------------------code----------------------
+quad(g, 1, 2)
+-------------------code----------------------
+
+This calculates:
+
+\\[ \int_1^2 g(x)\\,dx \\]
+
+Changing the limits changes the result.
+
+### 8.3 Understand the Numerical Error
+
+Numerical integration can introduce small errors.
+
+Always consider checking both returned values:
+
+-------------------code----------------------
+result, error = quad(g, 1, 2)print(result)print(error)
+-------------------code----------------------
+
+A small estimated error generally indicates a more reliable numerical result, although it is not an absolute guarantee.
+
+### 8.4 Remember the SciPy Dependency
+
+The example requires SciPy to be installed:
+
+-------------------code----------------------
+pip install scipy
+-------------------code----------------------
+
+Then import the function:
+
+-------------------code----------------------
+from scipy.integrate import quad
+-------------------code----------------------
+
+If SciPy is not importing correctly in your Python environment, the integration code will not run until that dependency issue is resolved.
+
+## 9. Full Final Code
+
+Here is the complete example from the lecture, with a few improvements for readability.
+
+-------------------code----------------------
+
+# ============================================================
+# 1. Import the numerical integration function
+# ============================================================
+
+from scipy.integrate import quad
+
+
+# ============================================================
+# 2. Define the mathematical function
+# f(x) = x / 2
+# ============================================================
+
+def g(x):
+    return x / 2
+
+
+# ============================================================
+# 3. Define the integration limits
+# ============================================================
+
+lower_limit = 1
+upper_limit = 2
+
+
+# ============================================================
+# 4. Calculate the definite integral
+# ============================================================
+
+result, error = quad(
+    g,
+    lower_limit,
+    upper_limit
+)
+
+
+# ============================================================
+# 5. Display the results
+# ============================================================
+
+print("Numerical Integration")
+print("-" * 40)
+
+print(f"Function: f(x) = x / 2")
+print(f"Integration interval: [{lower_limit}, {upper_limit}]")
+
+print(f"\nIntegration result: {result}")
+print(f"Estimated numerical error: {error}")
+
+
+# ============================================================
+# 6. Compare with the symbolic result
+# ============================================================
+
+symbolic_result = 3 / 4
+
+print("\nComparison")
+print("-" * 40)
+
+print(f"Numerical result: {result}")
+print(f"Symbolic result:  {symbolic_result}")
+
+print(f"Difference: {abs(result - symbolic_result)}")
+
+-------------------code----------------------
+
+## 10. Summary
+
+In this lecture, we learned how to calculate definite integrals computationally using Python.
+
+The most important concepts are:
+
+1. Definite integrals calculate the area under a function between two limits.
+2. Symbolic integration uses mathematical rules to derive an exact expression.
+3. Numerical integration uses computational methods to approximate the integral.
+4. SciPy provides the `quad()` function for numerical integration.
+5. `quad()` accepts a function, a lower limit, and an upper limit.
+6. It returns two values:
+   - The numerical integration result.
+   - An estimate of the numerical error.
+
+Main takeaway:
+
+-------------------code----------------------
+from scipy.integrate import quad
+
+def f(x):
+    return x / 2
+
+result, error = quad(f, 1, 2)
+-------------------code----------------------
+
+The result is:
+
+\\[ \boxed{0.75} \\]
+
+This is equivalent to the symbolic result:
+
+\\[ \boxed{\frac{3}{4}} \\]
+
+Numerical integration is particularly useful in machine learning because many mathematical problems involve functions that are difficult or impossible to integrate analytically.
