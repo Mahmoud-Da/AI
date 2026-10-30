@@ -4382,3 +4382,294 @@ We learned two approaches:
 The most important takeaway is that mathematical integration and numerical integration are two different ways of solving the same problem.
 
 Next lecture: Applying integration to a practical machine learning problem: calculating the area under the ROC curve (ROC AUC).
+
+
+*** 104. Finding the Area Under the ROC Curve ***
+# Lecture Notes: Calculating the Area Under the ROC Curve (ROC AUC) with Python
+
+## 1. Learning Objectives
+
+In this lecture, we apply the concepts of integral calculus to a practical machine learning problem: calculating the Area Under the Receiver Operating Characteristic Curve (ROC AUC).
+
+By the end of this lecture, you should understand:
+
+1. What ROC AUC measures.
+2. How coordinates can represent a curve.
+3. How numerical integration calculates the area under a curve without requiring an explicit mathematical function.
+4. How to calculate AUC using Python and scikit-learn.
+5. Why the trapezoidal rule is useful for machine learning.
+
+## 2. Understanding the ROC Curve
+
+The Receiver Operating Characteristic (ROC) curve is used to evaluate binary classification models.
+
+It measures the relationship between two metrics:
+
+- True Positive Rate (TPR): The proportion of actual positive cases correctly identified.
+- False Positive Rate (FPR): The proportion of actual negative cases incorrectly classified as positive.
+
+The ROC curve plots:
+
+- X-axis: False Positive Rate (FPR).
+- Y-axis: True Positive Rate (TPR).
+
+[An Introduction to the F1 Score in Machine Learning](https://images.openai.com/static-rsc-4/xP4YFeL19-O6BJMrgH4-OGesX64T-zR65nbCg0gAXL66GR8Pf5PAkGqdnqerSBekxANKnZ3kJNNk6MhEDl4WjtylYV0JbK-Cgd8SA_NyLjXV_fA7yFGWylOd9uLu6CON_pZugA_xYMeFi5036mRXr2WkwgHKH8Tm9ksAIItGvDc?purpose=inline)
+
+[wandb.ai](https://wandb.ai/mostafaibrahim17/ml-articles/reports/An-Introduction-to-the-F1-Score-in-Machine-Learning--Vmlldzo2OTY0Mzg1?utm_source=chatgpt.com)
+
+The ROC curve shows how a classification model performs when we change its decision threshold.
+
+### 2.1 What Is ROC AUC?
+
+AUC stands for Area Under the Curve.
+
+ROC AUC measures the area underneath the ROC curve.
+
+It provides a single numerical value summarizing the model's ability to distinguish between positive and negative classes.
+
+Common interpretations:
+
+| AUC value | Interpretation                |
+| --------- | ----------------------------- |
+| 1.0       | Perfect discrimination        |
+| 0.9–1.0   | Excellent discrimination      |
+| 0.8–0.9   | Good discrimination           |
+| 0.7–0.8   | Fair discrimination           |
+| 0.6–0.7   | Poor discrimination           |
+| 0.5       | No better than random ranking |
+| Below 0.5 | Worse than random ranking     |
+
+These ranges are informal guidelines, not universal standards.
+
+## 3. Calculating AUC Without an Explicit Function
+
+In previous integration examples, we had a mathematical function such as:
+
+\\[ f(x)=2x \\]
+
+We could calculate its integral using:
+
+\\[ \int_a^b f(x)\\,dx \\]
+
+However, in this ROC example, we do not have an explicit mathematical function.
+
+Instead, we have a collection of coordinates representing points on the ROC curve.
+
+The five coordinates from the lecture are:
+
+\\[ (0,0) \\]
+
+\\[ (0,0.5) \\]
+
+\\[ (0.5,0.5) \\]
+
+\\[ (0.5,1) \\]
+
+\\[ (1,1) \\]
+
+These points describe the curve using pairs of X and Y values.
+
+[Illustrated Guide to ROC Curve and AUC Concepts - CS Note](https://images.openai.com/static-rsc-4/RoZxRvN5cGModUAXq40sEKItYEcfinbHFTQ4wfiYyvB_CkTzufjL6ihip0Au0uh9b9147SAFi3su__imcZpAliHZTKOznrPMlM5ssph3k2MxVl89ThjI4GvZ_tx-X8816MHHvjzR1jW49JWkpFnvwADUd_ej48TCffkcMW45aQU?purpose=inline)
+
+[csnote.cc](https://www.csnote.cc/en/posts/roc_auc/?utm_source=chatgpt.com)
+
+Even without an explicit function, we can calculate the area underneath the curve using numerical integration.
+
+## 4. The Trapezoidal Rule
+
+The lecture uses the trapezoidal rule to calculate the area under the ROC curve.
+
+This method approximates the area underneath a curve by dividing it into trapezoids.
+
+The area of one trapezoid is:
+
+\\[ A=\frac{h}{2}(y_1+y_2) \\]
+
+Where:
+
+- \\(h\\): Width of the interval.
+- \\(y_1\\): Height at the beginning.
+- \\(y_2\\): Height at the end.
+
+For multiple intervals, we calculate the area of each trapezoid and add them together:
+
+\\[ AUC=\sum\_{i=1}^{n-1} \frac{x\_{i+1}-x_i}{2}(y_i+y\_{i+1}) \\]
+
+This allows us to calculate the area using coordinate points rather than an explicit function.
+
+## 5. Calculating ROC AUC Using Python
+
+Scikit-learn provides an `auc()` function that calculates the area under a curve using the trapezoidal rule.
+
+We import it from:
+
+-------------------code----------------------
+from sklearn.metrics import auc
+-------------------code----------------------
+
+### 5.1 Step 1: Import the AUC Function
+
+-------------------code----------------------
+from sklearn.metrics import auc
+-------------------code----------------------
+
+The `auc()` function accepts X and Y coordinate arrays.
+
+### 5.2 Step 2: Define the X Coordinates
+
+The X coordinates represent the False Positive Rate (FPR):
+
+\\[ X=[0,0,0.5,0.5,1] \\]
+
+In Python:
+
+-------------------code----------------------
+fpr = [0, 0, 0.5, 0.5, 1]
+-------------------code----------------------
+
+### 5.3 Step 3: Define the Y Coordinates
+
+The Y coordinates represent the True Positive Rate (TPR):
+
+\\[ Y=[0,0.5,0.5,1,1] \\]
+
+In Python:
+
+-------------------code----------------------
+tpr = [0, 0.5, 0.5, 1, 1]
+-------------------code----------------------
+
+The important point is that each X coordinate must correspond to its matching Y coordinate.
+
+For example:
+
+-------------------code----------------------
+(0, 0)
+(0, 0.5)
+(0.5, 0.5)
+(0.5, 1)
+(1, 1)
+-------------------code----------------------
+
+### 5.4 Step 4: Calculate the Area
+
+Pass both coordinate arrays to `auc()`:
+
+-------------------code----------------------
+roc_auc = auc(fpr, tpr)
+-------------------code----------------------
+
+The function calculates the area underneath the curve.
+
+### 5.5 Step 5: Display the Result
+
+-------------------code----------------------
+print("ROC AUC:", roc_auc)
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+ROC AUC: 0.75
+-------------------code----------------------
+
+ROC AUC = 0.75
+
+This means the area underneath the ROC curve is 0.75.
+
+## 6. Understanding the Result Manually
+
+We can verify the result using the trapezoidal rule.
+
+Our coordinates are:
+
+| Point | FPR (X) | TPR (Y) |
+| ----- | ------- | ------- |
+| 1     | 0       | 0       |
+| 2     | 0       | 0.5     |
+| 3     | 0.5     | 0.5     |
+| 4     | 0.5     | 1       |
+| 5     | 1       | 1       |
+
+The first and third intervals have zero width, so their areas are zero.
+
+For the interval from \\(x=0\\) to \\(x=0.5\\), the heights are 0.5 and 0.5:
+
+\\[ A_1=\frac{0.5}{2}(0.5+0.5) \\]
+
+\\[ A_1=0.25 \\]
+
+For the interval from \\(x=0.5\\) to \\(x=1\\), the heights are 1 and 1:
+
+\\[ A_2=\frac{0.5}{2}(1+1) \\]
+
+\\[ A_2=0.5 \\]
+
+Add the areas:
+
+\\[ AUC=0+0.25+0+0.5 \\]
+
+\\[ \boxed{AUC=0.75} \\]
+
+This confirms the Python result.
+
+## 7. Complete Python Example
+
+Here is the complete implementation using scikit-learn:
+
+-------------------code----------------------
+from sklearn.metrics import auc
+
+# Step 1: Define the False Positive Rate (X coordinates)
+fpr = [0, 0, 0.5, 0.5, 1]
+
+# Step 2: Define the True Positive Rate (Y coordinates)
+tpr = [0, 0.5, 0.5, 1, 1]
+
+# Step 3: Calculate the area under the ROC curve
+roc_auc = auc(fpr, tpr)
+
+# Step 4: Display the result
+print("False Positive Rate:", fpr)
+print("True Positive Rate:", tpr)
+print("ROC AUC:", roc_auc)
+
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+False Positive Rate: [0, 0, 0.5, 0.5, 1]
+True Positive Rate: [0, 0.5, 0.5, 1, 1]
+ROC AUC: 0.75
+-------------------code----------------------
+
+## 8. Important Notes and Best Practices
+
+1. ROC AUC is an area measurement. It summarizes the ROC curve into one numerical value.
+2. You do not need an explicit mathematical function. A collection of ordered X and Y coordinates is sufficient to calculate the area.
+3. Coordinate correspondence matters. Each FPR value must match its corresponding TPR value.
+4. Use the trapezoidal rule. It estimates the area by connecting consecutive points with straight lines and calculating trapezoid areas.
+5. X coordinates must be ordered. The `auc()` function expects the X coordinates to be monotonic (increasing or decreasing).
+6. AUC does not tell the whole story. Two classification models can have similar AUC values but behave differently at specific decision thresholds. Consider precision, recall, confusion matrices, and the application context too.
+7. Use prediction scores, not just predicted labels, when generating a real ROC curve. The scores allow the ROC curve to evaluate different classification thresholds.
+
+## 9. Summary
+
+In this lecture, we learned how to calculate the area under an ROC curve using numerical integration.
+
+The main concepts are:
+
+- ROC curve: Evaluates a binary classification model using FPR and TPR.
+- ROC AUC: Measures the area underneath the ROC curve.
+- Coordinate points: Represent the curve even when no explicit mathematical function is available.
+- Trapezoidal rule: Calculates an approximate area using consecutive coordinate points.
+- Scikit-learn: Provides the `auc()` function to automate the calculation.
+
+Our example produced:
+
+\\[ \boxed{AUC=0.75} \\]
+
+The most important takeaway is that integral calculus has direct applications in machine learning. We can use numerical integration to evaluate classification models by calculating the area under their ROC curves.
+
+This concludes the integration section of the Machine Learning Foundations calculus series.
