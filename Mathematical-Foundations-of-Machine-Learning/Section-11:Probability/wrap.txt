@@ -2733,3 +2733,480 @@ print("Five consecutive heads:", p_five_heads)
 
 print("\nAll examples completed.")
 -------------------code----------------------
+
+*** 112. Combinatorics ***
+# Combinatorics – Counting Outcomes and Calculating Probabilities
+
+## 1. What Is Combinatorics?
+
+Combinatorics is a branch of mathematics concerned with counting the number of possible arrangements, selections, and outcomes.
+
+It is useful in probability theory because it allows us to calculate probabilities without manually listing every possible outcome.
+
+For example, when flipping three coins, we can calculate the number of ways to get exactly two heads without writing down every possible sequence.
+
+The main ideas in this lecture are:
+
+1. Factorials.
+2. The combinations formula (\\(n\\) choose \\(k\\)).
+3. Applying combinations to coin flips.
+4. Calculating probabilities using counting methods.
+
+## 2. Factorials
+
+A factorial is the product of all positive integers from a given number down to 1.
+
+It is represented by an exclamation mark (`!`).
+
+### 2.1 Mathematical definition
+
+\\[ n! = n \times (n-1) \times (n-2) \times \cdots \times 1 \\]
+
+Examples:
+
+\\[ 4! = 4 \times 3 \times 2 \times 1 = 24 \\]
+
+\\[ 3! = 3 \times 2 \times 1 = 6 \\]
+
+\\[ 2! = 2 \times 1 = 2 \\]
+
+\\[ 1! = 1 \\]
+
+Also, by mathematical convention:
+
+\\[ 0! = 1 \\]
+
+Important correction: The lecture transcript mistakenly states that \\(5! = 96\\). The correct calculation is:
+
+\\[ 5! = 5 \times 4 \times 3 \times 2 \times 1 = 120 \\]
+
+### 2.2 Python implementation
+
+Python provides factorial through the `math` module.
+
+-------------------code----------------------
+import math
+
+print(math.factorial(4))  # 24
+print(math.factorial(3))  # 6
+print(math.factorial(2))  # 2
+print(math.factorial(5))  # 120
+-------------------code----------------------
+
+You can also implement it manually:
+
+-------------------code----------------------
+def factorial(n):
+    if n < 0:
+        raise ValueError("Factorial is not defined for negative integers")
+
+    result = 1
+
+    for number in range(1, n + 1):
+        result *= number
+
+    return result
+
+
+print(factorial(4))  # 24
+print(factorial(5))  # 120
+-------------------code----------------------
+
+Best practice: Use `math.factorial()` in normal Python projects unless you specifically need to implement the algorithm yourself.
+
+## 3. Combinations: The \\(n\\) Choose \\(k\\) Formula
+
+Combinations allow us to calculate how many ways we can select a specific number of items from a larger group.
+
+The notation is:
+
+\\[ \binom{n}{k} \\]
+
+It is read as "n choose k."
+
+Where:
+
+- \\(n\\): Total number of available items.
+- \\(k\\): Number of items we want to select.
+
+The combinations formula is:
+
+\\[ \boxed{\binom{n}{k} = \frac{n!}{k!(n-k)!}} \\]
+
+This formula helps us count possible selections without listing every combination.
+
+### 3.1 Understanding the formula
+
+Suppose we have three coin flips and want to know how many different ways we can get exactly two heads.
+
+In this example:
+
+- \\(n = 3\\): Total number of coin flips.
+- \\(k = 2\\): Number of heads we want.
+
+Therefore:
+
+\\[ \binom{3}{2} = \frac{3!}{2!(3-2)!} \\]
+
+Expand the factorials:
+
+\\[ = \frac{3 \times 2 \times 1}{(2 \times 1)(1)} \\]
+
+\\[ = \frac{6}{2} \\]
+
+\\[ \boxed{\binom{3}{2}=3} \\]
+
+There are three ways to get exactly two heads.
+
+### 3.2 Verify using Python
+
+-------------------code----------------------
+import math
+
+n = 3
+k = 2
+
+combinations = math.factorial(n) // (
+    math.factorial(k) * math.factorial(n - k)
+)
+
+print(combinations)  # 3
+-------------------code----------------------
+
+Python also provides a dedicated function:
+
+-------------------code----------------------
+import math
+
+print(math.comb(3, 2))  # 3
+-------------------code----------------------
+
+Best practice: Prefer `math.comb(n, k)` because it directly calculates combinations and avoids manually writing the factorial formula.
+
+## 4. Applying Combinations to Coin Flips
+
+Let's connect combinations with probability theory.
+
+Suppose we flip a fair coin three times.
+
+Each flip has two possible outcomes:
+
+- Heads (H)
+- Tails (T)
+
+### 4.1 Total number of possible outcomes
+
+Since every flip has two possible outcomes, the total number of possible sequences is:
+
+\\[ 2^n \\]
+
+For three flips:
+
+\\[ 2^3 = 8 \\]
+
+The sample space is:
+
+\\[ \Omega = \\{HHH,HHT,HTH,HTT,THH,THT,TTH,TTT\\} \\]
+
+### 4.2 Find the number of ways to get exactly two heads
+
+We use the combinations formula:
+
+\\[ \binom{3}{2}=3 \\]
+
+The three possible sequences are:
+
+- HHT
+- HTH
+- THH
+
+Therefore, there are three favorable outcomes.
+
+### 4.3 Calculate the probability
+
+For equally likely outcomes:
+
+\\[ P(A)=\frac{\text{Number of favorable outcomes}} {\text{Total number of possible outcomes}} \\]
+
+Substitute the values:
+
+\\[ P(\text{Exactly 2 heads})=\frac{3}{8} \\]
+
+\\[ \boxed{P(\text{Exactly 2 heads})=0.375=37.5\\%} \\]
+
+This is the same result obtained by manually listing and counting the sample space.
+
+### 4.4 Python implementation
+
+-------------------code----------------------
+import math
+
+n = 3
+k = 2
+
+# Number of ways to get exactly k heads
+favorable_outcomes = math.comb(n, k)
+
+# Total number of possible outcomes
+total_outcomes = 2 ** n
+
+# Calculate probability
+probability = favorable_outcomes / total_outcomes
+
+print("Favorable outcomes:", favorable_outcomes)
+print("Total outcomes:", total_outcomes)
+print("Probability:", probability)
+print("Percentage:", probability * 100, "%")
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+Favorable outcomes: 3
+Total outcomes: 8
+Probability: 0.375
+Percentage: 37.5 %
+-------------------code----------------------
+
+## 5. General Formula for Coin-Flip Probabilities
+
+We can combine the previous concepts into one formula.
+
+For \\(n\\) independent flips of a fair coin, the probability of getting exactly \\(k\\) heads is:
+
+\\[ \boxed{ P(X=k)=\frac{\binom{n}{k}}{2^n} } \\]
+
+Where:
+
+- \\(n\\): Total number of flips.
+- \\(k\\): Exact number of heads.
+- \\(\binom{n}{k}\\): Number of ways to arrange those heads among the flips.
+- \\(2^n\\): Total number of possible sequences.
+
+For example, if we flip a fair coin five times and want exactly three heads:
+
+\\[ P(X=3)=\frac{\binom{5}{3}}{2^5} \\]
+
+\\[ =\frac{10}{32} \\]
+
+\\[ \boxed{P(X=3)=0.3125=31.25\\%} \\]
+
+### 5.1 Create a reusable Python function
+
+-------------------code----------------------
+import math
+
+def coin_flip_probability(n, k):
+    """
+    Calculate the probability of getting exactly k heads
+    in n independent flips of a fair coin.
+    """
+
+    if n < 0 or k < 0 or k > n:
+        raise ValueError("Require n >= 0 and 0 <= k <= n")
+
+    favorable_outcomes = math.comb(n, k)
+    total_outcomes = 2 ** n
+
+    return favorable_outcomes / total_outcomes
+
+
+# Examples
+print(coin_flip_probability(3, 2))  # 0.375
+print(coin_flip_probability(5, 3))  # 0.3125
+print(coin_flip_probability(5, 5))  # 0.03125
+print(coin_flip_probability(3, 0))  # 0.125
+-------------------code----------------------
+
+## 6. Important Notes and Best Practices
+
+### 6.1 Combinations vs. permutations
+
+Combinations are used when the order of selection does not matter.
+
+For example, selecting two heads positions from three flips:
+
+- First and second positions.
+- First and third positions.
+- Second and third positions.
+
+There are three combinations.
+
+If the order matters, the problem may require permutations instead.
+
+### 6.2 When can we use \\(2^n\\)?
+
+The formula:
+
+\\[ 2^n \\]
+
+calculates the total number of possible sequences when each of the \\(n\\) trials has two possible outcomes.
+
+For example, coin flips have two outcomes: heads or tails.
+
+It assumes both outcomes are possible, but the outcomes do not necessarily have to be equally likely for the counting formula itself to work. However, using the simple ratio of favorable outcomes to total outcomes to calculate probability requires equally likely sequences.
+
+### 6.3 When can we use the combinations probability formula?
+
+The formula:
+
+\\[ P(X=k)=\frac{\binom{n}{k}}{2^n} \\]
+
+requires:
+
+- A fixed number of flips.
+- Independent flips.
+- A fair coin, with heads and tails each having probability \\(0.5\\).
+- Exactly \\(k\\) heads.
+
+For a biased coin, the probability must account for the different probabilities of heads and tails.
+
+### 6.4 Why is combinatorics useful?
+
+Without combinatorics, we might need to:
+
+1. Generate every possible outcome.
+2. Identify favorable outcomes.
+3. Count them manually.
+4. Divide by the total number of outcomes.
+
+Combinatorics provides mathematical formulas to calculate these counts directly, making it much easier to handle larger problems.
+
+## 7. Complete Final Code
+
+The following script combines factorial calculations, combinations, and coin-flip probability calculations.
+
+-------------------code----------------------
+import math
+
+
+# --------------------------------------------------
+# 1. Factorial
+# --------------------------------------------------
+
+def factorial(n):
+    if n < 0:
+        raise ValueError("Factorial is not defined for negative integers")
+
+    return math.factorial(n)
+
+
+# --------------------------------------------------
+# 2. Combinations
+# --------------------------------------------------
+
+def combinations(n, k):
+    """
+    Calculate the number of ways to select k items
+    from n items, where order does not matter.
+    """
+
+    if n < 0 or k < 0 or k > n:
+        raise ValueError("Require n >= 0 and 0 <= k <= n")
+
+    return math.comb(n, k)
+
+
+# --------------------------------------------------
+# 3. Total outcomes of coin flips
+# --------------------------------------------------
+
+def total_coin_flip_outcomes(n):
+    """
+    Calculate the total number of possible sequences
+    for n coin flips.
+    """
+
+    if n < 0:
+        raise ValueError("Number of flips cannot be negative")
+
+    return 2 ** n
+
+
+# --------------------------------------------------
+# 4. Probability of exactly k heads
+# --------------------------------------------------
+
+def coin_flip_probability(n, k):
+    """
+    Calculate the probability of getting exactly k heads
+    in n independent flips of a fair coin.
+    """
+
+    if n < 0 or k < 0 or k > n:
+        raise ValueError("Require n >= 0 and 0 <= k <= n")
+
+    favorable_outcomes = combinations(n, k)
+    total_outcomes = total_coin_flip_outcomes(n)
+
+    probability = favorable_outcomes / total_outcomes
+
+    return probability
+
+
+# --------------------------------------------------
+# 5. Examples
+# --------------------------------------------------
+
+if __name__ == "__main__":
+
+    # Factorial examples
+    print("Factorial examples:")
+    print("4! =", factorial(4))
+    print("5! =", factorial(5))
+
+    print()
+
+    # Combination example
+    print("Combination example:")
+    print("3 choose 2 =", combinations(3, 2))
+
+    print()
+
+    # Total coin flip outcomes
+    print("Total coin flip outcomes:")
+    print("3 flips =", total_coin_flip_outcomes(3))
+    print("5 flips =", total_coin_flip_outcomes(5))
+
+    print()
+
+    # Probability examples
+    print("Coin flip probabilities:")
+
+    examples = [
+        (3, 2),
+        (5, 3),
+        (5, 5),
+        (3, 0)
+    ]
+
+    for n, k in examples:
+        probability = coin_flip_probability(n, k)
+
+        print(
+            f"{n} flips, exactly {k} heads: "
+            f"{probability:.5f} "
+            f"({probability * 100:.2f}%)"
+        )
+-------------------code----------------------
+
+## 8. Summary
+
+| Concept                  | Meaning                                             | Formula                                |
+| ------------------------ | --------------------------------------------------- | -------------------------------------- |
+| Factorial                | Product of positive integers down to 1              | \\(n!\\)                               |
+| Combinations             | Number of ways to select \\(k\\) items from \\(n\\) | \\(\binom{n}{k}=\frac{n!}{k!(n-k)!}\\) |
+| Total coin-flip outcomes | Number of possible sequences                        | \\(2^n\\)                              |
+| Favorable outcomes       | Ways to get exactly \\(k\\) heads                   | \\(\binom{n}{k}\\)                     |
+| Probability              | Favorable outcomes divided by total outcomes        | \\(\frac{\binom{n}{k}}{2^n}\\)         |
+
+Key takeaways:
+
+1. Combinatorics is the mathematics of counting.
+2. Factorials are fundamental to many counting formulas.
+3. The \\(n\\) choose \\(k\\) formula calculates combinations without listing them individually.
+4. For \\(n\\) coin flips, there are \\(2^n\\) possible sequences.
+5. For a fair coin, the probability of exactly \\(k\\) heads in \\(n\\) flips is \\(\binom{n}{k}/2^n\\).
+6. Combinatorics makes probability calculations more efficient, especially when the sample space becomes large.
+
+Next lecture: Practical exercises using Python to test understanding of combinatorics and probability theory.
