@@ -4382,3 +4382,834 @@ We learned two approaches:
 The most important takeaway is that mathematical integration and numerical integration are two different ways of solving the same problem.
 
 Next lecture: Applying integration to a practical machine learning problem: calculating the area under the ROC curve (ROC AUC).
+
+
+*** 104. Finding the Area Under the ROC Curve ***
+# Lecture Notes: Calculating the Area Under the ROC Curve (ROC AUC) with Python
+
+## 1. Learning Objectives
+
+In this lecture, we apply the concepts of integral calculus to a practical machine learning problem: calculating the Area Under the Receiver Operating Characteristic Curve (ROC AUC).
+
+By the end of this lecture, you should understand:
+
+1. What ROC AUC measures.
+2. How coordinates can represent a curve.
+3. How numerical integration calculates the area under a curve without requiring an explicit mathematical function.
+4. How to calculate AUC using Python and scikit-learn.
+5. Why the trapezoidal rule is useful for machine learning.
+
+## 2. Understanding the ROC Curve
+
+The Receiver Operating Characteristic (ROC) curve is used to evaluate binary classification models.
+
+It measures the relationship between two metrics:
+
+- True Positive Rate (TPR): The proportion of actual positive cases correctly identified.
+- False Positive Rate (FPR): The proportion of actual negative cases incorrectly classified as positive.
+
+The ROC curve plots:
+
+- X-axis: False Positive Rate (FPR).
+- Y-axis: True Positive Rate (TPR).
+
+[An Introduction to the F1 Score in Machine Learning](https://images.openai.com/static-rsc-4/xP4YFeL19-O6BJMrgH4-OGesX64T-zR65nbCg0gAXL66GR8Pf5PAkGqdnqerSBekxANKnZ3kJNNk6MhEDl4WjtylYV0JbK-Cgd8SA_NyLjXV_fA7yFGWylOd9uLu6CON_pZugA_xYMeFi5036mRXr2WkwgHKH8Tm9ksAIItGvDc?purpose=inline)
+
+[wandb.ai](https://wandb.ai/mostafaibrahim17/ml-articles/reports/An-Introduction-to-the-F1-Score-in-Machine-Learning--Vmlldzo2OTY0Mzg1?utm_source=chatgpt.com)
+
+The ROC curve shows how a classification model performs when we change its decision threshold.
+
+### 2.1 What Is ROC AUC?
+
+AUC stands for Area Under the Curve.
+
+ROC AUC measures the area underneath the ROC curve.
+
+It provides a single numerical value summarizing the model's ability to distinguish between positive and negative classes.
+
+Common interpretations:
+
+| AUC value | Interpretation                |
+| --------- | ----------------------------- |
+| 1.0       | Perfect discrimination        |
+| 0.9–1.0   | Excellent discrimination      |
+| 0.8–0.9   | Good discrimination           |
+| 0.7–0.8   | Fair discrimination           |
+| 0.6–0.7   | Poor discrimination           |
+| 0.5       | No better than random ranking |
+| Below 0.5 | Worse than random ranking     |
+
+These ranges are informal guidelines, not universal standards.
+
+## 3. Calculating AUC Without an Explicit Function
+
+In previous integration examples, we had a mathematical function such as:
+
+\\[ f(x)=2x \\]
+
+We could calculate its integral using:
+
+\\[ \int_a^b f(x)\\,dx \\]
+
+However, in this ROC example, we do not have an explicit mathematical function.
+
+Instead, we have a collection of coordinates representing points on the ROC curve.
+
+The five coordinates from the lecture are:
+
+\\[ (0,0) \\]
+
+\\[ (0,0.5) \\]
+
+\\[ (0.5,0.5) \\]
+
+\\[ (0.5,1) \\]
+
+\\[ (1,1) \\]
+
+These points describe the curve using pairs of X and Y values.
+
+[Illustrated Guide to ROC Curve and AUC Concepts - CS Note](https://images.openai.com/static-rsc-4/RoZxRvN5cGModUAXq40sEKItYEcfinbHFTQ4wfiYyvB_CkTzufjL6ihip0Au0uh9b9147SAFi3su__imcZpAliHZTKOznrPMlM5ssph3k2MxVl89ThjI4GvZ_tx-X8816MHHvjzR1jW49JWkpFnvwADUd_ej48TCffkcMW45aQU?purpose=inline)
+
+[csnote.cc](https://www.csnote.cc/en/posts/roc_auc/?utm_source=chatgpt.com)
+
+Even without an explicit function, we can calculate the area underneath the curve using numerical integration.
+
+## 4. The Trapezoidal Rule
+
+The lecture uses the trapezoidal rule to calculate the area under the ROC curve.
+
+This method approximates the area underneath a curve by dividing it into trapezoids.
+
+The area of one trapezoid is:
+
+\\[ A=\frac{h}{2}(y_1+y_2) \\]
+
+Where:
+
+- \\(h\\): Width of the interval.
+- \\(y_1\\): Height at the beginning.
+- \\(y_2\\): Height at the end.
+
+For multiple intervals, we calculate the area of each trapezoid and add them together:
+
+\\[ AUC=\sum\_{i=1}^{n-1} \frac{x\_{i+1}-x_i}{2}(y_i+y\_{i+1}) \\]
+
+This allows us to calculate the area using coordinate points rather than an explicit function.
+
+## 5. Calculating ROC AUC Using Python
+
+Scikit-learn provides an `auc()` function that calculates the area under a curve using the trapezoidal rule.
+
+We import it from:
+
+-------------------code----------------------
+from sklearn.metrics import auc
+-------------------code----------------------
+
+### 5.1 Step 1: Import the AUC Function
+
+-------------------code----------------------
+from sklearn.metrics import auc
+-------------------code----------------------
+
+The `auc()` function accepts X and Y coordinate arrays.
+
+### 5.2 Step 2: Define the X Coordinates
+
+The X coordinates represent the False Positive Rate (FPR):
+
+\\[ X=[0,0,0.5,0.5,1] \\]
+
+In Python:
+
+-------------------code----------------------
+fpr = [0, 0, 0.5, 0.5, 1]
+-------------------code----------------------
+
+### 5.3 Step 3: Define the Y Coordinates
+
+The Y coordinates represent the True Positive Rate (TPR):
+
+\\[ Y=[0,0.5,0.5,1,1] \\]
+
+In Python:
+
+-------------------code----------------------
+tpr = [0, 0.5, 0.5, 1, 1]
+-------------------code----------------------
+
+The important point is that each X coordinate must correspond to its matching Y coordinate.
+
+For example:
+
+-------------------code----------------------
+(0, 0)
+(0, 0.5)
+(0.5, 0.5)
+(0.5, 1)
+(1, 1)
+-------------------code----------------------
+
+### 5.4 Step 4: Calculate the Area
+
+Pass both coordinate arrays to `auc()`:
+
+-------------------code----------------------
+roc_auc = auc(fpr, tpr)
+-------------------code----------------------
+
+The function calculates the area underneath the curve.
+
+### 5.5 Step 5: Display the Result
+
+-------------------code----------------------
+print("ROC AUC:", roc_auc)
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+ROC AUC: 0.75
+-------------------code----------------------
+
+ROC AUC = 0.75
+
+This means the area underneath the ROC curve is 0.75.
+
+## 6. Understanding the Result Manually
+
+We can verify the result using the trapezoidal rule.
+
+Our coordinates are:
+
+| Point | FPR (X) | TPR (Y) |
+| ----- | ------- | ------- |
+| 1     | 0       | 0       |
+| 2     | 0       | 0.5     |
+| 3     | 0.5     | 0.5     |
+| 4     | 0.5     | 1       |
+| 5     | 1       | 1       |
+
+The first and third intervals have zero width, so their areas are zero.
+
+For the interval from \\(x=0\\) to \\(x=0.5\\), the heights are 0.5 and 0.5:
+
+\\[ A_1=\frac{0.5}{2}(0.5+0.5) \\]
+
+\\[ A_1=0.25 \\]
+
+For the interval from \\(x=0.5\\) to \\(x=1\\), the heights are 1 and 1:
+
+\\[ A_2=\frac{0.5}{2}(1+1) \\]
+
+\\[ A_2=0.5 \\]
+
+Add the areas:
+
+\\[ AUC=0+0.25+0+0.5 \\]
+
+\\[ \boxed{AUC=0.75} \\]
+
+This confirms the Python result.
+
+## 7. Complete Python Example
+
+Here is the complete implementation using scikit-learn:
+
+-------------------code----------------------
+from sklearn.metrics import auc
+
+# Step 1: Define the False Positive Rate (X coordinates)
+fpr = [0, 0, 0.5, 0.5, 1]
+
+# Step 2: Define the True Positive Rate (Y coordinates)
+tpr = [0, 0.5, 0.5, 1, 1]
+
+# Step 3: Calculate the area under the ROC curve
+roc_auc = auc(fpr, tpr)
+
+# Step 4: Display the result
+print("False Positive Rate:", fpr)
+print("True Positive Rate:", tpr)
+print("ROC AUC:", roc_auc)
+
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+False Positive Rate: [0, 0, 0.5, 0.5, 1]
+True Positive Rate: [0, 0.5, 0.5, 1, 1]
+ROC AUC: 0.75
+-------------------code----------------------
+
+## 8. Important Notes and Best Practices
+
+1. ROC AUC is an area measurement. It summarizes the ROC curve into one numerical value.
+2. You do not need an explicit mathematical function. A collection of ordered X and Y coordinates is sufficient to calculate the area.
+3. Coordinate correspondence matters. Each FPR value must match its corresponding TPR value.
+4. Use the trapezoidal rule. It estimates the area by connecting consecutive points with straight lines and calculating trapezoid areas.
+5. X coordinates must be ordered. The `auc()` function expects the X coordinates to be monotonic (increasing or decreasing).
+6. AUC does not tell the whole story. Two classification models can have similar AUC values but behave differently at specific decision thresholds. Consider precision, recall, confusion matrices, and the application context too.
+7. Use prediction scores, not just predicted labels, when generating a real ROC curve. The scores allow the ROC curve to evaluate different classification thresholds.
+
+## 9. Summary
+
+In this lecture, we learned how to calculate the area under an ROC curve using numerical integration.
+
+The main concepts are:
+
+- ROC curve: Evaluates a binary classification model using FPR and TPR.
+- ROC AUC: Measures the area underneath the ROC curve.
+- Coordinate points: Represent the curve even when no explicit mathematical function is available.
+- Trapezoidal rule: Calculates an approximate area using consecutive coordinate points.
+- Scikit-learn: Provides the `auc()` function to automate the calculation.
+
+Our example produced:
+
+\\[ \boxed{AUC=0.75} \\]
+
+The most important takeaway is that integral calculus has direct applications in machine learning. We can use numerical integration to evaluate classification models by calculating the area under their ROC curves.
+
+This concludes the integration section of the Machine Learning Foundations calculus series.
+
+*** 105. Resources for the Further Study of Calculus ***
+# Lecture Notes: Calculus Review, Learning Resources, and the Road Ahead in Machine Learning
+
+## 1. Introduction
+
+This is the final lecture of the Calculus section of the Machine Learning Foundations series.
+
+The lecture has three main objectives:
+
+1. Recommend additional resources for studying differential and integral calculus.
+2. Review the main concepts covered throughout the Calculus subject.
+3. Explain how calculus connects to the remaining subjects in the machine learning curriculum.
+
+This lecture is primarily a conceptual review, so there is no new Python implementation.
+
+## 2. Recommended Resources for Further Study
+
+The instructor recommends several resources for developing a deeper understanding of calculus.
+
+### 2.1 Differential Calculus
+
+Differential calculus studies derivatives and how quantities change.
+
+Recommended resources:
+
+1\. Mathematics for Machine Learning — Chapter 6
+
+[Amazon.com](https://images.openai.com/static-rsc-4/9zSIFh3yiysCk3tZs9AMgIPnPI6hl0LDhpvd3FwFqqMxbWUlYy6mptlxVotPja6Q0f7Op8lelK-aLZL-ev5o__Kp-7fhprtm38hrDYLqasaZZfGxY9og2dd7B21BCQmkwa7iVdGF5r4pXq5V1nM2FGVqdlyzilL0JEJXAVuU_OI?purpose=inline)
+
+Mathematics for Machine Learning
+
+Authors: Marc Peter Deisenroth, A. Aldo Faisal, Cheng Soon Ong.
+
+Chapter 6 covers important differential calculus concepts relevant to machine learning.
+
+2\. 3Blue1Brown — YouTube
+
+[Essence of calculus - YouTube](https://images.openai.com/static-rsc-4/UZtep0TsJjnCtTv8qojqu9qPOQje9GM8mx0zHSeZO1VPydiqQ5kgxovdrCOupm-PwDEGVcpflhykGXEynOwHZBtDwISn_xWetSKlwy4Ftmnai-Qdx2iPK9hjETjS4olNdPUbwOOcRbV2dIYOM4Nyph4TTgIwJhcrWbIdwTNyjOs?purpose=inline)
+
+3Blue1Brown
+
+A visual-focused educational channel that explains mathematical concepts through animations.
+
+Particularly useful for understanding derivatives, limits, and the intuition behind calculus.
+
+[Visit 3Blue1Brown](https://www.youtube.com/@3blue1brown?utm_source=chatgpt.com)
+
+### 2.2 Integral Calculus
+
+Integral calculus studies accumulation, areas under curves, and the reverse process of differentiation.
+
+Recommended resources:
+
+1. Mathematics for Machine Learning — the same textbook mentioned above.
+2. 3Blue1Brown — especially the visual explanations of integration.
+3. Dive into Deep Learning — Appendix 18.5.
+
+[Dive into Deep Learning | Libristo - EU](https://images.openai.com/static-rsc-4/SjfHzz3qBLYklTbRsGTOVjF9tb1PocI15TCnZer0yn6kjY_2fEK1R8DnkKWrtcliVfkje3QQ0VKqkINm3lVOLMfy9JlpmV1qjRcTYoDJ1KQ-vLUoETkolkCTIOm9toNZNTlN10dAonFGm3bqdDHUo6Ung2e7eYtCA5F4Yr34VqU?purpose=inline)
+
+Dive into Deep Learning
+
+A practical deep learning textbook that includes mathematical foundations.
+
+[Read Dive into Deep Learning](https://d2l.ai/?utm_source=chatgpt.com)
+
+## 3. Review of the Calculus Subject
+
+The Calculus subject was divided into three thematic segments.
+
+Calculus: Three Main Segments
+
+1. Introduction to Single-Variable Calculus
+
+   Reviewed the essential calculus concepts needed to understand more advanced topics.
+   - Functions and limits.
+   - Derivatives.
+   - Integration basics.
+2. Partial Derivatives and Gradients
+
+   Studied how functions change with respect to multiple variables.
+   - Partial derivatives.
+   - Gradients.
+   - Machine learning cost functions.
+   - How gradients help fit model parameters to training data.
+3. Integral Calculus
+
+   Studied how to calculate accumulated quantities and areas.
+   - Indefinite integrals.
+   - Definite integrals.
+   - Symbolic integration.
+   - Numerical integration using Python.
+   - ROC AUC calculation.
+
+## 4. Segment One: Essential Single-Variable Calculus
+
+The first segment reviewed the fundamental concepts needed for the rest of the subject.
+
+### 4.1 Derivatives
+
+A derivative measures how quickly a function changes with respect to its input.
+
+For example:
+
+\\[ f(x)=x^2 \\]
+
+Its derivative is:
+
+\\[ f'(x)=2x \\]
+
+Python example using SymPy:
+
+-------------------code----------------------
+import sympy as sp
+
+x = sp.symbols('x')
+
+f = x**2
+derivative = sp.diff(f, x)
+
+print(derivative)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+2*x
+-------------------code----------------------
+
+### 4.2 Why Derivatives Matter
+
+Derivatives help us understand:
+
+- The rate of change of a function.
+- The slope of a curve.
+- How model parameters affect a cost function.
+- How to optimize machine learning models.
+
+## 5. Segment Two: Partial Derivatives and Gradients
+
+The second segment introduced partial derivatives, which are essential when working with functions containing multiple variables.
+
+### 5.1 Partial Derivatives
+
+A partial derivative measures how a multivariable function changes when one variable changes while the other variables are held constant.
+
+Consider:
+
+\\[ f(x,y)=x^2+3xy+y^2 \\]
+
+The partial derivative with respect to \\(x\\) is:
+
+\\[ \frac{\partial f}{\partial x}=2x+3y \\]
+
+The partial derivative with respect to \\(y\\) is:
+
+\\[ \frac{\partial f}{\partial y}=3x+2y \\]
+
+Python example:
+
+-------------------code----------------------
+import sympy as sp
+
+x, y = sp.symbols('x y')
+
+f = x**2 + 3*x*y + y**2
+
+df_dx = sp.diff(f, x)
+df_dy = sp.diff(f, y)
+
+print("Partial derivative with respect to x:", df_dx)
+print("Partial derivative with respect to y:", df_dy)
+-------------------code----------------------
+
+### 5.2 Gradients
+
+A gradient is a vector containing all the partial derivatives of a function.
+
+For our example:
+
+\\[ \nabla f(x,y)= \begin{bmatrix} 2x+3y\\\ 3x+2y \end{bmatrix} \\]
+
+Python example:
+
+-------------------code----------------------
+gradient = [sp.diff(f, x), sp.diff(f, y)]
+
+print("Gradient:", gradient)
+-------------------code----------------------
+
+### 5.3 Connection to Machine Learning
+
+Gradients help machine learning algorithms determine how to adjust model parameters to reduce prediction errors.
+
+For example, when training a model:
+
+1. The model makes predictions.
+2. A cost function measures the prediction error.
+3. Gradients indicate how the cost changes with respect to the model parameters.
+4. The parameters are adjusted to reduce the cost.
+
+This process is fundamental to gradient-based optimization.
+
+## 6. Segment Three: Integral Calculus
+
+The third segment focused on integration.
+
+### 6.1 Indefinite Integrals
+
+An indefinite integral finds the antiderivative of a function.
+
+For example:
+
+\\[ \int x^2\\,dx=\frac{x^3}{3}+C \\]
+
+Python example:
+
+-------------------code----------------------
+import sympy as sp
+
+x = sp.symbols('x')
+
+f = x**2
+integral = sp.integrate(f, x)
+
+print(integral)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+x**3/3
+-------------------code----------------------
+
+### 6.2 Definite Integrals
+
+A definite integral calculates the accumulated value of a function over a specified interval.
+
+For example:
+
+\\[ \int_1^2 x\\,dx \\]
+
+Using the fundamental theorem of calculus:
+
+\\[ F(x)=\frac{x^2}{2} \\]
+
+\\[ F(2)-F(1)=2-\frac12 \\]
+
+\\[ \boxed{1.5} \\]
+
+Python example:
+
+-------------------code----------------------
+import sympy as sp
+
+x = sp.symbols('x')
+
+result = sp.integrate(x, (x, 1, 2))
+
+print(result)
+-------------------code----------------------
+
+### 6.3 Numerical Integration
+
+When calculating an integral manually is difficult, Python can approximate the result numerically.
+
+Example using SciPy:
+
+-------------------code----------------------
+from scipy.integrate import quad
+
+def f(x):
+    return x
+
+result, error = quad(f, 1, 2)
+
+print("Integral:", result)
+print("Estimated error:", error)
+-------------------code----------------------
+
+### 6.4 Application: ROC AUC
+
+One practical application of integration in machine learning is calculating the area under the Receiver Operating Characteristic (ROC) curve.
+
+ROC AUC summarizes how effectively a binary classification model distinguishes between positive and negative classes.
+
+Example:
+
+-------------------code----------------------
+from sklearn.metrics import auc
+
+fpr = [0, 0, 0.5, 0.5, 1]
+tpr = [0, 0.5, 0.5, 1, 1]
+
+roc_auc = auc(fpr, tpr)
+
+print("ROC AUC:", roc_auc)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+ROC AUC: 0.75
+-------------------code----------------------
+
+## 7. How Calculus Connects to Machine Learning
+
+The most important lesson from this subject is that calculus is not just abstract mathematics. It provides tools that make machine learning possible.
+
+| Calculus concept      | Machine learning application               |
+| --------------------- | ------------------------------------------ |
+| Derivatives           | Measuring changes in model outputs         |
+| Partial derivatives   | Understanding individual parameter effects |
+| Gradients             | Determining optimization directions        |
+| Integrals             | Calculating accumulated quantities         |
+| Numerical integration | Computing areas and expectations           |
+| ROC AUC               | Evaluating binary classification models    |
+
+### 7.1 The Connection to Gradient Descent
+
+One particularly important connection is between partial derivatives and gradient descent.
+
+Gradient descent is an optimization algorithm that uses gradients to update model parameters.
+
+A simplified update equation is:
+
+\\[ \theta\_{\text{new}} = \theta\_{\text{old}} - \alpha\nabla J(\theta) \\]
+
+Where:
+
+- \\(\theta\\): Model parameters.
+- \\(\alpha\\): Learning rate.
+- \\(J(\theta)\\): Cost function.
+- \\(\nabla J(\theta)\\): Gradient of the cost function.
+
+The gradient indicates the direction of increasing cost, so subtracting it moves the parameters in the direction of decreasing cost.
+
+This concept will become especially important in the final subject of the course: machine learning optimization.
+
+## 8. Progress Through the Eight-Subject Curriculum
+
+According to the instructor, completing this Calculus subject means reaching the halfway point of the eight-subject Machine Learning Foundations curriculum.
+
+Curriculum progress
+
+# 4 / 8
+
+50% completed
+
+Completed
+
+- Subjects 1–2: Earlier mathematical foundations
+- Subject 3: Linear Algebra
+- Subject 4: Calculus — Partial Derivatives and Integrals
+
+Upcoming
+
+5. Probability Theory and Information Theory
+6. Further machine learning foundations
+7. Further machine learning foundations
+8. Machine Learning Optimization
+
+The lecture identifies probability and information theory as the next subject and optimization as the eighth and final subject. The intermediate subject titles are not specified in this transcript.
+
+## 9. The Next Subject: Probability Theory and Information Theory
+
+The next subject introduces two important areas of mathematics:
+
+### 9.1 Probability Theory
+
+Probability theory provides a mathematical framework for understanding uncertainty and the likelihood of events.
+
+In machine learning, probability is important because models often work with uncertain predictions and data.
+
+Examples include:
+
+- Predicting whether an email is spam.
+- Estimating the probability that a customer will leave a service.
+- Predicting whether an image contains a particular object.
+- Modeling uncertain outcomes.
+
+### 9.2 Information Theory
+
+Information theory studies how information and uncertainty can be measured and quantified.
+
+Important concepts include:
+
+- Entropy.
+- Information content.
+- Cross-entropy.
+- Information gain.
+
+These concepts are used in machine learning algorithms, classification losses, and decision trees.
+
+### 9.3 Why Are These Topics Important?
+
+Probability and information theory help us understand how machine learning models represent uncertainty, make predictions, and evaluate information.
+
+They also provide mathematical foundations for many techniques used in modern machine learning and deep learning.
+
+## 10. Important Notes and Best Practices
+
+1\. Understand the mathematical intuition, not just the formulas. Visual explanations can make derivatives, gradients, and integrals easier to understand.
+
+2\. Connect every mathematical concept to machine learning. Ask how the concept helps train, optimize, or evaluate a model.
+
+3\. Practice symbolic and computational solutions. Use mathematical calculations to understand the theory and Python to verify results.
+
+4\. Understand gradients before studying gradient descent. Gradient-based optimization depends directly on partial derivatives.
+
+5\. Do not skip probability theory. It is essential for understanding uncertainty and many machine learning algorithms.
+
+6\. Keep practicing with Python. SymPy, NumPy, SciPy, and scikit-learn provide useful tools for exploring mathematical concepts.
+
+7\. Review previous subjects when necessary. Linear algebra and calculus will continue to appear throughout the remaining curriculum.
+
+## 11. Full Final Python Review Code
+
+The following code brings together the main computational examples from this Calculus subject.
+
+It uses SymPy for symbolic differentiation and integration, NumPy for numerical calculations, and scikit-learn for ROC AUC.
+
+-------------------code----------------------
+
+import sympy as sp
+from scipy.integrate import quad
+from sklearn.metrics import auc
+
+# ==========================================
+# 1. SYMBOLIC DIFFERENTIATION
+# ==========================================
+
+x, y = sp.symbols("x y")
+
+f = x**2 + 3*x*y + y**2
+
+derivative = sp.diff(x**2, x)
+
+print("1. Derivative")
+print("Derivative of x^2:", derivative)
+
+
+# ==========================================
+# 2. PARTIAL DERIVATIVES
+# ==========================================
+
+df_dx = sp.diff(f, x)
+df_dy = sp.diff(f, y)
+
+print("\n2. Partial Derivatives")
+print("Partial derivative with respect to x:", df_dx)
+print("Partial derivative with respect to y:", df_dy)
+
+
+# ==========================================
+# 3. GRADIENT
+# ==========================================
+
+gradient = [df_dx, df_dy]
+
+print("\n3. Gradient")
+print(gradient)
+
+
+# ==========================================
+# 4. SYMBOLIC INTEGRATION
+# ==========================================
+
+integrand = x**2
+
+indefinite_integral = sp.integrate(integrand, x)
+
+print("\n4. Indefinite Integral")
+print(indefinite_integral)
+
+
+# ==========================================
+# 5. DEFINITE INTEGRATION
+# ==========================================
+
+definite_integral = sp.integrate(x, (x, 1, 2))
+
+print("\n5. Definite Integral")
+print("Integral of x from 1 to 2:", definite_integral)
+
+
+# ==========================================
+# 6. NUMERICAL INTEGRATION
+# ==========================================
+
+def g(x):
+    return x
+
+result, error = quad(g, 1, 2)
+
+print("\n6. Numerical Integration")
+print("Integral:", result)
+print("Estimated error:", error)
+
+
+# ==========================================
+# 7. ROC AUC
+# ==========================================
+
+fpr = [0, 0, 0.5, 0.5, 1]
+tpr = [0, 0.5, 0.5, 1, 1]
+
+roc_auc = auc(fpr, tpr)
+
+print("\n7. ROC AUC")
+print("Area under ROC curve:", roc_auc)
+
+-------------------code----------------------
+
+Dependencies:
+
+-------------------code----------------------
+pip install sympy scipy scikit-learn
+-------------------code----------------------
+
+If SciPy still has the compiled-extension loading issue in your current macOS environment, the symbolic examples and ROC AUC example can be run independently without importing SciPy.
+
+## 12. Final Summary
+
+This lecture concludes the Calculus subject of the Machine Learning Foundations series.
+
+The main lessons are:
+
+- Differential calculus explains how functions change.
+- Partial derivatives explain how multivariable functions change with respect to individual variables.
+- Gradients combine partial derivatives into a vector that guides optimization.
+- Integral calculus measures accumulation and area under curves.
+- Numerical integration allows us to calculate integrals computationally.
+- ROC AUC demonstrates a practical application of integration in binary classification.
+
+The most important connection is:
+
+Calculus provides the mathematical foundation for understanding how machine learning models learn and improve.
+
+The next subject introduces probability theory and information theory, which will help build a deeper understanding of uncertainty, information, and probabilistic machine learning.
