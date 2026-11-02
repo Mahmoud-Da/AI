@@ -1885,3 +1885,572 @@ elif auc > 0.5:
 else:
     print("The model ranks positive examples worse than chance.")
 -------------------code----------------------
+
+*** 98. What Integral Calculus Is ***
+# Integral Calculus: Introduction, Notation, and Applications to Machine Learning
+
+## 1. What Is Integral Calculus?
+
+Integral calculus is the branch of calculus concerned with accumulation, including calculating the area under a curve.
+
+Previously, we studied differential calculus, which calculates the rate of change of a function. Integral calculus helps us determine the accumulated quantity from that rate of change.
+
+For example, if we know how fast a car travels at every moment, integration allows us to calculate the total distance traveled.
+
+### 1.1 Differential Calculus vs. Integral Calculus
+
+| Concept                  | Differential calculus  | Integral calculus    |
+| ------------------------ | ---------------------- | -------------------- |
+| Main purpose             | Measure rate of change | Measure accumulation |
+| Geometric interpretation | Slope of a curve       | Area under a curve   |
+| Example                  | Distance → speed       | Speed → distance     |
+| Main operation           | Differentiation        | Integration          |
+| Symbol                   | \\(\frac{dy}{dx}\\)    | \\(\int f(x)\\,dx\\) |
+
+### 1.2 Step-by-Step Example: Distance and Speed
+
+Suppose a car travels at a constant speed of \\(60\\) km/h for \\(2\\) hours.
+
+The distance is:
+
+\\[ \text{Distance}=\text{Speed}\times\text{Time} \\]
+
+\\[ d=60\times2=120\text{ km} \\]
+
+Integration generalizes this calculation when the speed changes over time.
+
+If speed is represented by \\(v(t)\\), then:
+
+\\[ d=\int_0^2 v(t)\\,dt \\]
+
+Here, the integral accumulates the speed over the two-hour interval to obtain the distance.
+
+-------------------code----------------------
+import sympy as sp
+
+t = sp.symbols("t")
+
+# Constant speed: 60 km/h
+v = 60
+
+# Integrate speed over 2 hours
+distance = sp.integrate(v, (t, 0, 2))
+
+print("Total distance:", distance, "km")
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+Total distance: 120 km
+-------------------code----------------------
+
+Important: Differentiation and integration are closely related inverse operations. Under appropriate conditions, integrating a derivative recovers the original function up to a constant.
+
+## 2. Understanding the Area Under a Curve
+
+A central idea in integral calculus is finding the area between a function's graph and the x-axis.
+
+Consider the function:
+
+\\[ f(x)=x^2 \\]
+
+We want to find the area under this curve between \\(x=0\\) and \\(x=2\\).
+
+### 2.1 Step 1: Approximate the Area Using Rectangles
+
+One way to estimate the area is to divide the region into rectangles.
+
+Each rectangle has:
+
+- Width: \\(\Delta x\\), the width of a small interval.
+- Height: A value of the function \\(f(x)\\).
+- Area: Width multiplied by height.
+
+\\[ A\_{\text{rectangle}}=\Delta x\cdot f(x) \\]
+
+The approximate total area is the sum of the rectangle areas:
+
+\\[ A\approx\sum\_{i=1}^{n}f(x_i^\*)\Delta x \\]
+
+Here, \\(x_i^\*\\) is the point chosen to determine the height of rectangle \\(i\\).
+
+### Python example
+
+-------------------code----------------------
+import numpy as np
+
+def f(x):
+    return x**2
+
+a = 0
+b = 2
+n = 3
+
+dx = (b - a) / n
+
+# Use right endpoints for rectangle heights
+x_values = np.linspace(a + dx, b, n)
+
+area_approx = sum(f(x) * dx for x in x_values)
+
+print("Rectangle width:", dx)
+print("Approximate area:", area_approx)
+-------------------code----------------------
+
+The approximation is \\(3.1111\\), while the exact area is approximately \\(2.6667\\).
+
+The difference occurs because rectangles do not perfectly match the curved boundary.
+
+### 2.2 Step 2: Increase the Number of Rectangles
+
+If we use more rectangles, each rectangle becomes narrower. The approximation generally improves for a continuous, well-behaved function when the rectangle heights are chosen appropriately.
+
+For example:
+
+- 3 rectangles: relatively rough approximation.
+- 6 rectangles: a better approximation.
+- 100 rectangles: usually much closer to the actual area.
+- Infinitely many infinitesimally narrow rectangles: the exact integral, under suitable conditions.
+
+-------------------code----------------------
+import numpy as np
+
+def f(x):
+    return x**2
+
+a, b = 0, 2
+
+for n in [3, 6, 10, 100, 1000]:
+    dx = (b - a) / n
+
+    # Right-endpoint Riemann sum
+    x_values = np.linspace(a + dx, b, n)
+
+    area = sum(f(x) * dx for x in x_values)
+
+    print(f"Rectangles: {n:4d} | Approximate area: {area:.6f}")
+-------------------code----------------------
+
+The exact area is:
+
+\\[ \int_0^2 x^2\\,dx=\frac{8}{3}\approx2.666667 \\]
+
+As the number of rectangles increases, the right-endpoint approximation approaches this value.
+
+## 3. The Fundamental Idea: A Limit
+
+Integral calculus works by taking the limit of increasingly accurate approximations.
+
+For a function \\(f(x)\\), a definite integral can be defined using a limit of sums:
+
+\\[ \int_a^b f(x)\\,dx = \lim\_{n\to\infty} \sum\_{i=1}^{n} f(x_i^\*)\Delta x \\]
+
+where:
+
+\\[ \Delta x=\frac{b-a}{n} \\]
+
+- \\(a\\): lower integration limit.
+- \\(b\\): upper integration limit.
+- \\(n\\): number of subdivisions.
+- \\(\Delta x\\): width of each subdivision.
+- \\(f(x_i^\*)\\): height used for the rectangle.
+
+As \\(n\\) increases, \\(\Delta x\\) approaches zero. Under suitable conditions, the sums converge to the exact area.
+
+### Python example: Visualizing the rectangles
+
+-------------------code----------------------
+import numpy as np
+import matplotlib.pyplot as plt
+
+def f(x):
+    return x**2
+
+a, b = 0, 2
+n = 6
+
+dx = (b - a) / n
+x = np.linspace(a, b, 400)
+
+# Right endpoints
+right_edges = np.linspace(a + dx, b, n)
+heights = f(right_edges)
+
+plt.figure(figsize=(8, 5))
+plt.plot(x, f(x), label="f(x) = x²", linewidth=2)
+
+plt.bar(
+    right_edges - dx / 2,
+    heights,
+    width=dx,
+    align="center",
+    alpha=0.35,
+    edgecolor="black",
+    label="Rectangle approximation"
+)
+
+plt.xlabel("x")
+plt.ylabel("f(x)")
+plt.title("Approximating an Integral with Rectangles")
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+-------------------code----------------------
+
+Best practice: Distinguish an approximation computed with a finite number of rectangles from the exact integral defined by a limit.
+
+## 4. Integral Calculus Notation
+
+The integral symbol is:
+
+\\[ \int \\]
+
+Its elongated, curved shape is commonly described as an S-shaped symbol.
+
+The basic notation for an indefinite integral is:
+
+\\[ \int f(x)\\,dx \\]
+
+Each part has a specific meaning:
+
+| Part       | Meaning                                             |
+| ---------- | --------------------------------------------------- |
+| \\(\int\\) | The integration operation                           |
+| \\(f(x)\\) | The function being integrated, called the integrand |
+| \\(dx\\)   | Indicates integration with respect to \\(x\\)       |
+
+The variable following \\(d\\) tells us which variable we are integrating over.
+
+### 4.1 Indefinite Integrals
+
+An indefinite integral finds a family of antiderivatives. It does not specify a bounded interval.
+
+For example:
+
+\\[ \int x^2\\,dx=\frac{x^3}{3}+C \\]
+
+Here, \\(C\\) is the integration constant because the derivative of any constant is zero.
+
+### Python example
+
+-------------------code----------------------
+import sympy as sp
+
+x = sp.symbols("x")
+
+f = x**2
+
+indefinite_integral = sp.integrate(f, x)
+
+print(indefinite_integral)
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+x**3/3
+-------------------code----------------------
+
+SymPy omits the arbitrary constant \\(C\\) in its symbolic output. Mathematically, the complete indefinite integral includes \\(+C\\).
+
+### 4.2 Definite Integrals
+
+A definite integral specifies the interval over which accumulation is measured:
+
+\\[ \int_a^b f(x)\\,dx \\]
+
+- \\(a\\) is the lower limit.
+- \\(b\\) is the upper limit.
+
+For example:
+
+\\[ \int_0^2 x^2\\,dx = \left[\frac{x^3}{3}\right]\_0^2 = \frac{8}{3} \\]
+
+### Python example
+
+-------------------code----------------------
+import sympy as sp
+
+x = sp.symbols("x")
+
+f = x**2
+
+definite_integral = sp.integrate(f, (x, 0, 2))
+
+print("Exact area:", definite_integral)
+print("Decimal area:", float(definite_integral))
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+Exact area: 8/3
+Decimal area: 2.6666666666666665
+-------------------code----------------------
+
+The lecture introduces indefinite integral notation first and defers a more detailed treatment of definite integrals to a later lesson.
+
+## 5. Applications of Integral Calculus
+
+Integral calculus has applications beyond calculating geometric areas.
+
+### 5.1 Areas Under Curves in Machine Learning
+
+A prominent example is the area under the Receiver Operating Characteristic curve, known as ROC AUC.
+
+- The ROC curve plots the true-positive rate against the false-positive rate at different classification thresholds.
+- AUC summarizes the classifier's ability to rank positive examples above negative examples.
+- AUC is calculated by integrating the ROC curve, often numerically.
+
+For a ROC curve \\(TPR(FPR)\\):
+
+\\[ AUC=\int_0^1 TPR(FPR)\\,d(FPR) \\]
+
+This is useful because it summarizes discrimination across thresholds instead of evaluating a model at only one threshold.
+
+### Python example
+
+-------------------code----------------------
+import numpy as np
+from sklearn.metrics import auc
+
+fpr = np.array([0.0, 0.1, 0.3, 0.6, 1.0])
+tpr = np.array([0.0, 0.6, 0.8, 0.9, 1.0])
+
+roc_auc = auc(fpr, tpr)
+
+print(f"ROC AUC: {roc_auc:.3f}")
+-------------------code----------------------
+
+This example uses illustrative ROC coordinates, not a trained model's measured performance.
+
+### 5.2 Expectation of a Random Variable
+
+Another important application is probability theory.
+
+For a continuous random variable \\(X\\) with probability density function \\(p(x)\\), its expected value is:
+
+\\[ E[X]=\int\_{-\infty}^{\infty}x\\,p(x)\\,dx \\]
+
+This integral calculates a probability-weighted average over possible values.
+
+Expectations are widely used in machine learning, including probabilistic modeling, statistical learning, and deep learning. The lecture identifies this topic as a subject to be covered in the upcoming probability and information theory section.
+
+### Python example
+
+Suppose \\(X\\) is uniformly distributed between 0 and 1. Its density is \\(p(x)=1\\) on that interval.
+
+\\[ E[X]=\int_0^1 x\\,dx=\frac12 \\]
+
+-------------------code----------------------
+import sympy as sp
+
+x = sp.symbols("x")
+
+# Uniform density on [0, 1]
+pdf = 1
+
+expected_value = sp.integrate(x * pdf, (x, 0, 1))
+
+print("Expected value:", expected_value)
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+Expected value: 1/2
+-------------------code----------------------
+
+### 5.3 Other Applications
+
+Integral calculus can also be used to calculate:
+
+- Volumes of three-dimensional objects.
+- Centers of mass and other central points.
+- Total quantities accumulated from changing rates.
+- Probabilities and expected values in continuous probability distributions.
+
+## 6. Important Notes and Best Practices
+
+1. Differentiate versus integrate: Differentiation measures instantaneous change; integration accumulates quantities.
+2. Interpret the units: If speed is measured in kilometers per hour and time in hours, integrating speed over time produces kilometers.
+3. Understand the limits: Definite integrals use lower and upper limits; indefinite integrals do not.
+4. Include the integration constant: An indefinite integral requires \\(+C\\).
+5. Do not confuse approximation with exact integration: A finite rectangle sum estimates the area, while the definite integral represents the limit under appropriate conditions.
+6. Use numerical methods when needed: Complex integrals may not have convenient symbolic solutions, so numerical integration can be useful.
+7. Interpret AUC correctly: ROC AUC measures ranking discrimination, not classification accuracy at a particular threshold.
+8. Check the function and interval: A definite integral can represent signed area. If a function falls below the x-axis, its contribution is negative; geometric area may require a different calculation.
+
+## 7. Summary
+
+Integral calculus studies accumulation and the area under curves. It complements differential calculus: differentiation measures rates of change, while integration can recover accumulated quantities from those rates.
+
+The key idea is to approximate the area using many narrow rectangles. As their widths approach zero, the sums converge to an integral under suitable conditions.
+
+The main notation is:
+
+\\[ \int f(x)\\,dx \\]
+
+For an indefinite integral, we find an antiderivative and include the constant \\(C\\). A definite integral adds lower and upper limits to calculate accumulation over an interval.
+
+In machine learning, important applications include ROC AUC and expectations in probability theory, as well as other accumulated quantities.
+
+## 8. Full Final Code
+
+The following consolidated script demonstrates rectangle approximations, symbolic integration, definite integration, a rectangle visualization, ROC AUC, and expected value calculations.
+
+Install the required libraries first:
+
+-------------------code----------------------
+pip install numpy matplotlib sympy scikit-learn
+-------------------code----------------------
+
+-------------------code----------------------
+
+import numpy as np
+import matplotlib.pyplot as plt
+import sympy as sp
+from sklearn.metrics import auc
+
+# ============================================================
+# STEP 1: DEFINE THE FUNCTION
+# ============================================================
+
+x = sp.symbols("x")
+
+f_sym = x**2
+f = sp.lambdify(x, f_sym, "numpy")
+
+print("Function:", f_sym)
+
+# ============================================================
+# STEP 2: APPROXIMATE AREA USING RECTANGLES
+# ============================================================
+
+a, b = 0, 2
+
+print("\nRECTANGLE APPROXIMATIONS")
+
+for n in [3, 6, 10, 100, 1000]:
+    dx = (b - a) / n
+
+    # Right-endpoint Riemann sum
+    x_values = np.linspace(a + dx, b, n)
+
+    area_approx = np.sum(f(x_values) * dx)
+
+    print(
+        f"Rectangles: {n:4d} | "
+        f"Approximate area: {area_approx:.6f}"
+    )
+
+# ============================================================
+# STEP 3: CALCULATE THE INDEFINITE INTEGRAL
+# ============================================================
+
+indefinite_integral = sp.integrate(f_sym, x)
+
+print("\nINDEFINITE INTEGRAL")
+print("Integral:", indefinite_integral, "+ C")
+
+# ============================================================
+# STEP 4: CALCULATE THE DEFINITE INTEGRAL
+# ============================================================
+
+definite_integral = sp.integrate(f_sym, (x, a, b))
+
+print("\nDEFINITE INTEGRAL")
+print("Exact area:", definite_integral)
+print("Decimal area:", float(definite_integral))
+
+# ============================================================
+# STEP 5: VISUALIZE THE CURVE AND RECTANGLES
+# ============================================================
+
+n = 6
+dx = (b - a) / n
+
+x_curve = np.linspace(a, b, 400)
+right_edges = np.linspace(a + dx, b, n)
+heights = f(right_edges)
+
+plt.figure(figsize=(8, 5))
+
+plt.plot(
+    x_curve,
+    f(x_curve),
+    linewidth=2,
+    label="f(x) = x²"
+)
+
+plt.bar(
+    right_edges - dx / 2,
+    heights,
+    width=dx,
+    align="center",
+    alpha=0.35,
+    edgecolor="black",
+    label="Right-endpoint rectangles"
+)
+
+plt.xlabel("x")
+plt.ylabel("f(x)")
+plt.title("Approximating an Integral with Rectangles")
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+
+# ============================================================
+# STEP 6: CALCULATE ROC AUC
+# ============================================================
+
+fpr = np.array([0.0, 0.1, 0.3, 0.6, 1.0])
+tpr = np.array([0.0, 0.6, 0.8, 0.9, 1.0])
+
+roc_auc = auc(fpr, tpr)
+
+print("\nROC AUC")
+print(f"AUC: {roc_auc:.3f}")
+
+plt.figure(figsize=(7, 5))
+
+plt.plot(
+    fpr,
+    tpr,
+    marker="o",
+    label=f"ROC curve (AUC = {roc_auc:.3f})"
+)
+
+plt.plot(
+    [0, 1],
+    [0, 1],
+    linestyle="--",
+    label="Random classifier"
+)
+
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.title("Illustrative ROC Curve")
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+
+# ============================================================
+# STEP 7: CALCULATE AN EXPECTED VALUE
+# ============================================================
+
+# Uniform random variable X on [0, 1]
+pdf = 1
+
+expected_value = sp.integrate(
+    x * pdf,
+    (x, 0, 1)
+)
+
+print("\nEXPECTED VALUE")
+print("E[X] =", expected_value)
+-------------------code----------------------
