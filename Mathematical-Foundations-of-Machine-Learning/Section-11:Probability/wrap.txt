@@ -1,0 +1,789 @@
+*** 107. Probability & Information Theory ***
+# Lecture Notes: Introduction to Probability and Information Theory
+
+## 1. Introduction
+
+This lecture introduces the Probability and Information Theory subject, which is part of the broader Machine Learning Foundations curriculum.
+
+The main goal of this subject is to understand how to quantify uncertainty and build systems that can make reasonable decisions even when information is incomplete or uncertain.
+
+Uncertainty is everywhere in machine learning:
+
+- A model cannot always predict the correct outcome.
+- Data may contain noise or missing information.
+- Different outcomes may have different probabilities.
+- Predictions often represent likelihoods rather than certainties.
+
+Probability theory provides the mathematical tools to understand and quantify this uncertainty.
+
+### 1.1 Why Is Probability Important?
+
+Consider a machine learning model that predicts whether an email is spam.
+
+Instead of simply returning:
+
+-------------------code----------------------
+Spam
+-------------------code----------------------
+
+The model might return:
+
+-------------------code----------------------
+Probability of spam: 0.95
+Probability of not spam: 0.05
+-------------------code----------------------
+
+This tells us how confident the model is in its prediction.
+
+Probability helps us represent uncertainty numerically and make better decisions.
+
+## 2. Where Probability Fits into the Machine Learning Curriculum
+
+The instructor uses the analogy of a machine learning house to explain how different mathematical subjects support machine learning.
+
+[Maths Fundamentals Required for Machine Learning: Complete Guide for Beginners | by Sohaib Fida | Medium](https://images.openai.com/static-rsc-4/kl8p0W_zEp6s95rcRuWnGc7RmkO7jjE7kuhiPvTJgfQpQhEEZ9Z2XRFT60v8AKsi2HHcjs7vgWyJazvseLiKr1pBsexfzAKorkq0vL3fU9hdsZP7hVaZVK6ubNQw9UPX5oEJ3WPGVjgzmgVHYuaZokVKujrWVxbl5IDtcNI5Cmk?purpose=inline)
+
+[medium.com](https://medium.com/%40sohaibfida1999/maths-fundamentals-required-for-machine-learni-complete-guide-for-beginners-af1a7b0a147f?utm_source=chatgpt.com)
+
+The broader curriculum includes several foundational subjects:
+
+- Linear Algebra
+- Calculus
+- Probability and Information Theory
+- Statistics
+- Computer Science
+- Algorithms and Data Structures
+- Machine Learning Optimization
+
+The subjects are connected, but they do not all depend equally on one another.
+
+### 2.1 Relationship with Previous Subjects
+
+The instructor explains that probability and information theory can largely be studied independently.
+
+Previous subjects provide some useful background:
+
+| Previous subject               | How it connects                                           |
+| ------------------------------ | --------------------------------------------------------- |
+| Introduction to Linear Algebra | Helps with mathematical notation and equations            |
+| Calculus 1                     | Provides basic mathematical foundations                   |
+| Calculus 2                     | Helps with some probability-related mathematical concepts |
+
+You do not need to complete every previous subject before starting probability theory.
+
+However, knowing basic linear algebra and calculus can make some explanations easier to understand.
+
+### 2.2 Relationship with Upcoming Subjects
+
+Probability and information theory are particularly important for understanding statistics.
+
+How the subjects connect
+
+Probability and Information Theory
+
+Current subject
+
+Introduction to Statistics
+
+Strongly depends on probability
+
+Other connections
+
+- Algorithms and Data Structures: relatively minor dependency.
+- Machine Learning Optimization: significant connection to probability and statistics.
+
+The important point is that probability is a foundation for understanding statistical methods and many machine learning algorithms.
+
+## 3. Structure of the Probability and Information Theory Subject
+
+The instructor divides this subject into three major segments.
+
+## Three learning segments
+
+1\. Introduction to Probability
+
+Largest segment
+
+The main foundation of the subject. Covers probability concepts, random variables, distributions, expected values, and statistical measurements.
+
+2\. Probability Distributions Applied to Machine Learning
+
+Studies probability distributions and how they are used in machine learning.
+
+3\. Information Theory
+
+Explores how information and uncertainty can be measured and quantified.
+
+Illustrative comparison of the relative emphasis described by the instructor, not exact course durations.
+
+The first segment is significantly larger than the other two. Most of the subject's learning time will be spent developing a strong understanding of probability fundamentals.
+
+## 4. Segment One: Introduction to Probability
+
+This is the largest segment and covers the essential concepts needed to understand probability theory.
+
+### 4.1 What Is Probability Theory?
+
+Probability theory is the mathematical study of uncertainty and random events.
+
+It allows us to quantify how likely an event is to happen.
+
+A probability is represented by a number between 0 and 1:
+
+\\[ 0\leq P(A)\leq 1 \\]
+
+Where:
+
+- \\(P(A)=0\\): The event is impossible.
+- \\(P(A)=1\\): The event is certain.
+- \\(P(A)=0.5\\): The event has a 50% probability.
+
+Example: A fair coin has two possible outcomes.
+
+\\[ P(\text{Heads})=0.5 \\]
+
+\\[ P(\text{Tails})=0.5 \\]
+
+Python example:
+
+-------------------code----------------------
+# Probability of getting heads or tails
+p_heads = 0.5
+p_tails = 0.5
+
+print("Probability of heads:", p_heads)
+print("Probability of tails:", p_tails)
+
+print("Total probability:", p_heads + p_tails)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+Probability of heads: 0.5
+Probability of tails: 0.5
+Total probability: 1.0
+-------------------code----------------------
+
+### 4.2 Frequentist vs. Bayesian Probability
+
+The instructor introduces two major interpretations of probability.
+
+Frequentist approach
+
+Probability is interpreted as the long-run relative frequency of an event when an experiment is repeated many times under the same conditions.
+
+Example: If a fair coin is flipped many times, approximately 50% of the results should be heads.
+
+Bayesian approach
+
+Probability represents uncertainty or belief about an event, given the available information. These beliefs can be updated when new evidence becomes available.
+
+Example: You believe an email has a 70% probability of being spam. After examining its content, you update that probability.
+
+| Approach    | Main idea                               |
+| ----------- | --------------------------------------- |
+| Frequentist | Long-run frequency of repeated events   |
+| Bayesian    | Degree of belief updated using evidence |
+
+Both approaches are important in statistics and machine learning.
+
+### 4.3 Applications of Probability in Machine Learning
+
+Probability is useful in many machine learning applications:
+
+- Classification: estimating the probability that an observation belongs to a class.
+- Regression with uncertainty: estimating uncertainty around predictions.
+- Natural Language Processing: estimating probabilities of words or sequences.
+- Recommendation Systems: estimating the likelihood that a user will interact with an item.
+- Bayesian Machine Learning: updating beliefs using observed data.
+
+## 5. Random Variables
+
+The instructor identifies random variables as one of the most important concepts in probability theory.
+
+A random variable is a variable whose value depends on the outcome of a random experiment.
+
+For example, when rolling a six-sided die, we can define a random variable \\(X\\) representing the number that appears.
+
+\\[ X\in\\{1,2,3,4,5,6\\} \\]
+
+Python example:
+
+-------------------code----------------------
+import random
+
+# Simulate rolling a six-sided die
+X = random.randint(1, 6)
+
+print("Dice result:", X)
+-------------------code----------------------
+
+The result changes each time we run the program.
+
+### 5.1 Discrete Random Variables
+
+A discrete random variable takes countable values.
+
+Examples:
+
+- Number of heads in five coin flips.
+- Number of customers entering a store.
+- Result of rolling a die.
+
+### 5.2 Continuous Random Variables
+
+A continuous random variable can take any value within a continuous range.
+
+Examples:
+
+- Human height.
+- Temperature.
+- Time required to complete a task.
+- Weight of an object.
+
+Python example:
+
+-------------------code----------------------
+import random
+
+# Generate a random continuous value between 0 and 1
+X = random.uniform(0, 1)
+
+print("Random continuous value:", X)
+-------------------code----------------------
+
+| Discrete                        | Continuous                         |
+| ------------------------------- | ---------------------------------- |
+| Countable values                | Values over a continuous range     |
+| Example: dice result            | Example: height                    |
+| Probability mass function (PMF) | Probability density function (PDF) |
+
+## 6. Probability Mass Functions and Probability Density Functions
+
+These functions describe probability distributions.
+
+### 6.1 Probability Mass Function (PMF)
+
+A PMF describes the probability of each possible value of a discrete random variable.
+
+For a fair six-sided die:
+
+\\[ P(X=x)=\frac16 \\]
+
+for \\(x\in\\{1,2,3,4,5,6\\}\\).
+
+Python example:
+
+-------------------code----------------------
+# Probability distribution of a fair six-sided die
+values = [1, 2, 3, 4, 5, 6]
+
+probabilities = [1/6] * 6
+
+for value, probability in zip(values, probabilities):
+    print(f"P(X = {value}) = {probability:.4f}")
+-------------------code----------------------
+
+### 6.2 Probability Density Function (PDF)
+
+A PDF describes the density of a continuous random variable.
+
+Unlike a PMF, the PDF does not directly give the probability of one exact value.
+
+Instead, probabilities are calculated over intervals by integrating the density function:
+
+\\[ P(a\leq X\leq b)=\int_a^b f(x)\\,dx \\]
+
+For example, a normal distribution has a bell-shaped probability density curve.
+
+Python example:
+
+-------------------code----------------------
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+
+# Generate values along the horizontal axis
+x = np.linspace(-4, 4, 500)
+
+# Calculate the standard normal PDF
+pdf = norm.pdf(x, loc=0, scale=1)
+
+plt.plot(x, pdf)
+plt.title("Standard Normal Distribution")
+plt.xlabel("Value")
+plt.ylabel("Probability Density")
+plt.show()
+-------------------code----------------------
+
+## 7. Expected Value
+
+Expected value represents the theoretical average outcome of a random variable over many repetitions.
+
+For a discrete random variable:
+
+\\[ E[X]=\sum_x xP(X=x) \\]
+
+For example, the expected value of a fair six-sided die is:
+
+\\[ E[X]=\frac{1+2+3+4+5+6}{6}=3.5 \\]
+
+Python example:
+
+-------------------code----------------------
+values = [1, 2, 3, 4, 5, 6]
+
+probabilities = [1/6] * 6
+
+expected_value = sum(
+    value * probability
+    for value, probability in zip(values, probabilities)
+)
+
+print("Expected value:", expected_value)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+Expected value: 3.5
+-------------------code----------------------
+
+An expected value does not need to be a possible outcome. In this example, a die cannot show 3.5, but its theoretical average is 3.5.
+
+## 8. Measuring Probability Distributions
+
+The lecture introduces several ways to summarize and understand a probability distribution.
+
+### 8.1 Measures of Central Tendency
+
+These measures describe the center of a dataset or distribution.
+
+Mean
+
+The arithmetic average:
+
+\\[ \bar{x}=\frac{1}{n}\sum\_{i=1}^{n}x_i \\]
+
+Median
+
+The middle value after sorting the observations.
+
+Mode
+
+The most frequently occurring value.
+
+Python example:
+
+-------------------code----------------------
+import numpy as np
+from scipy import stats
+
+data = [2, 3, 3, 4, 5, 6, 7]
+
+mean = np.mean(data)
+median = np.median(data)
+mode = stats.mode(data, keepdims=False).mode
+
+print("Mean:", mean)
+print("Median:", median)
+print("Mode:", mode)
+-------------------code----------------------
+
+### 8.2 Quantiles
+
+Quantiles divide an ordered dataset into portions.
+
+The main types are:
+
+- Quartiles: Divide data into four parts.
+- Deciles: Divide data into ten parts.
+- Percentiles: Divide data into one hundred parts.
+
+For example, the 50th percentile corresponds to the median.
+
+Python example:
+
+-------------------code----------------------
+import numpy as np
+
+data = [10, 20, 30, 40, 50, 60, 70, 80, 90]
+
+quartiles = np.percentile(data, [25, 50, 75])
+
+print("Q1:", quartiles[0])
+print("Q2:", quartiles[1])
+print("Q3:", quartiles[2])
+-------------------code----------------------
+
+### 8.3 Box-and-Whisker Plots
+
+A box plot visually summarizes a distribution.
+
+It typically displays:
+
+- Median.
+- First quartile (Q1).
+- Third quartile (Q3).
+- Interquartile range (IQR).
+- Whiskers.
+- Potential outliers.
+
+Python example:
+
+-------------------code----------------------
+import matplotlib.pyplot as plt
+
+data = [10, 12, 15, 18, 20, 22, 25, 28, 30, 80]
+
+plt.boxplot(data)
+plt.title("Box-and-Whisker Plot")
+plt.ylabel("Values")
+plt.show()
+-------------------code----------------------
+
+## 9. Measuring Dispersion
+
+Central tendency describes the center of a distribution, but it does not explain how spread out the observations are.
+
+Dispersion measures describe how much the data vary.
+
+### 9.1 Variance
+
+Variance measures the average squared deviation from the mean.
+
+Population variance:
+
+\\[ \sigma^2=\frac{1}{N}\sum\_{i=1}^{N}(x_i-\mu)^2 \\]
+
+### 9.2 Standard Deviation
+
+Standard deviation is the square root of variance:
+
+\\[ \sigma=\sqrt{\sigma^2} \\]
+
+It measures spread in the same units as the original data.
+
+### 9.3 Standard Error
+
+Standard error measures the variability of a sample statistic, such as the sample mean, across repeated samples.
+
+For the sample mean:
+
+\\[ SE=\frac{s}{\sqrt{n}} \\]
+
+Where:
+
+- \\(s\\): Sample standard deviation.
+- \\(n\\): Sample size.
+
+Python example:
+
+-------------------code----------------------
+import numpy as np
+
+data = [10, 12, 14, 16, 18, 20]
+
+variance = np.var(data, ddof=1)
+standard_deviation = np.std(data, ddof=1)
+
+standard_error = standard_deviation / np.sqrt(len(data))
+
+print("Sample variance:", variance)
+print("Sample standard deviation:", standard_deviation)
+print("Standard error:", standard_error)
+-------------------code----------------------
+
+## 10. Comparing Different Distributions
+
+After learning how to describe individual distributions, the course moves on to understanding relationships between different variables.
+
+### 10.1 Covariance
+
+Covariance measures how two variables vary together.
+
+- Positive covariance: The variables tend to increase together.
+- Negative covariance: One tends to increase when the other decreases.
+- Near-zero covariance: No strong linear co-movement is indicated.
+
+### 10.2 Correlation
+
+Correlation measures the strength and direction of a linear relationship between two variables.
+
+The Pearson correlation coefficient ranges from -1 to +1.
+
+| Correlation | Interpretation                       |
+| ----------- | ------------------------------------ |
+| +1          | Perfect positive linear relationship |
+| 0           | No linear correlation                |
+| -1          | Perfect negative linear relationship |
+
+Python example:
+
+-------------------code----------------------
+import numpy as np
+
+x = [1, 2, 3, 4, 5]
+y = [2, 4, 6, 8, 10]
+
+correlation = np.corrcoef(x, y)[0, 1]
+
+print("Correlation:", correlation)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+Correlation: 1.0
+-------------------code----------------------
+
+## 11. Advanced Probability Concepts
+
+The instructor also introduces several more advanced topics that will be covered later in the course.
+
+### 11.1 Marginal Probability
+
+Marginal probability is the probability of one event without specifying the outcome of another variable.
+
+Example:
+
+\\[ P(A) \\]
+
+### 11.2 Conditional Probability
+
+Conditional probability is the probability of an event occurring given that another event has already occurred.
+
+\\[ P(A\mid B)=\frac{P(A\cap B)}{P(B)} \\]
+
+Provided that \\(P(B)>0\\).
+
+### 11.3 Independence
+
+Two events are independent if knowing that one event occurred does not change the probability of the other.
+
+\\[ P(A\cap B)=P(A)P(B) \\]
+
+### 11.4 Conditional Independence
+
+Two variables are conditionally independent given a third variable if they become independent once that third variable is known.
+
+This concept is especially important in probabilistic graphical models and Bayesian networks.
+
+### 11.5 Bayes' Rule
+
+Bayes' rule describes how to update the probability of a hypothesis when new evidence becomes available.
+
+\\[ P(A\mid B)=\frac{P(B\mid A)P(A)}{P(B)} \\]
+
+Where:
+
+- \\(P(A)\\): Prior probability.
+- \\(P(B\mid A)\\): Likelihood.
+- \\(P(B)\\): Evidence.
+- \\(P(A\mid B)\\): Posterior probability.
+
+Bayes' rule is fundamental to Bayesian statistics and many machine learning applications.
+
+## 12. Important Notes and Best Practices
+
+1. Understand random variables first. They are the foundation for probability distributions and expected values.
+2. Distinguish discrete and continuous variables. PMFs describe discrete probabilities, while PDFs describe continuous probability densities.
+3. Do not confuse probability density with probability. For a continuous variable, probability comes from integrating the PDF over an interval.
+4. Understand mean, median, and mode separately. They describe different aspects of the center of a distribution and can differ significantly when data are skewed.
+5. Study variance and standard deviation together. Both describe dispersion, but standard deviation is expressed in the original data units.
+6. Do not confuse standard deviation with standard error. Standard deviation measures data variability; standard error measures uncertainty in a sample statistic.
+7. Correlation does not imply causation. Two variables can be correlated without one causing the other.
+8. Learn conditional probability before Bayes' rule. Bayes' rule is much easier to understand once conditional probability is clear.
+9. Practice with Python. NumPy, SciPy, and Matplotlib make it easier to explore distributions and statistical properties.
+
+## 13. Full Final Python Review Code
+
+The following code brings together the main practical examples introduced in this lecture.
+
+It covers random variables, PMFs, PDFs, expected values, measures of central tendency, quantiles, box plots, dispersion, and correlation.
+
+-------------------code----------------------
+
+import random
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import stats
+from scipy.stats import norm
+
+
+# ==========================================
+# 1. BASIC PROBABILITY
+# ==========================================
+
+p_heads = 0.5
+p_tails = 0.5
+
+print("1. Basic Probability")
+print("Heads:", p_heads)
+print("Tails:", p_tails)
+print("Total probability:", p_heads + p_tails)
+
+
+# ==========================================
+# 2. RANDOM VARIABLES
+# ==========================================
+
+# Discrete random variable: dice roll
+dice_result = random.randint(1, 6)
+
+# Continuous random variable
+continuous_value = random.uniform(0, 1)
+
+print("\n2. Random Variables")
+print("Dice result:", dice_result)
+print("Continuous value:", continuous_value)
+
+
+# ==========================================
+# 3. PROBABILITY MASS FUNCTION (PMF)
+# ==========================================
+
+values = [1, 2, 3, 4, 5, 6]
+probabilities = [1/6] * 6
+
+print("\n3. Probability Mass Function")
+
+for value, probability in zip(values, probabilities):
+    print(f"P(X = {value}) = {probability:.4f}")
+
+
+# ==========================================
+# 4. PROBABILITY DENSITY FUNCTION (PDF)
+# ==========================================
+
+x = np.linspace(-4, 4, 500)
+pdf = norm.pdf(x, loc=0, scale=1)
+
+plt.figure()
+plt.plot(x, pdf)
+plt.title("Standard Normal Distribution")
+plt.xlabel("Value")
+plt.ylabel("Probability Density")
+plt.show()
+
+
+# ==========================================
+# 5. EXPECTED VALUE
+# ==========================================
+
+expected_value = sum(
+    value * probability
+    for value, probability in zip(values, probabilities)
+)
+
+print("\n5. Expected Value")
+print("Expected dice result:", expected_value)
+
+
+# ==========================================
+# 6. CENTRAL TENDENCY
+# ==========================================
+
+data = [2, 3, 3, 4, 5, 6, 7]
+
+mean = np.mean(data)
+median = np.median(data)
+mode = stats.mode(data, keepdims=False).mode
+
+print("\n6. Measures of Central Tendency")
+print("Mean:", mean)
+print("Median:", median)
+print("Mode:", mode)
+
+
+# ==========================================
+# 7. QUANTILES
+# ==========================================
+
+quartiles = np.percentile(data, [25, 50, 75])
+
+print("\n7. Quartiles")
+print("Q1:", quartiles[0])
+print("Q2:", quartiles[1])
+print("Q3:", quartiles[2])
+
+
+# ==========================================
+# 8. BOX-AND-WHISKER PLOT
+# ==========================================
+
+plt.figure()
+plt.boxplot(data)
+plt.title("Box-and-Whisker Plot")
+plt.ylabel("Values")
+plt.show()
+
+
+# ==========================================
+# 9. DISPERSION
+# ==========================================
+
+sample_data = [10, 12, 14, 16, 18, 20]
+
+variance = np.var(sample_data, ddof=1)
+standard_deviation = np.std(sample_data, ddof=1)
+standard_error = standard_deviation / np.sqrt(len(sample_data))
+
+print("\n9. Measures of Dispersion")
+print("Sample variance:", variance)
+print("Sample standard deviation:", standard_deviation)
+print("Standard error:", standard_error)
+
+
+# ==========================================
+# 10. CORRELATION AND COVARIANCE
+# ==========================================
+
+x_data = [1, 2, 3, 4, 5]
+y_data = [2, 4, 6, 8, 10]
+
+covariance = np.cov(x_data, y_data, ddof=1)[0, 1]
+correlation = np.corrcoef(x_data, y_data)[0, 1]
+
+print("\n10. Relationship Between Variables")
+print("Covariance:", covariance)
+print("Correlation:", correlation)
+
+-------------------code----------------------
+
+Dependencies:
+
+-------------------code----------------------
+pip install numpy scipy matplotlib
+-------------------code----------------------
+
+## 14. Summary
+
+This introductory lecture establishes the structure of the Probability and Information Theory subject.
+
+The three main segments are:
+
+1. Introduction to Probability: Understanding uncertainty, random variables, distributions, expected values, and statistical measurements.
+2. Probability Distributions in Machine Learning: Applying probability distributions to practical machine learning problems.
+3. Information Theory: Measuring information and uncertainty.
+
+The key concepts introduced in the first segment include:
+
+- Frequentist and Bayesian probability.
+- Random variables.
+- Discrete and continuous distributions.
+- PMFs and PDFs.
+- Expected value.
+- Mean, median, and mode.
+- Quartiles, deciles, and percentiles.
+- Box-and-whisker plots.
+- Variance, standard deviation, and standard error.
+- Covariance and correlation.
+- Marginal and conditional probability.
+- Independence and conditional independence.
+- Bayes' rule.
+
+Most important takeaway: Probability theory provides the mathematical foundation for reasoning about uncertainty. This is essential because machine learning models operate on data that is incomplete, variable, and uncertain.
+
+The next lecture explores the historical development of probability theory and the differences between the frequentist and Bayesian approaches.
