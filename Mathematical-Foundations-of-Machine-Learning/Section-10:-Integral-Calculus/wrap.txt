@@ -1,0 +1,348 @@
+*** 94. Segment Intro ***
+# Machine Learning Foundations — Integral Calculus: Introduction and Roadmap
+
+## 1. Overview of the Lecture
+
+The Machine Learning Foundations curriculum consists of eight subjects. The current subject, Partial Derivatives and Integrals, is the fourth subject, meaning the course is approaching its halfway point.
+
+This subject is divided into three thematic segments:
+
+1\. Introduction to Calculus
+
+A review of essential single-variable calculus concepts needed to understand multivariable calculus.
+
+2\. Gradients Applied to Machine Learning
+
+Using multivariable calculus to derive gradients that enable machine learning algorithms to learn by adjusting their parameters.
+
+3\. Integral Calculus
+
+Learning how to calculate integrals, apply numerical integration in Python, and use integration to evaluate machine learning models.
+
+The lecture introduces the third and final segment: Integral Calculus.
+
+The earlier segments focused primarily on differentiation. This segment shifts attention to integration and its practical applications in machine learning.
+
+## 2. Differentiation vs. Integration
+
+Differentiation and integration are two major branches of calculus.
+
+### 2.1 Differentiation
+
+Differentiation measures how a function changes as its input changes.
+
+For example, if
+
+\\[ f(x)=x^2 \\]
+
+then its derivative is
+
+\\[ f'(x)=2x \\]
+
+Python code using SymPy:
+
+-------------------code----------------------
+import sympy as spx = sp.symbols("x")f = x**2derivative = sp.diff(f, x)print("Function:", f)print("Derivative:", derivative)
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+Function: x**2
+Derivative: 2*x
+-------------------code----------------------
+
+In machine learning, derivatives help calculate gradients, which are used by optimization algorithms to update model parameters and reduce the loss.
+
+### 2.2 Integration
+
+Integration can be used to calculate accumulated quantities and the area under a curve.
+
+For example,
+
+\\[ \int x^2\\,dx=\frac{x^3}{3}+C \\]
+
+Here, \\(C\\) is the constant of integration.
+
+Python code:
+
+-------------------code----------------------
+import sympy as spx = sp.symbols("x")f = x**2integral = sp.integrate(f, x)print("Function:", f)print("Indefinite integral:", integral)
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+Function: x**2
+Indefinite integral: x**3/3
+-------------------code----------------------
+
+Important distinction: An indefinite integral gives a family of antiderivatives, while a definite integral calculates an accumulated value over a specified interval.
+
+For example,
+
+\\[ \int_0^2 x^2\\,dx=\frac{8}{3} \\]
+
+Python code:
+
+-------------------code----------------------
+import sympy as spx = sp.symbols("x")f = x**2definite_integral = sp.integrate(f, (x, 0, 2))print("Definite integral:", definite_integral)
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+Definite integral: 8/3
+-------------------code----------------------
+
+These examples introduce the mathematics needed for the upcoming applications. They are supporting examples rather than calculations performed in the lecture itself.
+
+## 3. Applying Integration to Binary Classification
+
+The lecture will use binary classification as a practical problem for applying integration.
+
+Binary classification is a machine learning task in which a model predicts one of two possible classes.
+
+Examples include:
+
+- Spam vs. non-spam email.
+- Fraudulent vs. legitimate transactions.
+- Positive vs. negative medical test predictions.
+
+The lecture's planned workflow is:
+
+Binary classification model
+
+Predict one of two classes
+
+Confusion matrix
+
+Organize actual and predicted classes
+
+ROC curve
+
+Evaluate classification performance across thresholds
+
+Area Under the Curve (AUC)
+
+Use integration to calculate the area under the ROC curve
+
+This sequence connects a practical machine learning task to the mathematics of integration.
+
+## 4. The Confusion Matrix
+
+A confusion matrix summarizes the relationship between a classifier's predictions and the actual classes.
+
+For a binary classifier, the four possible outcomes are:
+
+|                    | Actual positive     | Actual negative     |
+| ------------------ | ------------------- | ------------------- |
+| Predicted positive | True Positive (TP)  | False Positive (FP) |
+| Predicted negative | False Negative (FN) | True Negative (TN)  |
+
+- True Positive (TP): The model correctly predicts the positive class.
+- False Positive (FP): The model predicts positive when the actual class is negative.
+- False Negative (FN): The model predicts negative when the actual class is positive.
+- True Negative (TN): The model correctly predicts the negative class.
+
+The lecture plans to use the confusion matrix as the starting point for constructing the ROC curve.
+
+No specific dataset or confusion-matrix calculation is provided in this introductory lecture.
+
+## 5. The ROC Curve and AUC
+
+### 5.1 ROC curve
+
+ROC stands for Receiver Operating Characteristic.
+
+An ROC curve illustrates how a binary classifier's true positive rate changes in relation to its false positive rate as the classification threshold changes.
+
+The two axes are:
+
+- True Positive Rate (TPR): The proportion of actual positive examples correctly identified.
+- False Positive Rate (FPR): The proportion of actual negative examples incorrectly classified as positive.
+
+Their formulas are:
+
+\\[ TPR=\frac{TP}{TP+FN} \\]
+
+\\[ FPR=\frac{FP}{FP+TN} \\]
+
+These formulas provide the basic quantities used to construct an ROC curve.
+
+### 5.2 Area Under the Curve (AUC)
+
+AUC stands for Area Under the Curve. In this context, it means the area under the ROC curve.
+
+Integration provides a mathematical method for calculating that area.
+
+For an ROC curve represented by \\(TPR\\) as a function of \\(FPR\\), the area can be expressed as
+
+\\[ AUC=\int_0^1 TPR(FPR)\\,d(FPR) \\]
+
+This expression describes the mathematical objective. The actual calculation methods and application to a classifier will be covered in later lectures.
+
+## 6. What the Upcoming Lectures Will Cover
+
+The instructor outlines the following learning sequence:
+
+1. Understand binary classification. Establish the machine learning problem used throughout the examples.
+2. Create a confusion matrix. Organize classification results.
+3. Construct an ROC curve. Represent classifier performance using true and false positive rates.
+4. Learn manual integration. Calculate integrals mathematically by hand.
+5. Learn numerical integration in Python. Approximate integrals computationally rather than calculating them entirely by hand.
+6. Calculate the ROC AUC. Apply integration to a real machine learning evaluation metric.
+7. Explore further learning resources. Finish the integral calculus segment and the broader subject with resources for independent study.
+
+The lecture is an introduction and roadmap; it does not yet implement the ROC curve, numerical integration, or AUC calculation.
+
+## 7. Important Notes and Best Practices
+
+- Understand the application before the mathematics. The confusion matrix and ROC curve provide a concrete problem that makes integration useful.
+- Distinguish differentiation from integration. Differentiation measures local change; integration calculates accumulation and area.
+- Learn both symbolic and numerical integration. Symbolic integration seeks an exact mathematical expression, while numerical integration estimates a value computationally.
+- Understand the confusion-matrix terminology. TPR and FPR depend on correctly distinguishing false positives from false negatives.
+- Do not confuse AUC with accuracy. AUC evaluates ranking performance across classification thresholds, whereas accuracy measures the fraction of predictions that are correct at a particular threshold.
+- Use Python to verify mathematical work. SymPy can calculate symbolic integrals and check hand-derived results.
+
+## 8. Summary
+
+This lecture marks the beginning of the Integral Calculus segment in the Machine Learning Foundations series.
+
+The key points are:
+
+1. The curriculum contains eight subjects, and Partial Derivatives and Integrals is the fourth.
+2. The current subject has three segments: introductory calculus, gradients applied to machine learning, and integral calculus.
+3. The final segment will connect integration to binary classification.
+4. A confusion matrix will be used as the starting point for constructing an ROC curve.
+5. Integration will then be used to calculate the area under the ROC curve, known as AUC.
+6. The course will cover both manual integration and numerical integration with Python.
+
+The central idea is that integration is not just an abstract mathematical operation; it can also help calculate meaningful performance metrics for machine learning models.
+
+## 9. Full Final Code
+
+The following complete Python script demonstrates the introductory symbolic differentiation and integration examples and calculates the true positive rate and false positive rate from a sample confusion matrix. It is a supplementary practice script, not code taken directly from the lecture.
+
+Install SymPy if necessary:
+
+-------------------code----------------------
+pip install sympy
+-------------------code----------------------
+
+Complete code:
+
+-------------------code----------------------
+import sympy as sp
+
+# ============================================================
+# Step 1: Define the symbolic variable and function
+# ============================================================
+
+x = sp.symbols("x")
+f = x**2
+
+print("STEP 1: Original function")
+print("f(x) =", f)
+
+
+# ============================================================
+# Step 2: Calculate the derivative
+# ============================================================
+
+derivative = sp.diff(f, x)
+
+print("\nSTEP 2: Differentiation")
+print("f'(x) =", derivative)
+
+
+# ============================================================
+# Step 3: Calculate the indefinite integral
+# ============================================================
+
+indefinite_integral = sp.integrate(f, x)
+
+print("\nSTEP 3: Indefinite integration")
+print("Integral of f(x) =", indefinite_integral, "+ C")
+
+
+# ============================================================
+# Step 4: Calculate the definite integral from 0 to 2
+# ============================================================
+
+definite_integral = sp.integrate(f, (x, 0, 2))
+
+print("\nSTEP 4: Definite integration")
+print("Integral from 0 to 2 =", definite_integral)
+print("Numerical value =", float(definite_integral))
+
+
+# ============================================================
+# Step 5: Define a sample binary-classification confusion matrix
+# ============================================================
+
+TP = 80
+FP = 20
+FN = 10
+TN = 90
+
+print("\nSTEP 5: Confusion matrix")
+print("True Positives (TP):", TP)
+print("False Positives (FP):", FP)
+print("False Negatives (FN):", FN)
+print("True Negatives (TN):", TN)
+
+
+# ============================================================
+# Step 6: Calculate the True Positive Rate (TPR)
+# ============================================================
+
+positive_total = TP + FN
+
+if positive_total > 0:
+    TPR = TP / positive_total
+else:
+    TPR = None
+
+print("\nSTEP 6: True Positive Rate")
+if TPR is not None:
+    print("TPR =", TPR)
+else:
+    print("TPR is undefined because there are no actual positive cases.")
+
+
+# ============================================================
+# Step 7: Calculate the False Positive Rate (FPR)
+# ============================================================
+
+negative_total = FP + TN
+
+if negative_total > 0:
+    FPR = FP / negative_total
+else:
+    FPR = None
+
+print("\nSTEP 7: False Positive Rate")
+if FPR is not None:
+    print("FPR =", FPR)
+else:
+    print("FPR is undefined because there are no actual negative cases.")
+
+
+# ============================================================
+# Step 8: Display the results
+# ============================================================
+
+print("\nSTEP 8: Results summary")
+print("Derivative of x^2:", derivative)
+print("Indefinite integral of x^2:", indefinite_integral)
+print("Definite integral from 0 to 2:", definite_integral)
+
+if TPR is not None:
+    print(f"True Positive Rate: {TPR:.2%}")
+
+if FPR is not None:
+    print(f"False Positive Rate: {FPR:.2%}")
+-------------------code----------------------
+
+Final takeaway: The upcoming lessons will build a complete path from classification results to an ROC curve and then use integration to measure the area under that curve.
