@@ -787,3 +787,292 @@ The key concepts introduced in the first segment include:
 Most important takeaway: Probability theory provides the mathematical foundation for reasoning about uncertainty. This is essential because machine learning models operate on data that is incomplete, variable, and uncertain.
 
 The next lecture explores the historical development of probability theory and the differences between the frequentist and Bayesian approaches.
+
+*** 108. A Brief History of Probability Theory ***
+ # Machine Learning Foundations: Probability and Information Theory
+
+## Lecture Notes: A Brief History of Probability Theory
+
+### 1. Why Study the History of Probability?
+
+Probability theory is the mathematical foundation for reasoning about uncertainty.
+
+Studying its history helps us understand:
+
+1. How mathematical knowledge developed over time.
+2. How modern science builds upon earlier discoveries.
+3. How ideas from different cultures contributed to today's mathematics.
+4. How probability became essential to statistics and machine learning.
+
+Key idea: Modern probability theory is the result of centuries of contributions from mathematicians across different regions and historical periods.
+
+### 2. Early Development: Arab Mathematicians (8th–13th Centuries)
+
+Some of the earliest known uses of probability are attributed to Arab mathematicians between the 8th and 13th centuries.
+
+One important application was cryptography, the practice of protecting information through encryption.
+
+#### 2.1 Probability and Cryptography
+
+The basic idea was to use mathematical techniques to encode and decode messages securely.
+
+A simplified communication process:
+
+1. A sender encodes a message.
+2. The encoded message is transported to the recipient.
+3. The recipient uses the appropriate key or method to decode it.
+4. The original message is recovered.
+
+Probability and statistical reasoning contributed to the analysis of encoded messages.
+
+#### 2.2 Al-Kindi
+
+Al-Kindi was an important Arab mathematician and philosopher.
+
+He is recognized in the lecture as the first known person to make a statistical inference using probability theory.
+
+Important note: His work helped establish an early connection between mathematical reasoning, patterns in data, and drawing conclusions from observations.
+
+### 3. European Contributions: Games of Chance (16th–17th Centuries)
+
+Several centuries later, European mathematicians expanded the early mathematical ideas of probability.
+
+A major motivation was the study of games of chance, such as dice and gambling.
+
+#### 3.1 Girolamo Cardano (16th Century)
+
+Girolamo Cardano was an Italian mathematician and polymath who contributed to the development of probability.
+
+His work helped develop mathematical approaches to understanding random outcomes in games.
+
+#### 3.2 Pierre de Fermat and Blaise Pascal (17th Century)
+
+[بيير دي فيرما](https://images.openai.com/static-rsc-4/2kCCwp1FcO627rhs6qLad2BMSC90MekZvsGMgVSp5qkxuqRhqcn2AFLNKGBSLv8TwiLcpTrNaRpNLGGkx3LhhRQsKXmI9R8El0PVKt3DAKwMNZqigvy3cFBhkYlOyXnVlFC4LbDB4_-sI_qoMsFbyt-QisqYf1SxWHW0FAHytgM?purpose=inline)
+
+Pierre de Fermat
+
+A French mathematician who contributed to the mathematical study of probability.
+
+Blaise Pascal
+
+A French mathematician and philosopher who helped develop probability theory.
+
+Their work advanced the mathematical study of chance and random events.
+
+### 4. Classical Probability: The Combinatorial Approach
+
+Until the developments of modern probability theory, much of probability focused on combinatorics.
+
+Combinatorics is the mathematical study of counting and arranging possible outcomes.
+
+For example, consider rolling a fair six-sided die.
+
+There are six possible outcomes:
+
+\\[ S=\\{1,2,3,4,5,6\\} \\]
+
+The probability of rolling a 4 is:
+
+\\[ P(X=4)=\frac{1}{6} \\]
+
+The classical approach generally works with discrete outcomes that can be counted.
+
+#### 4.1 Example Using Python
+
+-------------------code----------------------
+# Possible outcomes when rolling a fair die
+outcomes = [1, 2, 3, 4, 5, 6]
+
+# Count the outcomes
+total_outcomes = len(outcomes)
+
+# Count favorable outcomes
+favorable_outcomes = outcomes.count(4)
+
+# Calculate probability
+probability = favorable_outcomes / total_outcomes
+
+print("Probability of rolling a 4:", probability)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+Probability of rolling a 4: 0.16666666666666666
+-------------------code----------------------
+
+Key idea: Classical probability is particularly useful when the possible outcomes are finite, countable, and equally likely.
+
+### 5. Modern Probability Theory: The 20th Century
+
+Modern probability theory expanded significantly during the 20th century.
+
+The lecture mentions two important contributors:
+
+- Andrey Kolmogorov.
+- Richard von Mises.
+
+Their work contributed to the development of modern mathematical foundations for probability.
+
+#### 5.1 What Changed?
+
+Classical probability mainly focused on discrete, countable outcomes.
+
+Modern probability theory provides a much broader framework that can handle both:
+
+| Type       | Description                             | Example               |
+| ---------- | --------------------------------------- | --------------------- |
+| Discrete   | Values that can be counted              | Number of customers   |
+| Continuous | Values measured over a continuous range | Temperature or height |
+
+This allows probability theory to work with real-valued measurements, including floating-point values in computing.
+
+#### 5.2 Discrete Example
+
+-------------------code----------------------
+import numpy as np
+
+# Number of heads in three coin tosses
+outcomes = np.array([0, 1, 2, 3])
+
+print("Discrete outcomes:", outcomes)
+-------------------code----------------------
+
+#### 5.3 Continuous Example
+
+-------------------code----------------------
+import numpy as np
+
+# Simulated temperature measurements
+temperatures = np.array([20.5, 21.2, 19.8, 22.1, 20.9])
+
+print("Continuous measurements:", temperatures)
+-------------------code----------------------
+
+Important distinction: A continuous random variable can take values across a range. Its probability is described using a probability density function rather than assigning positive probability to each individual value.
+
+### 6. Why Modern Probability Matters in Machine Learning
+
+Modern probability theory provides the mathematical foundation for reasoning about uncertainty in data.
+
+It is important in several related fields:
+
+#### 6.1 Frequentist Statistics
+
+Uses probability models to analyze data and make inferences about populations.
+
+#### 6.2 Bayesian Statistics
+
+Uses probability to represent uncertainty about hypotheses or model parameters and updates that uncertainty when new evidence becomes available.
+
+#### 6.3 Machine Learning
+
+Probability is used in many machine learning methods to:
+
+- Model uncertain outcomes.
+- Estimate the likelihood of events.
+- Make predictions.
+- Represent uncertainty in model outputs.
+- Learn patterns from data.
+
+These approaches are different, but they all rely on probability theory.
+
+### 7. Historical Timeline
+
+| Period             | Key contributors                        | Main development                                             |
+| ------------------ | --------------------------------------- | ------------------------------------------------------------ |
+| 8th–13th centuries | Arab mathematicians, including Al-Kindi | Early probability-related methods and cryptographic analysis |
+| 16th century       | Girolamo Cardano                        | Mathematical study of games of chance                        |
+| 17th century       | Pierre de Fermat and Blaise Pascal      | Further development of classical probability                 |
+| 20th century       | Andrey Kolmogorov and Richard von Mises | Modern foundations of probability theory                     |
+
+### 8. Important Notes and Best Practices
+
+1. Probability has a relatively recent mathematical history. Its major formal developments occurred much later than those of subjects such as calculus.
+2. Different cultures contributed to its development. Early Arab mathematical work was an important part of probability's history.
+3. Classical probability focused heavily on counting. Combinatorics was central to calculating probabilities of discrete outcomes.
+4. Modern probability is broader. It supports mathematical models involving both discrete and continuous random variables.
+5. Probability is not the same as statistics. Probability provides mathematical tools for describing uncertainty; statistics uses data to estimate, test, and draw conclusions.
+6. Probability is foundational to machine learning. It helps algorithms reason about uncertain data and predictions.
+
+### 9. Summary
+
+- Early probability-related work appeared among Arab mathematicians between the 8th and 13th centuries.
+- Al-Kindi made an early contribution to statistical inference.
+- European mathematicians such as Cardano, Fermat, and Pascal developed probability further through the study of games of chance.
+- Classical probability focused primarily on combinatorics and discrete outcomes.
+- Modern probability theory developed during the 20th century, with important contributions from Kolmogorov and von Mises.
+- Modern probability supports both discrete and continuous random variables.
+- Probability theory is a foundation of frequentist statistics, Bayesian statistics, and machine learning.
+
+Next lecture: An introduction to probability theory — what probability is, how it works, and how it helps us reason about uncertain events.
+
+### 10. Complete Python Code
+
+The following code combines the examples from this lecture into one runnable script.
+
+-------------------code----------------------
+import numpy as np
+
+
+# ============================================================
+# 1. Classical Probability: Rolling a Fair Die
+# ============================================================
+
+print("1. Classical Probability")
+
+outcomes = [1, 2, 3, 4, 5, 6]
+
+total_outcomes = len(outcomes)
+favorable_outcomes = outcomes.count(4)
+
+probability = favorable_outcomes / total_outcomes
+
+print("Possible outcomes:", outcomes)
+print("Probability of rolling a 4:", probability)
+
+
+# ============================================================
+# 2. Discrete Random Variables
+# ============================================================
+
+print("\n2. Discrete Random Variables")
+
+# Possible number of heads in three coin tosses
+discrete_outcomes = np.array([0, 1, 2, 3])
+
+print("Discrete outcomes:", discrete_outcomes)
+
+
+# ============================================================
+# 3. Continuous Random Variables
+# ============================================================
+
+print("\n3. Continuous Random Variables")
+
+# Example continuous measurements
+temperatures = np.array([
+    20.5,
+    21.2,
+    19.8,
+    22.1,
+    20.9
+])
+
+print("Temperature measurements:", temperatures)
+print("Average temperature:", np.mean(temperatures))
+
+
+# ============================================================
+# 4. Comparison
+# ============================================================
+
+print("\n4. Comparison")
+
+print("Discrete values:", discrete_outcomes)
+print("Continuous measurements:", temperatures)
+
+print("\nLecture examples completed.")
+-------------------code----------------------
+
+Final takeaway: Probability evolved from early methods of reasoning about uncertainty and counting outcomes into a general mathematical framework that supports modern statistics and machine learning.
