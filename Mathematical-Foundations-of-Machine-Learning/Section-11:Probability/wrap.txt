@@ -2184,3 +2184,552 @@ print("Ace or Spade:", probability_ace_or_spade)
 print("Certain Event:", probability_certain)
 print("Impossible Event:", probability_impossible)
 -------------------code----------------------
+
+*** 111. Multiple Independent Observations ***
+# Machine Learning Foundations: Probability and Information Theory
+
+## Lecture Notes: Multiple Independent Observations
+
+### 1. Introduction
+
+In the previous lecture, we learned about:
+
+- Sample Space: All possible outcomes of an experiment.
+- Event: One outcome or a set of outcomes we are interested in.
+- Probability: The likelihood of an event occurring.
+
+This lecture extends those concepts to situations involving multiple independent observations.
+
+For example:
+
+- Flipping a coin twice.
+- Flipping a coin three times.
+- Calculating the probability of getting exactly two heads.
+- Calculating the probability of getting at least two heads.
+
+The key concept is independence.
+
+### 2. Understanding Independent Events
+
+Two observations are independent when the outcome of one does not affect the outcome of the other.
+
+For example, consider flipping a fair coin twice.
+
+- The first flip might produce heads.
+- The second flip might produce tails.
+- The first result does not influence the second result.
+
+A coin has no memory of previous flips.
+
+This is why consecutive coin flips are considered independent.
+
+#### 2.1 Independent vs. Dependent Observations
+
+| Independent observations             | Dependent observations                        |
+| ------------------------------------ | --------------------------------------------- |
+| One outcome does not affect another. | One outcome can affect another.               |
+| Coin flips                           | Drawing cards without replacement             |
+| Separate random dice rolls           | Human behavior influenced by previous actions |
+
+Important: Not every real-world observation is independent. For example, drawing a card without replacing it changes the probabilities of subsequent draws.
+
+### 3. Probability Notation
+
+Probability is represented using an uppercase italic letter \\(P\\).
+
+We write the event being evaluated inside round brackets.
+
+Examples:
+
+\\[ P(H) \\]
+
+Probability of getting heads.
+
+\\[ P(T) \\]
+
+Probability of getting tails.
+
+\\[ P(H,H) \\]
+
+Probability of getting heads on the first flip and heads on the second flip.
+
+The sample space is represented by:
+
+\\[ \Omega \\]
+
+### 4. Two Independent Coin Flips
+
+Let's calculate the probability of getting two consecutive heads.
+
+A fair coin has two possible outcomes:
+
+\\[ \Omega=\\{H,T\\} \\]
+
+When flipping it twice, the possible outcomes become:
+
+\\[ \Omega=\\{HH,HT,TH,TT\\} \\]
+
+There are four possible outcomes.
+
+Only one outcome produces two consecutive heads:
+
+\\[ HH \\]
+
+Using the basic probability formula:
+
+\\[ P(HH)=\frac{\text{Favorable outcomes}}{\text{Total outcomes}} \\]
+
+\\[ P(HH)=\frac{1}{4}=0.25 \\]
+
+Therefore, the probability is 25%.
+
+#### Python Example
+
+-------------------code----------------------
+# Sample space for two coin flips
+sample_space = ["HH", "HT", "TH", "TT"]
+
+# Event: two consecutive heads
+event = ["HH"]
+
+probability = len(event) / len(sample_space)
+
+print("Sample space:", sample_space)
+print("Probability of HH:", probability)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+Sample space: ['HH', 'HT', 'TH', 'TT']
+Probability of HH: 0.25
+-------------------code----------------------
+
+### 5. Three Independent Coin Flips
+
+Now let's calculate the probability of getting three consecutive heads.
+
+Each flip has two possible outcomes.
+
+For three flips, the sample space contains eight possible outcomes:
+
+\\[ \Omega= \\{ HHH,HHT,HTH,HTT, THH,THT,TTH,TTT \\} \\]
+
+The total number of possible outcomes is:
+
+\\[ 2^3=8 \\]
+
+Only one outcome gives us three consecutive heads:
+
+\\[ HHH \\]
+
+Therefore:
+
+\\[ P(HHH)=\frac{1}{8}=0.125 \\]
+
+As a percentage:
+
+\\[ 0.125\times100=12.5\\% \\]
+
+#### Python Example
+
+-------------------code----------------------
+# Sample space for three coin flips
+sample_space = [
+    "HHH", "HHT", "HTH", "HTT",
+    "THH", "THT", "TTH", "TTT"
+]
+
+# Event: three consecutive heads
+event = ["HHH"]
+
+probability = len(event) / len(sample_space)
+
+print("Number of outcomes:", len(sample_space))
+print("Probability of HHH:", probability)
+print("Percentage:", probability * 100, "%")
+-------------------code----------------------
+
+### 6. Exactly Two Heads in Three Flips
+
+Now let's consider a slightly different event.
+
+Instead of requiring three heads, we want exactly two heads in three coin flips.
+
+The sample space is still:
+
+\\[ \Omega= \\{ HHH,HHT,HTH,HTT, THH,THT,TTH,TTT \\} \\]
+
+We need to identify the outcomes containing exactly two heads.
+
+They are:
+
+\\[ \\{HHT,HTH,THH\\} \\]
+
+There are three favorable outcomes out of eight possible outcomes.
+
+Therefore:
+
+\\[ P(\text{Exactly 2 heads})=\frac{3}{8} \\]
+
+\\[ P=0.375=37.5\\% \\]
+
+#### Python Example
+
+-------------------code----------------------
+sample_space = [
+    "HHH", "HHT", "HTH", "HTT",
+    "THH", "THT", "TTH", "TTT"
+]
+
+# Select outcomes containing exactly two heads
+event = [
+    outcome for outcome in sample_space
+    if outcome.count("H") == 2
+]
+
+probability = len(event) / len(sample_space)
+
+print("Favorable outcomes:", event)
+print("Number of favorable outcomes:", len(event))
+print("Probability:", probability)
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+Favorable outcomes: ['HHT', 'HTH', 'THH']
+Number of favorable outcomes: 3
+Probability: 0.375
+-------------------code----------------------
+
+### 7. At Least Two Heads in Three Flips
+
+Next, let's calculate the probability of getting at least two heads.
+
+The phrase "at least two" means:
+
+- Exactly two heads.
+- Three heads.
+
+Therefore, the favorable outcomes are:
+
+\\[ \\{HHT,HTH,THH,HHH\\} \\]
+
+There are four favorable outcomes.
+
+The probability is:
+
+\\[ P(\text{At least 2 heads})=\frac{4}{8} \\]
+
+\\[ P=0.5=50\\% \\]
+
+#### Python Example
+
+-------------------code----------------------
+sample_space = [
+    "HHH", "HHT", "HTH", "HTT",
+    "THH", "THT", "TTH", "TTT"
+]
+
+# Select outcomes containing at least two heads
+event = [
+    outcome for outcome in sample_space
+    if outcome.count("H") >= 2
+]
+
+probability = len(event) / len(sample_space)
+
+print("Favorable outcomes:", event)
+print("Probability:", probability)
+print("Percentage:", probability * 100, "%")
+-------------------code----------------------
+
+Important distinction:
+
+| Expression         | Meaning                 |
+| ------------------ | ----------------------- |
+| Exactly two heads  | Only two heads          |
+| At least two heads | Two or more heads       |
+| At most two heads  | Zero, one, or two heads |
+
+### 8. Combining Probabilities Through Multiplication
+
+Listing every possible outcome becomes increasingly difficult as the number of observations increases.
+
+Fortunately, when events are independent, we can calculate their combined probability by multiplying their individual probabilities.
+
+The general multiplication rule for independent events is:
+
+\\[ \boxed{P(A\cap B)=P(A)\times P(B)} \\]
+
+For independent coin flips:
+
+\\[ P(H)=\frac{1}{2} \\]
+
+#### 8.1 Probability of Two Consecutive Heads
+
+\\[ P(HH)=P(H)\times P(H) \\]
+
+\\[ =\frac{1}{2}\times\frac{1}{2} \\]
+
+\\[ =\frac{1}{4}=0.25 \\]
+
+#### 8.2 Probability of Three Consecutive Heads
+
+\\[ P(HHH)=P(H)\times P(H)\times P(H) \\]
+
+\\[ =\frac{1}{2}\times\frac{1}{2}\times\frac{1}{2} \\]
+
+\\[ =\frac{1}{8}=0.125 \\]
+
+#### 8.3 Probability of Five Consecutive Heads
+
+Instead of listing all possible outcomes, we can multiply the probability of two heads by the probability of three heads:
+
+\\[ P(HHHHH)=P(HH)\times P(HHH) \\]
+
+\\[ =\frac{1}{4}\times\frac{1}{8} \\]
+
+\\[ =\frac{1}{32}=0.03125 \\]
+
+Therefore, the probability of five consecutive heads is:
+
+\\[ 3.125\\% \\]
+
+#### Python Example
+
+-------------------code----------------------
+# Probability of heads on one fair coin flip
+p_heads = 0.5
+
+# Probability of two consecutive heads
+p_two_heads = p_heads ** 2
+
+# Probability of three consecutive heads
+p_three_heads = p_heads ** 3
+
+# Combine the two independent events
+p_five_heads = p_two_heads * p_three_heads
+
+print("Two heads:", p_two_heads)
+print("Three heads:", p_three_heads)
+print("Five consecutive heads:", p_five_heads)
+print("Percentage:", p_five_heads * 100, "%")
+-------------------code----------------------
+
+### 9. General Formula for Multiple Independent Observations
+
+For \\(n\\) independent coin flips, the probability of getting heads every time is:
+
+\\[ P(\text{All heads})= \underbrace{P(H)\times P(H)\times\cdots\times P(H)}\_{n\text{ times}} \\]
+
+For a fair coin:
+
+\\[ \boxed{P(\text{All heads})=\left(\frac{1}{2}\right)^n} \\]
+
+Examples:
+
+| Number of flips | Probability of all heads |
+| --------------- | ------------------------ |
+| 1               | 50%                      |
+| 2               | 25%                      |
+| 3               | 12.5%                    |
+| 4               | 6.25%                    |
+| 5               | 3.125%                   |
+| 10              | 0.09765625%              |
+
+#### Python Example
+
+-------------------code----------------------
+# Calculate the probability of consecutive heads
+for n in range(1, 11):
+    probability = (0.5) ** n
+
+    print(
+        f"{n} flips: "
+        f"{probability:.8f} "
+        f"({probability * 100:.6f}%)"
+    )
+-------------------code----------------------
+
+This demonstrates how quickly the probability of getting heads every time decreases as the number of independent flips increases.
+
+### 10. Important Notes and Best Practices
+
+1. Independence is essential. Multiplication of individual probabilities applies directly when the events are independent.
+2. A fair coin has equal probabilities. Heads and tails each have a probability of 0.5.
+3. Each additional independent observation expands the sample space. For \\(n\\) coin flips, there are \\(2^n\\) possible sequences.
+4. Exactly and at least are different. Pay close attention to the wording of probability questions.
+5. Use multiplication instead of listing every outcome. This is especially useful for long sequences of independent events.
+6. Do not confuse independence with mutual exclusivity. Independent events can occur together; mutually exclusive events cannot occur together.
+7. Independence does not mean equal probability. Two independent events can have different probabilities.
+
+### 11. Summary
+
+This lecture explained how to calculate probabilities involving multiple independent observations.
+
+The main concepts are:
+
+| Concept                  | Explanation                                     |
+| ------------------------ | ----------------------------------------------- |
+| Independent observations | One observation does not affect another         |
+| Two coin flips           | Four possible outcomes                          |
+| Three coin flips         | Eight possible outcomes                         |
+| Exactly two heads        | Exactly two successful outcomes in the sequence |
+| At least two heads       | Two or more heads                               |
+| Multiplication rule      | Multiply probabilities of independent events    |
+
+The most important formula is:
+
+\\[ \boxed{P(A\cap B)=P(A)\times P(B)} \\]
+
+For \\(n\\) consecutive heads with a fair coin:
+
+\\[ \boxed{P(\text{All heads})=\left(\frac{1}{2}\right)^n} \\]
+
+Next lecture: Combinatorics — a mathematical approach to counting possible outcomes without manually listing every possibility.
+
+### 12. Full Final Python Code
+
+The following program combines all examples from the lecture into one script.
+
+-------------------code----------------------
+# ============================================================
+# Machine Learning Foundations
+# Probability and Information Theory
+# Topic: Multiple Independent Observations
+# ============================================================
+
+
+# ------------------------------------------------------------
+# 1. Two Independent Coin Flips
+# ------------------------------------------------------------
+
+print("\n1. Two Independent Coin Flips")
+
+sample_space_two = [
+    "HH",
+    "HT",
+    "TH",
+    "TT"
+]
+
+event_two_heads = ["HH"]
+
+probability_two_heads = (
+    len(event_two_heads) / len(sample_space_two)
+)
+
+print("Sample space:", sample_space_two)
+print("Probability of HH:", probability_two_heads)
+
+
+# ------------------------------------------------------------
+# 2. Three Independent Coin Flips
+# ------------------------------------------------------------
+
+print("\n2. Three Independent Coin Flips")
+
+sample_space_three = [
+    "HHH", "HHT", "HTH", "HTT",
+    "THH", "THT", "TTH", "TTT"
+]
+
+event_three_heads = ["HHH"]
+
+probability_three_heads = (
+    len(event_three_heads) / len(sample_space_three)
+)
+
+print("Sample space:", sample_space_three)
+print("Probability of HHH:", probability_three_heads)
+
+
+# ------------------------------------------------------------
+# 3. Exactly Two Heads in Three Flips
+# ------------------------------------------------------------
+
+print("\n3. Exactly Two Heads")
+
+event_exactly_two = [
+    outcome for outcome in sample_space_three
+    if outcome.count("H") == 2
+]
+
+probability_exactly_two = (
+    len(event_exactly_two) / len(sample_space_three)
+)
+
+print("Favorable outcomes:", event_exactly_two)
+print("Probability:", probability_exactly_two)
+
+
+# ------------------------------------------------------------
+# 4. At Least Two Heads in Three Flips
+# ------------------------------------------------------------
+
+print("\n4. At Least Two Heads")
+
+event_at_least_two = [
+    outcome for outcome in sample_space_three
+    if outcome.count("H") >= 2
+]
+
+probability_at_least_two = (
+    len(event_at_least_two) / len(sample_space_three)
+)
+
+print("Favorable outcomes:", event_at_least_two)
+print("Probability:", probability_at_least_two)
+
+
+# ------------------------------------------------------------
+# 5. Multiplication Rule
+# ------------------------------------------------------------
+
+print("\n5. Multiplication Rule")
+
+p_heads = 0.5
+
+p_two_heads = p_heads * p_heads
+p_three_heads = p_two_heads * p_heads
+
+p_five_heads = p_two_heads * p_three_heads
+
+print("Probability of two heads:", p_two_heads)
+print("Probability of three heads:", p_three_heads)
+print("Probability of five heads:", p_five_heads)
+print("Percentage:", p_five_heads * 100, "%")
+
+
+# ------------------------------------------------------------
+# 6. General Formula for Consecutive Heads
+# ------------------------------------------------------------
+
+print("\n6. Probability of Consecutive Heads")
+
+for n in range(1, 11):
+    probability = (0.5) ** n
+
+    print(
+        f"{n} flips: "
+        f"{probability:.8f} "
+        f"({probability * 100:.6f}%)"
+    )
+
+
+# ------------------------------------------------------------
+# 7. Final Results
+# ------------------------------------------------------------
+
+print("\n7. Final Results")
+
+print("Two consecutive heads:", probability_two_heads)
+print("Three consecutive heads:", probability_three_heads)
+print("Exactly two heads:", probability_exactly_two)
+print("At least two heads:", probability_at_least_two)
+print("Five consecutive heads:", p_five_heads)
+
+print("\nAll examples completed.")
+-------------------code----------------------
