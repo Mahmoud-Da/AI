@@ -1639,3 +1639,548 @@ pip install numpy pandas matplotlib
 -------------------code----------------------
 
 These examples use NumPy, Pandas, and Matplotlib; SciPy is not required for this lecture.
+
+*** 110. Events and Sample Spaces ***
+# Machine Learning Foundations: Probability and Information Theory
+
+## Lecture Notes: Events and Sample Spaces
+
+### 1. Introduction
+
+This lecture introduces two fundamental concepts in probability theory:
+
+1. Sample Space: The set of all possible outcomes of an experiment.
+2. Event: A particular outcome or a set of outcomes that we are interested in.
+
+These concepts allow us to calculate the probability of an event by comparing the number of favorable outcomes with the total number of possible outcomes.
+
+### 2. Sample Space
+
+A sample space is the set of every possible outcome of a random experiment.
+
+It is commonly represented by the Greek letter Omega:
+
+\\[ \Omega \\]
+
+#### 2.1 Example: Flipping a Fair Coin
+
+A fair coin has two possible outcomes:
+
+- Heads (H)
+- Tails (T)
+
+Therefore, the sample space is:
+
+\\[ \Omega = \\{H,T\\} \\]
+
+There are two possible outcomes.
+
+#### Python Example
+
+-------------------code----------------------
+# Define the sample space of a coin flip
+sample_space = {"H", "T"}
+
+print("Sample space:", sample_space)
+print("Number of possible outcomes:", len(sample_space))
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+Sample space: {'H', 'T'}
+Number of possible outcomes: 2
+-------------------code----------------------
+
+Important: A fair coin means that both outcomes have equal probabilities.
+
+\\[ P(H)=P(T)=0.5 \\]
+
+### 3. Events
+
+An event is a particular outcome or a collection of outcomes from a sample space.
+
+For example, when flipping a coin:
+
+- Getting heads is an event.
+- Getting tails is another event.
+- Getting either heads or tails represents the entire sample space.
+
+We can represent an event using set notation.
+
+\\[ A=\\{H\\} \\]
+
+Here, event \\(A\\) means getting heads.
+
+#### Python Example
+
+-------------------code----------------------
+# Define the sample space
+sample_space = {"H", "T"}
+
+# Define an event
+event_heads = {"H"}
+
+print("Sample space:", sample_space)
+print("Event:", event_heads)
+-------------------code----------------------
+
+An event must contain outcomes that belong to the sample space.
+
+### 4. Calculating Probability
+
+When all possible outcomes are equally likely, we can calculate the probability of an event using:
+
+\\[ P(A)=\frac{|A|}{|\Omega|} \\]
+
+Where:
+
+- \\(P(A)\\): Probability of event A.
+- \\(|A|\\): Number of favorable outcomes.
+- \\(|\Omega|\\): Total number of possible outcomes.
+
+In simple terms:
+
+\\[ \text{Probability}= \frac{\text{Favorable outcomes}}{\text{Total possible outcomes}} \\]
+
+The result is always between 0 and 1.
+
+#### 4.1 Example: Probability of Heads
+
+For a fair coin:
+
+\\[ \Omega=\\{H,T\\} \\]
+
+The event of getting heads is:
+
+\\[ A=\\{H\\} \\]
+
+There is one favorable outcome and two possible outcomes.
+
+\\[ P(H)=\frac{1}{2}=0.5 \\]
+
+As a percentage:
+
+\\[ 0.5\times100=50\\% \\]
+
+#### Python Example
+
+-------------------code----------------------
+sample_space = {"H", "T"}
+event_heads = {"H"}
+
+probability_heads = len(event_heads) / len(sample_space)
+
+print("Probability of heads:", probability_heads)
+print("Percentage:", probability_heads * 100, "%")
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+Probability of heads: 0.5
+Percentage: 50.0 %
+-------------------code----------------------
+
+#### 4.2 Example: Probability of Tails
+
+Similarly:
+
+\\[ P(T)=\frac{1}{2}=0.5=50\\% \\]
+
+-------------------code----------------------
+event_tails = {"T"}
+
+probability_tails = len(event_tails) / len(sample_space)
+
+print("Probability of tails:", probability_tails)
+-------------------code----------------------
+
+Both events have the same probability because the coin is fair.
+
+### 5. Example: Drawing a Card from a Standard Deck
+
+A standard deck contains 52 playing cards.
+
+Therefore, the sample space contains 52 possible outcomes:
+
+\\[ |\Omega|=52 \\]
+
+We can use the same probability formula to calculate the probability of drawing different types of cards.
+
+#### 5.1 Probability of Drawing the Ace of Spades
+
+There is only one Ace of Spades in a standard deck.
+
+\\[ P(\text{Ace of Spades})=\frac{1}{52} \\]
+
+\\[ P\approx0.01923=1.92\\% \\]
+
+#### Python Example
+
+-------------------code----------------------
+total_cards = 52
+ace_of_spades = 1
+
+probability = ace_of_spades / total_cards
+
+print("Probability:", probability)
+print("Percentage:", probability * 100, "%")
+-------------------code----------------------
+
+#### 5.2 Probability of Drawing Any Ace
+
+There are four aces in a standard deck.
+
+\\[ P(\text{Ace})=\frac{4}{52} \\]
+
+\\[ P\approx0.07692=7.69\\% \\]
+
+-------------------code----------------------
+total_cards = 52
+number_of_aces = 4
+
+probability_ace = number_of_aces / total_cards
+
+print("Probability of drawing an ace:", probability_ace)
+print("Percentage:", probability_ace * 100, "%")
+-------------------code----------------------
+
+#### 5.3 Probability of Drawing a Spade
+
+There are 13 spades in a standard deck.
+
+\\[ P(\text{Spade})=\frac{13}{52} \\]
+
+\\[ P(\text{Spade})=0.25=25\\% \\]
+
+-------------------code----------------------
+total_cards = 52
+number_of_spades = 13
+
+probability_spade = number_of_spades / total_cards
+
+print("Probability of drawing a spade:", probability_spade)
+print("Percentage:", probability_spade * 100, "%")
+-------------------code----------------------
+
+### 6. Events with Multiple Conditions: Ace or Spade
+
+We are not limited to calculating probabilities for only one type of card.
+
+We can also calculate the probability of drawing a card that satisfies multiple conditions.
+
+For example:
+
+What is the probability of drawing either an ace or a spade?
+
+There are:
+
+- 4 aces.
+- 13 spades.
+- 1 card that belongs to both groups: the Ace of Spades.
+
+If we simply add 4 and 13, we count the Ace of Spades twice.
+
+Therefore, we subtract the overlap:
+
+\\[ |A\cup S|=|A|+|S|-|A\cap S| \\]
+
+Substituting the values:
+
+\\[ |A\cup S|=4+13-1=16 \\]
+
+Therefore:
+
+\\[ P(A\cup S)=\frac{16}{52} \\]
+
+\\[ P(A\cup S)\approx0.3077=30.77\\% \\]
+
+#### Python Example
+
+-------------------code----------------------
+total_cards = 52
+
+number_of_aces = 4
+number_of_spades = 13
+overlap = 1  # Ace of Spades
+
+favorable_outcomes = (
+    number_of_aces
+    + number_of_spades
+    - overlap
+)
+
+probability = favorable_outcomes / total_cards
+
+print("Favorable outcomes:", favorable_outcomes)
+print("Probability of ace or spade:", probability)
+print("Percentage:", probability * 100, "%")
+-------------------code----------------------
+
+Important: The word `or` in probability usually represents the union of events. When events overlap, avoid counting the shared outcomes twice.
+
+### 7. Certain and Impossible Events
+
+Two important special cases are:
+
+#### 7.1 Certain Event
+
+A certain event is an event that always happens.
+
+For example, drawing any card from a standard deck means that we will definitely draw a card.
+
+There are 52 favorable outcomes out of 52 possible outcomes.
+
+\\[ P(\Omega)=\frac{52}{52}=1 \\]
+
+Therefore:
+
+\\[ P(\Omega)=1=100\\% \\]
+
+#### 7.2 Impossible Event
+
+An impossible event is an event that cannot happen.
+
+For example, drawing a turnip from a standard deck of playing cards.
+
+There are zero favorable outcomes.
+
+\\[ P(\text{Turnip})=\frac{0}{52}=0 \\]
+
+Therefore:
+
+\\[ P(\text{Turnip})=0=0\\% \\]
+
+#### Python Example
+
+-------------------code----------------------
+total_cards = 52
+
+# Certain event
+certain_event = 52
+probability_certain = certain_event / total_cards
+
+# Impossible event
+impossible_event = 0
+probability_impossible = impossible_event / total_cards
+
+print("Certain event:", probability_certain)
+print("Impossible event:", probability_impossible)
+-------------------code----------------------
+
+### 8. Complete Example: Card Probability Calculator
+
+We can combine the card examples into one Python program.
+
+-------------------code----------------------
+# Total number of cards in a standard deck
+total_cards = 52
+
+# Number of favorable outcomes
+ace_of_spades = 1
+aces = 4
+spades = 13
+ace_or_spade = 4 + 13 - 1
+any_card = 52
+turnip = 0
+
+# Calculate probabilities
+probability_ace_of_spades = ace_of_spades / total_cards
+probability_aces = aces / total_cards
+probability_spades = spades / total_cards
+probability_ace_or_spade = ace_or_spade / total_cards
+probability_any_card = any_card / total_cards
+probability_turnip = turnip / total_cards
+
+# Display results
+print("Probability of Ace of Spades:",
+      probability_ace_of_spades)
+
+print("Probability of any Ace:",
+      probability_aces)
+
+print("Probability of a Spade:",
+      probability_spades)
+
+print("Probability of Ace or Spade:",
+      probability_ace_or_spade)
+
+print("Probability of drawing any card:",
+      probability_any_card)
+
+print("Probability of drawing a turnip:",
+      probability_turnip)
+-------------------code----------------------
+
+### 9. Important Notes and Best Practices
+
+1. Sample space represents all possible outcomes. Use \\(\Omega\\) to represent it mathematically.
+2. An event is a subset of the sample space. It can contain one outcome or several outcomes.
+3. Probability ranges from 0 to 1. Zero means impossible, and one means certain.
+4. The basic counting formula requires equally likely outcomes. Do not apply it blindly when outcomes have different probabilities.
+5. Avoid double-counting overlapping events. For an `A or B` event, subtract the overlap once.
+6. Use set notation to represent outcomes clearly. Curly brackets `{}` indicate a set.
+7. Distinguish an event from an outcome. An outcome is one possible result; an event can contain one or more outcomes.
+
+### 10. Summary
+
+This lecture introduced the basic building blocks of probability theory.
+
+| Concept          | Meaning                          | Example      |
+| ---------------- | -------------------------------- | ------------ |
+| Sample Space     | All possible outcomes            | `{H, T}`     |
+| Event            | One or more outcomes of interest | `{H}`        |
+| Probability      | Likelihood of an event           | \\(1/2\\)    |
+| Certain Event    | Always happens                   | \\(P=1\\)    |
+| Impossible Event | Cannot happen                    | \\(P=0\\)    |
+| Union            | Event A or event B               | Ace or Spade |
+
+The main formula for equally likely outcomes is:
+
+\\[ \boxed{P(A)=\frac{|A|}{|\Omega|}} \\]
+
+For overlapping events, remember:
+
+\\[ \boxed{P(A\cup B)=P(A)+P(B)-P(A\cap B)} \\]
+
+Next lecture: Calculating probabilities when we have multiple observations, such as flipping a coin two or more times.
+
+### 11. Full Final Python Code
+
+The lecture is primarily conceptual and does not require executing code. The following script consolidates all the examples into one runnable program.
+
+-------------------code----------------------
+# ============================================================
+# Machine Learning Foundations
+# Probability and Information Theory
+# Topic: Events and Sample Spaces
+# ============================================================
+
+
+# ------------------------------------------------------------
+# 1. Sample Space: Fair Coin
+# ------------------------------------------------------------
+
+sample_space = {"H", "T"}
+
+print("1. Coin Sample Space")
+print("Sample space:", sample_space)
+print("Number of outcomes:", len(sample_space))
+
+
+# ------------------------------------------------------------
+# 2. Events: Heads and Tails
+# ------------------------------------------------------------
+
+event_heads = {"H"}
+event_tails = {"T"}
+
+probability_heads = len(event_heads) / len(sample_space)
+probability_tails = len(event_tails) / len(sample_space)
+
+print("\n2. Coin Probabilities")
+print("Probability of heads:", probability_heads)
+print("Probability of tails:", probability_tails)
+
+
+# ------------------------------------------------------------
+# 3. Card Probability: Ace of Spades
+# ------------------------------------------------------------
+
+total_cards = 52
+
+ace_of_spades = 1
+
+probability_ace_of_spades = ace_of_spades / total_cards
+
+print("\n3. Ace of Spades")
+print("Probability:", probability_ace_of_spades)
+print("Percentage:", probability_ace_of_spades * 100, "%")
+
+
+# ------------------------------------------------------------
+# 4. Card Probability: Any Ace
+# ------------------------------------------------------------
+
+number_of_aces = 4
+
+probability_aces = number_of_aces / total_cards
+
+print("\n4. Any Ace")
+print("Probability:", probability_aces)
+print("Percentage:", probability_aces * 100, "%")
+
+
+# ------------------------------------------------------------
+# 5. Card Probability: Spade
+# ------------------------------------------------------------
+
+number_of_spades = 13
+
+probability_spades = number_of_spades / total_cards
+
+print("\n5. Spade")
+print("Probability:", probability_spades)
+print("Percentage:", probability_spades * 100, "%")
+
+
+# ------------------------------------------------------------
+# 6. Card Probability: Ace OR Spade
+# ------------------------------------------------------------
+
+overlap = 1  # Ace of Spades
+
+favorable_outcomes = (
+    number_of_aces
+    + number_of_spades
+    - overlap
+)
+
+probability_ace_or_spade = favorable_outcomes / total_cards
+
+print("\n6. Ace or Spade")
+print("Favorable outcomes:", favorable_outcomes)
+print("Probability:", probability_ace_or_spade)
+print("Percentage:", probability_ace_or_spade * 100, "%")
+
+
+# ------------------------------------------------------------
+# 7. Certain Event
+# ------------------------------------------------------------
+
+any_card = 52
+
+probability_certain = any_card / total_cards
+
+print("\n7. Certain Event")
+print("Probability:", probability_certain)
+
+
+# ------------------------------------------------------------
+# 8. Impossible Event
+# ------------------------------------------------------------
+
+turnip = 0
+
+probability_impossible = turnip / total_cards
+
+print("\n8. Impossible Event")
+print("Probability:", probability_impossible)
+
+
+# ------------------------------------------------------------
+# 9. Summary
+# ------------------------------------------------------------
+
+print("\n9. Summary")
+
+print("Heads:", probability_heads)
+print("Tails:", probability_tails)
+print("Ace of Spades:", probability_ace_of_spades)
+print("Any Ace:", probability_aces)
+print("Spade:", probability_spades)
+print("Ace or Spade:", probability_ace_or_spade)
+print("Certain Event:", probability_certain)
+print("Impossible Event:", probability_impossible)
+-------------------code----------------------
