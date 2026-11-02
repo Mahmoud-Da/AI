@@ -1437,3 +1437,451 @@ print(
     "at different classification thresholds."
 )
 -------------------code----------------------
+
+*** 97. The Receiver-Operating Characteristic (ROC) Curve ***
+# Machine Learning Foundations — The ROC Curve and ROC AUC
+
+## 1. Overview of the Lecture
+
+This lecture explains how to calculate the Receiver Operating Characteristic (ROC) curve and its associated metric, the Area Under the Curve (AUC), using a small binary classification example.
+
+The main objectives are to understand:
+
+1. How classification thresholds change model predictions.
+2. How to identify true positives, true negatives, false positives, and false negatives.
+3. How to calculate the True Positive Rate (TPR) and False Positive Rate (FPR).
+4. How to plot ROC coordinates and construct the ROC curve.
+5. How to interpret ROC AUC values.
+6. How integration can calculate the area under the ROC curve.
+
+The example uses four images and a model that predicts whether each image contains a hot dog.
+
+## 2. Understand the Example Data
+
+The model produces a score between 0 and 1 for each image. A higher score indicates a stronger prediction that the image contains a hot dog, assuming the score represents the estimated probability of the positive class.
+
+The lecture uses the following example:
+
+| Image | Actual label \\(Y\\) | Model score \\(\hat{Y}\\) |
+| ----- | -------------------- | ------------------------- |
+| A     | 1                    | 0.3                       |
+| B     | 1                    | 0.5                       |
+| C     | 0                    | 0.6                       |
+| D     | 0                    | 0.9                       |
+
+Here:
+
+- `1` means the image really contains a hot dog.
+- `0` means the image does not contain a hot dog.
+- The model score represents how strongly the model predicts the positive class.
+
+The model's scores do not necessarily have to be calibrated probabilities for ROC analysis, but they must be usable to rank examples from more likely positive to less likely positive.
+
+Example code:
+
+-------------------code----------------------
+# Actual labels: 1 = hot dog, 0 = not a hot dog
+y_actual = [1, 1, 0, 0]
+
+# Model scores for the positive class
+y_score = [0.3, 0.5, 0.6, 0.9]
+
+for i, (actual, score) in enumerate(
+    zip(y_actual, y_score), start=1
+):
+    print(
+        f"Image {i}: actual={actual}, score={score}"
+    )
+-------------------code----------------------
+
+This data is intentionally small so that every calculation can be performed manually.
+
+## 3. Apply a Classification Threshold
+
+A classification threshold converts a model score into a class prediction.
+
+For this lecture, the rule is:
+
+\\[ \hat{y} = \begin{cases} 1 & \text{if score} > \text{threshold}\\\ 0 & \text{if score} \leq \text{threshold} \end{cases} \\]
+
+Notice that the lecture treats scores equal to the threshold as negative. This convention matters when a score is exactly 0.3, 0.5, or 0.6.
+
+For example, at a threshold of 0.3:
+
+- A score of 0.3 becomes negative.
+- A score of 0.5 becomes positive.
+- A score of 0.6 becomes positive.
+- A score of 0.9 becomes positive.
+
+Example code:
+
+-------------------code----------------------
+def classify(scores, threshold):
+    return [
+        1 if score > threshold else 0
+        for score in scores
+    ]
+
+
+y_score = [0.3, 0.5, 0.6, 0.9]
+
+for threshold in [0.3, 0.5, 0.6]:
+    predictions = classify(y_score, threshold)
+    print(f"Threshold {threshold}: {predictions}")
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+Threshold 0.3: [0, 1, 1, 1]
+Threshold 0.5: [0, 0, 1, 1]
+Threshold 0.6: [0, 0, 0, 1]
+-------------------code----------------------
+
+As the threshold increases, fewer examples are predicted to belong to the positive class.
+
+## 4. Build the Confusion Matrix at Each Threshold
+
+To reproduce the lecture's stated counts and AUC of 0.75, use the following alignment of actual labels and scores. The actual-label ordering in the initial illustrative table above does not match the lecture's narrated counts.
+
+-------------------code----------------------
+y_actual = [0, 1, 0, 1]y_score = [0.3, 0.5, 0.6, 0.9]
+-------------------code----------------------
+
+### 4.1 Threshold = 0.3
+
+Using the rule `score > threshold`:
+
+| Actual | Score | Prediction | Outcome |
+| ------ | ----- | ---------- | ------- |
+| 0      | 0.3   | 0          | TN      |
+| 1      | 0.5   | 1          | TP      |
+| 0      | 0.6   | 1          | FP      |
+| 1      | 0.9   | 1          | TP      |
+
+Counts:
+
+- TP = 2
+- FN = 0
+- FP = 1
+- TN = 1
+
+### 4.2 Threshold = 0.5
+
+| Actual | Score | Prediction | Outcome |
+| ------ | ----- | ---------- | ------- |
+| 0      | 0.3   | 0          | TN      |
+| 1      | 0.5   | 0          | FN      |
+| 0      | 0.6   | 1          | FP      |
+| 1      | 0.9   | 1          | TP      |
+
+Counts:
+
+- TP = 1
+- FN = 1
+- FP = 1
+- TN = 1
+
+### 4.3 Threshold = 0.6
+
+| Actual | Score | Prediction | Outcome |
+| ------ | ----- | ---------- | ------- |
+| 0      | 0.3   | 0          | TN      |
+| 1      | 0.5   | 0          | FN      |
+| 0      | 0.6   | 0          | TN      |
+| 1      | 0.9   | 1          | TP      |
+
+Counts:
+
+- TP = 1
+- FN = 1
+- FP = 0
+- TN = 2
+
+The highest score, 0.9, does not need to be tested as a threshold for this lecture's calculation: at a threshold of 0.9, the strict `>` rule predicts every example as negative. That gives the ROC endpoint \\((0,0)\\), which is already added explicitly.
+
+## 5. Calculate TPR and FPR
+
+The ROC curve uses two rates derived from the confusion matrix.
+
+### 5.1 True Positive Rate (TPR)
+
+TPR measures the proportion of actual positive examples correctly identified.
+
+\\[ TPR=\frac{TP}{TP+FN} \\]
+
+A higher TPR means fewer actual positive examples are missed.
+
+### 5.2 False Positive Rate (FPR)
+
+FPR measures the proportion of actual negative examples incorrectly classified as positive.
+
+\\[ FPR=\frac{FP}{FP+TN} \\]
+
+A lower FPR means fewer actual negative examples are incorrectly flagged.
+
+### 5.3 Calculate the rates for each threshold
+
+| Threshold | TP | FN | FP | TN | TPR | FPR |
+| --------- | -- | -- | -- | -- | --- | --- |
+| 0.3       | 2  | 0  | 1  | 1  | 1.0 | 0.5 |
+| 0.5       | 1  | 1  | 1  | 1  | 0.5 | 0.5 |
+| 0.6       | 1  | 1  | 0  | 2  | 0.5 | 0.0 |
+
+For the first threshold:
+
+\\[ TPR=\frac{2}{2+0}=1.0 \\]
+
+\\[ FPR=\frac{1}{1+1}=0.5 \\]
+
+Python code:
+
+-------------------code----------------------
+# Threshold 0.3TP, FN, FP, TN = 2, 0, 1, 1TPR = TP / (TP + FN)FPR = FP / (FP + TN)print("TPR:", TPR)print("FPR:", FPR)
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+TPR: 1.0
+FPR: 0.5
+-------------------code----------------------
+
+## 6. Construct the ROC Curve
+
+Each threshold produces one coordinate:
+
+\\[ (FPR,TPR) \\]
+
+Using the calculated rates, the three points are:
+
+- Threshold 0.6: \\((0.0,0.5)\\)
+- Threshold 0.5: \\((0.5,0.5)\\)
+- Threshold 0.3: \\((0.5,1.0)\\)
+
+The ROC curve also includes the endpoints:
+
+- \\((0,0)\\): no positive predictions.
+- \\((1,1)\\): all examples predicted positive.
+
+The points are connected in order of increasing FPR.
+
+## ROC Curve: Example
+
+The horizontal axis is FPR; the vertical axis is TPR.
+
+Illustrative ROC curve for the four-example dataset.
+
+The goal is to obtain a curve that rises toward the upper-left corner: high TPR with low FPR.
+
+## 7. Calculate ROC AUC Using Integration
+
+AUC is the area under the ROC curve. For this example, we connect the points with straight lines and use the trapezoidal rule.
+
+For two adjacent points \\((x_1,y_1)\\) and \\((x_2,y_2)\\), the trapezoid area is
+
+\\[ A=\frac{y_1+y_2}{2}(x_2-x_1) \\]
+
+Here, \\(x\\) represents FPR and \\(y\\) represents TPR.
+
+The ROC points in order are:
+
+\\[ (0,0),\ (0,0.5),\ (0.5,0.5),\ (0.5,1),\ (1,1) \\]
+
+Only segments with a positive horizontal width contribute area:
+
+1\. From \\((0,0.5)\\) to \\((0.5,0.5)\\):
+
+\\[ A_1=\frac{0.5+0.5}{2}(0.5-0)=0.25 \\]
+
+2\. From \\((0.5,1)\\) to \\((1,1)\\):
+
+\\[ A_2=\frac{1+1}{2}(1-0.5)=0.5 \\]
+
+Therefore,
+
+\\[ AUC=0.25+0.5=\boxed{0.75} \\]
+
+Python code:
+
+-------------------code----------------------
+# ROC points in increasing order of FPRroc_points = [    (0.0, 0.0),    (0.0, 0.5),    (0.5, 0.5),    (0.5, 1.0),    (1.0, 1.0),]auc = 0.0for i in range(1, len(roc_points)):    x1, y1 = roc_points[i - 1]    x2, y2 = roc_points[i]    # Trapezoidal rule    auc += ((y1 + y2) / 2) * (x2 - x1)print(f"ROC AUC: {auc:.2f}")
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+ROC AUC: 0.75
+-------------------code----------------------
+
+## 8. Interpret ROC AUC
+
+| AUC value           | General interpretation                      |
+| ------------------- | ------------------------------------------- |
+| 0.5                 | Discrimination equivalent to random ranking |
+| Between 0.5 and 1.0 | Better-than-random discrimination           |
+| 1.0                 | Perfect discrimination                      |
+
+AUC of 0.75 means the model has useful discriminative ability, but it is not perfect.
+
+A common interpretation is that the model has a 75% probability of assigning a higher score to a randomly selected positive example than to a randomly selected negative example, with ties counted as half. This interpretation assumes the evaluation examples are representative of the population of interest.
+
+Important: AUC does not tell you which classification threshold is best, and it does not guarantee that predicted probabilities are well calibrated.
+
+## 9. Important Notes and Best Practices
+
+- Be consistent with threshold rules. This lecture uses `score > threshold`; many libraries use `score >= threshold`. Equality matters when scores match a tested threshold.
+- Check label-score alignment. Each score must belong to the corresponding actual label. Incorrect alignment changes the confusion matrix and AUC.
+- Sort ROC points by FPR before integrating. The trapezoidal calculation assumes the points follow the curve from left to right.
+- Include the ROC endpoints. The curve typically starts at \\((0,0)\\) and ends at \\((1,1)\\).
+- AUC is a ranking metric. It evaluates discrimination across thresholds rather than performance at just one threshold.
+- Do not rely on AUC alone. Depending on the problem, precision, recall, calibration, and the costs of false positives and false negatives may also matter.
+- Small datasets give unstable estimates. Four examples are enough to demonstrate the calculation, but not enough to reliably evaluate a real-world model.
+
+## 10. Summary
+
+This lecture demonstrates how to build an ROC curve from classification scores and calculate its area.
+
+1. Start with actual labels and model scores.
+2. Apply several thresholds to turn scores into class predictions.
+3. Count TP, TN, FP, and FN at each threshold.
+4. Calculate TPR and FPR.
+5. Plot each ROC point as \\((FPR,TPR)\\).
+6. Add the endpoints and connect the points.
+7. Calculate the area using integration, such as the trapezoidal rule.
+
+For the example, the ROC AUC is 0.75. This summarizes the model's ability to rank positive examples above negative examples across thresholds.
+
+## 11. Full Final Code
+
+The following complete script reproduces the lecture's example, calculates the confusion matrix at each threshold, builds the ROC points, and computes AUC manually.
+
+-------------------code----------------------
+# ============================================================
+# Machine Learning Foundations
+# Topic: ROC Curve and ROC AUC
+# ============================================================
+
+# Step 1: Define actual labels and model scores
+# 1 = hot dog, 0 = not a hot dog
+
+y_actual = [0, 1, 0, 1]
+y_score = [0.3, 0.5, 0.6, 0.9]
+
+# Use the lecture's convention:
+# score > threshold predicts positive.
+thresholds = [0.3, 0.5, 0.6]
+
+
+# Step 2: Define a function to calculate the confusion matrix
+
+def confusion_counts(actual, predicted):
+    if len(actual) != len(predicted):
+        raise ValueError("Actual and predicted lengths must match.")
+
+    TP = sum(
+        a == 1 and p == 1
+        for a, p in zip(actual, predicted)
+    )
+    TN = sum(
+        a == 0 and p == 0
+        for a, p in zip(actual, predicted)
+    )
+    FP = sum(
+        a == 0 and p == 1
+        for a, p in zip(actual, predicted)
+    )
+    FN = sum(
+        a == 1 and p == 0
+        for a, p in zip(actual, predicted)
+    )
+
+    return TP, FN, FP, TN
+
+
+# Step 3: Evaluate the model at each threshold
+
+roc_points = []
+
+print("CONFUSION MATRIX AND ROC RATES")
+print("--------------------------------")
+
+for threshold in thresholds:
+    predicted = [
+        1 if score > threshold else 0
+        for score in y_score
+    ]
+
+    TP, FN, FP, TN = confusion_counts(
+        y_actual,
+        predicted
+    )
+
+    # TPR and FPR require both actual classes to be present.
+    positive_total = TP + FN
+    negative_total = FP + TN
+
+    if positive_total == 0 or negative_total == 0:
+        raise ValueError(
+            "TPR and FPR require positive and negative examples."
+        )
+
+    TPR = TP / positive_total
+    FPR = FP / negative_total
+
+    roc_points.append((FPR, TPR))
+
+    print(f"\nThreshold: {threshold}")
+    print(f"Predictions: {predicted}")
+    print(f"TP={TP}, FN={FN}, FP={FP}, TN={TN}")
+    print(f"TPR={TPR:.2f}, FPR={FPR:.2f}")
+
+
+# Step 4: Add the ROC endpoints and sort points
+# Remove duplicate coordinates so vertical or horizontal
+# segments are not counted more than once.
+
+roc_points.extend([
+    (0.0, 0.0),
+    (1.0, 1.0),
+])
+
+roc_points = sorted(set(roc_points), key=lambda point: point[0])
+
+# If multiple points have the same FPR, sort by TPR.
+roc_points.sort(key=lambda point: (point[0], point[1]))
+
+print("\nROC POINTS")
+print("----------")
+
+for FPR, TPR in roc_points:
+    print(f"(FPR={FPR:.2f}, TPR={TPR:.2f})")
+
+
+# Step 5: Calculate AUC using the trapezoidal rule
+
+auc = 0.0
+
+for i in range(1, len(roc_points)):
+    x1, y1 = roc_points[i - 1]
+    x2, y2 = roc_points[i]
+
+    width = x2 - x1
+    average_height = (y1 + y2) / 2
+
+    auc += width * average_height
+
+
+# Step 6: Display the final result
+
+print("\nFINAL RESULT")
+print("------------")
+print(f"ROC AUC = {auc:.2f}")
+
+if auc == 0.5:
+    print("The model has chance-level ranking performance.")
+elif auc > 0.5:
+    print("The model ranks positive examples better than chance.")
+else:
+    print("The model ranks positive examples worse than chance.")
+-------------------code----------------------
