@@ -4063,3 +4063,322 @@ This is equivalent to the symbolic result:
 \\[ \boxed{\frac{3}{4}} \\]
 
 Numerical integration is particularly useful in machine learning because many mathematical problems involve functions that are difficult or impossible to integrate analytically.
+
+*** 103. Definite Integral Exercise ***
+# Lecture Notes: Solving Definite Integrals Manually and with Python
+
+## 1. Learning Objectives
+
+In this lecture, we learn how to calculate the same definite integral using two different approaches:
+
+1. Symbolic integration: Solve the integral manually using mathematical rules.
+2. Numerical integration: Use Python and SciPy to calculate the integral computationally.
+
+We will solve:
+
+\\[ \int_3^4 2x\\,dx \\]
+
+Both methods should produce the same result.
+
+## 2. Understanding the Problem
+
+We are given the function:
+
+\\[ f(x)=2x \\]
+
+We want to calculate its definite integral over the interval from 3 to 4:
+
+\\[ \int_3^4 2x\\,dx \\]
+
+A definite integral calculates the accumulated value of a function over a specified interval.
+
+In this example, it represents the area under the curve \\(f(x)=2x\\), between \\(x=3\\) and \\(x=4\\).
+
+[Introduction to Integral Notation – GeoGebra](https://images.openai.com/static-rsc-4/JbygIVMPBLAMdU2Xk0rbjQ9wi-inIM18e-SrjTByeCLCR0TJinPzcmwYfCFpXh7Yxuf3Glon1DkwQdELQYtojBLokK5t3uXLbQHHf23M5y2yMkRFQrnojOieWjLS87H4vtvVtzCTH1NXawQPIEsfSdtt1DWBbnjI46FychTcg54?purpose=inline)
+
+[geogebra.org](https://www.geogebra.org/m/EWTg9h2c?utm_source=chatgpt.com)
+
+## 3. Method 1: Symbolic Integration (Manual Calculation)
+
+To calculate a definite integral manually, we first find its indefinite integral and then evaluate it at the interval boundaries.
+
+### 3.1 Step 1: Apply the Constant Multiple Rule
+
+Our integral is:
+
+\\[ \int 2x\\,dx \\]
+
+According to the constant multiple rule:
+
+\\[ \int a f(x)\\,dx=a\int f(x)\\,dx \\]
+
+We can move the constant 2 outside the integral:
+
+\\[ =2\int x\\,dx \\]
+
+### 3.2 Step 2: Apply the Power Rule
+
+The power rule is:
+
+\\[ \int x^n\\,dx=\frac{x^{n+1}}{n+1}+C \\]
+
+For our function, \\(x=x^1\\), so \\(n=1\\):
+
+\\[ \int x\\,dx=\frac{x^2}{2}+C \\]
+
+Substitute this into our expression:
+
+\\[ 2\left(\frac{x^2}{2}\right)+C \\]
+
+Cancel the two:
+
+\\[ F(x)=x^2+C \\]
+
+This is our indefinite integral (antiderivative).
+
+### 3.3 Step 3: Evaluate the Upper and Lower Limits
+
+The fundamental theorem of calculus tells us:
+
+\\[ \int_a^b f(x)\\,dx=F(b)-F(a) \\]
+
+For our example:
+
+- Lower limit: \\(a=3\\)
+- Upper limit: \\(b=4\\)
+- Antiderivative: \\(F(x)=x^2+C\\)
+
+First, evaluate the upper limit:
+
+\\[ F(4)=4^2+C=16+C \\]
+
+Next, evaluate the lower limit:
+
+\\[ F(3)=3^2+C=9+C \\]
+
+### 3.4 Step 4: Subtract the Results
+
+Now subtract the lower-limit result from the upper-limit result:
+
+\\[ F(4)-F(3) \\]
+
+\\[ =(16+C)-(9+C) \\]
+
+The constants cancel:
+
+\\[ =16-9 \\]
+
+Final result: 7
+
+\\[ \boxed{\int_3^4 2x\\,dx=7} \\]
+
+Important: The integration constant \\(C\\) disappears when calculating a definite integral because it is present in both evaluations.
+
+## 4. Method 2: Numerical Integration Using Python
+
+We can calculate the same integral using Python's `scipy.integrate.quad` function.
+
+The `quad()` function performs numerical integration using numerical quadrature methods.
+
+### 4.1 Step 1: Import the Required Function
+
+-------------------code----------------------
+
+from scipy.integrate import quad
+-------------------code----------------------
+
+
+We import `quad` from the `scipy.integrate` module.
+
+### 4.2 Step 2: Define the Mathematical Function
+
+Our original function is:
+
+\\[ f(x)=2x \\]
+
+We represent it in Python:
+
+-------------------code----------------------
+
+def f(x):    return 2 * x
+-------------------code----------------------
+
+
+The function receives a value of `x` and returns twice that value.
+
+### 4.3 Step 3: Define the Integration Limits
+
+We want to integrate between 3 and 4:
+
+-------------------code----------------------
+
+lower_limit = 3upper_limit = 4
+-------------------code----------------------
+
+
+### 4.4 Step 4: Calculate the Integral
+
+Pass the function and integration limits to `quad()`:
+
+-------------------code----------------------
+
+result, error = quad(f, lower_limit, upper_limit)
+-------------------code----------------------
+
+
+The function returns two values:
+
+- `result`: The numerical approximation of the definite integral.
+- `error`: The estimated absolute numerical error.
+
+### 4.5 Step 5: Display the Results
+
+-------------------code----------------------
+
+print("Integral result:", result)print("Estimated absolute error:", error)
+-------------------code----------------------
+
+
+Expected output:
+
+-------------------code----------------------
+
+Integral result: 7.0
+Estimated absolute error: approximately 7.77e-14
+-------------------code----------------------
+
+
+The estimated error is extremely small, so the numerical result is effectively 7 for this example.
+
+## 5. Understanding the Two Approaches
+
+Both methods calculate the same mathematical quantity, but they work differently.
+
+| Feature                   | Symbolic integration | Numerical integration   |
+| ------------------------- | -------------------- | ----------------------- |
+| Approach                  | Mathematical rules   | Numerical algorithms    |
+| Result                    | Exact expression     | Numerical approximation |
+| Requires Python           | No                   | Yes                     |
+| Handles complex functions | Sometimes difficult  | Often practical         |
+| Example result            | 7                    | 7.0                     |
+
+### Why are both methods useful?
+
+Symbolic integration:
+
+- Helps us understand mathematical relationships.
+- Can produce exact solutions.
+- Useful for functions with manageable antiderivatives.
+
+Numerical integration:
+
+- Useful when finding an exact antiderivative is difficult or impossible.
+- Can handle many complicated functions.
+- Widely used in scientific computing and machine learning.
+
+## 6. Connection to Machine Learning
+
+The lecture introduces an important machine learning application: calculating the Area Under the ROC Curve (ROC AUC).
+
+ROC stands for Receiver Operating Characteristic.
+
+The ROC curve evaluates a binary classification model by comparing:
+
+- True Positive Rate (TPR).
+- False Positive Rate (FPR).
+
+The AUC measures the area underneath the ROC curve.
+
+[liveBook · Manning](https://images.openai.com/static-rsc-4/PQJSVhQnul8GRZUOWLBWCM3MYNbxCPBz8_SNWP9ywQ-F2p4oP3k7OOE_kIvI0oy1YCrjunlnnEbz_tydbXSa0kqZDEn-jh5_cvxnJ2r67ZPsjKuNV-e_HZiZf02TRZ9oiXln4sdLsvE7Is1dmZxkrlBLn-e2eksaG0S8Kasbxvg?purpose=inline)
+
+[livebook.manning.com](https://livebook.manning.com/concept/machine-learning/roc-curve?utm_source=chatgpt.com)
+
+AUC is useful because it summarizes how well a classification model distinguishes between positive and negative classes across different classification thresholds.
+
+For example:
+
+- AUC = 1.0: Perfect classification.
+- AUC = 0.5: Performance equivalent to random ranking.
+- AUC below 0.5: Worse than random ranking, potentially indicating reversed predictions.
+
+In practice, Python's scikit-learn provides a convenient way to calculate ROC AUC:
+
+-------------------code----------------------
+
+
+from scipy.integrate import quad
+
+# Step 1: Define the function
+def f(x):
+    return 2 * x
+
+
+# Step 2: Define the integration limits
+lower_limit = 3
+upper_limit = 4
+
+
+# Step 3: Calculate the definite integral
+result, error = quad(f, lower_limit, upper_limit)
+
+
+# Step 4: Display the numerical result
+print("Numerical Integration")
+print("---------------------")
+print("Function: f(x) = 2x")
+print("Lower limit:", lower_limit)
+print("Upper limit:", upper_limit)
+print("Integral result:", result)
+print("Estimated absolute error:", error)
+
+
+# Step 5: Compare with the symbolic solution
+symbolic_result = 4**2 - 3**2
+
+print("\nSymbolic Integration")
+print("--------------------")
+print("Exact result:", symbolic_result)
+
+print("\nComparison")
+print("-----------")
+print("Both methods agree:", abs(result - symbolic_result) < 1e-10)
+
+-------------------code----------------------
+
+
+This connects the mathematical concept of integration to evaluating machine learning models.
+
+## 7. Important Notes and Best Practices
+
+1. Always identify the integration limits. The lower and upper limits determine the interval over which the function is integrated.
+2. Find the antiderivative first when solving manually. For a definite integral, calculate \\(F(b)-F(a)\\).
+3. Remember the integration constant. Include \\(+C\\) when finding an indefinite integral, even though it cancels in a definite integral.
+4. Understand the output of `quad()`. It returns a tuple containing the integral approximation and estimated absolute error.
+5. Do not confuse numerical error with the actual integral. A very small estimated error indicates that the numerical calculation is highly accurate according to the algorithm's error estimate.
+6. Use numerical integration when symbolic integration is impractical. This is especially useful in scientific computing and machine learning.
+7. Check your Python environment. The SciPy import issue encountered in your macOS environment is a dependency/binary-loading problem, not an error in the integration formula or Python code.
+
+## 8. Full Final Python Code
+
+-------------------code----------------------
+
+from scipy.integrate import quad# Step 1: Define the functiondef f(x):    return 2 * x# Step 2: Define the integration limitslower_limit = 3upper_limit = 4# Step 3: Calculate the definite integralresult, error = quad(f, lower_limit, upper_limit)# Step 4: Display the numerical resultprint("Numerical Integration")print("---------------------")print("Function: f(x) = 2x")print("Lower limit:", lower_limit)print("Upper limit:", upper_limit)print("Integral result:", result)print("Estimated absolute error:", error)# Step 5: Compare with the symbolic solutionsymbolic_result = 4**2 - 3**2print("\nSymbolic Integration")print("--------------------")print("Exact result:", symbolic_result)print("\nComparison")print("-----------")
+-------------------code----------------------
+
+
+Note: This code requires SciPy to import successfully. If your current SciPy installation still produces the `_spropack` loading error, the mathematical example can also be calculated using NumPy's trapezoidal integration method while you troubleshoot SciPy.
+
+## 9. Summary
+
+In this lecture, we calculated:
+
+\\[ \boxed{\int_3^4 2x\\,dx=7} \\]
+
+We learned two approaches:
+
+1. Symbolic method: Find the antiderivative \\(F(x)=x^2+C\\), then calculate \\(F(4)-F(3)=7\\).
+2. Computational method: Define the function in Python and use `scipy.integrate.quad()` to obtain approximately `7.0`.
+
+The most important takeaway is that mathematical integration and numerical integration are two different ways of solving the same problem.
+
+Next lecture: Applying integration to a practical machine learning problem: calculating the area under the ROC curve (ROC AUC).
