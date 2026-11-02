@@ -1076,3 +1076,566 @@ print("\nLecture examples completed.")
 -------------------code----------------------
 
 Final takeaway: Probability evolved from early methods of reasoning about uncertainty and counting outcomes into a general mathematical framework that supports modern statistics and machine learning.
+
+*** 109. What Probability Theory Is ***
+# Machine Learning Foundations: Probability and Information Theory
+
+## Lecture Notes: Introduction to Probability Theory
+
+### 1. What Is Probability Theory?
+
+Probability theory is the mathematical study of processes and events that involve uncertainty.
+
+It helps us describe how likely an event is to happen.
+
+A probability is always a value between 0 and 1:
+
+\\[ 0 \leq P(A) \leq 1 \\]
+
+Where:
+
+- \\(P(A)=0\\): The event is impossible.
+- \\(P(A)=1\\): The event is certain.
+- \\(0\<P(A)<1\\): The event has some possibility of occurring.
+
+For example:
+
+| Probability | Meaning    |
+| ----------- | ---------- |
+| 0.0         | Impossible |
+| 0.25        | 25% chance |
+| 0.5         | 50% chance |
+| 0.75        | 75% chance |
+| 1.0         | Certain    |
+
+Key idea: Probability gives us a mathematical way to represent uncertainty instead of treating future events as completely predictable.
+
+### 2. Using Historical Data to Predict Future Events
+
+Probability theory allows us to build models of uncertain events using previously collected data.
+
+The general process is:
+
+1. Collect historical data.
+2. Identify patterns or frequencies in the data.
+3. Build a probability model.
+4. Use the model to estimate the likelihood of future events.
+5. Apply those estimates to events we have not observed yet.
+
+#### 2.1 Example: Predicting Whether It Will Rain
+
+Imagine we collected weather data for 100 days:
+
+- 30 days had rain.
+- 70 days had no rain.
+
+The historical frequency of rainy days is:
+
+\\[ P(\text{Rain})=\frac{30}{100}=0.3 \\]
+
+This suggests a 30% historical frequency of rain.
+
+#### Python Example
+
+-------------------code----------------------
+# Historical weather observations
+rainy_days = 30
+total_days = 100
+
+# Calculate the historical probability
+rain_probability = rainy_days / total_days
+
+print("Probability of rain:", rain_probability)
+print("Percentage:", rain_probability * 100, "%")
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+Probability of rain: 0.3
+Percentage: 30.0 %
+-------------------code----------------------
+
+Important: This is a historical frequency, not necessarily an accurate forecast. A real weather model would consider additional information such as temperature, humidity, pressure, and location.
+
+### 3. Relationship Between Probability and Statistics
+
+Probability and statistics are closely related, but they serve different purposes.
+
+- Probability: Uses mathematical models to reason about uncertain events.
+- Statistics: Uses observed data to make inferences and evaluate confidence in those inferences.
+
+Statistics helps us answer questions such as:
+
+- Is an observed result likely to have occurred by chance?
+- Is there meaningful evidence supporting a conclusion?
+- Should we accept or reject a hypothesis?
+
+#### 3.1 Example: Product A vs. Product B
+
+Imagine a company wants to determine which email template performs better.
+
+- Template A is sent to one group of customers.
+- Template B is sent to another group.
+- The company records how many people click each email.
+
+Statistics can help determine whether the observed difference in click rates is meaningful or could reasonably be explained by random variation.
+
+#### Python Example
+
+-------------------code----------------------
+# Click data from two email templates
+
+template_a_clicks = 120
+template_a_sent = 1000
+
+template_b_clicks = 150
+template_b_sent = 1000
+
+# Calculate click-through rates
+rate_a = template_a_clicks / template_a_sent
+rate_b = template_b_clicks / template_b_sent
+
+print("Template A click rate:", rate_a * 100, "%")
+print("Template B click rate:", rate_b * 100, "%")
+
+print("Difference:", (rate_b - rate_a) * 100, "percentage points")
+-------------------code----------------------
+
+Output:
+
+-------------------code----------------------
+Template A click rate: 12.0 %
+Template B click rate: 15.0 %
+Difference: 3.0 percentage points
+-------------------code----------------------
+
+Template B has a higher observed click rate.
+
+However, this alone does not prove that Template B is genuinely better. Statistical testing can help evaluate whether the difference is likely to be meaningful.
+
+### 4. Statistics and Hypothesis Testing
+
+Statistics provides a framework for supporting or rejecting hypotheses using collected data.
+
+A hypothesis is a statement or assumption that we want to investigate.
+
+Examples:
+
+- A new medicine improves recovery rates.
+- A particular chemical reaction produces more of a desired substance.
+- A website redesign increases customer purchases.
+- Email Template B produces a higher click-through rate than Template A.
+
+#### 4.1 Basic Hypothesis Testing Process
+
+1. Formulate a hypothesis.
+2. Collect relevant data.
+3. Analyze the observations.
+4. Evaluate whether the results provide sufficient evidence.
+5. Decide whether to reject the original hypothesis.
+
+Two common terms are:
+
+- Null hypothesis (\\(H_0\\)): Usually represents no effect or no difference.
+- Alternative hypothesis (\\(H_1\\)): Represents an effect or difference.
+
+For the email example:
+
+\\[ H_0: p_A=p_B \\]
+
+\\[ H_1: p_A\neq p_B \\]
+
+Where \\(p_A\\) and \\(p_B\\) are the true click-through rates.
+
+Important: Hypothesis testing does not prove a hypothesis with absolute certainty. It evaluates how compatible the observed data is with a specified statistical model.
+
+### 5. Relationship Between Probability and Machine Learning
+
+Machine learning is another approach to modeling uncertain events using historical data.
+
+Like statistics, machine learning learns from observations and uses the learned patterns to make predictions.
+
+However, machine learning is particularly useful when working with:
+
+- Very large datasets.
+- High-dimensional datasets.
+- Complex relationships between variables.
+- Prediction tasks that require learning patterns from many features.
+
+#### 5.1 Understanding High-Dimensional Data
+
+Consider a dataset about customers.
+
+Each row represents one customer, while each column represents a feature or characteristic.
+
+| Customer | Age | Income | Visits | Purchased |
+| -------- | --- | ------ | ------ | --------- |
+| 1        | 25  | 30000  | 3      | Yes       |
+| 2        | 42  | 60000  | 8      | No        |
+| 3        | 31  | 45000  | 5      | Yes       |
+| 4        | 50  | 80000  | 2      | No        |
+
+In this example:
+
+- Rows represent individual observations.
+- Columns represent features or dimensions.
+- `Purchased` is the target variable we want to predict.
+
+A dataset with many features is called high-dimensional data.
+
+#### Python Example
+
+-------------------code----------------------
+import pandas as pd
+
+# Create a simple customer dataset
+data = {
+    "Age": [25, 42, 31, 50],
+    "Income": [30000, 60000, 45000, 80000],
+    "Visits": [3, 8, 5, 2],
+    "Purchased": ["Yes", "No", "Yes", "No"]
+}
+
+df = pd.DataFrame(data)
+
+print(df)
+
+# Number of observations (rows)
+print("Rows:", df.shape[0])
+
+# Number of dimensions (columns)
+print("Columns:", df.shape[1])
+-------------------code----------------------
+
+Machine learning can use these features to learn patterns associated with customer purchases.
+
+Important distinction: Statistics and machine learning overlap considerably. The lecture highlights machine learning's usefulness with large and high-dimensional datasets, but statistics is also widely used with large datasets, and machine learning does not replace statistical reasoning.
+
+### 6. Why Probability Theory Is Important
+
+Probability theory is a foundation for both statistics and machine learning.
+
+Probability Theory
+
+Mathematical framework for representing and reasoning about uncertainty.
+
+Statistics
+
+Uses data to make inferences, evaluate evidence, and test hypotheses.
+
+Machine Learning
+
+Learns patterns from data and uses them to make predictions.
+
+Understanding probability makes it easier to understand how these fields handle uncertain information.
+
+### 7. Key Concepts in Probability Theory
+
+The lecture introduces four important concepts that will be explored in later lessons.
+
+#### 7.1 Law of Large Numbers
+
+The Law of Large Numbers states that as the number of independent observations increases, the sample average tends to get closer to the expected value.
+
+For example, when flipping a fair coin repeatedly, the proportion of heads tends to approach 0.5 as the number of flips becomes large.
+
+Python Example:
+
+-------------------code----------------------
+import numpy as np
+
+# Simulate 10,000 coin flips
+flips = np.random.choice(
+    [0, 1],
+    size=10000
+)
+
+# 1 represents heads
+# 0 represents tails
+
+# Calculate the proportion of heads
+proportion_heads = np.mean(flips)
+
+print("Proportion of heads:", proportion_heads)
+-------------------code----------------------
+
+The result should generally be close to 0.5, although it will vary between executions.
+
+#### 7.2 Random Variables
+
+A random variable is a variable whose value depends on the outcome of a random process.
+
+For example, when rolling a die:
+
+\\[ X \in \\{1,2,3,4,5,6\\} \\]
+
+Here, \\(X\\) represents the result of the die roll.
+
+Python Example:
+
+-------------------code----------------------
+import numpy as np
+
+# Simulate one die roll
+X = np.random.randint(1, 7)
+
+print("Random variable X:", X)
+-------------------code----------------------
+
+#### 7.3 Probability Distributions
+
+A probability distribution describes how probabilities are assigned to the possible values of a random variable.
+
+For example, a fair six-sided die has an equal probability of producing each outcome:
+
+\\[ P(X=x)=\frac{1}{6} \\]
+
+for \\(x \in \\{1,2,3,4,5,6\\}\\).
+
+Python Example:
+
+-------------------code----------------------
+import numpy as np
+
+# Six possible outcomes
+outcomes = np.array([1, 2, 3, 4, 5, 6])
+
+# Equal probability for every outcome
+probabilities = np.ones(6) / 6
+
+for outcome, probability in zip(outcomes, probabilities):
+    print(f"P(X={outcome}) = {probability:.4f}")
+-------------------code----------------------
+
+#### 7.4 Central Limit Theorem
+
+The Central Limit Theorem states that, under suitable conditions, the distribution of sample means approaches a normal distribution as the sample size increases.
+
+This is true even when the original population distribution is not normal, provided the relevant assumptions are satisfied.
+
+Python Example:
+
+-------------------code----------------------
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Generate a non-normal population
+population = np.random.exponential(
+    scale=2,
+    size=100000
+)
+
+# Take repeated samples and calculate their means
+sample_means = []
+
+for _ in range(1000):
+    sample = np.random.choice(
+        population,
+        size=50
+    )
+
+    sample_means.append(np.mean(sample))
+
+# Plot the distribution of sample means
+plt.hist(sample_means, bins=30, edgecolor="black")
+
+plt.title("Central Limit Theorem")
+plt.xlabel("Sample Mean")
+plt.ylabel("Frequency")
+
+plt.show()
+-------------------code----------------------
+
+The distribution of sample means should look approximately normal, even though the original population follows an exponential distribution.
+
+### 8. Important Notes and Best Practices
+
+1. Probability measures uncertainty: Values range from 0 to 1.
+2. Historical data helps build models: Past observations can provide information about future events, but they do not guarantee future outcomes.
+3. Probability and statistics are different: Probability models uncertain events; statistics uses data to draw inferences.
+4. Hypothesis testing evaluates evidence: It does not establish absolute certainty.
+5. Machine learning handles complex patterns: It is especially useful for large and high-dimensional datasets.
+6. Understand the data structure: Rows usually represent observations, while columns represent features.
+7. Randomness creates variation: Two simulations using the same probability model may produce different results.
+8. Use sufficient sample sizes: Larger samples generally provide more stable estimates, assuming the sampling process is appropriate.
+
+### 9. Summary
+
+Probability theory is the mathematical study of uncertainty. It allows us to represent the likelihood of events and build models using historical data.
+
+The main ideas covered in this lecture are:
+
+- Probabilities range from 0 (impossible) to 1 (certain).
+- Historical observations can help estimate the likelihood of future events.
+- Statistics uses data to make inferences and test hypotheses.
+- Machine learning uses data to learn patterns and make predictions, particularly in complex and high-dimensional datasets.
+- Probability is a foundational subject for both statistics and machine learning.
+
+The four major probability concepts introduced are:
+
+| Concept                   | Main idea                                                                |
+| ------------------------- | ------------------------------------------------------------------------ |
+| Law of Large Numbers      | Sample averages approach expected values as sample sizes increase        |
+| Random Variables          | Variables whose values depend on random outcomes                         |
+| Probability Distributions | Describe the probabilities of possible values                            |
+| Central Limit Theorem     | Sample means tend toward a normal distribution under suitable conditions |
+
+Next lecture: The course will begin exploring probability theory in more detail.
+
+### 10. Complete Python Code
+
+The following script combines all the practical examples from this lecture.
+
+-------------------code----------------------
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+
+# ============================================================
+# 1. Historical Probability
+# ============================================================
+
+print("\n1. Historical Probability")
+
+rainy_days = 30
+total_days = 100
+
+rain_probability = rainy_days / total_days
+
+print("Probability of rain:", rain_probability)
+print("Percentage:", rain_probability * 100, "%")
+
+
+# ============================================================
+# 2. Comparing Email Templates
+# ============================================================
+
+print("\n2. Comparing Email Templates")
+
+template_a_clicks = 120
+template_a_sent = 1000
+
+template_b_clicks = 150
+template_b_sent = 1000
+
+rate_a = template_a_clicks / template_a_sent
+rate_b = template_b_clicks / template_b_sent
+
+print("Template A click rate:", rate_a * 100, "%")
+print("Template B click rate:", rate_b * 100, "%")
+
+print(
+    "Difference:",
+    (rate_b - rate_a) * 100,
+    "percentage points"
+)
+
+
+# ============================================================
+# 3. Customer Dataset
+# ============================================================
+
+print("\n3. Customer Dataset")
+
+data = {
+    "Age": [25, 42, 31, 50],
+    "Income": [30000, 60000, 45000, 80000],
+    "Visits": [3, 8, 5, 2],
+    "Purchased": ["Yes", "No", "Yes", "No"]
+}
+
+df = pd.DataFrame(data)
+
+print(df)
+
+print("Rows:", df.shape[0])
+print("Columns:", df.shape[1])
+
+
+# ============================================================
+# 4. Law of Large Numbers
+# ============================================================
+
+print("\n4. Law of Large Numbers")
+
+flips = np.random.choice(
+    [0, 1],
+    size=10000
+)
+
+proportion_heads = np.mean(flips)
+
+print("Proportion of heads:", proportion_heads)
+
+
+# ============================================================
+# 5. Random Variables
+# ============================================================
+
+print("\n5. Random Variables")
+
+X = np.random.randint(1, 7)
+
+print("Random die roll:", X)
+
+
+# ============================================================
+# 6. Probability Distribution
+# ============================================================
+
+print("\n6. Probability Distribution")
+
+outcomes = np.array([1, 2, 3, 4, 5, 6])
+
+probabilities = np.ones(6) / 6
+
+for outcome, probability in zip(outcomes, probabilities):
+    print(f"P(X={outcome}) = {probability:.4f}")
+
+
+# ============================================================
+# 7. Central Limit Theorem
+# ============================================================
+
+print("\n7. Central Limit Theorem")
+
+population = np.random.exponential(
+    scale=2,
+    size=100000
+)
+
+sample_means = []
+
+for _ in range(1000):
+    sample = np.random.choice(
+        population,
+        size=50
+    )
+
+    sample_means.append(np.mean(sample))
+
+plt.hist(
+    sample_means,
+    bins=30,
+    edgecolor="black"
+)
+
+plt.title("Central Limit Theorem")
+plt.xlabel("Sample Mean")
+plt.ylabel("Frequency")
+
+plt.show()
+
+
+print("\nAll lecture examples completed.")
+-------------------code----------------------
+
+Dependencies:
+
+-------------------code----------------------
+pip install numpy pandas matplotlib
+-------------------code----------------------
+
+These examples use NumPy, Pandas, and Matplotlib; SciPy is not required for this lecture.
