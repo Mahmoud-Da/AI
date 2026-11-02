@@ -3210,3 +3210,595 @@ Key takeaways:
 6. Combinatorics makes probability calculations more efficient, especially when the sample space becomes large.
 
 Next lecture: Practical exercises using Python to test understanding of combinatorics and probability theory.
+
+*** 113. Exercises on Event Probabilities ***
+# Probability Theory – Exercises: Card Draws, Coin Tosses, and Combinations
+
+## 1. Overview
+
+This lecture contains four exercises designed to reinforce the probability concepts covered previously:
+
+1. Events and sample spaces.
+2. Independent observations.
+3. Multiplication of probabilities.
+4. Combinatorics and the \\(n\\) choose \\(k\\) formula.
+5. Python functions, factorials, and loops.
+
+The exercises focus on calculating probabilities without manually listing every possible outcome.
+
+## 2. Exercise 1: Drawing the Ace of Spades Twice
+
+Question: What is the probability of drawing the Ace of Spades twice in a row from a standard 52-card deck?
+
+Assume that the first card is returned to the deck before the second draw.
+
+### 2.1 Step 1: Calculate the probability of the first draw
+
+A standard deck contains 52 cards, and only one is the Ace of Spades.
+
+Therefore:
+
+\\[ P(\text{Ace of Spades})=\frac{1}{52} \\]
+
+### 2.2 Step 2: Calculate the probability of the second draw
+
+Because we return the first card to the deck and shuffle, all 52 cards are available again.
+
+The probability of drawing the Ace of Spades remains:
+
+\\[ P(\text{Ace of Spades})=\frac{1}{52} \\]
+
+### 2.3 Step 3: Multiply the probabilities
+
+The two draws are independent because the first card is replaced.
+
+For independent events:
+
+\\[ P(A\cap B)=P(A)\times P(B) \\]
+
+Therefore:
+
+\\[ P(\text{Two Aces of Spades})= \frac{1}{52}\times\frac{1}{52} \\]
+
+\\[ =\frac{1}{2704} \\]
+
+\\[ \boxed{P\approx0.0003698=0.03698\\%} \\]
+
+### 2.4 Python implementation
+
+-------------------code----------------------
+# Probability of drawing the Ace of Spades twice
+# with replacement
+
+first_draw = 1 / 52
+second_draw = 1 / 52
+
+probability = first_draw * second_draw
+
+print("Probability:", probability)
+print("Percentage:", probability * 100, "%")
+-------------------code----------------------
+
+Expected result:
+
+-------------------code----------------------
+Probability: 0.0003698224852071006
+Percentage: 0.03698224852071006 %
+-------------------code----------------------
+
+Important: Replacing the card is essential. Without replacement, the probability of drawing the same unique card on the second draw would be zero.
+
+## 3. Exercise 2: Drawing the Same Card Twice
+
+Question: You draw one card from a standard deck, return it, shuffle the deck, and draw again. What is the probability of drawing exactly the same card?
+
+The important difference from Exercise 1 is that we do not know which card will be drawn first. It could be any of the 52 cards.
+
+### 3.1 Step 1: Calculate the probability of the first draw
+
+Since every card is a possible outcome:
+
+\\[ P(\text{Any card})=\frac{52}{52}=1 \\]
+
+This means the probability of drawing some card is 100%.
+
+### 3.2 Step 2: Calculate the probability of drawing the same card again
+
+After returning the first card and shuffling, there are 52 possible cards.
+
+Only one of them matches the first card.
+
+Therefore:
+
+\\[ P(\text{Same card again})=\frac{1}{52} \\]
+
+### 3.3 Step 3: Calculate the combined probability
+
+\\[ P(\text{Same card twice})= 1\times\frac{1}{52} \\]
+
+\\[ =\frac{1}{52} \\]
+
+\\[ \boxed{P\approx0.01923=1.923\\%} \\]
+
+### 3.4 Python implementation
+
+-------------------code----------------------
+# Probability of drawing any card first
+first_draw = 1
+
+# Probability of drawing that exact same card again
+second_draw = 1 / 52
+
+probability = first_draw * second_draw
+
+print("Probability:", probability)
+print("Percentage:", probability * 100, "%")
+-------------------code----------------------
+
+Key distinction:
+
+- Exercise 1: A specific card must appear twice → \\(1/52^2\\).
+- Exercise 2: Any first card is acceptable, but the second must match it → \\(1/52\\).
+
+## 4. Exercise 3: Getting Three Heads in Five Coin Tosses
+
+Question: What is the probability of getting exactly three heads when flipping a fair coin five times?
+
+Instead of manually listing all possible sequences, we can use the combinations formula.
+
+### 4.1 Step 1: Identify \\(n\\) and \\(k\\)
+
+We use the notation:
+
+\\[ \binom{n}{k} \\]
+
+Where:
+
+- \\(n=5\\): Total number of coin flips.
+- \\(k=3\\): Number of heads we want.
+
+Therefore, we need:
+
+\\[ \binom{5}{3} \\]
+
+### 4.2 Step 2: Apply the combinations formula
+
+\\[ \binom{n}{k}=\frac{n!}{k!(n-k)!} \\]
+
+Substitute \\(n=5\\) and \\(k=3\\):
+
+\\[ \binom{5}{3}= \frac{5!}{3!(5-3)!} \\]
+
+Simplify:
+
+\\[ =\frac{5!}{3!\times2!} \\]
+
+Expand the factorials:
+
+\\[ =\frac{120}{6\times2} \\]
+
+\\[ =\frac{120}{12} \\]
+
+\\[ \boxed{\binom{5}{3}=10} \\]
+
+There are 10 different ways to get exactly three heads in five flips.
+
+### 4.3 Step 3: Calculate the total number of outcomes
+
+Each coin flip has two possible outcomes: heads or tails.
+
+For five independent flips:
+
+\\[ 2^n=2^5=32 \\]
+
+There are 32 possible sequences in total.
+
+### 4.4 Step 4: Calculate the probability
+
+\\[ P(X=3)=\frac{\text{Favorable outcomes}}{\text{Total outcomes}} \\]
+
+\\[ =\frac{\binom{5}{3}}{2^5} \\]
+
+\\[ =\frac{10}{32} \\]
+
+\\[ \boxed{P(X=3)=0.3125=31.25\\%} \\]
+
+### 4.5 Python implementation
+
+-------------------code----------------------
+import math
+
+n = 5
+k = 3
+
+# Calculate the number of combinations
+favorable_outcomes = math.comb(n, k)
+
+# Calculate the total possible outcomes
+total_outcomes = 2 ** n
+
+# Calculate probability
+probability = favorable_outcomes / total_outcomes
+
+print("Favorable outcomes:", favorable_outcomes)
+print("Total outcomes:", total_outcomes)
+print("Probability:", probability)
+print("Percentage:", probability * 100, "%")
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+Favorable outcomes: 10
+Total outcomes: 32
+Probability: 0.3125
+Percentage: 31.25 %
+-------------------code----------------------
+
+## 5. Exercise 4: Create a Reusable Coin Flip Probability Function
+
+Question: Create a Python function that calculates the probability of getting exactly \\(k\\) heads in \\(n\\) coin flips.
+
+Then use a loop to calculate the probabilities of getting zero, one, two, three, four, and five heads in five flips.
+
+### 5.1 Step 1: Understand the mathematical formula
+
+We already know:
+
+\\[ P(X=k)=\frac{\binom{n}{k}}{2^n} \\]
+
+And:
+
+\\[ \binom{n}{k}=\frac{n!}{k!(n-k)!} \\]
+
+Combining these formulas:
+
+\\[ \boxed{ P(X=k)= \frac{n!}{k!(n-k)!\times2^n} } \\]
+
+This is the formula we will implement in Python.
+
+### 5.2 Step 2: Import the factorial function
+
+Python provides a factorial function through the `math` module.
+
+-------------------code----------------------
+from math import factorial
+
+print(factorial(5))  # 120
+print(factorial(3))  # 6
+-------------------code----------------------
+
+### 5.3 Step 3: Create the probability function
+
+The function accepts two arguments:
+
+- `n`: Number of coin flips.
+- `k`: Exact number of heads.
+
+-------------------code----------------------
+from math import factorial
+
+def coin_flip_prob(n, k):
+
+    # Calculate n choose k
+    combinations = factorial(n) / (
+        factorial(k) * factorial(n - k)
+    )
+
+    # Calculate total possible outcomes
+    total_outcomes = 2 ** n
+
+    # Return probability
+    return combinations / total_outcomes
+
+
+# Test the function
+print(coin_flip_prob(5, 3))
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+0.3125
+-------------------code----------------------
+
+The result matches our manual calculation.
+
+### 5.4 Step 4: Calculate probabilities for zero to five heads
+
+Now we can use a `for` loop to calculate the probability for every possible number of heads.
+
+The number of flips remains five, but `k` changes from zero to five.
+
+-------------------code----------------------
+n = 5
+
+for k in range(6):
+    probability = coin_flip_prob(n, k)
+
+    print(
+        f"{k} heads: "
+        f"{probability:.5f} "
+        f"({probability * 100:.2f}%)"
+    )
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+0 heads: 0.03125 (3.12%)
+1 heads: 0.15625 (15.62%)
+2 heads: 0.31250 (31.25%)
+3 heads: 0.31250 (31.25%)
+4 heads: 0.15625 (15.62%)
+5 heads: 0.03125 (3.12%)
+-------------------code----------------------
+
+### 5.5 Step 5: Understand the results
+
+| Number of heads | Probability | Percentage |
+| --------------- | ----------- | ---------- |
+| 0               | 0.03125     | 3.125%     |
+| 1               | 0.15625     | 15.625%    |
+| 2               | 0.31250     | 31.25%     |
+| 3               | 0.31250     | 31.25%     |
+| 4               | 0.15625     | 15.625%    |
+| 5               | 0.03125     | 3.125%     |
+
+Notice the following patterns:
+
+- Getting exactly two heads and exactly three heads are equally likely.
+- Getting zero heads and five heads are equally likely.
+- Getting one head and four heads are equally likely.
+- The most likely results are two or three heads.
+- The least likely results are zero or five heads.
+
+This symmetry occurs because the coin is fair.
+
+### 5.6 Step 6: Verify that all probabilities add up to one
+
+The probability of all possible outcomes must sum to 1 (100%).
+
+-------------------code----------------------
+n = 5
+
+total_probability = sum(
+    coin_flip_prob(n, k)
+    for k in range(n + 1)
+)
+
+print("Total probability:", total_probability)
+-------------------code----------------------
+
+Expected output:
+
+-------------------code----------------------
+Total probability: 1.0
+-------------------code----------------------
+
+This is a useful way to verify that our calculations are consistent.
+
+## 6. Important Notes and Best Practices
+
+### 6.1 With replacement vs. without replacement
+
+These are different probability situations.
+
+| Situation           | Effect                                                       |
+| ------------------- | ------------------------------------------------------------ |
+| With replacement    | The deck returns to its original state before the next draw. |
+| Without replacement | The deck has one fewer card after each draw.                 |
+
+When drawing with replacement, successive draws are independent.
+
+When drawing without replacement, successive draws are dependent.
+
+### 6.2 Independent events
+
+For independent events, multiply their probabilities:
+
+\\[ P(A\cap B)=P(A)\times P(B) \\]
+
+For example, drawing the Ace of Spades twice with replacement:
+
+\\[ \frac{1}{52}\times\frac{1}{52} \\]
+
+### 6.3 Combinations are useful when order does not matter
+
+The combinations formula counts how many positions can contain heads.
+
+For example, getting three heads in five flips has 10 possible arrangements.
+
+We do not need to list all 32 sequences manually.
+
+### 6.4 Validate function inputs
+
+When implementing the probability function, ensure:
+
+\\[ n\geq0 \\]
+
+\\[ 0\leq k\leq n \\]
+
+Otherwise, the requested number of heads is impossible or the input is invalid.
+
+### 6.5 Use Python's built-in functions
+
+For practical Python development:
+
+- Use `math.factorial(n)` for factorials.
+- Use `math.comb(n, k)` for combinations.
+- Use `range(n + 1)` to iterate over every possible number of heads.
+
+The lecture implements the factorial-based formula manually to reinforce the mathematics. In production code, `math.comb()` is simpler and less error-prone.
+
+## 7. Complete Final Code
+
+This script combines all four exercises into one executable Python program.
+
+-------------------code----------------------
+import math
+
+
+# ==================================================
+# 1. Exercise 1: Ace of Spades Twice
+# ==================================================
+
+def ace_of_spades_twice():
+    """
+    Probability of drawing the Ace of Spades twice
+    with replacement.
+    """
+
+    probability = (1 / 52) * (1 / 52)
+
+    return probability
+
+
+# ==================================================
+# 2. Exercise 2: Drawing the Same Card Twice
+# ==================================================
+
+def same_card_twice():
+    """
+    Probability of drawing any card first,
+    replacing it, and drawing the same card again.
+    """
+
+    first_draw = 1
+    second_draw = 1 / 52
+
+    return first_draw * second_draw
+
+
+# ==================================================
+# 3. Exercise 3: Combinations
+# ==================================================
+
+def combinations(n, k):
+    """
+    Calculate n choose k using factorials.
+    """
+
+    if n < 0 or k < 0 or k > n:
+        raise ValueError("Require n >= 0 and 0 <= k <= n")
+
+    return math.factorial(n) // (
+        math.factorial(k) * math.factorial(n - k)
+    )
+
+
+# ==================================================
+# 4. Exercise 4: Coin Flip Probability
+# ==================================================
+
+def coin_flip_prob(n, k):
+    """
+    Calculate the probability of getting exactly
+    k heads in n independent flips of a fair coin.
+    """
+
+    if n < 0 or k < 0 or k > n:
+        raise ValueError("Require n >= 0 and 0 <= k <= n")
+
+    favorable_outcomes = combinations(n, k)
+    total_outcomes = 2 ** n
+
+    probability = favorable_outcomes / total_outcomes
+
+    return probability
+
+
+# ==================================================
+# 5. Run All Exercises
+# ==================================================
+
+if __name__ == "__main__":
+
+    # Exercise 1
+    print("Exercise 1: Ace of Spades Twice")
+
+    probability = ace_of_spades_twice()
+
+    print(f"Probability: {probability:.8f}")
+    print(f"Percentage: {probability * 100:.5f}%")
+
+    print()
+
+    # Exercise 2
+    print("Exercise 2: Drawing the Same Card Twice")
+
+    probability = same_card_twice()
+
+    print(f"Probability: {probability:.8f}")
+    print(f"Percentage: {probability * 100:.5f}%")
+
+    print()
+
+    # Exercise 3
+    print("Exercise 3: Three Heads in Five Flips")
+
+    n = 5
+    k = 3
+
+    favorable_outcomes = combinations(n, k)
+    total_outcomes = 2 ** n
+    probability = coin_flip_prob(n, k)
+
+    print("Favorable outcomes:", favorable_outcomes)
+    print("Total outcomes:", total_outcomes)
+    print(f"Probability: {probability:.5f}")
+    print(f"Percentage: {probability * 100:.2f}%")
+
+    print()
+
+    # Exercise 4
+    print("Exercise 4: Probabilities for 0 to 5 Heads")
+
+    n = 5
+
+    total_probability = 0
+
+    for k in range(n + 1):
+
+        probability = coin_flip_prob(n, k)
+
+        total_probability += probability
+
+        print(
+            f"{k} heads: "
+            f"{probability:.5f} "
+            f"({probability * 100:.2f}%)"
+        )
+
+    print()
+
+    # Verify probability sum
+    print("Probability verification:")
+    print(f"Total probability: {total_probability:.5f}")
+-------------------code----------------------
+
+## 8. Summary
+
+| Exercise | Concept                                         | Final answer                       |
+| -------- | ----------------------------------------------- | ---------------------------------- |
+| 1        | Ace of Spades twice with replacement            | 0.03698%                           |
+| 2        | Same randomly drawn card twice with replacement | 1.92308%                           |
+| 3        | Exactly three heads in five flips               | 31.25%                             |
+| 4        | Probabilities for zero to five heads            | Calculated using a Python function |
+
+Key takeaways:
+
+1. Independent events can be combined by multiplying their probabilities.
+2. Replacing a card maintains the original deck and makes the next draw independent of the previous draw.
+3. The combinations formula calculates the number of ways to select \\(k\\) outcomes from \\(n\\) trials.
+4. For fair coin flips, the total number of possible sequences is \\(2^n\\).
+5. The probability of exactly \\(k\\) heads is:
+
+   \\[\
+   P(X=k)=\frac{\binom{n}{k}}{2^n}\
+   \\]
+6. Python functions make mathematical formulas reusable.
+7. A `for` loop can calculate probabilities for every possible number of heads.
+8. The probabilities of all mutually exclusive possible outcomes must add up to 1.
+
+Next topic: More fundamental probability concepts needed for understanding machine learning.
